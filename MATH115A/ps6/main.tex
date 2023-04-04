@@ -1,0 +1,531 @@
+\documentclass[13pt]{article}
+\usepackage{amsmath, amsthm, amssymb, graphicx, enumitem, esvect}
+
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+\title{Problem Set 7}
+\author{Warren Kim}
+
+\begin{document}
+\maketitle
+
+\newpage
+\section*{Section 2.3 Question 16}
+Let $V$ be a finite-dimensional vector space, and let $T : V \rightarrow V$ be linear.
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item If $rank(T) = rank(T^2)$, prove that $R(T) \cap N(T) = \{ 0 \}$. Deduce that $V = R(T) \oplus N(T)$ (see the exercises of Section 1.3).
+\item Prove that $V = R(T^k) \oplus N(T^k)$ for some positive integer $k$.
+\end{enumerate}
+\subsection*{Response}
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item
+  \begin{proof}
+    We want to prove that if $rank(T) = rank(T^2)$, then $R(T) \cap N(T) = \{ 0 \}$. Let some $x \in N(T)$. Then, it follows that $T(x) = 0$ by the definition of the null space. Applying the $T$ again, we get that $T(T(x)) = T(0) = 0$. Thus, $N(T) \in N(T^2)$. Now, using the dimension theorem, we have that
+    \[nullity(T) + rank(T) = dim(V)\]
+    Note that since $rank(T) = rank(T^2)$, we can rewrite this as
+    \[nullity(T^2) + rank(T^2) = dim(V)\]
+    Setting the two equations equal, we get
+    \begin{align*}
+      nullity(T) + rank(T) &= nullity(T^2) + rank(T^2) \\
+      nullity(T) &= nullity(T^2) + (rank(T^2) - rank(T)) \\
+      nullity(T) &= nullity(T^2) \\
+    \end{align*}
+    Therefore, we have that $N(T) = N(T^2)$. \\ \\
+    Now, let some $y \in R(T) \cap N(T)$; that is, $y \in R(T)$ and $y \in N(T)$. By the definition of $R(T)$, if $y \in R(T)$, then there exists an $x \in V$ such that $T(x) = y$. By the definition of $N(T)$, if $y \in N(T)$, we have
+    \begin{align*}
+      T(y) &= 0 \\
+      T(T(x)) &= 0 && T(x) = 0 \\
+      y &= 0
+    \end{align*}
+    Therefore, since $y = 0$ for an arbitrary $y$, we have that $R(T) \cap N(T) = \{ 0 \}$. To show that $V = R(T) \oplus N(T)$, recall that the rank-nullity theorem can be rewritten as
+    \begin{align*}
+      nullity(T) + rank(T) &= dim(V) \\
+      dim(N(T) + R(T)) &= dim(V) \\
+                           &= dim(R(T) + N(T) - (R(T) \cap N(T))) \\
+                           &= dim(R(T) + N(T) - 0) \\
+      dim(N(T) + R(T)) &= dim(R(T) \oplus N(T))
+    \end{align*}
+    Since we proved that $R(T) \cap NT(T) = \{ 0 \}$, we deduced that $V = R(T) \oplus N(T)$.
+  \end{proof}
+\item
+  \begin{proof}
+    We want to prove that $V = R(T^k) \oplus N(T^k)$ for some positive integer $k$. From part (a), we have that $R(T) = R(T^2)$ and $V = R(T) \oplus N(T)$ where $k = 1$. Let this be true for some arbitrary $k$. We need to prove that this holds true when $k = k + 1$. Note that $\forall y \in R(T^{k + 1}), \ \exists x \in V$ such that
+    \begin{align*}
+      T^{k + 1}(x) &= y \\
+      T^k(T(x)) &= y \\
+      R(T^{k + 1}) &\subset R(T^k) && y \in R(T^k) \\
+      dim(R(T^{k + 1})) &\leq dim(R(T^k)) \\
+      rank(T^{k + 1}) &\leq rank(T^k) \\
+    \end{align*}
+    So we have that $rank(T^{k + a}) \leq rank(T^k)$, where $a \geq 0$. Now, we want to prove that $rank(T^{k + 1}) = rank(T^k)$. Note that at most, $rank(T) = n$. So, the samllest possible rank, denoted by $rank(T^j)$, is $rank(T^j) \geq 0$. Now, consider when $k = j$
+    \begin{align*}
+      rank(T^{k + a}) &= rank(T^k) \\
+                      &\leq rank(T^k) && \text{but } rank(T^k) \text{ is the smallest possible rank} \\
+      rank(T^{k + a}) &\geq rank(T^k) \\
+    \end{align*}
+    Therefore, since we have that both $rank(T^{k + a}) &\leq rank(T^k)$ and $rank(T^{k + a}) &\geq rank(T^k)$, it must be true that $rank(T^k) = rank(T^{k + a})$. Now, let $a = k$. We have that $rank(T^k) = rank(T^{2k})$, and from part (a), we have that $V = R(T) \oplus N(T)$.
+  \end{proof}
+\end{enumerate}
+\newpage
+\section*{Section 2.3 Question 18}
+Let $\beta$ be an ordered basis for a finite-dimensional vector space $V$, and let $T : V \rightarrow V$ be linear. Prove that, for any nonnegative integer $k$, $[T^k]_\beta = ([T]_\beta)^k$.
+\subsection*{Response}
+\begin{proof}
+  Let $\beta = \{ b_1, b_2, \ldots, b_n \}$ be the ordered basis for $V$. By definition of a linear transformation, for some arbitrary vector $b_j \in \beta$, we have
+  \[T(b_j) = \sum_{i = 1}^n a_{j, i}b_j, \ 1 \leq j \leq n\]
+  Now, consider $T^2(b_j)$
+  \begin{align*}
+    T^2(b_j) &= T(T(b_j)) \\
+             &= T\left( \sum_{i = 1}^n a_{j, i}b_j \\
+             &= \sum_{i = 1}^n a_{j, i}T(b_j) \\
+             &= \sum_{i = 1}^n a_{j, i} \sum_{k = 1}^n a_{i, k}b_j && 1 \leq k \leq n \\
+             &= \sum_{k = 1}^n \sum_{i = 1}^n a_{j, i}a_{i, k}b_j \\
+  \end{align*}
+  So,
+  \begin{align*}
+    [T]_\beta =
+    \begin{pmatrix}
+      \sum_{i = 1}^n a_{j, i}a_{i, 1} \\
+      \sum_{i = 1}^n a_{j, i}a_{i, 2} \\
+      \vdots \\
+      \sum_{i = 1}^n a_{j, i}a_{i, n}    
+    \end{pmatrix}
+  \end{align*}
+  Let $k = 1$. Then we have
+  \begin{align*}
+    [T]_\beta^2 &=
+                  \begin{pmatrix}
+                    a_{1,1} & \ldots & a_{1, n} \\
+                    \vdots & \ddots & \vdots \\
+                    a_{n, 1} & \ldots & a_{n, n}
+                  \end{pmatrix}
+                  \begin{pmatrix}
+                    a_{1,1} & \ldots & a_{1, n} \\
+                    \vdots & \ddots & \vdots \\
+                    a_{n, 1} & \ldots & a_{n, n}      
+                  \end{pmatrix} \\
+                &=
+                  \begin{pmatrix}
+                    \sum_{i = 1}^n a_{1, i}a_{i, 1} & \ldots &  a_{1, i}a_{i, 1} \\
+                    \vdots & ddots & \vdots \\
+                    \sum_{i = 1}^n a_{n, i}a_{i, n} & \ldots &  a_{n, i}a_{i, n} \\
+                  \end{pmatrix} \\
+                &= ([T]_\beta)^2
+  \end{align*}
+  Now, we want to prove this holds true when $k = k + 1$. Consider
+  \begin{align*}
+    ([T]_\beta)^{k + 1} &= ([T]_\beta)^k ([T]_\beta) \\
+                        &= [T^k]_\beta [T]_\beta \\
+                        &= [T^kT]_\beta \\
+                        &= [T^{k + 1}]_\beta
+  \end{align*}
+  Since we have shown the general case holds when $k = k + 1$, this concludes the induction. Thus, we have proved tha $[T^k]_\beta = ([T]_\beta)^k$ for any nonnegative integer $k$.
+\end{proof}
+
+\newpage
+\section*{Section 2.4 Question 1 part (a) - (e)}
+Label the following statements as true or false. In each part, $V$ and $W$ are vector spaces with ordered (finite) bases $\alpha$ and $\beta$ respectively, $T : V \rightarrow W$ is linear, and $A$ and $B$ are matrices.
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item $([T]_\alpha^\beta)^{-1} = [T^{-1}]_\alpha^\beta$.
+\item $T$ is invertible if and only if $T$ is one-to-one and onto.
+\item $T = L_A$, where $A = [T]_\alpha^\beta$.
+\item $\mathcal{M}_{2 \times 3}(F)$ is isomorphic to $F^5$.
+\item $P_n(F)$ is isomorphic to $P_m(F)$ if and only if $n = m$.
+\end{enumerate}
+\subsection*{Response}
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item False
+\item True
+\item False
+\item False
+\item True
+\end{enumerate}
+
+\newpage
+\section*{Section 2.4 Question 3}
+Which of the following pairs of vector spaces are isomorphic? Justify your answers.
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item $F^3$ and $P_3(F)$.
+\item $F^4$ and $P_3(F)$.
+\item $\mathcal{M}_{2 \times 2}(\mathbb{R})$ and $P_3(\mathbb{R})$.
+\item $V = \{ A \in \mathcal{M}_{2 \times 2}(\mathbb{R}) : tr(A) = 0 \}$ and $\mathbb{R}^4$.
+\end{enumerate}
+\subsection*{Response}
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item This pair of vector spaces is \textbf{not} isomorphic, since $dim(F^3) \neq dim(P_3(F))$, or $3 \neq 4$.
+\item This pair of vector spaces \textbf{is} isomorphic, since $dim(F^4) = dim(P_3(F))$, or $4 = 4$.
+\item This pair of vector spaces \textbf{is} isomorphic, since $dim(\mathcal{M}_{2 \times 2}(\mathbb{R})) = dim(P_3(\mathbb{R}))$, or $4 = 4$.
+\item This pair of vector spaces is \textbf{not} isomorphic, since $dim(V) \neq dim(\mathbb{R}^4)$, or $3 \neq 4$.
+\end{enumerate}
+
+\newpage
+\section*{Section 2.4 Question 6}
+Prove that if $A$ is invertile and $AB = O$, then $B = O$.
+\subsection*{Response}
+\begin{proof}
+  Let $A$ be invertible defined by the problem statement. Then we have
+  \begin{align*}
+    AB = O \\
+    A^{-1}AB &= AO \\
+    IB &= O && A^{-1}A = I \text{ and } AO = O \\
+    B &= O && IB = B
+  \end{align*}
+\end{proof}
+
+
+\newpage
+\section*{Section 2.4 Question 7}
+Let $A$ be an $n \times n$ matrix.
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item Suppose that $A^2 = O$. Prove that $A$ is not invertible.
+\item Suppose that $AB = O$ for some nonzero $n \times n$ matrix $B$. Could $A$ be invertible? Explain.
+\end{enumerate}
+\subsection*{Response}
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item
+  \begin{proof}
+    We want to prove that if $A^2 = O$, $A$ is not invertible. Assume by contradiction that $A$ is invertible. Then, we have
+    \begin{align*}
+      A^2 &= O \\
+      A^{-1}AA &= A^{-1}O && A^2 = AA \\
+      IAA^{-1} &= OA^{-1} && A^{-1}A = I \text{ and } A^{-1}O = O \\
+      II &= O && AA^{-1} = I \text{ and } OA^{-1} = O \\
+      I &= O && II = I
+    \end{align*}
+    which is a contradiction, since $I$ cannot be the zero matrix $O$. Therefore, $A$ is not invertible.
+  \end{proof}
+\item
+  \begin{proof}
+    Let $AB = O$ for some nonzero $n \times n$ matrix $B$ defined by the problem statement. $A$ cannot be invertible. Assume by contradiction that $A$ is invertible. Then, we have
+    \begin{align*}
+      AB = O \\
+      A^{-1}AB &= AO \\
+      IB &= O && A^{-1}A = I \text{ and } AO = O \\
+      B &= O && IB = B
+    \end{align*}
+    but $B$ must be nonzero by our earlier definition, which is a contradiction. Therefore, $A$ cannot be invertible if $B$ is nonzero.
+  \end{proof}
+  
+\end{enumerate}
+
+\newpage
+\section*{Section 2.4 Question 14}
+Let
+\[V = \bigg\{
+  \begin{pmatrix}
+    a & a + b \\
+    0 & c
+  \end{pmatrix} : a, b, c \in F \bigg\}.\]
+Construct an isomorphism from $V$ to $F^3$.
+\subsection*{Response}
+Let $A \in V$ and $T : V \rightarrow F^3$ defined by
+\[T
+  \begin{pmatrix}
+    a & a + b \\
+    0 & c
+  \end{pmatrix} = (a, b, c)\]
+To prove that $T$ is linear, let $A, B \in V$ and $d \in F$. Then, we have
+\begin{align*}
+  T(dA + B) &= (da_1 + a_2, db_1 + b_2, dc_1 + c_2) \\
+\end{align*}
+Therefore, $T$ is linear. Now, its null space is
+\begin{align*}
+  T(A) &= 0 \\
+  T
+  \begin{pmatrix}
+    a & a + b \\
+    0 & c
+  \end{pmatrix}
+  &= (0, 0, 0)  \\ \\
+  a &= 0 \\
+  a + b &= 0 \\
+  b &= 0 && \text{substitute } a = 0 \\
+  c &= 0 \\
+\end{align*}
+Therefore, $N(T) = \{ 0 \}$. By observation, we have that $\beta$ is a basis for $V$, where $\beta =
+\bigg\{ \begin{pmatrix}
+          1 & 1 \\
+          0 & 0
+        \end{pmatrix},
+        \begin{pmatrix}
+          0 & 1 \\
+          0 & 0
+        \end{pmatrix},
+        \begin{pmatrix}
+          0 & 0 \\
+          0 & 1
+        \end{pmatrix} \bigg\}$, so we have that $dim(V) = 3$. So by the rank-nullity theorem, we have that
+        \begin{align*}
+          nullity(T) + rank(T) &= dim(V) \\
+          0 + rank(T) &= 3 \\
+          rank(T) &= 3
+        \end{align*}
+        Clearly, we have that $N(T) = \{ 0 \}$ and $rank(T) = dim(V)$; that is, $R(T) = V$. So $T$ is both one-to-one and onto, and by definition, this means that $T$ is invertible and is an isomorphism.
+
+        \newpage
+        \section*{Section 2.4 Question 16}
+        Let $B$ be an $n \times n$ matrix. Define $\Phi : \mathcal{M}_{n \times n}(F) \rightarrow \mathcal{M}_{n \times n}(F)$ by $\Phi(A) = B^{-1}AB$. Prove that $\Phi$ is an isomorphism.
+        \subsection*{Response}
+        \begin{proof}
+          To prove that $\Phi$ is an isomorphism, we must show that it is linear and invertible. Let $A, C \in \mathcal{M}_{2 \times 2}$ and $d \in F$. Then, we have
+          \begin{align*}
+            \Phi(dA + C) &= B^{-1}(dA + C)B \\
+                         &= dB^{-1}AB + B^{-1}CB \\
+            \Phi(dA + C) &= d\Phi(A) + \Phi(B)
+          \end{align*}
+          Therefore, $\Phi$ is linear. To show that $\Phi$ is invertible, let $\Phi^{-1} : \mathcal{M}_{n \times n}(F) \rightarrow \mathcal{M}_{n \times n}(F)$ be defined by
+          \[\Phi^{-1} = BAB^{-1}\]
+          Then, we have that
+          \begin{align*}
+            \Phi^{-1}(\Phi(A)) &= B(B^{-1}AB)B^{-1} \\
+                               &= BB^{-1}ABB^{-1} \\
+                               &= IAI && B^{-1}B = I = BB^{-1}\\
+                               &= A && IA = A \text{ and } AI = A \\
+          \end{align*}
+          Note that $\Phi^{-1}(\Phi(A)) = A$; therefore, $\Phi^{-1}$ is the inverse of $\Phi$. Since we have shown that $\Phi$ is both linear and invertible, we can say that it is an isomorphism.
+        \end{proof}
+
+        \newpage
+        \section*{Section 2.5 Question 1}
+        Label the following statements as true or false.
+        \begin{enumerate}[label=(\alph*),leftmargin=*]
+        \item Suppose that $\beta = \{ x_1, x_2, \ldots, x_n \}$ and $\beta' = \{ {x_1}', {x_2}', \ldots, {x_n}' \}$ are ordered bases for a vector space and $Q$ is the change of coordinate matrix that changes $\beta'$-coordinates into $\beta$-coordinates. Then the $j$th column of $Q$ is $[x_j]_{\beta'}$.
+        \item Every change of coordinate matrix is invertible.
+        \item Let $T$ be a linear operator on a finite-dimensional vector space $V$, let $\beta$ and $\beta'$ be ordered bases for $V$, and let $Q$ be the change of coordinate matrix that changes $\beta'$-coordinates into $\beta$-coordinates. Then $[T]_\beta = Q[T]_{\beta'}Q^{-1}$.
+        \item The matrices $A, B \in \mathcal{M}_{n \times n}(F)$ are called similar if $B = Q^tAQ$ for some $Q \in \mathcal{M}_{n \times n}(F)$.
+        \item Let $T$ be a linear operator on a finite-dimensional vector space $V$. Then for any ordered bases $\beta$ and $\gamma$ for $V$, $[T]_\beta$ is similar to $[T]_\gamma$.
+        \end{enumerate}
+        \subsection*{Response}
+        \begin{enumerate}[label=(\alph*),leftmargin=*]
+        \item False
+        \item True
+        \item True
+        \item False
+        \item True
+        \end{enumerate}
+
+        \newpage
+        \section*{Section 2.5 Question 2 part (a) and (c)}
+        For each of the following pairs of ordered bases $\beta$ and $\beta'$ for $\mathbb{R}^2$, find the change of coordinate matrix that changes $\beta'$-coordinates into $\beta$-coordinates.
+        \begin{enumerate}[label=(\alph*),leftmargin=*]
+        \item $\beta = \{ e_1, e_2 \}$ and $\beta' = \{ (a_1, a_2), (b_1, b_2) \}$
+        \item [(c)] $\beta = \{ (2, 5), (-1, -3) \}$ and $\beta' = \{ e_1, e_2 \}$
+        \end{enumerate}
+        \subsection*{Response}
+        \begin{enumerate}[label=(\alph*),leftmargin=*]
+        \item
+          \begin{align*}
+            (a_1, a_2) &= a_1(1, 0) + a_2(0, 1) \\
+            (b_1, b_2) &= b_1(1, 0) + b_2(0, 1) \\
+          \end{align*}
+          So $[x'_1]_\beta =
+          \begin{pmatrix}
+            a_1 \\ a_2
+          \end{pmatrix}$, $[x'_2]_\beta =
+          \begin{pmatrix}
+            b_1 \\ b_2
+          \end{pmatrix}$, where $x'_1 = (a_1, a_2), x'_2 = (b_1, b_2)$
+          Then, we have
+          \[Q =
+            \begin{pmatrix}
+              a_1 & b_1 \\
+              a_2 & b_2
+            \end{pmatrix}
+          \]
+        \item
+          \begin{align*}
+            (1, 0) &= 3(2, 5) + 5(-1, -3) && \text{LCM of } 5 \text{ and } 3 \text{ is } 15 \\
+                   &= (6, 15) + (-5, 15) \\
+                   &= (1, 0) \\
+            (0, 1) &= -1(2, 5) + -2(-1, -3) && \text{LCM of } 1 \text{ and } 2 \text{ is } 2 \\
+                   &= (-2, -5) + (2, 6) \\
+                   &= (0, 1) \\
+          \end{align*}
+          So $[x'_1]_\beta =
+          \begin{pmatrix}
+            3 \\ 5
+          \end{pmatrix}$, $[x'_2]_\beta =
+          \begin{pmatrix}
+            -1 \\ -2
+          \end{pmatrix}$, where $x'_1 = (1, 0), x'_2 = (0, 1)$
+          Then, we have
+          \[Q =
+            \begin{pmatrix}
+              3 & -1 \\
+              5 & -2
+            \end{pmatrix}
+          \] 
+        \end{enumerate}
+
+        \newpage
+        \section*{Section 2.5 Question 4}
+        Let $T$ be the linear operator on $\mathbb{R}^2$, and let
+        \[T
+          \begin{pmatrix}
+            a \\
+            b
+          \end{pmatrix}
+          =
+          \begin{pmatrix}
+            2a + b \\
+            a - 3b
+          \end{pmatrix},\]
+        let $\beta$ be the standard ordered basis for $\mathbb{R}^2$, and let
+        \[\beta' = \bigg\{
+          \begin{pmatrix}
+            1 \\
+            1
+          \end{pmatrix},
+          \begin{pmatrix}
+            1 \\
+            2
+          \end{pmatrix} \bigg\}.\]
+        Use Theorem 2.23 and the fact that
+        \[
+          \begin{pmatrix}
+            1 & 1 \\
+            1 & 2
+          \end{pmatrix}^{-1}
+          =
+          \begin{pmatrix}
+            2 & -1 \\
+            -1 & 1
+          \end{pmatrix}\]
+        to find $[T]_{\beta'}$.
+        \subsection*{Response}
+        Note that $[T]_{\beta'} = Q^{-1}[T]_{\beta}Q$. To find $[T]_{\beta}$, we do
+        \begin{align*}
+          2a + b &= 2(1, 0) + 1(0, 1) \\
+          a - 3b &= 1(1, 0) + -3(0, 1)
+        \end{align*}
+        So $[T]_{\beta} =
+        \begin{pmatrix}
+          2 & 1 \\
+          1 & -3
+        \end{pmatrix}$. Now, we calculate $[T]_{\beta'}$ by applying the equation defined earlier.
+        \begin{align*}
+          [T]_{\beta'} &= Q^{-1}T]_{\beta}Q^{-1} \\
+                       &= \begin{pmatrix}
+                            2 & -1 \\
+                            -1 & 1
+                          \end{pmatrix}
+                         \begin{pmatrix}
+                           2 & 1 \\
+                           1 & -3
+                         \end{pmatrix}
+                         \begin{pmatrix}
+                           1 & 1 \\
+                           1 & 2
+                         \end{pmatrix} \\
+                       &=
+                         \begin{pmatrix}
+                           4 + -1 & 2 + 3 \\
+                           -2 + 1 & -1 + -3      
+                         \end{pmatrix}
+                         \begin{pmatrix}
+                           1 & 1 \\
+                           1 & 2
+                         \end{pmatrix} \\
+                       &=
+                         \begin{pmatrix}
+                           3 & 5 \\
+                           -1 & -4
+                         \end{pmatrix}
+                         \begin{pmatrix}
+                           1 & 1 \\
+                           1 & 2
+                         \end{pmatrix} \\
+                       &=
+                         \begin{pmatrix}
+                           3 + 5 & 3 + 10 \\
+                           -1 + -4 & -3 + -6
+                         \end{pmatrix} \\
+          [T]_{\beta'}  &= \begin{pmatrix}
+                             8 & 13 \\
+                             -5 & -9
+                           \end{pmatrix}
+        \end{align*}
+
+
+        \newpage
+        \section*{Section 2.5 Question 5}
+        Let $T$ be the linear operator on $P_1(\mathbb{R})$ defined by $T(p(x)) = p'(x)$, the derivative of $p(x)$. Let $\beta = \{ 1, x \}$ and $\beta' = \{ 1 + x, 1 - x \}$. Use Theorem 2.23 and the fact that
+        \[
+          \begin{pmatrix}
+            1 & 1 \\
+            1 & -1
+          \end{pmatrix}^{-1}
+          =
+          \begin{pmatrix}
+            \frac{1}{2} & \frac{1}{2} \\
+            \frac{1}{2} & -\frac{1}{2}
+          \end{pmatrix}\]
+        to find $[T]_{\beta'}$.
+        \subsection*{Response}
+        Note that $[T]_{\beta'} = Q^{-1}[T]_{\beta}Q$. To find $[T]_{\beta}$, we do
+        \begin{align*}
+          p(1) &= 0 = 0(1) + 0(x) \\
+          p(x) &= 1 = 1(1) + 0(x)
+        \end{align*}
+        So $[T]_{\beta} =
+        \begin{pmatrix}
+          0 & 1 \\
+          0 & 0
+        \end{pmatrix}$. Now, we calculate $[T]_{\beta'}$ by applying the equation defined earlier.
+        \begin{align*}
+          [T]_{\beta'} &= Q^{-1}T]_{\beta}Q^{-1} \\
+                       &=
+                         \begin{pmatrix}
+                           \frac{1}{2} & \frac{1}{2} \\
+                           \frac{1}{2} & -\frac{1}{2}      
+                         \end{pmatrix}
+                         \begin{pmatrix}
+                           0 & 1 \\
+                           0 & 0
+                         \end{pmatrix}
+                         \begin{pmatrix}
+                           1 & 1 \\
+                           1 & -1
+                         \end{pmatrix} \\
+                       &=
+                         \begin{pmatrix}
+                           0 + 0 & \frac{1}{2} + 0 \\
+                           0 + 0 & \frac{1}{2} + 0        
+                         \end{pmatrix}
+                         \begin{pmatrix}
+                           1 & 1 \\
+                           1 & -1
+                         \end{pmatrix} \\
+                       &=
+                         \begin{pmatrix}
+                           0 & \frac{1}{2} \\
+                           0 & \frac{1}{2}
+                         \end{pmatrix}
+                         \begin{pmatrix}
+                           1 & 1 \\
+                           1 & -1
+                         \end{pmatrix} \\
+                       &=
+                         \begin{pmatrix}
+                           0 + \frac{1}{2} & 0 + -\frac{1}{2} \\
+                           0 + \frac{1}{2} & 0 + -\frac{1}{2}
+                         \end{pmatrix} \\
+          [T]_{\beta'} &=
+                         \begin{pmatrix}
+                           \frac{1}{2} & -\frac{1}{2} \\
+                           \frac{1}{2} & -\frac{1}{2}                                   
+                         \end{pmatrix}
+        \end{align*}
+      \end{document}
+
+      %%% Local Variables:
+      %%% mode: latex
+      %%% TeX-master: t
+      %%% End:

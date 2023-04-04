@@ -1,0 +1,55 @@
+one two three
+four five
+
+six seven 8
+this is
+a test
+
+
+
+    version_msg = '%prog 3.0'
+    usage_msg = '''%prog [OPTION]... FILE
+
+    Output randomly selected lines from FILE.'''
+
+    parser = argparse.ArgumentParser(usage = usage_msg)
+
+    parser.add_argument('-e', '--echo', nargs = '?', action = 'store', default = None)
+    parser.add_argument('-i', '--input-range', nargs = '?', action = 'store', default = None)
+    parser.add_argument('-n', '--head-count', nargs = '?', type = int, action = 'store', default = None)
+    parser.add_argument('-r', '--repeat',  action = 'store_true', default = None)
+    parser.add_argument('-', nargs = '?', type = argparse.FileType('r'), default = sys.stdin, dest = 'filename')
+    
+    print(sys.argv)
+
+    args = parser.parse_known_args(sys.argv[1:])
+    
+    print(args)
+
+    if args.echo and args.input_range:
+        
+
+
+
+
+    
+    
+    if args.echo:
+        words.extend(args.echo)
+        print('==== echo ====')
+        for word in args.echo:
+            print(word)
+
+    if args.input_range:
+        print('==== input range ====')
+        in_range = args.input_range[0].split('-')
+        for i in range(int(in_range[0]), int(in_range[1]) + 1):
+            print(i)
+
+    if args.head_count:
+        print('==== head count ====')
+        print(f'head count is: {args.head_count[0]}')
+
+    if args.repeat:
+        print('==== repeat ====')
+        print(f'shuf will repeat {args.head_count[0]} times')

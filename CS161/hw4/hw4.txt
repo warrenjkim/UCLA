@@ -1,0 +1,16 @@
+1. The instance is not satisfiable for graph1 with 3 colors.
+
+2. The instance is satisfiable for graph1 with 4 colors.
+
+3. The SAT instances tell us that the graph is at minimum 4-colorable.
+
+Coloring the graph in the instructions:
+1. red
+2. green
+3. yellow
+4. red
+5. blue
+6. green
+7. blue
+
+4. 8 colors, so graph2 is 8-colorable.

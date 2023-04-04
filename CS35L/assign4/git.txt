@@ -1,0 +1,9 @@
+One difference between my cloned git and ~eggert/src/github/git is that there are multiple branches (maint, ext, seen, todo) in the eggert directory's git while mine only has the master branch when doing
+
+git branch
+
+Another difference is that the git in eggert's directory is about a week out of date with the one I cloned doing the assignment. Using
+
+git log HEAD^!
+
+I found that the most recent commit was Feb 15 at 16:08:41 while the eggert directory's was listed as Feb 8 at 09:14:42.

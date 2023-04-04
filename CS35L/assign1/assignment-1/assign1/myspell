@@ -1,0 +1,5 @@
+#!/bin/bash
+
+export LC_ALL='C'
+
+comm -23 <(tr -cs 'A-Za-z' '[\n*]' | sort -u) <(tr -cs 'A-Za-z' '[\n*]' <./sorted.words | sort -u)

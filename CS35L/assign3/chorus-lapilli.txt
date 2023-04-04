@@ -1,0 +1,42 @@
+- Take the tic-tac-toe code we used in the tutorial.
+- Start by adding a counter for both X and O that gets incremented any time a new piece is added to the board.
+- Stop adding pieces to the board once a player has 3 pieces on the board (after 6 iterations). I implemented this in a conditional.
+- Add instructions for how to play in chorus mode.
+- When we're moving pieces, we need to check for 2 button presses. We should let the user undo their moves. So, we only change turns when the user makes a valid move.
+- The first click marks the piece they want to move, and the second click is their desired destination.
+- Note that we want to add a piece (if we can) last, because we need to check to make sure we aren't in chorus mode first.
+- We need to error check for adjacency and if the cell is already occupied => done in conditionals.
+- For ease of computation (and intuition), create helper functions to change from index notation to matrix notation (e.g. i = 3 is [1, 0]) to determine adjacency.
+- For ease of reading, create a board variable that contains the game board.
+
+- HOW TO PLAY
+- when adding pieces: click on the desired cell.
+- when MOVING pieces: click once to mark the piece you want to move (should "take away" the piece). click a second time to move the piece to the desired location. NOTE: the program will not let you make any invalid moves. Therefore, if you have a center piece and try to move a different piece, the only option is to undo and move a center piece.
+
+
+npm notice 
+npm notice chorus-lapilli@0.1.0
+npm notice === Tarball Contents === 
+npm notice 3.4kB  README.md                 
+npm notice 9.8kB  chorus-lapilli-0.1.0.tgz  
+npm notice 817B   package.json              
+npm notice 24.8kB public/favicon.ico        
+npm notice 1.4kB  public/index.html         
+npm notice 298B   public/manifest.json      
+npm notice 5.7kB  src/App.js                
+npm notice 2.3kB  src/createServiceWorker.js
+npm notice 256B   src/index.js              
+npm notice 157B   src/package.json          
+npm notice 234B   src/public/index.html     
+npm notice 960B   src/styles.css            
+npm notice === Tarball Details === 
+npm notice name:          chorus-lapilli                          
+npm notice version:       0.1.0                                   
+npm notice filename:      chorus-lapilli-0.1.0.tgz                
+npm notice package size:  20.5 kB                                 
+npm notice unpacked size: 50.2 kB                                 
+npm notice shasum:        39a218a977530b5c9b8a619189eeaff033349e69
+npm notice integrity:     sha512-O89OA0ceVMsD6[...]lDzW5+02m6wig==
+npm notice total files:   12                                      
+npm notice 
+chorus-lapilli-0.1.0.tgz

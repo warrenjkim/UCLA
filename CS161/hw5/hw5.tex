@@ -1,0 +1,267 @@
+\documentclass[13pt]{article}
+\usepackage{amsmath, amsthm, amssymb, graphicx, enumitem, esvect}
+
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+\title{Homework 5}
+\author{Warren Kim}
+
+\begin{document}
+\maketitle
+
+\newpage
+\section*{Question 1} Consider the following sentences and decide for
+each whether it is valid, unsatisfiable, or neither:
+\begin{enumerate}[label=(\alph*)]
+\item $(Smoke \implies Fire) \implies (\neg Smoke \implies \neg Fire)$
+\item $(Smoke \implies Fire) \implies (Smoke \lor Heat) \implies
+  Fire)$
+\item $((Smoke \land Heat) \implies Fire) \iff ((Smoke \implies Fire)
+  \lor (Heat \implies Fire))$
+\end{enumerate} Justify your answer using truth tables (worlds).
+
+\subsection*{Response}
+\begin{enumerate}[label=(\alph*)]
+\item$
+  \begin{array}{| c c | c |}
+    Smoke & Fire & (Smoke \implies Fire) \implies (\neg Smoke \implies \neg Fire) \\
+    \hline
+    F & F & T \\
+    F & T & F \\
+    T & F & T \\
+    T & T & T
+  \end{array}$ \\ \\ Neither
+
+\item$
+  \begin{array}{| c c c | c |}
+    Smoke & Fire & Heat & (Smoke \implies Fire) \implies (Smoke \lor Heat) \implies
+                          Fire) \\
+    \hline
+    F & F & F & T \\
+    F & F & T & F \\
+    F & T & F & T \\
+    F & T & T & T \\
+    T & F & F & T \\
+    T & F & T & T \\
+    T & T & F & T \\
+    T & T & T & T 
+  \end{array}$ \\ \\ Neither
+\item$
+  \begin{array}{| c c c | c |}
+    Smoke & Fire & Heat & ((Smoke \land Heat) \implies Fire) \iff ((Smoke \implies Fire)
+                          \lor (Heat \implies Fire)) \\
+    \hline
+    F & F & F & T \\
+    F & F & T & T \\
+    F & T & F & T \\
+    F & T & T & T \\
+    T & F & F & T \\
+    T & F & T & T \\
+    T & T & F & T \\
+    T & T & T & T 
+  \end{array}$ \\ \\ Valid
+  
+\end{enumerate}
+
+\newpage
+\section*{Question 2} Consider the following: \\
+\textit{If the unicorn is mythical, then it is immortal, but if it is not mythical, then it is a mortal
+  mammal. If the unicorn is either immortal or a mammal, then it is horned. The unicorn is
+  magical if it is horned.}
+\begin{enumerate}[label=(\alph*)]
+\item Represent the above information using a propositional logic knowledge base (set of sentences in
+  propositional logic).
+\item Convert the knowledge base into CNF
+\item Can you use the knowledge base to prove that the unicorn is mythical? How about magical?
+  Horned?
+\end{enumerate} Justify your answers by deriving a contradiction for the augmented knowledge base. Use resolution
+and provide corresponding resolution derivations. Make sure to clearly define all propositional symbols
+(variables) first, then define your knowledge base, and finally give your derivations
+
+\subsection*{Response}
+\begin{enumerate}[label=(\alph*)]
+\item
+  \begin{itemize}
+  \item $(mythical \implies \neg mortal) \land$
+  \item $(\neg mythical \implies (mortal \land mammal)) \land$
+  \item $((\neg mortal \lor mammal) \implies horned) \land$
+  \item $(horned \implies magical)$
+  \end{itemize}
+\item
+  \begin{enumerate}
+  \item $(mythical \implies \neg mortal) \equiv \neg mythical \lor \neg mortal$
+  \item $(\neg mythical \implies (mortal \land mammal)) \equiv \neg (\neg mythical) \lor (mortal \land mammal)$ \\
+    $\equiv mythical \lor (mortal \land mammal)$ \\
+    $\equiv (mythical \lor mortal) \land (mythical \lor mammal)$
+  \item $(\neg mortal \lor mammal \implies horned) \equiv \neg(\neg mortal \lor mammal) \lor horned$ \\
+    $\equiv (mortal \land \neg mammal) \lor horned$ \\
+    $\equiv (horned \lor mortal) \land (horned \lor \neg mammal)$
+  \item $(horned \implies magical) \equiv \neg horned \lor magical$
+  \item $(\neg mythical \lor \neg mortal) \land$ \\
+    $(mythical \lor mortal) \land (mythical \lor mammal) \land$ \\
+    $((horned \lor mortal) \land (horned \lor \neg mammal)) \land$ \\
+    $(\neg horned \lor magical)$
+  \end{enumerate}
+\item
+  \begin{enumerate}
+  \item $(\neg mythical \lor \neg mortal)$
+  \item $(mythical \lor mortal)$
+  \item $(mythical \lor mammal)$
+  \item $(horned \lor mortal)$
+  \item $(horned \lor \neg mammal)$
+  \item $(\neg horned \lor magical)$
+  \end{enumerate}
+  We cannot prove that the unicorn is mythical given the knowledge base. (resolving (a) and (b) results in a contradiction).
+  \begin{align*}
+    (1) && (mammal \lor \neg mortal) && \text{resolve (a) and (c)} \\
+    (2) && (horned \lor \neg mythical) && \text{resolve (a) and (d)} \\
+    (3) && (horned \lor mythical) && \text{resolve (c) and (e)} \\
+    (4) && (mortal \lor magical) && \text{resolve (d) and (f)} \\
+    (5) && (\neg mammal \lor magical) && \text{resolve (e) and (f)} \\
+    (6) && (mammal \lor magical) && \text{resolve (1) and (4)} \\
+    (7) && (horned \lor horned) && \text{resolve (2) and (3)} \\
+    (8) && (magical \lor magical) && \text{resolve (5) and (6)}
+  \end{align*}
+  Therefore, from (7), the unicorn is horned and from (8) we have that the unicorn is magical.
+\end{enumerate}
+
+\newpage
+\section*{Question 3} For each pair of atomic sentences, give the most general unifier if it exists:
+\begin{enumerate}[label=(\alph*)]
+\item P(A, B, B), P(x, y, z).
+\item Q(y, G(A, B)), Q(G(x, x), y).
+\item Older(Father(y), y), Older(Father(x), John).
+\item Knows(Father(y),y), Knows(x,x).
+\end{enumerate}
+
+\subsection*{Response}
+\begin{enumerate}[label=(\alph*)]
+\item \{x/A, y/B, z/B\}
+\item Doesn't exist
+\item \{x/y, y/John\} $\equiv$ \{x/John, y/John\}
+\item Doesn't exist
+\end{enumerate}
+
+
+
+
+\newpage
+\section*{Question 4} Consider the following sentences:
+\begin{itemize}
+\item John likes all kinds of food.
+\item Apples are food.
+\item Chicken is food.
+\item Anything anyone eats and isn’t killed by is food.
+\item If you are killed by something, you are not alive.
+\item Bill eats peanuts and is still alive. *
+\item Sue eats everything Bill eats.
+\end{itemize}
+For first-order syntax, feel free to use the following text file notation: $|$ (for disjunction), \& (for conjunction), - (for negation), $=>$ (for implication), $<=>$ (for equivalence), E (for existential quantification,
+e.g., E x, y, Loves(x, y)), and A (for universal quantification, e.g., A x, y, Loves(x, y)).
+\begin{enumerate}[label=(\alph*)]
+\item Translate these sentences into formulas in first-order logic.
+\item Convert the formulas of part (a) into CNF (also called clausal form).
+\item Prove that John likes peanuts using resolution.
+\item Use resolution to answer the question, “What food does Sue eat?”
+\item Use resolution to answer the question, “What food does Sue eat?” if, instead of the axiom marked
+  with an asterisk above, we had:
+  \begin{itemize}
+  \item If you don’t eat, you die.
+  \item If you die, you are not alive.
+  \item Bill is alive.  
+  \end{itemize}
+\end{enumerate}
+
+
+\subsection*{Response}
+\begin{itemize}
+\item John likes all kinds of food.
+  \begin{enumerate}[label=(\alph*)]
+  \item $\forall x, \ Food(x), \ Likes(John, x)$
+  \item $\neg Food(x) \lor Likes(John, x)$
+  \end{enumerate}
+\item Apples are food.
+  \begin{enumerate}[label=(\alph*)]
+  \item $\forall x, \ Apple(x) \implies Food(x)$
+  \item $\neg Apple(x) \lor Food(x)$
+  \end{enumerate}
+\item Chicken is food.
+  \begin{enumerate}[label=(\alph*)]
+  \item $\forall x, \ Chicken(x) \implies Food(x)$
+  \item $\neg Chicken(x) \lor Food(x)$
+  \end{enumerate}
+\item Anything anyone eats and isn’t killed by is food.
+  \begin{enumerate}[label=(\alph*)]
+  \item $\forall x, \ Something(x), [\exists y, \ Someone(y), \ (Eat(y, x) \land \neg Kill(x, y)) \implies Food(x)]$
+  \item $\neg Eat(y, x) \lor Kill(x, y) \lor Food(x)$
+  \end{enumerate}
+\item If you are killed by something, you are not alive.
+  \begin{enumerate}[label=(\alph*)]
+  \item $\forall x [\exists y \ Someone(x), \ Something(y) \ Kill(y, x) \implies \neg Alive(x)]$
+  \item $\neg Kill(y, x) \lor \neg Alive(x)$
+  \end{enumerate}
+\item Bill eats peanuts and is still alive. *
+  \begin{enumerate}[label=(\alph*)]
+  \item $Eat(Bill, Peanuts) \land Alive(Bill)$
+  \item $Eat(Bill, Peanuts) \land Alive(Bill)$
+  \end{enumerate}
+\item Sue eats everything Bill eats.
+  \begin{enumerate}[label=(\alph*)]
+  \item $\forall x, \ Food(x), \ Eat(Bill, x) \implies Eat(Sue, x)$
+  \item $\neg Eat(Bill, x) \lor Eat(Sue, x)$
+  \end{enumerate}
+\end{itemize}
+
+\begin{enumerate}
+\item [(c)] Prove that John likes peanuts using resolution.
+  \begin{enumerate}[label=(\alph*)]
+  \item $\neg Food(x) \lor Likes(John, x)$
+  \item $\neg Apple(x) \lor Food(x)$
+  \item $\neg Chicken(x) \lor Food(x)$
+  \item $\neg Eat(y, x) \lor Kill(x, y) \lor Food(x)$
+  \item $\neg Kill(y, x) \lor \neg Alive(x)$
+  \item $Eat(Bill, Peanuts)$
+  \item $Alive(Bill)$
+  \item $\neg Eat(Bill, x) \lor Eat(Sue, x)$
+  \end{enumerate}
+  \begin{align*}
+    (1) && Kill(Peanuts, Bill) \lor Food(Peanuts), \{x/Bill, y/Peanuts\} && \text{resolve (d) and (f)} \\
+    (2) && Food(Peanuts) \lor \neg Alive(Bill), \{x/Peanuts, y/Bill\} && \text{resolve (1) and (e)} \\
+    (3) && Food(Peanuts), \{x/Peanuts\} && \text{(2) and (g)} \\
+    (4) && Likes(John, Peanuts), \{x/Peanuts\} && \text{resolve (a) and (3)}
+  \end{align*}
+  Therefore, John likes peanuts.
+  
+\item [(d)] Use resolution to answer the question, "What food does Sue eat?"
+  \begin{align*}
+    (1) && Eat(Sue, Peanuts), \{x/Peanuts\} && \text{resolve (f) and (h)}
+  \end{align*}
+
+\item [(e)] Use resolution to answer the question, “What food does Sue eat?” if, instead of the axiom marked
+  with an asterisk above, we had:
+    \begin{enumerate}[label=(\alph*)]
+  \item $\neg Food(x) \lor Likes(John, x)$
+  \item $\neg Apple(x) \lor Food(x)$
+  \item $\neg Chicken(x) \lor Food(x)$
+  \item $\neg Eat(y, x) \lor Kill(x, y) \lor Food(x)$
+  \item $\neg Kill(y, x) \lor \neg Alive(x)$
+  \item $\neg Eat(Bill, x) \lor Eat(Sue, x)$
+  \item $Eat(y, x) \lor Die(x)$
+  \item $\neg Die(x) \lor \neg Alive(x)$
+  \item $Alive(Bill)$
+  \end{enumerate}
+    \begin{align*}
+      (1) && Eat(y, x) \lor \neg Alive(x) && \text{resolve (g) and (h)} \\
+      (2) && Eat(Bill, x), \{y/Bill\} && \text{resolve (1) and (i)} \\
+      (3) && Eat(Sue, x), \{y/Sue\} && \text{resolve (2) and (f)}
+    \end{align*}
+    Therefore, based on (f), we know that Sue eats everything Bill eats, but we don't know if Sue eats other food since we conclude from (3) that Sue eats food.
+\end{enumerate}
+\end{document}

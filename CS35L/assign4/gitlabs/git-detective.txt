@@ -1,0 +1,26 @@
+To find the commit(s) that fixed the segmentation fault, I did
+
+git log v2.38.0..v2.39.0 --grep 'fix.*segmentation fault'
+
+which returned all the commits between version 2.38.0 and 2.39.0 which matched the phrases "fix segmentation fault" and "fixed segmentation fault".
+
+git diff 0b55d930a69692c7f4e7b90e35fa41f6c46df4bc^ 0b55d930a69692c7f4e7b90e35fa41f6c46df4bc
+
+which returned the changes made to fix the issue.
+
+git diff 92481d1b26ab57525f5efe01d01c7a3d337b8df7^ 92481d1b26ab57525f5efe01d01c7a3d337b8df7
+
+which returned the changes made to optimize the fix implemented in the previous commit.
+
+0b55d930a69692c7f4e7b90e35fa41f6c46df4bc commit that fixed the issue.
+92481d1b26ab57525f5efe01d01c7a3d337b8df7 commit that optimized the fix.
+
+To format the patch files, I did
+
+git format-patch -1 0b55d930a69692c7f4e7b90e35fa41f6c46df4bc
+
+and
+
+git format-patch -1 92481d1b26ab57525f5efe01d01c7a3d337b8df7
+
+which have their respective patches.

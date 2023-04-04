@@ -1,0 +1,1447 @@
+\documentclass[13pt]{article}
+\usepackage{amsmath, amsthm, amssymb, graphicx, enumitem, esvect}
+
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+\title{Problem Set 9}
+\author{Warren Kim}
+
+\begin{document}
+\maketitle
+
+\newpage
+\section*{Section 5.1 Question 2 part (a), (d)}
+For each of the following linear operators $T$ on a vector space $V$, compute the determinant of $T$ and the characteristic polynomial of $T$.
+
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item $V = \mathbb{R}^2, \ T
+  \begin{pmatrix}
+    a \\
+    b \\
+  \end{pmatrix} =
+  \begin{pmatrix}
+    2a - b \\
+    5a + 3b
+  \end{pmatrix}$
+
+\item [(d)] $V = \mathcal{M}_{2 \times 2}(\mathbb{R}), \ T(A) = 2A^t - A$
+\end{enumerate}
+
+\subsection*{Response}
+
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item
+  Let $\beta = \{
+  \begin{pmatrix}
+    1 \\
+    0
+  \end{pmatrix},
+  \begin{pmatrix}
+    0 \\
+    1
+  \end{pmatrix}$ be a basis for $\mathbb{R}^2$. Then, we have
+  \begin{align*}
+    T
+    \begin{pmatrix}
+      1 \\
+      0
+    \end{pmatrix} &=
+                    \begin{pmatrix}
+                      2 \\
+                      5
+                    \end{pmatrix} \\
+    T
+    \begin{pmatrix}
+      0 \\
+      1
+    \end{pmatrix} &=
+                    \begin{pmatrix}
+                      -1 \\
+                      3
+                    \end{pmatrix} \\
+    [T]_\beta &=
+                \begin{pmatrix}
+                  2 & -1 \\
+                  5 & 3
+                \end{pmatrix} \\
+  \end{align*}
+  Taking the determinant of $[T]_\beta$, we get
+  \begin{align*}
+    \det([T]_\beta ) &= 6 - -5 = 11
+  \end{align*}
+  To compute the characteristic polynomial,
+  \begin{align*}
+    \det([T]_\beta - \lambda I) &=
+                                  \begin{vmatrix}
+                                    2 - \lambda & -1 \\
+                                    5 & 3 - \lambda
+                                  \end{vmatrix} \\
+                                &= (2 - \lambda)(3 - \lambda) - -5 \\
+                                &= \lambda^2 - 5\lambda + 6 + 5 \\
+    \det([T]_\beta - \lambda I) &= \lambda^2 - 5\lambda + 11
+  \end{align*}
+
+\item [(d)] Let $\beta = \{ e_1, e_2, e_3, e_4 \}\{
+  \begin{pmatrix}
+    1 & 0 \\
+    0 & 0 
+  \end{pmatrix},
+  \begin{pmatrix}
+    0 & 1 \\
+    0 & 0 
+  \end{pmatrix},
+  \begin{pmatrix}
+    0 & 0 \\
+    1 & 0 
+  \end{pmatrix},
+  \begin{pmatrix}
+    0 & 0 \\
+    0 & 1 
+  \end{pmatrix}
+  \}$ be a basis for $\mathcal{M}_{2 \times 2}$. Then, we have
+  \begin{align*}
+    T
+    \begin{pmatrix}
+      1 & 0 \\
+      0 & 0 
+    \end{pmatrix} &= 2
+                    \begin{pmatrix}
+                      1 & 0 \\
+                      0 & 0
+                    \end{pmatrix} -
+                    \begin{pmatrix}
+                      1 & 0 \\
+                      0 & 0
+                    \end{pmatrix} \\
+        &=
+          \begin{pmatrix}
+            2 & 0 \\
+            0 & 0
+          \end{pmatrix} \\
+        &= 2e_1 + 0e_2 + 0e_3 + 0e_4 \\
+    T
+    \begin{pmatrix}
+      0 & 1 \\
+      0 & 0 
+    \end{pmatrix} &= 2
+                    \begin{pmatrix}
+                      0 & 0 \\
+                      1 & 0
+                    \end{pmatrix} -
+                    \begin{pmatrix}
+                      0 & 1 \\
+                      0 & 0
+                    \end{pmatrix} \\
+        &=
+          \begin{pmatrix}
+            0 & -1 \\
+            2 & 0
+          \end{pmatrix} \\
+        &= 0e_1 + -1e_2 + 2e_3 + 0e_4 \\
+    T
+    \begin{pmatrix}
+      0 & 0 \\
+      1 & 0 
+    \end{pmatrix} &= 2
+                    \begin{pmatrix}
+                      0 & 1 \\
+                      0 & 0
+                    \end{pmatrix} -
+                    \begin{pmatrix}
+                      0 & 0 \\
+                      1 & 0
+                    \end{pmatrix} \\
+        &=
+          \begin{pmatrix}
+            0 & 2 \\
+            -1 & 0
+          \end{pmatrix} \\
+        &= 0e_1 + 2e_2 + -1e_3 + 0e_4 \\
+    T
+    \begin{pmatrix}
+      0 & 0 \\
+      0 & 1 
+    \end{pmatrix} &= 2
+                    \begin{pmatrix}
+                      0 & 0 \\
+                      0 & 1
+                    \end{pmatrix} -
+                    \begin{pmatrix}
+                      0 & 0 \\
+                      0 & 1
+                    \end{pmatrix} \\
+        &=
+          \begin{pmatrix}
+            0 & -1 \\
+            2 & 0
+          \end{pmatrix} \\
+        &= 0e_1 + 0e_2 + 0e_3 + 1e_4 \\
+    [T]_\beta &=
+                \begin{pmatrix}
+                  1 & 0 & 0 & 0 \\
+                  0 & -1 & 2 & 0 \\
+                  0 & 2 & -1 & 0 \\
+                  0 & 0 & 0 & 1
+                \end{pmatrix}
+  \end{align*}
+
+  Taking the determinant of $[T]_\beta$, we get
+  \begin{align*}
+    \det([T]_\beta) &=
+                      \begin{vmatrix}
+                        1 & 0 & 0 & 0 \\
+                        0 & -1 & 2 & 0 \\
+                        0 & 2 & -1 & 0 \\
+                        0 & 0 & 0 & 1                        
+                      \end{vmatrix} \\
+                    &= a_{11}C_{11} - a_{12}C_{12} + a_{13}C_{13} - a_{14}C_{14} \\
+                    &= 1
+                      \begin{vmatrix}
+                        -1 & 2 & 0 \\
+                        2 & -1 & 0 \\
+                        0 & 0 & 1
+                      \end{vmatrix} + 0 + 0 + 0 \\
+                    &= a_{11}(a_{31}C_{31} - a_{32}C_{32} + a_{33}C_{33}) \\
+                    &= 1\left(0 + 0 + 1
+                      \begin{vmatrix}
+                        -1 & 2 \\
+                        2 & -1
+                      \end{vmatrix}\right) \\
+                    &= 1(1(1 - 4)) \\
+    \det([T]_\beta) &= -3
+  \end{align*}
+  To compute the characteristic polynomial,
+  \begin{align*}
+    \det([T]_\beta - \lambda I) &=
+                                  \begin{vmatrix}
+                                    1 - \lambda & 0 & 0 & 0 \\
+                                    0 & -1 - \lambda & 2 & 0 \\
+                                    0 & 2 & -1 - \lambda & 0 \\
+                                    0 & 0 & 0 & 1 - \lambda
+                                  \end{vmatrix} \\
+                                &= a_{11}C_{11} - a_{12}C_{12} + a_{13}C_{13} - a_{14}C_{14} \\
+                                &= 1 - \lambda
+                                  \begin{vmatrix}
+                                    -1 - \lambda & 2 & 0 \\
+                                    2 & -1 - \lambda & 0 \\
+                                    0 & 0 & 1 - \lambda
+                                  \end{vmatrix} + 0 + 0 + 0 \\
+                                &= a_{11}(a_{31}C_{31} - a_{32}C_{32} + a_{33}C_{33}) \\
+                                &= (1 - \lambda) \left(0 + 0 + 1 - \lambda
+                                  \begin{vmatrix}
+                                    -1 - \lambda & 2 \\
+                                    2 & -1 - \lambda
+                                  \end{vmatrix}\right) \\
+                                &= (1 - \lambda)((1 - \lambda)((-1 - \lambda)^2 - 4)) \\
+                                &= (1 - \lambda)^2((-1 - \lambda)^2 - 4) \\
+                                &= (1 - \lambda)^2(\lambda^2 + 2\lambda + 1 - 4) \\
+                                &= (1 - \lambda)^2(\lambda^2 + 2\lambda - 3) \\
+                                &= (\lambda^2 - 2\lambda + 1)(\lambda^2 + 2\lambda - 3) \\
+                                &= (\lambda^4 + 2\lambda^3 - 3\lambda^2) - (2\lambda^3 + 4\lambda^2 - 6\lambda) + (\lambda^2 + 2\lambda - 3) \\
+                                &= \lambda^4 - 6\lambda^2 + 8\lambda - 3                                  
+  \end{align*}
+\end{enumerate}
+
+
+
+
+
+\newpage
+\section*{Section 5.1 Question 9}
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item Prove that the linear operator $T$ on a finite-dimensional vector space is invertible if and only if zero is not an eigenvalue of $T$.
+\item Let $T$ be an invertible linear operator. Prove that a scalar $\lambda$ is an eigenvalue of $T$ if and only if $\lambda^{-1}$ is an eigenvalue of $T^{-1}$.
+\item State and prove results analogous to (a) and (b) for matrices.
+\end{enumerate}
+
+\subsection*{Response}
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item
+  \begin{proof}
+    $\implies$ \\
+    Let $T$ be invertible. We want to prove that $0$ is not an eigenvalue of $T$. Recall that $T$ is invertible if and only if $\det(T) \neq 0$. This implies that $N(T - \lambda I) = \{ 0 \}$. Thus, $0$ cannot be an eigenvalue of $T$. \\ \\
+    $\impliedby$ \\
+    Assume $0$ is not an eigenvalue of $T$ by the previous statement. Then, we know that there exists no eigenvector $x$ such that $T(x) = 0$. Therefore, we have that $N(T) = \{ 0 \}$. From the rank-nullity theorem, we have
+    \begin{align*}
+      nullity(T) + rank(T) &= dim(V) \\
+      0 + rank(T) &= dim(V) \\
+      dim(R(T)) &= dim(V) \\
+      dim(W) &= dim(V)
+    \end{align*}
+    Thus, $T$ is invertible.
+  \end{proof}
+
+\item
+  \begin{proof}
+    $\implies$ \\
+    Assume a scalar $\lambda$ is an eigenvalue with eigenvector $x \in V$ of $T$. We are given that $T$ is invertible, so we have
+    \begin{align*}
+      T(x) &= \lambda x \\
+      T^{-1}T(x) &= T^{-1}(\lambda x) \\
+      x &= \lambda T^{-1}(x) \\
+      \lambda^{-1} x &= \lambda^{-1}\lambda T^{-1}(x) && \text{from (a), we know that } \lambda \neq 0 \\
+      \lambda^{-1} x &= T^{-1}(x) && \lambda^{-1}\lambda = 1
+    \end{align*}
+    Thus, $\lambda^{-1}$ is an eigenvalue of $T^{-1}$. \\ \\
+    $\impliedby$ \\
+    Assume a scalar $\lambda^{-1}$ is an eigenvalue with eigenvector $y \in V$ of $T^{-1}$. We are given that $T^{-1}$ is invertible, so we have
+    \begin{align*}
+      T^{-1}(y) &= \lambda^{-1} y \\
+      TT^{-1}(y) &= T(\lambda^{-1} y) \\
+      y &= \lambda^{-1}T(y) \\
+      \lambda y &= \lambda\lambda^{-1} T(y) && \text{from (a), we know that } \lambda \neq 0 \\
+      \lambda y &= T(y) && \lambda\lambda^{-1} = 1
+    \end{align*}
+    Thus, $\lambda$ is an eigenvalue of $T$.
+  \end{proof}
+  \newpage
+\item
+  Analogous proof for (a): An $n \times n$ matrix $A$ is invertible if and only if zero is not an eigenvalue of $A$.
+  \begin{proof}
+    $\implies$ \\
+    Let $A$ be invertible. We want to prove that $0$ is not an eigenvalue of $A$. If $A$ is invertible, this means that it is one-to-one and onto, meaning there is no non-zero vector such that $Ax = 0$. So, $0$ cannot be an eigenvalue of $A$. \\ \\
+    $\impliedby$ \\
+    Assume $0$ is not an eigenvalue by the previous statement. Then, we know that the only vector that satisfies $Ax = 0$ is the zero vector. This implies that $A$ is one-to-one, which also implies that $A$ is invertible.
+  \end{proof}
+  Analogous proof for (b): Given that $A$ is invertible, prove that a scalar $\lambda$ is an eigenvalue of $A$ if and only if $\lambda^{-1}$ is an eigenvalue of $A^{-1}$.
+  \begin{proof}
+    $\implies$ \\
+    Assume a scalar $\lambda$ is an eigenvalue with eigenvector $x \in V$ of $T$. We are given that $T$ is invertible, so we have
+    \begin{align*}
+      A(x) &= \lambda x \\
+      A^{-1}A(x) &= A^{-1}(\lambda x) \\
+      x &= \lambda A^{-1}(x) \\
+      \lambda^{-1} x &= \lambda^{-1}\lambda A^{-1}(x) && \text{from (a), we know that } \lambda \neq 0 \\
+      \lambda^{-1} x &= A^{-1}(x) && \lambda^{-1}\lambda = 1
+    \end{align*}
+    Thus, $\lambda^{-1}$ is an eigenvalue of $A^{-1}$. \\ \\
+    $\impliedby$ \\
+    Assume a scalar $\lambda^{-1}$ is an eigenvalue with eigenvector $y \in V$ of $A^{-1}$. We are given that $A^{-1}$ is invertible, so we have
+    \begin{align*}
+      A^{-1}(y) &= \lambda^{-1} y \\
+      AA^{-1}(y) &= A(\lambda^{-1} y) \\
+      y &= \lambda^{-1}A(y) \\
+      \lambda y &= \lambda\lambda^{-1} A(y) && \text{from (a), we know that } \lambda \neq 0 \\
+      \lambda y &= A(y) && \lambda\lambda^{-1} = 1
+    \end{align*}
+    Thus, $\lambda$ is an eigenvalue of $A$.
+  \end{proof}
+\end{enumerate}
+
+
+
+
+
+\newpage
+\section*{Section 5.1 Question 12}
+A scalar matrix is a square matrix of the form $\lambda I$ for some scalar $\lambda$; that is, a scalar matrix is a diagonal matrix in which all the diagonal entries are equal.
+
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item Prove that if a square matrix $A$ is similar to a scalar matrix $\lambda I$,
+  then $A = \lambda I$.
+\item Show that a diagonalizable matrix having only one eigenvalue is a scalar matrix.
+\item Prove that $
+  \begin{pmatrix}
+    1 & 1 \\
+    0 & 1
+  \end{pmatrix}$
+  is not diagonalizable.
+\end{enumerate}
+
+\subsection*{Response}
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item
+  \begin{proof}
+    Let $A$ and $\lambda I$ be similar square matrices. We want to prove that $A = \lambda I$. Let $A = B\lambda IB^{-1}$, where $B$ is invertible. Then we have
+    \begin{align*}
+      A &= B\lambda IB^{-1} \\
+        &= \lambda(BIB^{-1}) \\
+        &= \lambda(BB^{-1}) && BI = B \\
+        &= \lambda(I) \\
+      A &= \lambda I \\
+    \end{align*}
+  \end{proof}
+\item
+  \begin{proof}
+    Let $A$ be a diagonalizable matrix having only one eigenvalue $\lambda$. Let $A = BDB^{-1}$, where $B$ is invertible and $D$ is diagonal. Since $A$ only has one eigenvalue, $D$ must be the scalar matrix $\lambda I$. From (a), we have $A = \lambda I$, so $A$ is a scalar matrix.
+  \end{proof}
+\item
+  \begin{proof}
+    Let $A =
+    \begin{pmatrix}
+      1 & 1 \\
+      0 & 1
+    \end{pmatrix}$. Taking the characteristic polynomial of the matrix, we get
+    \begin{align*}
+      \det(A - \lambda I) &=
+                            \begin{vmatrix}
+                              1 - \lambda & 1 \\
+                              0 & 1 - \lambda
+                            \end{vmatrix} \\
+                          &= (1 - \lambda)^2 - 0 \\
+      \det(A - \lambda I) &= (1 - \lambda)^2
+    \end{align*}
+    Because we only have one eigenvalue $\lambda = 1$, there is no ordered basis with 2 linearly independent vectors. By definition, $A$ is diagonalizable if and only if there is an ordered basis $\beta$ for $V$ such that $[T]_\beta$ is a diagonal matrix. Because there is no such ordered basis for $A$, $A$ is not diagnoalizable.    
+  \end{proof}
+\end{enumerate}
+
+
+
+
+
+\newpage
+\section*{Section 5.1 Question 15}
+For any square matrix $A$, prove that $A$ and $A^t$ have the same characteristic polynomial (and hence the same eigenvalues).
+
+\subsection*{Response}
+\begin{proof}
+  We want to prove that $A$ and $A^t$ have the same characteristic polynomial. Recall that the characteristic polynomial is defined as $f(x) = \det(A - \lambda I)$. Let $f(x)$ and $g(x)$ be the characteristic polynomials for $A$ and $A^t$ respectively. Then we have
+  \begin{align*}
+    f(x) &= \det(A - \lambda I) \\
+         &= \det((A - \lambda I)^t) && \det(A) = \det(A^t) \\
+         &= \det(A^t - \lambda I^t) \\
+         &= \det(A^t - \lambda I) \\
+    f(x) &= g(x)
+  \end{align*}
+\end{proof}
+
+
+
+
+
+\newpage
+\section*{Section 5.1 Question 18}
+Let $T$ be the linear operator on $\mathcal{M}_{n \times n}(\mathbb{R})$ defined by $T(A) = A^t$.
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item Show that $\pm 1$ are the only eigenvalues of $T$.
+\item Describe the eigenvectors corresponding to each eigenvalue of $T$.
+\item Find an ordered basis $\beta$ for $\mathcal{M}_{2 \times 2}(\mathbb{R})$ such that $[T]_\beta$ is diagonal.
+\item Find an ordered basis $\beta$ for $\mathcal{M}_{n \times n}(\mathbb{R})$ such that $[T]_\beta$ is diagonal for $n > 2$.
+\end{enumerate}
+
+\subsection*{Response}
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item We want to show that the only eigenvalues for $T$ are $\pm 1$. Let $\lambda$ be an eigenvalue of $T$ and $A$ be its corresponding eigenvector. Then we have
+  \begin{align*}
+    T(A) &= \lambda A \\
+    A^t &= \lambda A \\
+    T(A^t) &= T(\lambda A) \\
+         &= \lambda T(A) \\
+    A &= \lambda T(A) && (A^t)^t = A \\
+         &= \lambda (\lambda A) && T(A) = \lambda A \\
+         &= \lambda^2 A \\
+    0 &= \lambda^2 A - A \\
+         &= (\lambda^2 - 1)A \\
+  \end{align*}
+  Since we defined $A$ to be an eigenvector of $T$, by definition it cannot be $0$. So, we have
+  \begin{align*}
+    (\lambda^2 - 1)A &= 0 \\
+    (\lambda + 1)(\lambda - 1) &= 0 \\
+    \lambda &= \pm 1
+  \end{align*}
+  So, the only eigenvalues of $T$ are $\pm 1$.
+
+\item For $\lambda = -1$
+  \begin{align*}
+    T(A) &= \lambda A \\
+         &= -1A \\
+    A^t &= -A && T(A) = A^t
+  \end{align*}
+  When $\lambda = -1$, the matrix $A$ is skew-symmetric, so the set of skew-symmetric matrices are eigenvectors that correspond to $\lambda = -1$. \\ \\
+  For $\lambda = 1$
+  \begin{align*}
+    T(A) &= \lambda A \\
+         &= 1A \\
+    A^t &= A && T(A) = A^t
+  \end{align*}
+  When $\lambda = 1$, the matrix $A$ is symmetric, so the set of symmetric matrices are eigenvectors that correspond to $\lambda = 1$.
+
+\item $\beta = \bigg\{
+    \begin{pmatrix}
+      1 & 0 \\
+      0 & 0
+    \end{pmatrix},
+    \begin{pmatrix}
+      0 & 0 \\
+      0 & 1 
+    \end{pmatrix},
+    \begin{pmatrix}
+      0 & 1 \\
+      1 & 0
+    \end{pmatrix},
+    \begin{pmatrix}
+      0 & 1 \\
+      -1 & 0
+    \end{pmatrix}\bigg\}
+  $
+
+\item Let $B_{ii}$ be the $n \times n$ matrix with the $ii^{th}$ element $1$, and all others $0$. Then, we have \\
+  $\beta = (B_{ii})_{i = 1, 2, \ldots, n} \cup (B_{ij} + B_{ji})_{i > j} \cup (B_{ij} - B_{ji})_{i > j}$
+\end{enumerate}
+
+
+
+
+
+\newpage
+\section*{Section 5.2 Question 2}
+For each of the following matrices $A \in \mathcal{M}_{n \times n}(\mathbb{R})$, test $A$ for diagonalizability, and if $A$ is diagonalizable, find an invertible matrix $Q$ and a diagonal matrix $D$ such that $Q^{-1}AQ = D$.
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item $
+  \begin{pmatrix}
+    1 & 2 \\
+    0 & 1
+  \end{pmatrix}
+  $
+\item $
+  \begin{pmatrix}
+    1 & 3 \\
+    3 & 1
+  \end{pmatrix}
+  $
+\item $
+  \begin{pmatrix}
+    1 & 4 \\
+    3 & 2
+  \end{pmatrix}
+  $
+\item $
+  \begin{pmatrix}
+    7 & -4 & 0 \\
+    8 & -5 & 0 \\
+    6 & -6 & 3
+  \end{pmatrix}
+  $
+\item $
+  \begin{pmatrix}
+    0 & 0 & 1 \\
+    1 & 0 & -1 \\
+    0 & 1 & 1
+  \end{pmatrix}
+  $
+\item $
+  \begin{pmatrix}
+    1 & 1 & 0 \\
+    0 & 1 & 2 \\
+    0 & 0 & 3
+  \end{pmatrix}
+  $
+\item $
+  \begin{pmatrix}
+    3 & 1 & 1 \\
+    2 & 4 & 2 \\
+    -1 & -1 & 1
+  \end{pmatrix}
+  $
+\end{enumerate}
+\subsection*{Response}
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item
+  \begin{align*}
+    \det(A - \lambda I) &=
+                          \begin{vmatrix}
+                            1 - \lambda & 2 \\
+                            0 & 1 - \lambda
+                          \end{vmatrix} \\
+                        &= (1 - \lambda)^2 - 0 \\
+  \end{align*}
+  \begin{enumerate}
+  \item Clearly, $(1 - \lambda)^2 = (1 - \lambda)(1 - \lambda)$ splits.
+  \item Solving for $\lambda$, we get $\lambda = 1$ with multiplicity 2. We test for $multiplicity = n - rank(A - \lambda I)$
+    \begin{align*}
+      multiplicity &= n - rank(A - 1I) \\
+      2 &= 2 - rank
+          \begin{pmatrix}
+            0 & 2 \\
+            0 & 0
+          \end{pmatrix} \\
+                   &= 2 - 1 \\
+      2 &\neq 1      
+    \end{align*}
+    This matrix is not diagonalizable.
+  \end{enumerate}
+
+\item
+  \begin{align*}
+    \det(A - \lambda I) &=
+                          \begin{pmatrix}
+                            1 - \lambda & 3 \\
+                            3 & 1 - \lambda
+                          \end{pmatrix} \\
+                        &= (1 - \lambda)^2 - 9 \\
+                        &= \lambda^2 - 2\lambda + 1 - 9 \\
+                        &= \lambda^2 - 2\lambda - 8 \\
+  \end{align*}
+  \begin{enumerate}
+  \item Clearly, $\lambda^2 - \lambda - 8 = (\lambda + 2)(\lambda - 4)$ splits.
+  \item Solving for $\lambda$, we get $\lambda = -2, 4$. We test for $multiplicity = n - rank(A - \lambda I)$ \\
+    When $\lambda = -2$
+    \begin{align*}
+      multiplicity &= n - rank(A - -2I) \\
+      1 &= rank(A + 4I) \\
+                   &= 2 - rank
+                     \begin{pmatrix}
+                       3 + 3 \\
+                       3 + 3
+                     \end{pmatrix} \\
+                   &= 2 - 1 \\
+      1 &= 1
+    \end{align*}
+    When $\lambda = 4$
+    \begin{align*}
+      multiplicity &= n - rank(A - 4I) \\
+      1 &= rank(A + 4I) \\
+                   &= 2 - rank
+                     \begin{pmatrix}
+                       -3 + 3 \\
+                       3 + -3
+                     \end{pmatrix} \\
+                   &= 2 - 1 \\
+      1 &= 1
+    \end{align*}
+    Therefore, this matrix is diagonalizable.
+  \end{enumerate}
+  To find the eigenvectors, we find $(A - \lambda I)x = 0$ \\
+  For $\lambda = -2$
+  \begin{align*}
+    0 &= (A - \lambda I)x \\
+      &= (A - -2I)x \\
+      &=
+        \begin{pmatrix}
+          3 & 3 \\
+          3 & 3
+        \end{pmatrix}
+        \begin{pmatrix}
+          x_1 \\
+          x_2
+        \end{pmatrix} \\
+    \begin{pmatrix}
+      x_1 \\
+      x_2
+    \end{pmatrix} &=
+                    \begin{pmatrix}
+                      1 \\
+                      -1
+                    \end{pmatrix}
+  \end{align*}
+  For $\lambda = 4$
+  \begin{align*}
+    0 &= (A - \lambda I)x \\
+      &= (A - 4I)x \\
+      &=
+        \begin{pmatrix}
+          -3 & 3 \\
+          3 & -3
+        \end{pmatrix}
+        \begin{pmatrix}
+          x_1 \\
+          x_2
+        \end{pmatrix} \\
+    \begin{pmatrix}
+      x_1 \\
+      x_2
+    \end{pmatrix} &=
+                    \begin{pmatrix}
+                      1 \\
+                      1
+                    \end{pmatrix}
+  \end{align*}
+  So we have $Q =
+  \begin{pmatrix}
+    1 & 1 \\
+    -1 & 1
+  \end{pmatrix}$. To find the diagonal matrix $D$, recall $D = Q^{-1}AQ$
+  \begin{align*}
+    D &= Q^{-1}AQ \\
+      &= \frac{1}{2}
+        \begin{pmatrix}
+          1 & -1 \\
+          1 & 1
+        \end{pmatrix}
+        \begin{pmatrix}
+          1 & 3 \\
+          3 & 1
+        \end{pmatrix}
+        \begin{pmatrix}
+          1 & 1 \\
+          -1 & 1
+        \end{pmatrix} \\
+      &= \frac{1}{2}
+        \begin{pmatrix}
+          1 & -1 \\
+          1 & 1
+        \end{pmatrix}
+        \begin{pmatrix}
+          -2 & 4 \\
+          2 & 4
+        \end{pmatrix} \\
+      &= \frac{1}{2}
+        \begin{pmatrix}
+          -4 & 0 \\
+          0 & 8
+        \end{pmatrix} \\
+      &=
+        \begin{pmatrix}
+          -2 & 0 \\
+          0 & 4
+        \end{pmatrix}
+  \end{align*}
+  $Q =
+  \begin{pmatrix}
+    1 & 1 \\
+    -1 & 1
+  \end{pmatrix}, \ D =
+  \begin{pmatrix}
+    -2 & 0 \\
+    0 & 4
+  \end{pmatrix}$
+
+\item
+  \begin{align*}
+    \det(A - \lambda I) &=
+                          \begin{vmatrix}
+                            1 - \lambda & 4 \\
+                            3 & 2 - \lambda
+                          \end{vmatrix} \\
+                        &= (1 - \lambda)(2 - \lambda) - 12 \\
+                        &= \lambda^2 - 3\lambda + 2 - 12 \\
+                        &= \lambda^2 - 3\lambda - 10
+  \end{align*}
+  \begin{enumerate}
+  \item Clearly, $\lambda^2 - 3\lambda - 10 = (\lambda - 5)(\lambda + 2)$ splits
+  \item Solving for $\lambda$, we get $\lambda = -2, 5$. We test for $multiplicity = n - rank(A - \lambda I)$ \\
+    When $\lambda = -2$
+    \begin{align*}
+      multiplicity &= n - rank(A - \lambda I) \\
+      1 &= 2 - rank(A - -2 I) \\
+                   &= 2 - rank
+                     \begin{pmatrix}
+                       3 & 4 \\
+                       3 & 4
+                     \end{pmatrix} \\
+                   &= 2 - 1 \\
+      1 &= 1
+    \end{align*}
+    When $\lambda = 5$
+    \begin{align*}
+      multiplicity &= n - rank(A - \lambda I) \\
+      1 &= 2 - rank(A - 5 I) \\
+                   &= 2 - rank
+                     \begin{pmatrix}
+                       -4 & 4 \\
+                       3 & -3
+                     \end{pmatrix} \\
+                   &= 2 - 1 \\
+      1 &= 1
+    \end{align*}
+    Therefore, this matrix is diagonalizable.
+  \end{enumerate}
+  To find the eigenvectors, we find $(A - \lambda I)x = 0$ \\
+    For $\lambda = -2$
+    \begin{align*}
+      0 &= (A - \lambda I)x \\
+        &= (A - -2 I)x \\
+        &=
+          \begin{pmatrix}
+            3 & 4 \\
+            3 & 4
+          \end{pmatrix}
+          \begin{pmatrix}
+            x_1 \\
+            x_2
+          \end{pmatrix} \\
+      \begin{pmatrix}
+        x_1 \\
+        x_2
+      \end{pmatrix} &=
+                      \begin{pmatrix}
+                        4 \\
+                        -3
+                      \end{pmatrix}
+    \end{align*}
+    For $\lambda = 5$
+    \begin{align*}
+      0 &= (A - \lambda I)x \\
+        &= (A - 5 I)x \\
+        &=
+          \begin{pmatrix}
+            -4 & 4 \\
+            3 & -3
+          \end{pmatrix}
+          \begin{pmatrix}
+            x_1 \\
+            x_2
+          \end{pmatrix} \\
+      \begin{pmatrix}
+        x_1 \\
+        x_2
+      \end{pmatrix} &=
+                      \begin{pmatrix}
+                        1 \\
+                        1
+                      \end{pmatrix}
+    \end{align*}
+    So we have $Q =
+    \begin{pmatrix}
+      4 & 1 \\
+      -3 & 1
+    \end{pmatrix}$. To find the diagonal matrix $D$, recall $D = Q^{-1}AQ$
+    \begin{align*}
+      D &= Q^{-1}AQ \\
+        &= \frac{1}{7}
+          \begin{pmatrix}
+            1 & -1 \\
+            3 & 4
+          \end{pmatrix}
+          \begin{pmatrix}
+            1 & 4 \\
+            3 & 2
+          \end{pmatrix}
+          \begin{pmatrix}
+            4 & 1 \\
+            -3 & 1            
+          \end{pmatrix} \\
+        &= \frac{1}{7}
+          \begin{pmatrix}
+            1 & -1 \\
+            3 & 4
+          \end{pmatrix}
+          \begin{pmatrix}
+            -8 & 5 \\
+            6 & 5
+          \end{pmatrix} \\
+        &= \frac{1}{7}
+          \begin{pmatrix}
+            -14 & 0 \\
+            0 & 35
+          \end{pmatrix} \\
+        &=
+          \begin{pmatrix}
+            -2 & 0 \\
+            0 & 5
+          \end{pmatrix}
+    \end{align*}
+    $Q =
+    \begin{pmatrix}
+      4 & 1 \\
+      -3 & 1
+    \end{pmatrix}, \ D =
+    \begin{pmatrix}
+      -2 & 0 \\
+      0 & 5
+    \end{pmatrix}$
+    
+\item
+  \begin{align*}
+    \det(A - \lambda I) &=
+                          \begin{vmatrix}
+                            7 - \lambda & -4 & 0 \\
+                            8 & -5 - \lambda & 0 \\
+                            6 & -6 & 3 - \lambda
+                          \end{vmatrix} \\
+                        &= a_{13}C_{13} - a_{23}C_{23} + a_{33}C_{33} \\
+                        &= 0 - 0 + (3 - \lambda)
+                          \begin{vmatrix}
+                            7 - \lambda & -4 \\
+                            8 & -5 - \lambda
+                          \end{vmatrix} \\
+                        &= (3 - \lambda)((7 - \lambda)(-5 - \lambda) - -32) \\
+                        &= (3 - \lambda)(\lambda^2 - 2\lambda - 35 + 32) \\
+                        &= (3 - \lambda)(\lambda^2 - 2\lambda - 3) \\
+                        &= (3 - \lambda)(\lambda - 3)(\lambda + 1) \\
+                        &= (\lambda - 3)^2(\lambda + 1)
+  \end{align*}
+  \begin{enumerate}
+  \item Clearly, $(\lambda - 3)^2(\lambda + 1) = (\lambda - 3)(\lambda - 3)(\lambda + 1)$ splits
+  \item Solving for $\lambda$, we get $\lambda = -1, 3$. We test for $multiplicity = n - rank(A - \lambda I)$ \\
+    When $\lambda = -1$
+    \begin{align*}
+      multiplicity &= n - rank(A - \lambda I) \\
+      1 &= 3 - rank(A - -1I) \\
+                   &= 3 - rank
+                     \begin{pmatrix}
+                       8 & -4 & 0 \\
+                       8 & -4 & 0 \\
+                       6 & -6 & 4
+                     \end{pmatrix} \\
+                   &= 3 - 2 \\
+      1 &= 1
+    \end{align*}
+    When $\lambda = 3$
+    \begin{align*}
+      multiplicity &= n - rank(A - \lambda I) \\
+      2 &= 3 - rank(A - 3I) \\
+                   &= 3 - rank
+                     \begin{pmatrix}
+                       4 & -4 & 0 \\
+                       8 & -8 & 0 \\
+                       6 & -6 & 0
+                     \end{pmatrix} \\
+                   &= 3 - 1 \\
+      2 &= 2
+    \end{align*}      
+    Therefore, this matrix is diagonalizable.
+  \end{enumerate}
+  To find the eigenvectors, we find $(A - \lambda I)x = 0)$ \\
+  For $\lambda = -1$
+  \begin{align*}
+    0 &= (A - \lambda I)x \\
+      &= (A - -1I)x \\
+      &=
+        \begin{pmatrix}
+          8 & -4 & 0 \\
+          8 & -4 & 0 \\
+          6 & -6 & 4
+        \end{pmatrix}
+        \begin{pmatrix}
+          x_1 \\
+          x_2 \\
+          x_3
+        \end{pmatrix} \\
+    \begin{pmatrix}
+      x_1 \\
+      x_2 \\
+      x_3
+    \end{pmatrix} &=
+                    \begin{pmatrix}
+                      2 \\
+                      4 \\
+                      3
+                    \end{pmatrix}
+  \end{align*}
+  For $\lambda = 3$
+  \begin{align*}
+    0 &= (A - \lambda I)x \\
+      &= (A - 3I)x \\
+      &=
+        \begin{pmatrix}
+          4 & -4 & 0 \\
+          8 & -8 & 0 \\
+          6 & -6 & 0
+        \end{pmatrix}
+        \begin{pmatrix}
+          x_1 \\
+          x_2 \\
+          x_3
+        \end{pmatrix} \\
+    \begin{pmatrix}
+      x_1 \\
+      x_2 \\
+      x_3
+    \end{pmatrix} &=
+                    \begin{pmatrix}
+                      1 \\
+                      1 \\
+                      0
+                    \end{pmatrix},
+                    \begin{pmatrix}
+                      0 \\
+                      0 \\
+                      1
+                    \end{pmatrix}
+  \end{align*}
+  So, we have $Q =
+  \begin{pmatrix}
+    2 & 1 & 0 \\
+    4 & 1 & 0 \\
+    3 & 0 & 1 
+  \end{pmatrix}$. To find the diagonal matrix $D$, recall $D = Q^{-1}AQ$
+  \begin{align*}
+    D &= Q^{-1}AQ \\
+      &= \frac{1}{2}
+        \begin{pmatrix}
+          -1 & 1 & 0 \\
+          4 & -2 & 0 \\
+          3 & -3 & 2
+        \end{pmatrix}
+        \begin{pmatrix}
+          7 & -4 & 0 \\
+          8 & -5 & 0 \\
+          6 & -6 & 3
+        \end{pmatrix}
+        \begin{pmatrix}
+          2 & 1 & 0 \\
+          4 & 1 & 0 \\
+          3 & 0 & 1
+        \end{pmatrix} \\
+      &= \frac{1}{2}
+        \begin{pmatrix}
+          -1 & 1 & 0 \\
+          4 & -2 & 0 \\
+          3 & -3 & 2
+        \end{pmatrix}
+        \begin{pmatrix}
+          -2 & 3 & 0 \\
+          -4 & 3 & 0 \\
+          -3 & 0 & 3
+        \end{pmatrix} \\
+      &= \frac{1}{2}
+        \begin{pmatrix}
+          -2 & 0 & 0 \\
+          0 & 6 & 0 \\
+          0 & 0 & 6
+        \end{pmatrix} \\
+      &=
+        \begin{pmatrix}
+          -1 & 0 & 0 \\
+          0 & 3 & 0 \\
+          0 & 0 & 3
+        \end{pmatrix}
+  \end{align*}
+  $Q =
+  \begin{pmatrix}
+    2 & 1 & 0 \\
+    4 & 1 & 0 \\
+    3 & 0 & 1       
+  \end{pmatrix}, \ D =
+  \begin{pmatrix}
+    -1 & 0 & 0 \\
+    0 & 3 & 0 \\
+    0 & 0 & 3
+  \end{pmatrix}$
+
+\item
+  \begin{align*}
+    \det(A - \lambda I) &=
+                          \begin{vmatrix}
+                            0 - \lambda & 0 & 1 \\
+                            1 & 0 - \lambda & -1 \\
+                            0 & 1 & 1 - \lambda
+                          \end{vmatrix} \\
+                        &= a_{11}C_{11} - a_{12}C_{12} + a_{13}C_{13} \\
+                        &= -\lambda
+                          \begin{vmatrix}
+                            -\lambda & -1 \\
+                            1 & 1 - \lambda
+                          \end{vmatrix} - 0 + 1
+                          \begin{vmatrix}
+                            1 & -\lambda \\
+                            0 & 1
+                          \end{vmatrix} \\
+                        &= -\lambda(\lambda^2 -\lambda - -1) + (1 - 0) \\
+                        &= -\lambda(\lambda^2 + \lambda + 1) + 1 \\
+                        &= \lambda^3 - \lambda^2 + \lambda - 1 \\
+  \end{align*}
+
+  \begin{enumerate}
+  \item $\lambda^3 - \lambda^2 + \lambda - 1 = (\lambda^2 + 1)(1 - \lambda)$ cannot split
+  \end{enumerate}
+  This matrix is not diagonalizable.
+
+\item
+  \begin{align*}
+    \det(A - \lambda I) &=
+                          \begin{pmatrix}
+                            1 - \lambda & 1 & 0 \\
+                            0 & 1 - \lambda & 2 \\
+                            0 & 0 & 3 - \lambda
+                          \end{pmatrix} \\
+                        &= a_{11}C_{11} - a_{21}C_{21} + a_{31}C_{31} \\
+                        &= (1 - \lambda)
+                          \begin{vmatrix}
+                            1 - \lambda & 2 \\
+                            0 & 3 - \lambda
+                          \end{vmatrix} - 0 + 0 \\
+                        &= (1 - \lambda)((1 - \lambda)(3 - \lambda) - 0) \\
+                        &= (1 - \lambda)(1 - \lambda)(3 - \lambda)
+  \end{align*}
+  \begin{enumerate}
+  \item Clearly, the characteristic polynomial $(1 - \lambda)(1 - \lambda)(3 - \lambda)$ splits
+  \item Solving for $\lambda$, we get $\lambda = 1, 3$. We test for $multiplicity = n - rank(A - \lambda I)$ \\
+    When $\lambda = 1$
+    \begin{align*}
+      multiplicity &= n - rank(A - \lambda I) \\
+      1 &= 3 - rank(A - 1I) \\
+                   &= 3 - rank
+                     \begin{pmatrix}
+                       0 & 1 & 0 \\
+                       0 & 0 & 2 \\
+                       0 & 0 & 2
+                     \end{pmatrix} \\
+                   &= 3 - 2 \\
+      1 &= 1
+    \end{align*}
+    When $\lambda = 3$
+    \begin{align*}
+      multiplicity &= n - rank(A - \lambda I) \\
+      2 &= 3 - rank(A - 3I) \\
+                   &= 3 - rank
+                     \begin{pmatrix}
+                       -2 & 1 & 0 \\
+                       0 & -2 & 2 \\
+                       0 & 0 & 0
+                     \end{pmatrix} \\
+                   &= 3 - 2 \\
+      2 &\neq 1
+    \end{align*}      
+  \end{enumerate}
+  This matrix is not diagonalizable.
+
+\item
+  \begin{align*}
+    \det(A - \lambda I) &=
+                          \begin{vmatrix}
+                            3 - \lambda & 1 & 1 \\
+                            2 & 4 - \lambda & 2 \\
+                            -1 & -1 & 1 - \lambda        
+                          \end{vmatrix} \\
+                        &= a_{11}C_{11} - a_{12}C_{12} + a_{13}C_{13} \\
+                        &= (3 - \lambda)
+                          \begin{vmatrix}
+                            4 - \lambda & 2 \\
+                            -1 & 1 - \lambda
+                          \end{vmatrix} - 1
+                          \begin{vmatrix}
+                            2 & 2 \\
+                            -1 & 1 - \lambda
+                          \end{vmatrix} + 1
+                          \begin{vmatrix}
+                            2 & 4 - \lambda \\
+                            -1 & -1
+                          \end{vmatrix} \\
+                        &= (3 - \lambda)((4 - \lambda)(1 - \lambda) - -2) - (2 - 2\lambda - -2) + (-2 - (-4 + \lambda)) \\
+                        &= (3 - \lambda)((4 - \lambda)(1 - \lambda) + 2) - (4 - 2\lambda) + (2 - \lambda) \\
+                        &= (3 - \lambda)((4 - \lambda)(1 - \lambda) + 2) + (-2 + \lambda) \\
+                        &= \lambda^3 - 8\lambda^2 + 20\lambda - 16
+  \end{align*}
+  \begin{enumerate}
+  \item Clearly, $\lambda^3 - 8\lambda^2 + 20\lambda - 16 = (\lambda - 2)(\lambda - 2)(\lambda - 4)$ splits
+  \item Solving for $\lambda$, we get $\lambda = 2, 4$. We test for $multiplicity = n - rank(A - \lambda I)$ \\
+    When $\lambda = 2$
+    \begin{align*}
+      multiplicity &= n - rank(A - \lambda I) \\
+      2 &= 3 - rank(A - 1I) \\
+                   &= 3 - rank
+                     \begin{pmatrix}
+                       1 & 1 & 1 \\
+                       2 & 2 & 2 \\
+                       -1 & -1 & -1
+                     \end{pmatrix} \\
+                   &= 3 - 1 \\
+      2 &= 2
+    \end{align*}
+    When $\lambda = 4$
+    \begin{align*}
+      multiplicity &= n - rank(A - \lambda I) \\
+      1 &= 3 - rank(A - 3I) \\
+                   &= 3 - rank
+                     \begin{pmatrix}
+                       -1 & 1 & 1 \\
+                       2 & 0 & 2 \\
+                       -1 & -1 & -3
+                     \end{pmatrix} \\
+                   &= 3 - 2 \\
+      1 &= 1
+    \end{align*}
+    Therefore, this matrix is diagonalizable.
+  \end{enumerate}
+    To find the eigenvectors, we find $(A - \lambda I)x = 0)$ \\
+  For $\lambda = 2$
+  \begin{align*}
+    0 &= (A - \lambda I)x \\
+      &= (A - 2I)x \\
+      &=
+        \begin{pmatrix}
+          1 & 1 & 1 \\
+          2 & 2 & 2 \\
+          -1 & -1 & -1
+        \end{pmatrix}
+        \begin{pmatrix}
+          x_1 \\
+          x_2 \\
+          x_3
+        \end{pmatrix} \\
+    \begin{pmatrix}
+      x_1 \\
+      x_2 \\
+      x_3
+    \end{pmatrix} &=
+                    \begin{pmatrix}
+                      1 \\
+                      0 \\
+                      -1
+                    \end{pmatrix},
+                    \begin{pmatrix}
+                      1 \\
+                      -1 \\
+                      0
+                    \end{pmatrix}
+  \end{align*}
+  For $\lambda = 4$
+  \begin{align*}
+    0 &= (A - \lambda I)x \\
+      &= (A - 4I)x \\
+      &=
+        \begin{pmatrix}
+          -1 & 1 & 1 \\
+          2 & 0 & 2 \\
+          -1 & -1 & -3
+        \end{pmatrix}
+        \begin{pmatrix}
+          x_1 \\
+          x_2 \\
+          x_3
+        \end{pmatrix} \\
+    \begin{pmatrix}
+      x_1 \\
+      x_2 \\
+      x_3
+    \end{pmatrix} &=
+                    \begin{pmatrix}
+                      1 \\
+                      2 \\
+                      -1
+                    \end{pmatrix},
+  \end{align*}
+  So, we have $Q =
+  \begin{pmatrix}
+    1 & 1 & 1 \\
+    0 & -1 & 2 \\
+    -1 & 0 & -1
+  \end{pmatrix}$. To find the diagonal matrix $D$, recall $D = Q^{-1}AQ$
+  \begin{align*}
+    D &= Q^{-1}AQ \\
+      &= \frac{1}{2}
+        \begin{pmatrix}
+          -1 & -1 & -3 \\
+          2 & 0 & 2 \\
+          1 & 1 & 1
+        \end{pmatrix}
+        \begin{pmatrix}
+          3 & 1 & 1 \\
+          2 & 4 & 2 \\
+          -1 & -1 & 1
+        \end{pmatrix}
+        \begin{pmatrix}
+          1 & 1 & 1 \\
+          0 & -1 & 2 \\
+          -1 & 0 & -1
+        \end{pmatrix} \\
+      &= \frac{1}{2}
+        \begin{pmatrix}
+          -1 & -1 & -3 \\
+          2 & 0 & 2 \\
+          1 & 1 & 1
+        \end{pmatrix}
+        \begin{pmatrix}
+          2 & 2 & 4 \\
+          0 & -2 & 8 \\
+          -2 & 0 & -4
+        \end{pmatrix} \\
+      &= \frac{1}{2}
+        \begin{pmatrix}
+          4 & 0 & 0 \\
+          0 & 4 & 0 \\
+          0 & 0 & 8
+        \end{pmatrix} \\
+      &=
+        \begin{pmatrix}
+          2 & 0 & 0 \\
+          0 & 2 & 0 \\
+          0 & 0 & 4
+        \end{pmatrix}
+  \end{align*}
+  $Q =
+  \begin{pmatrix}
+    1 & 1 & 1 \\
+    0 & -1 & 2 \\
+    -1 & 0 & -1
+  \end{pmatrix}, \ D =
+  \begin{pmatrix}
+    2 & 0 & 0 \\
+    0 & 2 & 0 \\
+    0 & 0 & 4
+  \end{pmatrix}$
+
+\end{enumerate}
+
+
+
+
+
+\newpage
+\section*{Section 5.2 Question 3 part (a), (c)}
+For each of the following linear operators $T$ on a vector space $V$, test $T$ for diagonalizability, and if $T$ is diagonalizable, find a basis $\beta$ for $V$ such that $[T]_\beta$ is a diagonal matrix.
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item $V = P_3(\mathbb{R})$ and $T$ is defined by $T(f(x)) = f'(x) + f''(x)$.
+\item [(c)] $V = \mathbb{R}^3$ and $T$ is defined by $T
+  \begin{pmatrix}
+    a_1 \\
+    a_2 \\
+    a_3
+  \end{pmatrix} =
+  \begin{pmatrix}
+    a_2 \\
+    -a_1 \\
+    2a_3
+  \end{pmatrix}$
+\end{enumerate}
+\subsection*{Response}
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item Let $f(x) = a_1 + a_2x + a_3x^2 + a_4x^3$. Then, $f'(x) = a_2 + 2a_3x + 3a_4x^2$ and $f''(x) =  2a_3 + 6a_4x$. So,
+  \begin{align*}
+    T(a_1 + a_2x + a_3x^2 + a_4x^3) &= a_2 + 2a_3x + 3a_4x^2 + 2a_3 + 6a_4x \\
+                                    &= a_2 + 2a_3 + (2a_3 + 6a_4)x + 3a_4x^2
+  \end{align*}
+  Let $\gamma$ be the standard basis for $V$. Then, we have
+  \begin{align*}
+    [T]_\gamma &=
+                 \begin{pmatrix}
+                   0 & 1 & 2 & 0 \\
+                   0 & 0 & 2 & 6 \\
+                   0 & 0 & 0 & 3 \\
+                   0 & 0 & 0 & 0
+                 \end{pmatrix}
+  \end{align*}
+  To get the characteristic polynomial, we do
+  \begin{align*}
+    \det([T]_\gamma - \lambda I) &=
+                                  \begin{pmatrix}
+                                    0 - \lambda & 1 & 2 & 0 \\
+                                    0 & 0 - \lambda & 2 & 6 \\
+                                    0 & 0 & 0 - \lambda & 3 \\
+                                    0 & 0 & 0 & 0 - \lambda
+                                  \end{pmatrix} \\
+                                &= \begin{pmatrix}
+                                     -\lambda & 1 & 2 & 0 \\
+                                     0 & -\lambda & 2 & 6 \\
+                                     0 & 0 & -\lambda & 3 \\
+                                     0 & 0 & 0 & -\lambda
+                                   \end{pmatrix} \\
+                                &= \lambda^4
+  \end{align*}
+
+  \begin{enumerate}
+  \item Clearly, $\lambda^4 = (-\lambda)(-\lambda)(-\lambda)(-\lambda)$ splits
+  \item Solving for $\lambda$, we get that $\lambda = 0$ with multiplicity 4. We test for $multiplicity = n - rank(A - \lambda I)$.
+    \begin{align*}
+      multiplicity &= n - rank([T]_\gamma - 0I) \\
+      4 &= 4 - rank
+          \begin{pmatrix}
+            0 & 1 & 2 & 0 \\
+            0 & 0 & 2 & 6 \\
+            0 & 0 & 0 & 3 \\
+            0 & 0 & 0 & 0
+          \end{pmatrix} \\
+                   &= 4 - 3 \\
+      4 &\neq 1
+    \end{align*}
+  \end{enumerate}
+  This linear operator is not diagonalizable.
+
+\item [(c)] Let $\gamma$ be the standard basis for $V$. Then, we have
+  \begin{align*}
+    [T]_\gamma &=
+                 \begin{pmatrix}
+                   0 & 1 & 0 \\
+                   -1 & 0 & 0 \\
+                   0 & 0 & 2
+                 \end{pmatrix}
+  \end{align*}
+  To get the chraracteristic polynomial, we do
+  \begin{align*}
+    \det([T]_\gamma - \lambda I) &=
+                                   \begin{pmatrix}
+                                     0 - \lambda & 1 & 0 \\
+                                     -1 & 0 - \lambda & 0 \\
+                                     0 & 0 & 2 - \lambda
+                                   \end{pmatrix} \\
+                                 &= \begin{pmatrix}
+                                     -\lambda & 1 & 0 \\
+                                     -1 & -\lambda & 0 \\
+                                     0 & 0 & 2 - \lambda
+                                    \end{pmatrix} \\
+                                 &= a_{13}C_{13} - a_{23}C_{23} + a_{33}C_{33} \\
+                                 &= 0 - 0 + (2 - \lambda)
+                                   \begin{vmatrix}
+                                     -\lambda & 1 \\
+                                     -1 & -\lambda
+                                   \end{vmatrix} \\
+                                 &= (2 - \lambda)(\lambda^2 - -1) \\
+                                 &= (2 - \lambda)(\lambda^2 + 1) \\
+                                 &= (2\lambda^2 + 2 -\lambda^3 - \lambda) \\
+                                 &= -\lambda^3 + 2\lambda^2 - \lambda + 2 \\
+                                 &= \lambda^3 - 2\lambda^2 + \lambda - 2
+  \end{align*}
+  \begin{enumerate}
+  \item Clearly, $\lambda^3 - 2\lambda^2 + \lambda - 2$ cannot be split  
+  \end{enumerate}
+  This matrix is not diagonalizable
+\end{enumerate}
+
+
+
+
+
+\newpage
+\section*{Section 5.2 Question 9 part (a)}
+Let $T$ be a linear operator on a finite-dimensional vector space $V$, and suppose there exists an ordered basis $\beta$ for $V$ such that $[T]_\beta$ is an upper triangular matrix.
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item Prove that the characteristic polynomial for $T$ splits.
+\end{enumerate}
+
+\subsection*{Response}
+\begin{proof}
+  The chraracteristic polynomial is defined as $f(\lambda) = \det([T]_\beta - \lambda I)$. Since $[T]_\beta$ is upper triangular, we can rewrite this as $f(\lambda) = \prod_{i = 1}^n(([T]_\beta)_{ii} - \lambda)$, which splits.  
+\end{proof}
+
+
+
+
+
+\newpage
+\section*{Section 5.2 Question 10}
+Let $T$ be a linear operator on a finite-dimensional vector space $V$ with the distinct eigenvalues $\lambda_1, \lambda_2, \ldots, \lambda_k$ and corresponding multiplicities $m_1, m_2, \ldots, m_k$. Suppose that $\beta$ is a basis for $V$ such that $[T]_\beta$ is an upper triangular matrix. Prove that the diagonal entries of $[T]_\beta$ are $\lambda_1, \lambda_2, \ldots, \lambda_k$ and that each $\lambda$, occurs $m_i$ times $(1 \leq i \leq k)$
+
+\subsection*{Response}
+The characteristic polynomial is defined by $f(\lambda) = \det([T]_\beta - \lambda I)$. Since $[T]_\beta$ is upper triangular, we know that $\det([T]_\beta - \lambda I)$ is also upper triangular, so we can rewrite the characteristic polynomial as $f(\lambda) = \prod_{i = 1}^k (([T]_\beta)_{ii}) - \lambda I)$. This shows that $\lambda_1, \lambda_2, \ldots, \lambda_k$ are the diagonal entries of $[T]_\beta$ and also that each $\lambda_i$ occurs $m_i$ times $(1 \leq i \leq k)$.
+
+
+
+\newpage
+\section*{Section 5.2 Question 13}
+Let $T$ be an invertible linear operator on a finite-dimensional vector space $V$.
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item Recall that for any eigenvalue $\lambda$ of $T$ , $\lambda^{-1}$ is an eigenvalue of $T^{-1}$ (Exercise 9 of Section 5.1). Prove that the eigenspace of $T$ corresponding to $\lambda$ is the same as the eigenspace of $T^{-1}$ corresponding to $\lambda^{-1}$.
+\item Prove that if $T$ is diagonalizable, then $T^{-1}$ is diagonalizable.
+\end{enumerate}
+
+\subsection*{Response}
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item
+  \begin{proof}
+    Let $E_\lambda(T)$ be the eigenspace of $T$ corresponding to $\lambda$. From (5.1.9), we have that for any eigenvalue of $T$, $\lambda^{-1}$ is an eigenvalue of $T^{-1}$. We must prove that $x$ is an eigenvector of $T$ corresponding to $\lambda$, if and only if $x$ is an eigenvector of $T^{-1}$ corresponding to $\lambda^{-1}$.
+    \begin{align*}
+      T(x) &= T(\lambda \lambda^{-1}x) \\
+           &= T(\lambda (\lambda^{-1}x)) \\
+           &= T(\lambda T^{-1}(x)) && \lambda^{-1} x = T^{-1}(x) \\
+           &= \lambda TT^{-1}(x) \\
+           &= \lambda x
+    \end{align*}
+    \begin{align*}
+      T^{-1}(x) &= T^{-1}(\lambda^{-1}\lambda x) \\
+                &= T^{-1}(\lambda^{-1}(\lambda x)) \\
+                &= T^{-1}(\lambda^{-1}T(x)) && \lambda x = T(x) \\
+                &= \lambda^{-1}T^{-1}(T(x)) \\
+      T^{-1}(x) &= \lambda^{-1} x
+    \end{align*}
+    So, $x$ is an eigenvector of $T$ corresponding to $\lambda$ if and only if $x$ is also an eigenvector of $T$ corresponding to $\lambda^{-1}$. So, we can write that $E_\lambda(T) = E_\lambda^{-1}(T^{-1})$. Therefore, the eigenspace of $T$ corresponding to $\lambda$ is the same as the eigenspace of $T^{-1}$ corresponding to $\lambda^{-1}$.
+  \end{proof}
+\item
+  \begin{proof}
+    Given that $T$ is diagonalizable, we know that it has $n$ linearly independent eigenvectors. From (a), we have that any eigenvector of $T$ is also an eigenvector of $T^{-1}$. So, $T^{-1}$ also has $n$ linearly independent eigenvectors. Thus, $T^{-1}$ is also diagonalizable.
+  \end{proof}
+\end{enumerate}
+
+\end{document}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

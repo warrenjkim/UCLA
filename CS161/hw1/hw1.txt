@@ -1,0 +1,29 @@
+1. The first 10 Padovan numbers are:
+PAD(0) = 1
+PAD(1) = 1
+PAD(2) = 1
+PAD(3) = 2
+PAD(4) = 2
+PAD(5) = 3
+PAD(6) = 4
+PAD(7) = 5
+PAD(8) = 7
+PAD(9) = 9
+PAD(10) = 12
+
+For larger numbers, the function takes exponentially longer (around N = 50). This is because the function will recursively call 2 instances of the function, which will then recurse, until it reaches its base case before tracing back up the recursion tree
+
+2. The first 10 values of SUM are:
+SUMS(0) = 0
+SUMS(1) = 0
+SUMS(2) = 0
+SUMS(3) = 1
+SUMS(4) = 1
+SUMS(5) = 2
+SUMS(6) = 3
+SUMS(7) = 4
+SUMS(8) = 6
+SUMS(9) = 8
+SUMS(10) = 11
+
+The number that SUMS returns is the output of PAD - 1. This is because the base case doesn't require any sums to be computed. When undoing the recursion stack, we add together the two previous outputs of SUMS. Thus, the recursion tree has a branching factor of 2, so our time complexity for this algorithm will be O(b^d), where b = branching factor = 2 and d is the depth of the recursion tree.

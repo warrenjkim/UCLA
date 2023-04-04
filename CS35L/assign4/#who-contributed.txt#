@@ -1,0 +1,13 @@
+lsTo find which file the statement is in, I did
+git log -S "Even newspaper reports present contradictory information."
+which returned a commit and file that contains the statement.
+
+To get the first commit, I did
+git log --reverse
+to print the commit history in reverse order.
+
+To find if it was introduced earlier, I did git log -S "Even newspaper reports present contradictory information." 68b02c7b1464af59ca5f17c38b33d8afe781ce3b..c12b432741eed9a422fbf99fa27af6e7a941d88b^ which searches from the very first commit to the commit I found. Since there were no matches, I know that the commit I found is the commit that introduced the statement.
+
+To find the author of the statement, I did
+git blame northamerica c12b432741eed9a422fbf99fa27af6e7a941d88b | grep "Even newspaper reports present contradictory information."
+which showed that Arthur David Olsen introduced the statement in line 285.

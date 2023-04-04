@@ -1,0 +1,132 @@
+* logistical modifications *
+- I downloaded the randall-git.tgz to my local computer, then scp'd it to the seas server.
+- I unpacked the tgz by doing
+    tar -zxvf randall-git.tgz
+- I cloned the repository into the folder 'randall' by doing
+    git clone .git randall
+- I changed the default text editor to emacs in seas by doing
+    git config --global core.editor "emacs"
+- I created a notes.txt and committed it to the repository.
+- I changed my username and email to "Warren Kim" and "wjkim2311@g.ucla.edu" respectively
+  and ammended my commit to reflect my changes by doing
+    git config user.name "Warren Kim"
+    git config user.email "wjkim2311@g.ucla.edu"
+    git commit --amend --reset-author
+
+* make check *
+- I created a small shellscript inside the Makefile 'checkscript' that checks to see if the
+  output of 'randall' is the correct length of 5 (arbitrary). I then called it in my Makefile
+  by adding 'check' to .PHONY and doing
+    check: randall
+    	   $(checkscript)
+- make check now works
+
+* modularizing randall *
+- began modularizing randall
+
+* output.h/c *
+- Created output.h/c that contains the writebyte() function
+- Moved writebytes() from randall.c --> output.h/c and removed it from randall.c
+- In the Makefile, I added output.h as a dependency in randall and output.c to the recipe
+
+* rand64-hw.h/c *
+- Created rand64-hw.h/c that contains the hardware implementation
+- Moved all hardware implementation functions from randall.c --> rand64-hw.h/c
+- In the Makefile, I added randall64-hw.h as a dependency in randall and rand64-hw.c to the recipe
+
+* rand64-sw.h/c *
+- Created rand64-sw.h/c that contains the software implementation
+- Moved all software implementation functions from randall.c --> rand64-sw.h/c
+- In the Makefile, I added randall64-sw.h as a dependency in randall and rand64-sw.c to the recipe
+- NOTE: make will throw an '-Wunused-variable' warning since urandstream is never used
+  (rdrand_supported() always returns true)
+
+* options.h/c *
+- Created options.h/c that contains the command-line options processing
+- Moved function pointers from randall.c --> options.h for easier input handling
+  - You need "extern" to make function pointers work across files
+- Moved nbytes from randall.c --> options.h for easier input handling
+  - My thought process was that we would handle all command-line arguments at once, including the
+    nbytes argument
+- Moved all of the nbytes error-checking from randall.c --> options.h
+- I implemented the option parsing with 4 main functions:
+  - parse_options(int, char**) will parse all of the options
+  - parse_input(char*) is a helper function to parse the input argument and assign the function
+    pointers
+  - parse_output(char*) is a helper function to parse the output argument
+  - assign_nbytes(char*, char*) is a helper function that assigns nbytes and also does the
+    error-checking for nbytes
+- Modified randall.c to only include options.h and output.h
+- Added test cases to the Makefile:
+  - ./randall N == N
+  - ./randall N -i *some valid file* == N
+  - ./randall N -i rdrand == N
+  - ./randall N -i /some/invalid/file == exit code 1
+  - ./randall N -invalid option /invalid/file == exit code 1
+  - ./randall N -i *no file path* == exit code 1
+- Added options.h as a dependency in randall and options.c to the recipe
+- Modified the main function of randall.c so that it calls parse_options() instead of doing the
+  error-checking/function
+  pointer assignments inside main
+- Added a function pointer, write_function, that handles how the program will write to stdout
+- Added a wrapper around mrand48_r:
+  - Did some research on how to properly invoke mrand48_r
+  - mrand48_r_wrapper wraps mrand48_r and is compatible with the current rand64_t function pointers
+    (implemented inside rand64-sw)
+- Added the output in N-byte chunks option (with size_t)
+- Trying to restructure parse_options()
+  - parse_options used to invoke either input OR output (or both if both are specified)
+  - Instead, I decided to create i/oflag variables which let me invoke both parse_input/output
+    exactly once
+  - If only one flag is turned on, the other is parsed with the default (specified in the
+    assignment details)
+  - Removed the (argc == 2) check in favor of i/oflags
+- Added the mrand48_r option, which points the rand64_t function pointer to mrand48_r_wrapper
+
+* output *
+- To implement the write() system call, I'm writing a wrapper function that takes in the
+  same parameters as writebytes()
+  so that it is compatible with the write_t function pointer
+- Added a parameter, n, to writebytes() to be compatible with the '-o N' option
+
+* implementing write_wrapper *
+- Essentially, the function will create a buffer on the heap of N bytes and use the write() system
+  call to write N bytes at a time, and then free the buffer, looping until all nbytes have
+  been written
+- As per instructions, if write() returns less than N bytes are written, it is not an error,
+  since our nbytes might not be divisible by N with remainder 0
+  - e.g. ./randall 10 -o 3, write() will return: 3, 3, 3, 1
+- I made sure to check if the buff was a null-pointer before referencing it
+- I made sure to free the buffer at the end of each loop
+- If either write() failed or in a particularly random edge case, if the bytes written
+  aren't the same as sizeof(buff), we return false to denote a failed write()
+- We decrement nbytes by n, which is 1 by default (to work with writebytes)
+- NOTE: n is only ever set if the '-o N' option is specified and N is valid
+
+* refactoring randall.c *
+- I want the main function to be very clean, so the main function will do very little error
+  checking or actual calculations
+- I first call parse_options(), which sets all of my function pointers (initialize, rand64,
+  finalize, write_function) and global variables (nbytes, n)
+- If initialize hasn't been set, we exit with code 1
+- If nbytes is 0, we have no work to do, so we exit normally (exit code 0)
+- rand64() gets assigned to x and we attempt to call the write function (specified by
+  parse_options()), updating output_errno if it fails
+- If output_errno is nonzero, we set the errno to output_errno
+- We call finalize(), and return the double negation of output_errno as our exit code
+
+* bug fixes *
+- Changed "stdout" --> "stdio" as per assignment instructions
+- Program only runs if the correct number of arguments are passed in, errors otherwise
+- Changed n_bytes in parse_options to be allocated on the stack
+- Added test case to check for bad arguments (count and bad args)
+
+
+* refactoring *
+- Moved mrand48_r_wrapper from rand64-sw --> rand64-hw after reading the instructions
+  more carefully
+- Moved all relevant includes to their respective .c files and changed Makefile
+  dependencies to be .c instead of .h
+- reordered parse_input() so that we check for software implementation first, since 'i /F'
+  is the only time we use the software implementation
+- made the program easier to read using spacing

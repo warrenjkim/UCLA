@@ -1,0 +1,18 @@
+#!/bin/bash
+
+ps
+
+echo
+ps --ppid $$
+
+echo
+
+currPPID=($(ps -o ppid=))
+
+while [ ${currPPID[0]} != 0 ]
+do
+  ps -f p ${currPPID[0]}
+  currPPID=$(ps -o ppid= p ${currPPID[0]})
+  echo
+done
+

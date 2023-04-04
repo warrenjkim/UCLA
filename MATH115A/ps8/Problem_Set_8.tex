@@ -1,0 +1,1157 @@
+\documentclass[13pt]{article}
+\usepackage{amsmath, amsthm, amssymb, graphicx, enumitem, esvect}
+
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+\title{Problem Set 8}
+\author{Warren Kim}
+
+\begin{document}
+\maketitle
+
+\newpage
+\section*{Section 2.5 Question 6}
+For each matrix $A$ and ordered basis $\beta$, find $[L_A]_\beta$. Also, find an invertible matrix $Q$ such that $[L_A]_\beta = Q^{-1}AQ$.
+
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item $A =
+  \begin{pmatrix}
+    1 & 3 \\
+    1 & 1
+  \end{pmatrix}$ and $\beta = \bigg\{
+  \begin{pmatrix}
+    1 \\
+    1
+  \end{pmatrix},
+  \begin{pmatrix}
+    1 \\
+    2
+  \end{pmatrix}
+  \bigg\}$
+\item $A =
+  \begin{pmatrix}
+    1 & 2 \\
+    2 & 1
+  \end{pmatrix}$ and $\beta = \bigg\{
+  \begin{pmatrix}
+    1 \\
+    1
+  \end{pmatrix},
+  \begin{pmatrix}
+    1 \\
+    -1
+  \end{pmatrix}
+  \bigg\}$
+\item $A =
+  \begin{pmatrix}
+    1 & 1 & -1 \\
+    2 & 0 & 1 \\
+    1 & 1 & 0
+  \end{pmatrix}$ and $\beta = \bigg\{
+  \begin{pmatrix}
+    1 \\
+    1 \\
+    1
+  \end{pmatrix},
+  \begin{pmatrix}
+    1 \\
+    0 \\
+    1
+  \end{pmatrix},
+  \begin{pmatrix}
+    1 \\
+    1 \\
+    2
+  \end{pmatrix}
+  \bigg\}$
+\item $A =
+  \begin{pmatrix}
+    13 & 1 & 4 \\
+    1 & 13 & 4 \\
+    4 & 4 & 10
+  \end{pmatrix}$ and $\beta = \bigg\{
+  \begin{pmatrix}
+    1 \\
+    1 \\
+    -2
+  \end{pmatrix},
+  \begin{pmatrix}
+    1 \\
+    -1 \\
+    0
+  \end{pmatrix},
+  \begin{pmatrix}
+    1 \\
+    1 \\
+    1
+  \end{pmatrix}
+  \bigg\}$
+\end{enumerate}
+\subsection*{Response}
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item $Q =
+  \begin{pmatrix}
+    1 & 1 \\
+    1 & 2
+  \end{pmatrix}
+  $, $Q^{-1} =
+  \begin{pmatrix}
+    2 & -1 \\
+    -1 & 1
+  \end{pmatrix}
+  $
+  \begin{align*}
+    [L_A]_\beta &= Q^{-1}AQ \\
+                &=
+                  \begin{pmatrix}
+                    2 & -1 \\
+                    -1 & 1
+                  \end{pmatrix}
+                  \begin{pmatrix}
+                    1 & 3 \\
+                    1 & 1
+                  \end{pmatrix}
+                  \begin{pmatrix}
+                    1 & 1 \\
+                    1 & 2
+                  \end{pmatrix} \\
+                &=
+                  \begin{pmatrix}
+                    2 & -1 \\
+                    -1 & 1
+                  \end{pmatrix}
+                  \begin{pmatrix}
+                    1 + 3 & 1 + 6 \\
+                    1 + 1 & 1 + 2
+                  \end{pmatrix} \\
+                &=
+                  \begin{pmatrix}
+                    2 & -1 \\
+                    -1 & 1
+                  \end{pmatrix}
+                  \begin{pmatrix}
+                    4 & 7 \\
+                    2 & 3
+                  \end{pmatrix} \\
+                &=
+                  \begin{pmatrix}
+                    8 + -2 & 14 + -3 \\
+                    -4 + 2 & -7 + 3
+                  \end{pmatrix} \\
+    [L_A]_\beta &=
+                  \begin{pmatrix}
+                    6 & 11 \\
+                    -2 & -4
+                  \end{pmatrix}
+  \end{align*}
+  
+\item $Q =
+  \begin{pmatrix}
+    1 & 1 \\
+    1 & -1
+  \end{pmatrix}
+  $, $Q^{-1} =
+  \begin{pmatrix}
+    \frac{1}{2} & \frac{1}{2} \\
+    \frac{1}{2} & -\frac{1}{2}
+  \end{pmatrix}
+  $
+  \begin{align*}
+    [L_A]_\beta &= Q^{-1}AQ \\
+                &=
+                  \begin{pmatrix}
+                    \frac{1}{2} & \frac{1}{2} \\
+                    \frac{1}{2} & -\frac{1}{2}
+                  \end{pmatrix}
+                  \begin{pmatrix}
+                    1 & 2 \\
+                    2 & 1
+                  \end{pmatrix}
+                  \begin{pmatrix}
+                    1 & 1 \\
+                    1 & -1
+                  \end{pmatrix} \\
+                &=
+                  \begin{pmatrix}
+                    \frac{1}{2} + 1 & \frac{1}{2} + -1 \\
+                    1 + \frac{1}{2} & 1 + -\frac{1}{2}
+                  \end{pmatrix}
+                  \begin{pmatrix}
+                    1 & 1 \\
+                    1 & -1
+                  \end{pmatrix} \\
+                &=
+                  \begin{pmatrix}
+                    \frac{3}{2} & -\frac{1}{2} \\
+                    \frac{3}{2} & \frac{1}{2}
+                  \end{pmatrix}
+                  \begin{pmatrix}
+                    1 & 1 \\
+                    1 & -1
+                  \end{pmatrix} \\
+                &=
+                  \begin{pmatrix}
+                    \frac{3}{2} + \frac{3}{2} & -\frac{1}{2} + \frac{1}{2} \\
+                    \frac{3}{2} + -\frac{3}{2} & -\frac{1}{2} + -\frac{1}{2}                                        
+                  \end{pmatrix} \\
+    [L_A]_\beta &=
+                  \begin{pmatrix}
+                    3 & 0 \\
+                    0 & -1
+                  \end{pmatrix}
+  \end{align*}
+
+\item $Q =
+  \begin{pmatrix}
+    1 & 1 & 1 \\
+    1 & 0 & 1 \\
+    1 & 1 & 2
+  \end{pmatrix}
+  $,
+  \begin{align*}
+    Q^{-1} &=
+             \begin{pmatrix}
+               1 & 1 & 1 & \bigm| & 1 & 0 & 0 \\
+               1 & 0 & 1 & \bigm| & 0 & 1 & 0 \\
+               1 & 1 & 2 & \bigm| & 0 & 0 & 1     
+             \end{pmatrix} \\
+           &=
+             \begin{pmatrix}
+               1 & 1 & 1 & \bigm| & 1 & 0 & 0 \\
+               0 & 1 & 0 & \bigm| & 1 & -1 & 0 \\
+               1 & 1 & 2 & \bigm| & 0 & 0 & 1     
+             \end{pmatrix} \\
+           &=
+             \begin{pmatrix}
+               1 & 1 & 1 & \bigm| & 1 & 0 & 0 \\
+               0 & 1 & 0 & \bigm| & 1 & -1 & 0 \\
+               0 & 0 & 1 & \bigm| & -1 & 0 & 1
+             \end{pmatrix} \\
+           &=
+             \begin{pmatrix}
+               1 & 0 & 1 & \bigm| & 0 & 1 & 0 \\
+               0 & 1 & 0 & \bigm| & 1 & -1 & 0 \\
+               0 & 0 & 1 & \bigm| & -1 & 0 & 1
+             \end{pmatrix} \\
+           &=
+             \begin{pmatrix}
+               1 & 0 & 0 & \bigm| & 1 & 1 & -1 \\
+               0 & 1 & 0 & \bigm| & 1 & -1 & 0 \\
+               0 & 0 & 1 & \bigm| & -1 & 0 & 1
+             \end{pmatrix} \\
+    Q^{-1} &=
+             \begin{pmatrix}
+               1 & 1 & -1 \\
+               1 & -1 & 0 \\
+               -1 & 0 & 1
+             \end{pmatrix}
+  \end{align*}
+  \begin{align*}
+    [L_A]_\beta &= Q^{-1}AQ \\
+                &=
+                  \begin{pmatrix}
+                    1 & 1 & -1 \\
+                    1 & -1 & 0 \\
+                    -1 & 0 & 1                    
+                  \end{pmatrix}
+                  \begin{pmatrix}
+                    1 & 1 & -1 \\
+                    2 & 0 & 1 \\
+                    1 & 1 & 0
+                  \end{pmatrix}
+                  \begin{pmatrix}
+                    1 & 1 & 1 \\
+                    1 & 0 & 1 \\
+                    1 & 1 & 2
+                  \end{pmatrix} \\
+                &=
+                  \begin{pmatrix}
+                    1 & 1 & -1 \\
+                    1 & -1 & 0 \\
+                    -1 & 0 & 1                    
+                  \end{pmatrix}
+                  \begin{pmatrix}
+                    1 + 1 + -1 & 1 + 0 + -1 & 1 + 1 + -2 \\
+                    2 + 0 + 1 & 2 + 0 + 1 & 2 + 0 + 2 \\
+                    1 + 1 + 0 & 1 + 0 + 0 & 1 + 1 + 0
+                  \end{pmatrix} \\
+                &=
+                  \begin{pmatrix}
+                    1 & 1 & -1 \\
+                    1 & -1 & 0 \\
+                    -1 & 0 & 1                    
+                  \end{pmatrix}
+                  \begin{pmatrix}
+                    1 & 0 & 0 \\
+                    3 & 3 & 4 \\
+                    2 & 1 & 2
+                  \end{pmatrix} \\
+                &=
+                  \begin{pmatrix}
+                    1 + 3 + -2 & 0 + 3 + -1 & 0 + 4 + -2 \\
+                    1 + -3 + 0 & 0 + -3 + 0 & 0 + -4 + 0 \\
+                    -1 + 0 + 2 & 0 + 0 + 1 & 0 + 0 + 2
+                  \end{pmatrix} \\
+    [L_A]_\beta  &=
+                  \begin{pmatrix}
+                    2 & 2 & 2 \\
+                    -2 & -3 & -4 \\
+                    1 & 1 & 2
+                  \end{pmatrix}
+  \end{align*}
+
+\item $Q =
+  \begin{pmatrix}
+    1 & 1 & 1 \\
+    1 & -1 & 1 \\
+    -2 & 0 & 1
+  \end{pmatrix}
+  $
+  \begin{align*}
+    Q^{-1} &=
+             \begin{pmatrix}
+               1 & 1 & 1 & \bigm| & 1 & 0 & 0 \\
+               1 & -1 & 1 & \bigm| & 0 & 1 & 0 \\
+               -2 & 0 & 1 & \bigm| & 0 & 0 & 1
+             \end{pmatrix} \\
+           &=
+             \begin{pmatrix}
+               1 & 1 & 1 & \bigm| & 1 & 0 & 0 \\
+               0 & 2 & 0 & \bigm| & 1 & -1 & 0 \\
+               -2 & 0 & 1 & \bigm| & 0 & 0 & 1
+             \end{pmatrix} \\
+           &=
+             \begin{pmatrix}
+               1 & 1 & 1 & \bigm| & 1 & 0 & 0 \\
+               0 & 2 & 0 & \bigm| & 1 & -1 & 0 \\
+               0 & 2 & 3 & \bigm| & 2 & 0 & 1
+             \end{pmatrix} \\
+           &=
+             \begin{pmatrix}
+               1 & 1 & 1 & \bigm| & 1 & 0 & 0 \\
+               0 & 2 & 0 & \bigm| & 1 & -1 & 0 \\
+               0 & 0 & 3 & \bigm| & 1 & 1 & 1
+             \end{pmatrix} \\
+           &=
+             \begin{pmatrix}
+               1 & 1 & 1 & \bigm| & 1 & 0 & 0 \\
+               0 & 1 & 0 & \bigm| & \frac{1}{2} & -\frac{1}{2} & 0 \\
+               0 & 0 & 1 & \bigm| & \frac{1}{3} & \frac{1}{3} & \frac{1}{3}
+             \end{pmatrix} \\
+           &=
+             \begin{pmatrix}
+               1 & 1 & 0 & \bigm| & \frac{2}{3} & -\frac{1}{3} & -\frac{1}{3} \\
+               0 & 1 & 0 & \bigm| & \frac{1}{2} & -\frac{1}{2} & 0 \\
+               0 & 0 & 1 & \bigm| & \frac{1}{3} & \frac{1}{3} & \frac{1}{3}
+             \end{pmatrix} \\
+           &=
+             \begin{pmatrix}
+               1 & 0 & 0 & \bigm| & \frac{1}{6} & \frac{1}{6} & -\frac{2}{6} \\
+               0 & 1 & 0 & \bigm| & \frac{1}{2} & -\frac{1}{2} & 0 \\
+               0 & 0 & 1 & \bigm| & \frac{1}{3} & \frac{1}{3} & \frac{1}{3}
+             \end{pmatrix} \\
+    Q^{-1} &= \frac{1}{6}
+             \begin{pmatrix}
+               1 & 1 & -2 \\
+               3 & -3 & 0 \\
+               2 & 2 & 2
+             \end{pmatrix}
+  \end{align*}
+  \begin{align*}
+    [L_A]_\beta &= Q^{-1}AQ \\
+                &= \frac{1}{6}
+                  \begin{pmatrix}
+                    1 & 1 & -2 \\
+                    3 & -3 & 0 \\
+                    2 & 2 & 2
+                  \end{pmatrix}
+                  \begin{pmatrix}
+                    13 & 1 & 4 \\
+                    1 & 13 & 4 \\
+                    4 & 4 & 10
+                  \end{pmatrix}
+                  \begin{pmatrix}
+                    1 & 1 & 1 \\
+                    1 & -1 & 1 \\
+                    -2 & 0 & 1
+                  \end{pmatrix} \\
+                &= \frac{1}{6}
+                  \begin{pmatrix}
+                    1 & 1 & -2 \\
+                    3 & -3 & 0 \\
+                    2 & 2 & 2
+                  \end{pmatrix}
+                  \begin{pmatrix}
+                    13 + 1 + -8 & 13 + -1 + 0 & 13 + 1 + 4 \\
+                    1 + 13 + -8 & 1 + -13 + 0 & 1 + 13 + 4 \\
+                    4 + 4 + -20 & 4 + -4 + 0 & 4 + 4 + 10
+                  \end{pmatrix} \\
+                &= \frac{1}{6}
+                  \begin{pmatrix}
+                    1 & 1 & -2 \\
+                    3 & -3 & 0 \\
+                    2 & 2 & 2
+                  \end{pmatrix}
+                  \begin{pmatrix}
+                    6 & 12 & 18 \\
+                    6 & -12 & 18 \\
+                    -12 & 0 & 18
+                  \end{pmatrix} \\
+                &= 
+                  \begin{pmatrix}
+                    1 & 1 & -2 \\
+                    3 & -3 & 0 \\
+                    2 & 2 & 2
+                  \end{pmatrix}
+                  \begin{pmatrix}
+                    1 & 2 & 3 \\
+                    1 & -2 & 3 \\
+                    -2 & 0 & 3
+                  \end{pmatrix} \\
+                &=
+                  \begin{pmatrix}
+                    1 + 1 + 4 & 2 + -2 + 0 & 3 + 3 + -6 \\
+                    3 + -3 + 0 & 6 + 6 + 0 & 9 + -9 + 0 \\
+                    2 + 2 + -4 & 4 + -4 + 0 & 6 + 6 + 6
+                  \end{pmatrix} \\
+    [L_A]_\beta &=
+                  \begin{pmatrix}
+                    6 & 0 & 0 \\
+                    0 & 12 & 0 \\
+                    0 & 0 & 18
+                  \end{pmatrix}
+  \end{align*}
+\end{enumerate}
+
+\newpage
+\section*{Section 2.5 Question 10 part (a)}
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item Prove that if $A$ and $B$ are similar $n \times n$ matrices, then $tr(A) = tr(B)$. \textit{Hint:} Use Exercise 13 of Section 2.3.
+\end{enumerate}
+\subsection*{Response}
+\begin{proof}
+  Let $A$ and $B$ be similar matrices. Then, there exists an invertible matrix $C$ such that $CBC^{-1} = A$. So we have
+  \begin{align*}
+    tr(A) &= tr(CBC^{-1}) \\
+          &= tr((BC^{-1})C) && tr(AB) = tr(BA)\\
+          &= tr(B(C^{-1}C)) \\
+          &= tr(BI) && C^{-1}C = I \\
+    tr(A) &= tr(B) && BI = B
+  \end{align*}
+\end{proof}
+
+\newpage
+\section*{Section 4.4 Question 2}
+Evaluate the determinant of the following $2 \times 2$ matrices.
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item  
+  $\begin{pmatrix}
+     4 & -5 \\
+     2 & 3
+   \end{pmatrix}$
+ \item
+   $\begin{pmatrix}
+      -1 & 7 \\
+      3 & 8
+    \end{pmatrix}$
+  \item
+    $\begin{pmatrix}
+       2 + i & -1 + 3i \\
+       1 - 2i & 3 - i
+     \end{pmatrix}$
+
+   \item
+     $\begin{pmatrix}
+        3 & 4i \\
+        -6i & 2i
+      \end{pmatrix}$
+
+    \end{enumerate}
+    \subsection*{Response}
+    Note that the determinant of a $2 \times 2$ matrix can be calculated by
+    \[\det(A) = ad - bc,
+      A = \begin{pmatrix}
+        a & b \\
+        c & d
+      \end{pmatrix}
+    \]
+    \begin{enumerate}[label=(\alph*),leftmargin=*]
+    \item $\det(A) = (4 \cdot 3) - (-5 \cdot 2) = 12 - -10 = 22$
+    \item $\det(A) = (-1 \cdot 8) - (7 \cdot 3) = -8 - 21 = -29$
+    \item
+      \begin{align*}
+        \det(A) &= ((2 + i)(3 - i)) - ((-1 + 3i)(1 - 2i)) \\
+            &= (6 + -2i + 3i + 1) - (-1 + 2i + 3i + 6) \\
+            &= (7 + i) - (5 + 5i) \\
+        \det(A) &= 2 - 4i
+      \end{align*}
+    \item
+      \begin{align*}
+        \det(A) &= ((3 + 0i)(0 + 2i)) - ((0 + 4i)(0 -6i)) \\
+            &= 6i - 24 \\
+        \det(A) &= -24 + 6i
+      \end{align*}
+    \end{enumerate}
+    
+    \newpage
+    \section*{Section 4.4 Question 3 parts (a) - (d)}
+    Evaluate the determinant of the following matrices in the manner indicated
+    \begin{enumerate}[label=(\alph*),leftmargin=*]
+    \item $
+      \begin{pmatrix}
+        0 & 1 & 2 \\
+        -1 & 0 & -3 \\
+        2 & 3 & 0
+      \end{pmatrix}
+      $ along the first row
+    \item $
+      \begin{pmatrix}
+        1 & 0 & 2 \\
+        0 & 1 & 5 \\
+        -1 & 3 & 0
+      \end{pmatrix}
+      $ along the first column
+    \item $
+      \begin{pmatrix}
+        0 & 1 & 2 \\
+        -1 & 0 & -3 \\
+        2 & 3 & 0         
+      \end{pmatrix}
+      $ along the second column
+    \item $
+      \begin{pmatrix}
+        1 & 0 & 2 \\
+        0 & 1 & 5 \\
+        -1 & 3 & 0
+      \end{pmatrix}
+      $ along the third row
+    \end{enumerate}
+    \subsection*{Response}
+    \begin{enumerate}[label=(\alph*),leftmargin=*]
+    \item $
+      \begin{pmatrix}
+        0 & 1 & 2 \\
+        -1 & 0 & -3 \\
+        2 & 3 & 0
+      \end{pmatrix}
+      $ along the first row
+      \begin{align*}
+        \det(A) &= a_{11}C_{11} - a_{12}C_{12} + a_{13}C_{13} \\
+                &= 0 - 1
+                  \begin{vmatrix}
+                    -1 & -3 \\
+                    2 & 0
+                  \end{vmatrix} + 2
+                  \begin{vmatrix}
+                    -1 & 0 \\
+                    2 & 3
+                  \end{vmatrix} \\
+                &= (0 - -6) + 2(-3 - 0) \\
+                &= -6 + -6 \\
+        \det(A)  &= -12
+      \end{align*}
+    \item $
+      \begin{pmatrix}
+        1 & 0 & 2 \\
+        0 & 1 & 5 \\
+        -1 & 3 & 0
+      \end{pmatrix}
+      $ along the first column
+      \begin{align*}
+        \det(A) &= a_{11}C_{11} - a_{21}C_{21} + a_{31}C_{31} \\
+                &= 1
+                  \begin{vmatrix}
+                    1 & 5 \\
+                    3 & 0
+                  \end{vmatrix} - 0 + -1
+                  \begin{vmatrix}
+                    0 & 2 \\
+                    1 & 5
+                  \end{vmatrix} \\
+                &= 1(0 - 15) + -1(0 - 2) \\
+                &= -15 + 2 \\
+        \det(A) &= -13
+      \end{align*}
+    \item $
+      \begin{pmatrix}
+        0 & 1 & 2 \\
+        -1 & 0 & -3 \\
+        2 & 3 & 0         
+      \end{pmatrix}
+      $ along the second column
+      \begin{align*}
+        \det(A) &= -a_{12}C_{12} + a_{22}C_{22} + a_{32}C_{32} \\
+                &= -1
+                  \begin{vmatrix}
+                    -1 & -3 \\
+                    2 & 0
+                  \end{vmatrix} + 0 - 3
+                  \begin{vmatrix}
+                    0 & 2 \\
+                    -1 & -3
+                  \end{vmatrix} \\
+                &= -1(0 - -6) - 3(0 - -2) \\
+                &= -6 - 6 \\
+        \det(A) &= -12
+      \end{align*}
+    \item $
+      \begin{pmatrix}
+        1 & 0 & 2 \\
+        0 & 1 & 5 \\
+        -1 & 3 & 0
+      \end{pmatrix}
+      $ along the third row
+      \begin{align*}
+        \det(A) &= a_{31}C_{31} - a_{32}C_{32} + a_{33}C_{33} \\
+                &= -1
+                  \begin{vmatrix}
+                    0 & 2 \\
+                    1 & 5
+                  \end{vmatrix} - 3
+                  \begin{vmatrix}
+                    1 & 2 \\
+                    0 & 5
+                  \end{vmatrix} + 0 \\
+                &= -1(0 - 2) - 3(5 - 0) \\
+                &= 2 - 15 \\
+        \det(A) &= -13
+      \end{align*}     
+    \end{enumerate}
+
+    \newpage
+    \section*{Section 4.4 Question 4 parts (a) - (d)}
+    Evaluate the determinant of the following matrices by any legitimate method.
+    \begin{enumerate}[label=(\alph*),leftmargin=*]
+    \item $
+      \begin{pmatrix}
+        1 & 2 & 3 \\
+        4 & 5 & 6 \\
+        7 & 8 & 9
+      \end{pmatrix}
+      $
+    \item $
+      \begin{pmatrix}
+        -1 & 3 & 2 \\
+        4 & -8 & 1 \\
+        2 & 2 & 5
+      \end{pmatrix}
+      $
+    \item $
+      \begin{pmatrix}
+        0 & 1 & 1 \\
+        1 & 2 & -5 \\
+        6 & -4 & 3
+      \end{pmatrix}
+      $
+    \item $
+      \begin{pmatrix}
+        1 & -2 & 3 \\
+        -1 & 2 & -5 \\
+        3 & -1 & 2
+      \end{pmatrix}
+      $
+    \end{enumerate}
+    \subsection*{Response}
+    \begin{enumerate}[label=(\alph*),leftmargin=*]
+    \item $
+      \begin{pmatrix}
+        1 & 2 & 3 \\
+        4 & 5 & 6 \\
+        7 & 8 & 9
+      \end{pmatrix}
+      $
+      \begin{align*}
+        \det(A) &= a_{11}C_{11} - a_{12}C_{12} + a_{13}C_{13} \\
+                &= 1
+                  \begin{vmatrix}
+                    5 & 6 \\
+                    8 & 9
+                  \end{vmatrix} - 2
+                  \begin{vmatrix}
+                    4 & 6 \\
+                    7 & 9
+                  \end{vmatrix} + 3
+                  \begin{vmatrix}
+                    4 & 5 \\
+                    7 & 8
+                  \end{vmatrix} \\
+                &= 1(45 - 48) - 2(36 - 42)  + 3(32 - 35) \\
+                &= -3 - 2(-6) + 3(-3) \\
+                &= -3 + 12 - 9 \\
+        \det(A) &= 0
+      \end{align*}
+    \item $
+      \begin{pmatrix}
+        -1 & 3 & 2 \\
+        4 & -8 & 1 \\
+        2 & 2 & 5
+      \end{pmatrix}
+      $
+      \begin{align*}
+        \det(A) &= a_{11}C_{11} - a_{12}C_{12} + a_{13}C_{13} \\
+                &= -1
+                  \begin{vmatrix}
+                    -8 & 1 \\
+                    2 & 5
+                  \end{vmatrix} - 3
+                  \begin{vmatrix}
+                    4 & 1 \\
+                    2 & 5
+                  \end{vmatrix} + 2
+                  \begin{vmatrix}
+                    4 & -8 \\
+                    2 & 2
+                  \end{vmatrix} \\
+                &= -1(-40 - 2) - 3(20 - 2) + 2(8 - -16) \\
+                &= 42 - 54 + 48 \\
+        \det(A) &= 36
+      \end{align*}
+    \item $
+      \begin{pmatrix}
+        0 & 1 & 1 \\
+        1 & 2 & -5 \\
+        6 & -4 & 3
+      \end{pmatrix}
+      $
+      \begin{align*}
+        \det(A) &= a_{11}C_{11} - a_{12}C_{12} + a_{13}C_{13} \\
+                &= 0 - 1
+                  \begin{vmatrix}
+                    1 & -5 \\
+                    6 & 3
+                  \end{vmatrix} + 1
+                  \begin{vmatrix}
+                    1 & 2 \\
+                    6 & -4
+                  \end{vmatrix} \\
+                &= -1(3 - 30) + 1(-4 - 12) \\
+                &= -33 - 16 \\
+        \det(A) &= -49
+      \end{align*}      
+    \item $
+      \begin{pmatrix}
+        1 & -2 & 3 \\
+        -1 & 2 & -5 \\
+        3 & -1 & 2
+      \end{pmatrix} \equiv
+      \begin{pmatrix}
+        1 & -2 & 3 \\
+        0 & 0 & -2 \\
+        3 & -1 & 2
+      \end{pmatrix}
+      $
+      \begin{align*}
+        \det(A) &= -a_{21}C_{21} + a_{22}C_{22} - a_{23}C_{23} \\
+                &= -0 + 0 - -2
+                  \begin{vmatrix}
+                    1 & -2 \\
+                    3 & -1
+                  \end{vmatrix} \\
+                &= 2(-1 - -6) \\
+        \det(A) &= 10
+      \end{align*}      
+    \end{enumerate
+
+    \newpage
+    \section*{Section 5.1 Question 3 part (a)}
+    For each of the followin linear operators $T$ on a vector space $V$ and ordered bases $\beta$, compute $[T]_\beta$, and determine whether $\beta$ is a basis consisting of eigenvectors of $T$.
+    \begin{enumerate}[label=(\alph*),leftmargin=*]
+    \item $V = \mathbb{R}^2, T
+      \begin{pmatrix}
+        a \\
+        b
+      \end{pmatrix}
+      =
+      \begin{pmatrix}
+        10a - 6b \\
+        17a - 10b
+      \end{pmatrix}
+      $ and $\beta = \bigg\{
+      \begin{pmatrix}
+        1 \\
+        2
+      \end{pmatrix}
+      ,
+      \begin{pmatrix}
+        2 \\
+        3
+      \end{pmatrix}
+      \bigg\}$
+    \end{enumerate}
+    \subsection*{Response}
+    \begin{align*}
+      T
+      \begin{pmatrix}
+        1 \\
+        2
+      \end{pmatrix} &=
+                      \begin{pmatrix}
+                        10(1) - 6(2) \\
+                        17(1) - 10(2)
+                      \end{pmatrix} \\
+                    &=
+                      \begin{pmatrix}
+                        -2 \\
+                        -3
+                      \end{pmatrix} \\
+      T
+      \begin{pmatrix}
+        1 \\
+        2
+      \end{pmatrix}      &= 0
+                           \begin{pmatrix}
+                             1 \\
+                             2
+                           \end{pmatrix}
+                           + -1
+                           \begin{pmatrix}
+                             2 \\
+                             3
+                           \end{pmatrix} \\ \\
+      T
+      \begin{pmatrix}
+        2 \\
+        3
+      \end{pmatrix} &=
+                      \begin{pmatrix}
+                        10(2) - 6(3) \\
+                        17(2) - 10(3)
+                      \end{pmatrix} \\
+                    &=
+                      \begin{pmatrix}
+                        2 \\
+                        4
+                      \end{pmatrix} \\
+      T
+      \begin{pmatrix}
+        2 \\
+        3
+      \end{pmatrix}      &= 2
+                           \begin{pmatrix}
+                             1 \\
+                             2
+                           \end{pmatrix} + 0
+                           \begin{pmatrix}
+                             2 \\
+                             3
+                           \end{pmatrix} \\ \\
+      [T]_\beta &=
+                  \begin{pmatrix}
+                    0 & 2 \\
+                    -1 & 0
+                  \end{pmatrix}
+    \end{align*}
+    Because the matrix is not a diagnoal matrix, $\beta$ does not contain the eigenvectors of $T$.
+    \newpage
+    \section*{Section 5.1 Question 4 part (a)}
+    For each of the following matrices $A \in \mathcal{M}_{n \times n}(F)$,
+    \begin{enumerate}[label=(\roman*),leftmargin=*]
+    \item Determine all the eigenvalues of $A$.
+    \item For each eigenvalue $\lambda$ of $A$, find the set of eigenvectors corresponding to $\lambda$.
+    \item If possible, find a basis for $F^n$ consisting of eigenvectors of $A$.
+    \item If successful in finding such a basis, determine an invertible matrix $Q$ and diagonal matrix $D$ such that $Q^{-1}AQ = D$.
+    \end{enumerate}
+    \begin{enumerate}[label=(\alph*),leftmargin=*]
+    \item $A =
+      \begin{pmatrix}
+        1 & 2 \\
+        3 & 2
+      \end{pmatrix}
+      $ for $F = \mathbb{R}$
+    \end{enumerate}
+    \subsection*{Response}
+    \begin{enumerate}[label=(\roman*),leftmargin=*]
+    \item Determine all the eigenvalues of $A$.
+      \begin{align*}
+        \det(A - \lambda I) &=
+                             \begin{vmatrix}
+                               1 - \lambda & 2 \\
+                               3 & 2 - \lambda
+                             \end{vmatrix} \\
+                            &= (1 - \lambda)(2 - \lambda) - 6 \\
+                            &= 2 - \lambda - 2\lambda + \lambda^2 - 6 \\
+        \det(A - \lambda I) &= \lambda^2 - 3\lambda - 4 \\ \\
+        \lambda^2 - 3\lambda - 4 &= (\lambda - 4)(\lambda + 1) \\
+        \lambda_1 &= 4 \\
+        \lambda_2 &= -1
+      \end{align*}
+    \item For each eigenvalue $\lambda$ of $A$, find the set of eigenvectors corresponding to $\lambda$. \\
+      If $\lambda = 4$ 
+      \begin{align*}
+        B_1 &= A - \lambda_1 I \\
+            &=
+              \begin{pmatrix}
+                1 & 2 \\
+                3 & 2
+              \end{pmatrix} -
+              \begin{pmatrix}
+                4 & 0 \\
+                0 & 4
+              \end{pmatrix} \\
+            &=
+              \begin{pmatrix}
+                -3 & 2 \\
+                3 & -2
+              \end{pmatrix} \\
+      \end{align*}
+      Then
+      \begin{align*}
+        \begin{pmatrix}
+          0 \\
+          0
+        \end{pmatrix} &=
+                        \begin{pmatrix}
+                          -3 & 2 \\
+                          3 & -2
+                        \end{pmatrix} 
+                        \begin{pmatrix}
+                          x_1 \\
+                          x_2
+                        \end{pmatrix} \\
+                      &=
+                        \begin{pmatrix}
+                          -3x_1 & 2x_2 \\
+                          3x_1 & -2x_2
+                        \end{pmatrix} \\
+        x_1 &= 2 \\
+        x_2 &= 3
+      \end{align*}
+      \newpage If $\lambda = -1$ 
+      \begin{align*}
+        B_1 &= A - \lambda_1 I \\
+            &=
+              \begin{pmatrix}
+                1 & 2 \\
+                3 & 2
+              \end{pmatrix} -
+              \begin{pmatrix}
+                -1 & 0 \\
+                0 & -1
+              \end{pmatrix} \\
+            &=
+              \begin{pmatrix}
+                2 & 2 \\
+                3 & 3
+              \end{pmatrix} \\
+      \end{align*}
+      Then
+      \begin{align*}
+        \begin{pmatrix}
+          0 \\
+          0
+        \end{pmatrix} &=
+                        \begin{pmatrix}
+                          2 & 2 \\
+                          3 & 3
+                        \end{pmatrix} 
+                        \begin{pmatrix}
+                          x_1 \\
+                          x_2
+                        \end{pmatrix} \\
+                      &=
+                        \begin{pmatrix}
+                          2x_1 & 2x_2 \\
+                          3x_1 & 3x_2
+                        \end{pmatrix} \\
+        x_1 &= 1 \\
+        x_2 &= -1
+      \end{align*}
+      So, the eigenvectors for $\lambda = 4, \lambda = -1$ are $
+      \begin{pmatrix}
+        2 \\
+        3
+      \end{pmatrix},
+      \begin{pmatrix}
+        1 \\
+        -1
+      \end{pmatrix}$ respectively.
+    \item If possible, find a basis for $F^n$ consisting of eigenvectors of $A$. \\
+      One possible basis for $F^n$ consisting of the eigenvectors is $\beta = \bigg\{
+      \begin{pmatrix}
+        1 \\
+        -1
+      \end{pmatrix},
+      \begin{pmatrix}
+        2 \\
+        3
+      \end{pmatrix}
+      \bigg\}$
+      
+    \item If successful in finding such a basis, determine an invertible matrix $Q$ and diagonal matrix $D$ such that $Q^{-1}AQ = D$. \\
+      \begin{align*}
+        Q &=
+            \begin{pmatrix}
+              2 & 1 \\
+              3 & -1
+            \end{pmatrix} \\
+        Q^{-1} &= \frac{1}{(-2 - 3)}
+                 \begin{pmatrix}
+                   -1 & -1 \\
+                   -3 & 2
+                 \end{pmatrix} \\
+          &= -\frac{1}{5}
+            \begin{pmatrix}
+              -1 & -1 \\
+              -3 & 2
+            \end{pmatrix} \\
+          &= \frac{1}{5}
+            \begin{pmatrix}
+              1 & 1 \\
+              3 & -2
+            \end{pmatrix} \\
+        D &= Q^{-1}AQ \\
+          &= \frac{1}{5}
+            \begin{pmatrix}
+              1 & 1 \\
+              3 & -2
+            \end{pmatrix}
+            \begin{pmatrix}
+              1 & 2 \\
+              3 & 2
+            \end{pmatrix}
+            \begin{pmatrix}
+              2 & 1 \\
+              3 & -1
+            \end{pmatrix} \\
+          &= \frac{1}{5}
+            \begin{pmatrix}
+              1 & 1 \\
+              3 & -2
+            \end{pmatrix}
+            \begin{pmatrix}
+              2 + 6 & 1 + -2 \\
+              6 + 6 & 3 + -2
+            \end{pmatrix} \\
+          &= \frac{1}{5}
+            \begin{pmatrix}
+              1 & 1 \\
+              3 & -2
+            \end{pmatrix}
+            \begin{pmatrix}
+              8 & -1 \\
+              12 & 1
+            \end{pmatrix} \\
+          &= \frac{1}{5}
+            \begin{pmatrix}
+              8 + 12 & -1 + 1 \\
+              24 + -24 & -3 + -2
+            \end{pmatrix} \\
+          &= \frac{1}{5}
+            \begin{pmatrix}
+              20 & 0 \\
+              0 & -5
+            \end{pmatrix} \\
+          &=
+            \begin{pmatrix}
+              4 & 0 \\
+              0 & -1
+            \end{pmatrix}
+      \end{align*}
+      $Q =
+      \begin{pmatrix}
+        2 & -1 \\
+        3 & -1
+      \end{pmatrix}, D =
+      \begin{pmatrix}
+        4 & 0 \\
+        0 & -1
+      \end{pmatrix}
+      $
+    \end{enumerate}
+    
+    \newpage
+    \section*{Section 5.1 Question 10}
+    Prove that the eigenvalues of an upper triangular matrix $M$ are the diagonal entries of $M$.
+    \subsection*{Response}
+    \begin{proof}
+      Let $M$ be an $n \times n$ upper triangular matrix. Then, the characteristic polynomial is
+      \begin{align*}
+        \det(M - \lambda I) &=
+        \begin{vmatrix}
+          a_{11} - \lambda & a_{12} & \cdots & a_{1n} \\
+          0 & a_{12} - \lambda & \cdots & a_{2n} \\
+          \vdots & \vdots & \ddots & \vdots \\
+          0 & 0 & \cdots & a_{nn} - \lambda \\
+        \end{vmatrix} \\
+        &= (a_{11} - \lambda)(a_{22} - \lambda)\cdots(a_{nn} - \lambda)
+      \end{align*}
+      By the fact that the determinant of an upper triangular matrix is the product of its diagonal entries. So, the eigenvalues of an upper triangular matrix $M$ are $\lambda_i = a_{ii}, 1 \leq i \leq n$, or the diagonal entries of $M$.
+    \end{proof}
+    
+    \newpage
+    \section*{Section 5.1 Question 11}
+    Let $V$ be a finite-dimensional vector space, and let $\lambda$ be any scalar.
+    \begin{enumerate}[label=(\alph*),leftmargin=*]
+    \item For any ordered basis $\beta$ for $V$, prove that $[\lambda I_V]_\beta = \lambda I$.
+    \item Compute the characteristic polynomial of $\lambda I_V$.
+    \item Show that $\lambda I_V$ is diagonalizable and has only one eigenvalue.
+    \end{enumerate}
+    \subsection*{Response}
+    \begin{enumerate}[label=(\alph*),leftmargin=*]
+    \item
+      \begin{proof}
+        Let $T$ be a linear transformation such that $T(v) = \lambda v$. Then, we can rewrite this as
+        \begin{align*}
+          T(v) &= \lambda v \\
+               &= \lambda Iv \\
+          T &= \lambda I_V
+        \end{align*}
+        Note that since this is true, we can write
+        \begin{align*}
+          [T]_\beta v &= [\lambda]_\beta v \\
+                      &= \lambda Iv \\
+          [\lambda I_V]_\beta v &= \lambda Iv && \text{from the previous part, } T = \lambda I_V
+        \end{align*}
+        So, for any ordered basis $\beta$ for $V$, we have that $[\lambda I_V]_\beta v &= \lambda Iv$.
+      \end{proof}
+    \item
+      \begin{align*}
+        \det(T - \lambda' I) &= \det(\lambda I_V - \lambda' I) \\
+                             &=
+                               \begin{vmatrix}
+                                 \lambda - \lambda' & 0 & 0 & \cdots & 0 \\
+                                 0 & \lambda - \lambda' & 0 & \cdots & 0 \\
+                                 \vdots & \vdots & \vdots & \ddots & \vdots \\
+                                 0 & 0 & 0 & \cdots & \lambda - \lambda'
+                               \end{vmatrix} \\
+                             &= (\lambda - \lambda')^{dim(V)} \\
+                             &= (\lambda - \lambda')^n && \text{let } n = dim(V)
+      \end{align*}
+      So, the characteristic polynomial of $\lambda I_V$ is $(\lambda - \lambda')^n$.
+    \item Note that $\lambda I$ is a diagonal matrix, so $\lambda I_V$ is diagonalizable. From part (b), we have $\lambda I_V$ is $(\lambda - \lambda')^n$, so solving for lambda, we get $\lambda' = \lambda$, so $\lambda I_V$ only has one eigenvalue.
+    \end{enumerate}
+
+    \newpage
+    \section*{Section 5.1 Question 13 part (a)}
+    \begin{enumerate}[label=(\alph*),leftmargin=*]
+    \item Prove that similar matrices have the same characteristic polynomial.
+    \end{enumerate}
+    \subsection*{Response}
+    \begin{proof}
+      Let $A$ and $B$ be similar matrices. First, we must prove that there exists a matrix $C$ such that $CBC^{-1} = A$. So we have
+      \begin{align*}
+        \det(A) &= \det(CBC^{-1}) \\
+                &= \det(C) \det(B) \det(C^{-1}) \\
+                &= \det(B) \det(C^{-1}) \det(C) && \det(A) \det(B) = \det(B) \det(A) \\
+                &= \det(B) \det(C^{-1}C) \\
+                &= \det(B) \det(I) && C^{-1}C = I \\
+        \det(A) &= \det(B) && \det(I) = 1
+      \end{align*}
+      Now, define the characteristic polynomial to be $\det(A - \lambda I)$. So we have
+      \begin{align*}
+        \det(A - \lambda I) &= \det(CBC^{-1} - \lambda I) \\
+                            &= \det(CBC^{-1} - \lambda CIC^{-1}) \\
+                            &= \det(C(B - \lambda I)C^{-1}) \\
+        \det(A - \lambda I) &= \det(C) \det(B - \lambda I) \det(C^{-1})
+      \end{align*}
+      Therefore, similar matrices have the same characteristic polynomial.
+    \end{proof}
+
+  \end{document}

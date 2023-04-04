@@ -1,0 +1,2312 @@
+\documentclass[13pt]{article}
+\usepackage{amsmath, amsthm, amssymb, graphicx, enumitem, esvect}
+\usepackage{inconsolata}
+
+\usepackage[english]{babel}
+
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+\begin{document}
+\tableofcontents
+\newpage
+% =================================== FILE SYSTEMS =================================== %
+\section{File Systems}
+Most often thought of as a tree structure \\
+Can be a DAG structure (With hard/symbolic links) \\
+Provides a mental model of how the directory is structured. Thus, it is easier to understand why some commands (e.g. \texttt{mv}) are fast while others (e.g. \texttt{sort}) are slow.
+
+\subsection{Why \texttt{/bin} and \texttt{/usr/bin}?}
+File systems at the time were so small, we couldn't fit all commands into one directory. More specifically, when booting up, people wanted to have a small set of commands that always worked and a larger set of commands after successfully booting. Now, we have both \texttt{/bin} and \texttt{/usr/bin} for backwards compatibility where \texttt{/bin} is a symbolic link to \texttt{/usr/bin}.
+
+\subsection{Implied Directories}
+\begin{itemize}[leftmargin = 0pt]
+\item [] \texttt{/} Root directory
+  \subitem \textbf{Note:} \texttt{., ..} for \texttt{/} are both \texttt{/} itself
+\item [] \texttt{.} Current directory
+\item [] \texttt{..} Parent directory
+\end{itemize}
+
+\subsection{Navigating the File System}
+File name components cannot be empty and can contain any characters \textbf{except}: \texttt{/} \\
+Links map file name components to files. \\
+Think of a directory as a list of file name components. \\
+Using \texttt{namei("/usr/bin/diff")} will point to the inode of the file path. \\ \\
+\textbf{Note:} \texttt{/usr///bin/////sh} is equivalent to \texttt{/usr/bin/sh}
+\textbf{Note:} \texttt{/usr/bin/sh/} \textbf{must} be a directory. If it's not, it throws an error.
+
+\subsubsection{How the Operating System Finds Files (\texttt{namei()})}
+\begin{verbatim}
+  if (f[0] == '/')
+      p = root directory's ID
+  else
+      p = current directory's ID \end{verbatim}
+    where \texttt{p} returns the file in the directory that \texttt{p} points to. When it encounters a symbolic link, it replaces the path with the contents of the symbolic link (see \textbf{Symbolic Links}). \\ \\
+    \textbf{Note:} This is what the OS does. The shell will perform variable expansion when running programs.
+
+    \subsection{File Permissions}
+    Read/Write/Execute permissions have 10 bits in the format \texttt{drwxrwxrwx}
+    \begin{itemize}[leftmargin = 0pt]
+    \item [1] \texttt{d} if directory, \texttt{-} if normal file, \texttt{l} if symbolic link
+    \item [2, 3, 4] \texttt{read, write, execute} permissions for user(owner) of the file
+    \item [5, 6, 7] \texttt{read, write, execute} permissions for group of the file
+    \item [8, 9, 10] \texttt{read, write, execute} permissions for other(world) of the file
+    \end{itemize}
+
+    \subsection{Read/Write/Execute Bits}
+    \texttt{-}: Flag is not set \\
+    \texttt{r}: File is readable \\
+    \texttt{w}: File is writable/can be created or removed (if directory) \\
+    \texttt{x}: File is executable/listed (if directory) \\
+    \texttt{s}: Set group ID (\texttt{sgid}); For directories, files created will be associated with the same group as the directory rather than the user. Subdirectories will inherit \texttt{sgid} 
+    
+    \subsection{Modify Permissions (\texttt{chmod})}
+    \texttt{chmod [OPTION] MODE FILE} \\
+    MODE Format: \texttt{[who][op][permission]} where
+    \begin{itemize}[leftmargin = 0pt]
+    \item [] who: \texttt{ugoa} (user, group, other, all)
+    \item [] op: \texttt{+, -} (add, remove)
+    \item [] permission: \texttt{rwx} (read, write, execute)
+    \end{itemize}
+
+    \subsection{Reclaiming Storage}
+    When there are 0 links to a file, the operating system will "reclaim" that storage, but does not actually reformat/erase the storage associated with the file. Instead, it will put that storage into "free" memory, where it can be overwritten without warning. Consequently, this means that it is possible to still see the contents of the file by reading the bytes that are on the physically on the drive. \\
+    \textbf{Note:} To do a better "remove", the command \texttt{shred FILE} will scramble, inject, delete bits at random to attempt to "shred" the file contents.
+
+    % =================================== THE SHELL =================================== %
+    \section{Links}
+    A link maps a file name component (see \textbf{File Name Components}) to a file. By default, there is a minimum of 1 hard link to a file: it's file name component. \\ \\
+    \textbf{Note:} It is possible to have a file with 0 hard links. For example, consider
+\begin{verbatim}
+  (rm file, cat) <file \end{verbatim}
+The code above will remove the hard link to \texttt{file}, but \texttt{cat} has its standard input set to \texttt{file}, so it is still open. You can still read and write to it, so the OS will not reclaim the storage from \texttt{file} until no one can access it. As soon as the program above terminates, no one can access \texttt{file}, thus the OS will reclaim the storage from \texttt{file}.
+
+\subsection{Hard Links}
+Hard links are like pointers to the inode of the file. \\ \\
+\textbf{Example:} Let \texttt{foo} be a file. Using the link command (see \textbf{Link}) \texttt{ln foo bar}, \texttt{bar} is a hard link to \texttt{foo}, meaning it points to the same inode that \texttt{foo} does. \\ \\
+\textbf{Note:} Hard links \textbf{cannot} point to directories. The reason for this is because then the directory structure will go from a tree/DAG to an arbitrary graph with cycles. Then, certain operations such as recursive operations will never terminate.
+
+\subsection{Symbolic/Soft Links}
+Symbolic links are a special file that contains the file path (\textbf{relative to the directory it is in}) of the file it wants to point to. Because the contents of symbolic links are strings, they can be altered. \\ \\
+\textbf{Example:} Let \texttt{foo} be a file. Using the link command (See \textbf{Shell Commands}) \texttt{ln -s foo bar}, \texttt{bar} is a symbolic link to \texttt{foo}, meaning it is a special file that contains the file path of \texttt{foo}, and not the actual file \texttt{foo} points to. \\ \\
+\textbf{Note:} Symbolic links \textbf{can} point to directories. \\ \\
+\textbf{Note:} While regular symbolic links are relative to their path, absolute symbolic links (ones who's contents start with \texttt{/}) are \textbf{not} relative to their path, but are absolute file paths starting at the root directory. \\ \\
+\textbf{Note:} There can be dangling symbolic links that contain a path to a file that does not exist. 
+\textbf{Note:} You can have symbolic link loops but the shell will output errors after a while.
+
+\subsection{Link Examples}
+Let \texttt{foo} be a file. Then, we can have
+\begin{verbatim}
+      ln foo bar
+      ln -s bar baz
+      ln baz buz \end{verbatim}
+    Then, when we do \texttt{ls -l foo bar baz buz}, we get
+\begin{verbatim}
+  -rw-r--r--  3 user group  0 Feb  7 21:50 bar
+  lrwxr-xr-x  1 user group  3 Feb  7 21:50 baz -> bar
+  -rw-r--r--  3 user group  0 Feb  7 21:50 buz
+  -rw-r--r--  3 user group  0 Feb  7 21:50 foo \end{verbatim}
+where \texttt{bar} is a hard link to \texttt{foo}, \texttt{baz} is a symbolic link to \texttt{bar}, and \texttt{buz} is a hard link to \texttt{baz}. Note that the hard link count for \texttt{baz} does not get incremented to 2 when we link \texttt{buz} to \texttt{baz}, but the hard link counts of \texttt{foo, bar, buz} get incremented to 3.
+
+% =================================== THE SHELL =================================== %
+\section{Shell}
+\begin{itemize}[leftmargin = 0pt]
+\item [] The \texttt{shell (sh)} is a lightweight scripting language that wraps the operating system
+  \subitem Provides an interface for the OS
+\item [] Also called a Command Line Interface (CLI)
+\item [] Has \textbf{no} reserved words
+\end{itemize}
+
+\subsection{Exit Status (\texttt{\$?})}
+Prints the previous command's exit status (denoted as \texttt{\$?})
+\begin{itemize}[leftmargin = 0pt]
+\item [] 0: Successful
+\item [] $\neq$ 0: Error
+\end{itemize}
+
+\subsection{Control Structures}
+\begin{itemize}[leftmargin = 0pt]
+\item [] \texttt{!} The not operator
+\end{itemize}
+Because there are no reserved words in the shell, the following code is possible
+\begin{verbatim}
+  if=27
+  if[$if=27]
+  then
+  ... \end{verbatim}
+
+\subsubsection{Brackets, Braces and Parentheses (\texttt{[ ], \{ \}, ( )})}
+\begin{itemize}[leftmargin = 0pt]
+\item [] \texttt{[ ]} Are for comparisons
+\item [] \texttt{\{ \}} Run the commands in place and ignore exit statuses. It will also treat the string of commands as one command
+  \begin{itemize}[leftmargin = 0pt]
+  \item [] \textbf{Note:} This means that if you change directories during a command inside \{ \}, your cwd will also change
+  \end{itemize}
+\item [] \texttt{( )} Run the commands in a subprocess and ignore exit statuses. It will also treat the string of commands as one command
+  \begin{itemize}[leftmargin = 0pt]
+  \item [] \textbf{Note:} This means that if you change directories during a command inside ( ), your cwd will not change
+  \end{itemize}
+\end{itemize}
+
+\subsubsection*{Examples}
+\begin{verbatim}
+  {cd /; ls -l;} && cmd \end{verbatim}
+will run both \texttt{cd} and \texttt{ls} regardless of their exit statuses, and the cwd will now be \texttt{/}
+\begin{verbatim}
+  (cd /; ls -l;) && cmd \end{verbatim}
+will run both \texttt{cd} and \texttt{ls} regardless of their exit statuses, and the cwd is still \texttt{~} (assuming you were at \texttt{~} before the subprocess
+\begin{verbatim}
+  if [$a = $b]
+  then
+    ...
+  else
+    ... \end{verbatim}
+  is a simple \texttt{if then else}
+\begin{verbatim}
+  if if [$a = $b]
+       then
+         ...
+       else
+         ... 
+  then
+    ...
+  else
+    ... \end{verbatim}
+  is a nested \texttt{if then else}
+  
+  \subsubsection{Conditionals (\texttt{if, then, else, fi})}
+  Conditionals are written similarly to C conditionals. \\ \\
+  \textbf{Example:} Consider the following conditional statement
+\begin{verbatim}
+  if cmd1
+  then cmd2
+  else cmd3
+  fi \end{verbatim}
+where \texttt{if} opens conditional, \texttt{then} is run if \texttt{cmd1} is true, \texttt{else} otherwise, and \texttt{fi} closes the conditional. \\ \\
+Logical comparisons are allowed:
+\begin{verbatim}
+  cmd1 && cmd2
+  cmd1 || cmd2 \end{verbatim}
+where \texttt{\&\&} is logical \textbf{and}, \texttt{||} is logical \textbf{or}
+
+\subsubsection{Loops (\texttt{while, do, done})}
+Loops are written similarly to C loops (but we only have \texttt{while}). \\ \\
+\textbf{Example:} Consider the following loop
+\begin{verbatim}
+  while cmd1
+  do
+      cmd2
+  done \end{verbatim}
+where \texttt{while} opens the loop and evaluates \texttt{cmd1} at every iteration, \texttt{do} opens the body of the loop, and \texttt{done} closes the body of the loop.
+
+\subsection{Pipelines(\texttt{|})}
+Pipelines (denoted as \texttt{|}) chain multiple shell commands. \\ \\
+\textbf{Example 1:} Consider the command
+\begin{verbatim}
+  cat foo bar | tr a b | sort \end{verbatim}
+where \texttt{stdout = stdin} between pipes. \\ \\
+\textbf{Example 2:} Consider the set of equivalent commands
+\begin{verbatim}
+  cat foo bar >t1
+  tr a b <t1 >t2
+  sort <t2 \end{verbatim}
+where \texttt{t1, t2} are temporary files.
+
+\subsubsection{Differences}
+\begin{itemize}[leftmargin = 0pt]
+\item [] \textbf{Example 2} runs sequentially, whereas pipelines run in parallel
+\item [] \textbf{Example 2} requires temporary files, whereas pipelines create a small buffer that will hang if full
+\item [] Pipelines use \textbf{controlled parallelism}
+\end{itemize}
+\subsubsection{Broken Pipes}
+Pipes can be broken in two ways: A command is writing to a pipe no one is reading from, and a command is trying to read from a pipe no one is writing to. \\ \\
+\textbf{Example:} Consider the command
+\begin{verbatim}
+  cat foo | head -2 \end{verbatim}
+\texttt{head} will terminate after it receives 2 lines, but \texttt{cat} will still be writing to a pipe. This creates a broken pipe because \texttt{cat} is writing to a pipe no one is reading from. By default, the shell will kill \texttt{cat} \\ \\
+\textbf{Example:} Consider the command
+\begin{verbatim}
+  echo foo | ls \end{verbatim}
+This is not really an issue because \texttt{foo} will just put all its contents into the buffer and terminate, and \texttt{ls} will just list the entire buffer.
+
+% =================================== SHELL EXPANSION =================================== %
+\section{Shell Expansion}
+Let \texttt{var='a b c'} be a variable in a shellscript or terminal. \texttt{var} can be expanded to its contents by typing \texttt{\$var}. \\ \\
+\textbf{Note:} Shell has no reserved words \\
+\textbf{Note:} Anything after \texttt{--} in a command is treated as a file
+\begin{verbatim}
+  touch ./-rf
+  rm -- -rf \end{verbatim}
+will remove the file \texttt{-rf}
+
+\subsection{Predefined Variables}
+\begin{itemize}[leftmargin = 0pt]
+\item [] \texttt{\$?} Exit status of the last command
+\item [] \texttt{\$1, \$2, ...} Parameter number (where \texttt{\$0} is the name of the command)
+\item [] \texttt{\$*} Equivalent to \texttt{\$1, \$2, ...}
+\item [] \texttt{\$var} Expands \texttt{var} to \texttt{a b c}
+\item [] \texttt{\$\$} Expands to the process ID of the shell itself
+\item [] \texttt{\$!} Expands to the process ID of the last background process
+  \begin{itemize}[leftmargin = 0pt]
+  \item [] \texttt{cmd\&} runs \texttt{cmd} in the background
+  \end{itemize}
+\item [] \texttt{\textasciitilde} or \texttt{\$HOME} Expands to the home directory
+\end{itemize}
+
+\subsection{Variable Expansion}
+Let \texttt{x='a b c'}
+\begin{itemize}[leftmargin = 0pt]
+\item [] \texttt{\$\{x\}y} Expands to a b cy
+\item [] \texttt{\$\{x-default\}} Expands to \texttt{x} if defined, \texttt{default} otherwise
+\item [] \texttt{\$\{x+set\}} Expands to \texttt{set} if \texttt{x} is defined, \texttt{''} otherwise
+\item [] \texttt{\$\{x?\}} Expands to \texttt{x} if \texttt{x} is defined, \textbf{error} otherwise
+\item [] \texttt{\$\{x=default\}} Sets \texttt{x} to \texttt{default} if not defined, \texttt{x} otherwise
+\item [] \texttt{\$\{x:-default\}} Expands to \texttt{x} if nonempty, \texttt{default} otherwise
+\item [] \texttt{\$\{x:-nonempty\}} Expands to \texttt{nonempty} if \texttt{x} is nonempty, \texttt{''} otherwise
+\item [] \texttt{unset x} Uninitializes \texttt{x}
+\item [] \texttt{export \$x} Exports the value of \texttt{x} to subcommands
+\end{itemize}
+
+\subsection{Tilde Expansion}
+Let \texttt{x=\textasciitilde}
+\begin{itemize}[leftmargin = 0pt]
+\item [] \texttt{\textasciitilde} Expands to the home directory
+\item [] \texttt{\textasciitilde} \texttt{name} Expands to \texttt{name}'s home directory
+\end{itemize}
+
+\subsubsection*{Examples}
+\begin{verbatim}
+  x=~
+  echo $x \end{verbatim}
+will expand to \texttt{\textasciitilde} $\rightarrow$ \texttt{home directory}
+
+\subsection{Command Substitution}
+If there is a \texttt{\$(abcd)}, the shell will run the command and replace the expression with the output
+\subsubsection*{Example}
+\begin{verbatim}
+  grep abc $(find * -name '*.c') \end{verbatim}
+will evaluate \texttt{\$(find * -name '*.c')} before running \texttt{grep abc} on those files
+
+\subsection{Arithmetic Expansion}
+\texttt{\$((x+5))} does arithmetic in shell
+
+\subsection{Field Splitting}
+Let \texttt{x='a b c *.c'} and consider the following
+\begin{verbatim}
+  grep foo $x
+\end{verbatim}
+will expand to \texttt{grep foo a\textvisiblespace b\textvisiblespace c\textvisiblespace *.c} where each file is a separate argument
+
+\subsection{Globbing}
+Similar to regular expressions (see \textbf{Basic \texttt{grep}}).
+\subsubsection{Globbing Syntax}
+\begin{itemize}[leftmargin = 0pt]
+\item [] \texttt{*} Matches anything (equivalent to \texttt{grep .*})
+  \begin{itemize}[leftmargin = 0pt]
+  \item [] \textbf{Note:} The shell will expand \texttt{*} before \texttt{grep} sees it
+  \item [] \textbf{Note:} \texttt{*} will \textbf{not} match leading \texttt{.}'s
+  \end{itemize}
+\item [] \texttt{?} Matches any single character (equivalent to \texttt{grep .})
+\item [] \texttt{[ ]} Exactly the same as \texttt{grep [your-regex-here]} \textbf{except}, we use \texttt{!} instead of \texttt{\^}
+\end{itemize}
+
+\subsubsection*{Example}
+Let \texttt{x='a b c *.c'} and consider the following
+\begin{verbatim}
+  grep foo $x
+\end{verbatim}
+will expand to \texttt{grep foo a\textvisiblespace b\textvisiblespace c\textvisiblespace *.c} $\rightarrow$ \texttt{grep foo a\textvisiblespace b\textvisiblespace c\textvisiblespace d.c\textvisiblespace e.c\textvisiblespace ...} where each file is a separate argument
+
+\subsection{I/O Redirections (\texttt{<, >, 2>, >>})}
+I/O Redirections redirect standard input, standard output, and standard error.
+\begin{itemize}[leftmargin = 0pt]
+\item [] \texttt{<} set standard in
+\item [] \texttt{>} set standard out
+\item [] \texttt{2>} set standard error
+\item [] \texttt{>>} append standard out
+\item [] \texttt{\&-} close
+\end{itemize}
+\textbf{Note:} IO redirects will overwrite an existing file. To prevent overwriting a file without warning, use \texttt{set -o noclobber}. \\ \\
+\textbf{Example:} Consider the command
+\begin{verbatim}
+  cat foo <file0 >file1   2>err
+          stdin  stdout   stderr \end{verbatim}
+        where \texttt{<} sets standard input to \texttt{file0}, \texttt{>} sets standard output to \texttt{file1}, and \texttt{2>} sets standard error to \texttt{err}. \\ \\
+        \textbf{Example:} Consider the command
+\begin{verbatim}
+  cat foo        >bar     2>&1
+          stdin  stdout   stderr \end{verbatim}
+        This sets \texttt{bar} to standard output and standard error also to \texttt{bar}. There is only one channel into \texttt{bar} \\ \\
+        \textbf{Example:} Consider the command
+\begin{verbatim}
+  cat foo        >bar     2>bar
+          stdin  stdout   stderr \end{verbatim}
+        This sets \texttt{bar} to standard output and standard error creates a second channel to \texttt{bar}. So, stdout and stderr will compete and overwrite each other. \\ \\
+        \textbf{Example:} Consider the command
+\begin{verbatim}
+  cat foo        >bar     2>&-
+          stdin  stdout   stderr \end{verbatim}
+        This closes stderr
+
+% =================================== BASIC GREP =================================== %
+\section{Basic \texttt{grep} (Global Regular Expression Print)}
+\subsection{Overview}
+Grep is used to search for regular expressions. You can use \texttt{gp (global print)} to print all lines in a file, or \texttt{g/your-regex-expression/p} to search for a specific expression.
+\subsection{Basics}
+\subsubsection{Basic Syntax}
+\begin{itemize}[leftmargin = 0pt]
+\item [] \texttt{\^} Only special if you specify the start of the line unless it is inside brackets (see \textbf{Bracket Syntax})
+\item [] \texttt{\$} Only special if you specify the end of the line
+\item [] \texttt{[ ]} Match any occurrence of a single character that is between the brackets
+\item [] \texttt{\textbackslash ( \textbackslash )} Treats anything contained in the parentheses as one pattern (most often used with \texttt{*})
+\item [] \texttt{*} Match one or more occurrence to the character immediate left of \texttt{*} or the contents inside of \texttt{\textbackslash ( \textbackslash )}. Note: \texttt{*} is \textbf{not} special in brackets.
+\item[] \texttt{.} Matches all characters \textbf{except} newline
+\item [] \texttt{\textbackslash} Escape the special characters in this list
+\end{itemize}
+
+\subsubsection*{Examples}
+\begin{verbatim}
+  grep 'abc' \end{verbatim}
+reads from standard input then finds and prints any matching occurrences of \texttt{abc}
+\begin{verbatim}
+  grep usage diff.c \end{verbatim}
+reads from \texttt{diff.c} then finds and prints any matching occurrences of \texttt{usage}
+\begin{verbatim}
+  grep '' /etc/passwd \end{verbatim}
+searches for any occurrences of \texttt{\textbackslash n} (newline) in \texttt{/etc/passwd}
+\begin{verbatim}
+  grep @ /etc/passwd \end{verbatim}
+searches for any occurrences of \texttt{@} in \texttt{/etc/passwd}
+\subsection{Options}
+\begin{itemize}[leftmargin = 0pt]
+\item [] \texttt{-n}: Print line numbers
+\item [] \texttt{-l}: Print file names
+\item [] \texttt{-v}: Print nonmatching line numbers
+\item [] \texttt{-i}: Ignore case
+\end{itemize}
+\subsection{Brackets (\texttt{[ ]})}
+Brackets are used to match any occurrence of a single character that is between the brackets. \\ \\
+\textbf{Note:} Grep reads left to right and searches greedily.
+\subsubsection{Bracket Syntax}
+\begin{itemize}[leftmargin = 0pt]
+\item [] \texttt{\^} Must be at the front. Finds occurrences that do \textbf{not} match what follows
+\item [] \texttt{-} Range operator. When put at the end, \texttt{grep} searches for \texttt{-} itself
+\item [] \texttt{\textbackslash [} and \texttt{\textbackslash ]} Escapes the brackets, so it searches for the brackets themselves
+\end{itemize}
+\subsubsection*{Examples}
+\begin{verbatim}
+  grep [aeiou] \end{verbatim}
+searches for any occurrences of \texttt{a}, \texttt{e}, \texttt{i} \texttt{o}, or \texttt{u}
+\begin{verbatim}
+  grep [aeiou]" \end{verbatim}
+searches for any occurrences of \texttt{a"}, \texttt{e"}, \texttt{i"} \texttt{o"}, or \texttt{u"}
+\begin{verbatim}
+  grep [a-z] \end{verbatim}
+searches for any occurrences of any lowercase letter
+\begin{verbatim}
+  grep [a-z0-9] \end{verbatim}
+searches for any occurrences of any lowercase letter or number between 0 and 9 inclusive
+\begin{verbatim}
+  grep [a-z0-9-] \end{verbatim}
+searches for any occurrences of any lowercase letter or number between 0 and 9 inclusive or \texttt{-} \\ \\
+\textbf{Note:} To find \texttt{-} inside brackets, put it at the very end
+\begin{verbatim}
+  grep []a-z] \end{verbatim}
+searches for any occurrences of \texttt{]} or any lowercase letter \\ \\
+\textbf{Note:} To find \texttt{[} inside brackets, put it at the very front
+\begin{verbatim}
+  grep []a-z] \end{verbatim}
+searches for any occurrences of \texttt{]} or any lowercase letter
+\begin{verbatim}
+  grep [] \end{verbatim}
+is invalid
+\begin{verbatim}
+  grep [^a] \end{verbatim}
+searches for any \textbf{non}-occurrences of \texttt{a}
+\begin{verbatim}
+  grep [^a-z] \end{verbatim}
+searches for any \textbf{non}-occurrences of a lowercase letter
+\begin{verbatim}
+  grep [a^] \end{verbatim}
+searches for any occurrences of \texttt{a} or \texttt{\^} \\ \\
+\textbf{Note:} To find \texttt{\^}, put it anywhere \textbf{not} at the front
+\begin{verbatim}
+  grep . \end{verbatim}
+searches for anything that is \textbf{not} \texttt{\textbackslash n} (newline)
+\begin{verbatim}
+  grep "['\"\\]": \end{verbatim}
+searches for \texttt{' "} or \texttt{\textbackslash}    
+
+
+% =================================== EXTENDED GREP =================================== %
+\section{\texttt{egrep, grep -E} (Extended \texttt{grep})}
+\subsection{Overview}
+In extended grep, parentheses \texttt{()}, the or operator \texttt{|}, and question mark \texttt{?} are special characters
+
+\subsection{Extended Grep Syntax}
+\begin{itemize}[leftmargin = 0pt]
+\item [] \texttt{\^} Only special if you specify the start of the line unless it is inside brackets (see \textbf{Bracket Syntax})
+\item [] \texttt{\$} Only special if you specify the end of the line
+\item [] \texttt{[ ]} Match any occurrence of a single character that is between the brackets
+\item [] \texttt{*} Match one or more occurrence to the character immediate left of \texttt{*}
+\item [] \texttt{( )} Treats anything contained in the parentheses as one pattern (most often used with \texttt{*})
+  \begin{itemize}[leftmargin = 0pt]
+  \item [] \textbf{Note:} \texttt{)} is only special when paired with an opening \texttt{(}
+  \end{itemize}
+\item [] \texttt{|} Logical \textbf{or}: Let \texttt{p} and \texttt{q} be two expressions. Then, \texttt{p | q} will match either \texttt{p} or \texttt{q}
+\item [] \texttt{?} Equivalent to saying \texttt{p|''}, where \texttt{p} is an expression and \texttt{''} is a newline character
+\item[] \texttt{.} Matches all characters \textbf{except} newline
+\item [] \texttt{\{i, j\}} Matches the expression anywhere from \texttt{i} to \texttt{j} times (inclusive). 
+  \begin{itemize}[leftmargin = 0pt]
+  \item [] \textbf{Example:} \texttt{P\{3, 5\}} is equivalent to \texttt{PPP(PP?)?} where \texttt{P} is a regular expression pattern. 
+  \item [] If \texttt{i} is unspecified, the expression will evaluate to \texttt{P\{, 5\}} and will match up to 5 instances. 
+  \item [] If \texttt{j} is unspecified, the expression will evalutate to \texttt{P\{3, \}} and will match 3 or more instances
+  \end{itemize}
+\item [] \texttt{\textbackslash} Escape the special characters in this list
+\item [] \texttt{\textbackslash \#} At the very end of expressions, this matches exactly what's inside the parentheses (\# goes up to 9)
+\item [] \texttt{+} One or more occurrences
+\end{itemize}
+
+\subsubsection{Predefined Character Sets}
+\texttt{[:ascii:], [:alpha:], [:digit:], [:alnum:]} are predefined character sets that can be used with grep to match any character in that set. \\ \\
+\textbf{Example:} Consider the following expression
+\begin{verbatim}
+  grep [[:ascii:]] \end{verbatim}
+will match any ascii character using the bracket operator (see \textbf{Brackets})
+\subsubsection*{Examples}
+\begin{verbatim}
+  grep -E "(^|[^/])\*([^/]|$)" \end{verbatim}
+will match any occurrence of \texttt{*} that isn't a comment
+\begin{verbatim}
+  grep -E "a(b*c)d\1" \end{verbatim}
+equivalent to \texttt{grep -E "a(b*c)d(b*c)"}
+\begin{verbatim}
+  grep -E "(a*)(b*)c\2\1" \end{verbatim}
+equivalent to \texttt{a$^\texttt{n}$b$^\texttt{n}$cb$^\texttt{n}$a$^\texttt{n}$} $\forall \ n \in \mathbb{Z}^+$
+
+
+
+
+
+% =================================== SCRIPTING =================================== %
+\section{Scripting Languages (Elisp, Python, JavaScript)}
+There are different types of scripting languages
+\begin{itemize}[leftmargin = 0pt]
+\item [] Wrappers (e.g. shell)
+\item [] Embedded/Extension Languages (e.g. ELisp)
+\item [] Object Oriented/Packaged Languages (e.g. Python)
+\end{itemize}
+
+% =================================== ELISP =================================== %
+\subsection{Elisp}
+\begin{itemize}[leftmargin = 0pt]
+\item [] Developed in 1950's
+\item [] Core CS language (functional language)
+\item [] Used in AI
+\end{itemize}
+
+\subsubsection{Data Types}
+\begin{itemize}[leftmargin = 0pt]
+\item [] Numbers: int, float \textbf{(no overflow)}
+\item [] Symbols/Atoms: Piece of data that has a name \textbf{(singletons)}
+\item [] String: Has no line boundaries
+\item [] Pairs: Piece of memory with two parts \textbf{(basis for linked lists)}
+\item [] \texttt{nil} $\equiv$ \texttt{()}
+\item [] Tagged Pointers: Pointers have tags for big/small datatypes for efficiency
+\end{itemize}
+\subsubsection{Calling Functions}
+Anything inside parentheses \texttt{(function arg1 arg2 ...)} is a function call \\ \\
+\textbf{Note:} The syntax is the same for functions and data
+
+\subsubsection{Writing Data}
+Use an apostrophe \texttt{'} prefixed to an expression to represent it as data
+\begin{verbatim}
+  (a e g) \end{verbatim}
+represents a linked list where \texttt{[a | ]} $\rightarrow$ \texttt{[e | ]} $\rightarrow$ \texttt{[g |$\O$]}
+\begin{verbatim}
+  (let ((a '(f e g))))\end{verbatim}
+
+\subsubsection{Linked Lists}
+\begin{verbatim}
+  (cons a b) \end{verbatim}
+constructs a new pair \texttt{[a | b]}
+\begin{verbatim}
+  (car P) \end{verbatim}
+returns the head of the pair \texttt{P}
+\begin{verbatim}
+  (cdr P) \end{verbatim}
+returns the tail of the pair \texttt{P} \\ \\
+\textbf{Note:} Both \texttt{car} and \texttt{cdr} are fast operations, whereas \texttt{cons} is slower because it is similar to \texttt{new} in \texttt{C++} or \texttt{malloc()} in \texttt{C}
+
+\subsubsection*{Examples}
+\begin{verbatim}
+  (let ((foo ((cons 29 '(39 -6))))
+      (cons (cdr foo) (car foo)))) \end{verbatim}
+    \texttt{foo} is the linked list \texttt{[29 | ]} $\rightarrow$ \texttt{[39 | ]} $\rightarrow$ \texttt{[-6 |$\O$]}. \\
+    From that, we create a list from \texttt{foo} to get \texttt{[39 | ]} $\rightarrow$ \texttt{[-6 | ]} $\rightarrow$ \texttt{[29 |$\O$]}
+
+    \subsubsection{Improper Lists}
+    Lists that are not null terminated
+\begin{verbatim}
+  (a . b) \end{verbatim}
+creates an improper list of contents \texttt{[a | b]}
+
+\subsubsection*{Examples}
+\begin{verbatim}
+  (19 27 32 . 14) \end{verbatim}
+is the improper list \texttt{[19 | ]} $\rightarrow$ \texttt{[27 | ]} $\rightarrow$ \texttt{[32 |14]}
+
+\subsubsection{Tree Structure of Nested \texttt{car/cdr}}
+Consider the following improper list
+\begin{verbatim}
+  v = ((37 -6) . 29)
+  (car (cdr (car v))) \end{verbatim}
+is equivalent to 
+\begin{verbatim}
+  (car (cdr (car v)))
+  = (car (cdr (37 -6)))
+  = (car (-6 nil))
+  (car (cdr (car v))) = -6 \end{verbatim}
+will return \texttt{-6}
+
+\subsubsection{Functions}
+Elisp uses prefix notation
+\begin{verbatim}
+  (let ((v1 E1)
+        (v2 E2)
+          ...
+        (vn En))) \end{verbatim}
+      binds \texttt{v}$_\texttt{i}$ to \texttt{E}$_\texttt{i} \ \forall \ 1 \leq i \leq n$
+\begin{verbatim}
+  (function a b ...) \end{verbatim}
+is equivalent to \texttt{function(a, b, ...)} in \texttt{C++}
+\begin{verbatim}
+  (+ a b) \end{verbatim}
+is equivalent to \texttt{a + b} in \texttt{C++}
+
+\subsubsection{Control Statements}
+\begin{verbatim}
+  (if A B C) \end{verbatim}
+"if \texttt{A} then \texttt{B} else \texttt{C}"
+\begin{verbatim}
+  cond ((E1 E2)
+        (E3 E4)
+          ...
+        (E(n-1) En)) \end{verbatim}
+      "if \texttt{E1} then \texttt{E2}, else if \texttt{E3} then \texttt{E4}, else if $\ldots$ else if \texttt{E(n-1)} then \texttt{En}
+      
+      \subsubsection{Defining Functions and misc.}
+      \textbf{See Lisp Reference}
+
+      % =================================== PYTHON =================================== %
+      \subsection{Python}
+      An interpreted language (runtime checking) that reads like pseudocode \\ \\
+      \textbf{Note:} Python relies on indentation. \texttt{TAB} and \texttt{4*SPACE} are different
+
+      \subsubsection{Objects}
+      Every Python object has the following properties:
+      \begin{itemize}[leftmargin = 0pt]
+      \item [] An identity/address (immutable)
+      \item [] A type (immutable)
+      \item [] A value (mutable \textbf{iff} object itself is mutable)
+      \end{itemize}
+      Associated with objects are attributes (private variables) and methods
+      \begin{itemize}[leftmargin = 0pt]
+      \item [] \texttt{obj.name} is \texttt{name} of \texttt{obj}
+      \item [] \texttt{obj.method(args...)} is a function call to \texttt{method()} on \texttt{obj}'s behalf
+      \end{itemize}
+
+      \subsubsection{Built-in Functions}
+      \begin{itemize}[leftmargin = 0pt]
+      \item [] \texttt{id(obj)} returns the identity of \texttt{obj} as an integer
+      \item [] \texttt{type(obj)} returns the type of \texttt{obj}
+      \item [] \texttt{a is b} compares identities
+      \item [] \texttt{a == b} is a logical equality comparator
+      \item [] \texttt{isinstance(obj, class)} true if \texttt{obj} in \texttt{class}, false otherwise
+      \end{itemize}
+
+      \subsubsection{Types}
+      \begin{itemize}[leftmargin = 0pt]
+      \item [] \texttt{NoneType}: Equivalent to \texttt{nullptr}
+      \item [] Numbers: int, float, complex (\texttt{a + b\textbf{j}}), boolean (\texttt{0, 1})
+      \item [] Sequences: see \textbf{Sequence Type}
+      \item [] Mappings: see \textbf{Map Type}
+      \item [] Callables: Functions, methods, classes
+      \item [] Internal Types: etc.
+      \end{itemize}
+
+      \subsubsection{Sequence Type}
+      Operations on sequences include the following
+      \begin{itemize}[leftmargin = 0pt]
+      \item [] Indexing: \texttt{seq[i]} will compute the \texttt{i}$^{\texttt{th}}$ element of the sequence (if \texttt{i} $< 0$, it becomes \texttt{len(seq) + i}$^{\texttt{th}}$ element)
+      \item [] Length/Size: \texttt{len(seq)}
+      \item [] Subsequence: \texttt{seq[i:j]} where \texttt{i, j} $<$ \texttt{len(seq)}
+        \begin{itemize}[leftmargin = 0pt]
+        \item [] \textbf{Note:} Range is \texttt{[i, j)}
+        \item [] If \texttt{i} is not specified, the subsequence starts at the beginning of the sequence
+        \item [] If \texttt{j} is not specified, the subsequence goes from \texttt{i} to the end of the sequence
+        \end{itemize}
+      \end{itemize}
+      Lists (\texttt{ls = []}) are mutable sequences. Common functions include
+      \begin{itemize}[leftmargin = 0pt]
+      \item [] \texttt{append()} C++ vector push\_back() or emplace()
+      \item [] \texttt{extend()} joins two lists together
+      \item [] \texttt{insert(i, e)} inserts an element \texttt{e} at index \texttt{i}
+      \item [] \texttt{pop(i)} pops the element at index \texttt{i} (default is to pop from the back of the list)
+      \item [] \texttt{reverse()} reverses the list
+      \item [] \texttt{sort()} sorts the list
+      \end{itemize}
+
+      \subsubsection{Map Type}
+      Dictionaries (\texttt{map = \{'a' : 1, 'b' : xyz}\}) are like hashmaps or unordered\_maps. Common functions include
+      \begin{itemize}[leftmargin = 0pt]
+      \item [] \texttt{has\_key(k)} returns true if the key \texttt{k} exists, false otherwise
+      \item [] \texttt{get(k)} returns the value at key \texttt{k} if it exists, \texttt{None} otherwise.
+      \item [] \texttt{del map[k]} deletes the dictionary entry at key \texttt{k}
+      \end{itemize}
+      
+      \subsubsection{Callables}
+\begin{verbatim}
+  def func(x, y):
+      return x + y + 1 \end{verbatim}
+    defines \texttt{func}
+\begin{verbatim}
+  func = lambda x, y: x + y + 1 \end{verbatim}
+defines a lambda function to \texttt{func}
+\begin{verbatim}
+  func(y = 2, x = 1) \end{verbatim}
+will set \texttt{x = 1, y = 2} even if the parameters themselves out of order \\ \\
+\textbf{Note:} Python allows for explict definition of parameters
+
+\subsubsection{Classes}
+Like \texttt{C++} classes but \texttt{this} is now \texttt{self} and is explicit within the class
+\begin{verbatim}
+  class c(a, b):
+      __init__(self, ...):
+          constructor definition here
+      def hello(self, a, b):
+          return self.x + a + b \end{verbatim}
+        Work like functions in the sense that you can say \texttt{d = c} and do \texttt{obj = d()}
+
+        \subsubsection{Namespaces}
+        By definition, a class is an object, thus it has a namespace. Namespaces act similarly to C++ namespaces.
+        \begin{itemize}[leftmargin = 0pt]
+        \item [] \texttt{\_\_dict\_\_()} returns all of your namespace components in dictionary form.
+        \end{itemize}
+        \textbf{Example}
+\begin{verbatim}
+  c.__dict__() = {'hello': method, 'x': object, ...} \end{verbatim}
+calling \texttt{\_\_dict\_\_()} on the class \texttt{c}
+
+\subsubsection{Modules and Packages}
+\textbf{Note:} \texttt{import} is declarative \\
+When we import modules into our python file, the following happens
+\begin{itemize}[leftmargin = 0pt]
+\item [] A new namespace \texttt{N} is created
+\item [] Reads and executes all the code under the module in N
+\item [] Bind the module name to \texttt{N} in the invokers context
+  \begin{itemize}[leftmargin = 0pt]
+  \item [] This means we can now do \texttt{module.func()} assuming we did \texttt{import module}
+  \end{itemize}
+\end{itemize}
+To selectively import parts from modules, we do \texttt{from module import your-parts-here} \\ \\
+\textbf{Note:} \texttt{from module import *} is equivalent to \texttt{import module} \\ \\
+Packages are just modules in directories. To import, we do \texttt{import path.to.your.mod.module} where \texttt{.} is equivalent to \texttt{/} in the shell \\ \\
+\textbf{Note:} Packages usually have an empty \texttt{\_\_init\_\_.py} file
+
+\subsubsection{Why Packages and Classes?}
+Packages are more for the software developers, while classes are for behavior of objects at runtime.
+
+\subsubsection{Entry Point}
+\texttt{\_\_name\_\_ == "\_\_main\_\_"} is the entry point for the top level code (imported modules don't execute \texttt{"\_\_main\_\_"}).
+
+\subsubsection{Virtual Environments}
+A virtual environment lets you run different versions/configurations of Python. This is useful for portability and compatibility. To create a venv, we run
+\begin{verbatim}
+  python3 -m vemv mydir
+  . bin/activate
+\end{verbatim}
+Now, the virtual environment is technically set up. All that's left is to \texttt{pip install} whatever you need to create your venv
+
+% =================================== JAVASCRIPT =================================== %
+\subsection{JavaScript}
+\begin{itemize}[leftmargin = 0pt]
+\item [] Developed in 10 days
+\item [] Similar to Python
+\item [] Scripting language $\rightarrow$ forgiving
+\item [] Can be hooked into HTML
+\end{itemize}
+\subsubsection{Hooking to HTML}
+\begin{verbatim}
+  <script src = 'script.js'></script>
+\end{verbatim}
+will load \texttt{your-webpage-here/index.hml} then \texttt{your-webpage-here/script.js}. Note that this takes 2 get requests. For smaller programs, we can write \texttt{<script> your-script-here </script>} directly in the HTML. 
+
+\subsubsection{Protecting Your Code}
+\textbf{Program Obfuscation:} Turning good, readable source code to shit. It'll proably reduce the size of your file and may deter regular people, but genearlly, it doesn't work (we have deobfuscators).  \\ \\
+\textbf{Don't Ship Scripts:} Simply don't ship your scripts to the client.
+
+\subsubsection{JSX (JavaScript eXtension)}
+\begin{verbatim}
+  const n = <p style = 'your-style-here'> ... </p>;
+\end{verbatim}
+where \texttt{const n =, ;} are JS while \texttt{<p style = 'your-style-here'> ... </p>} is HTML
+
+\subsubsection{Order of Execution}
+\textbf{Browser Rendering Pipeline}
+\begin{itemize}[leftmargin = 0pt]
+\item [(1)] Browser downloads the HTML webpage and may try to render before it's finished downloading. The problem with this is that your browser may need to rerender objects that depend on unreceived packets. Moreover, if your browser tries to run scripts that rely on unreceived data, they'll crash.
+\item [(2)] Optimization: Your browser will prioritize the elements that are on the screen
+\end{itemize}
+
+\subsubsection{JSON (JavaScript Object Notation}
+Another competitor to XML
+\begin{verbatim}
+  {
+    "menu": {"id": "file",
+             "value": "foo",
+             "popup": {"menuItem: [array, of, elements]}
+            },
+   "plate": "your-value-here",
+   "napkin": "your-other-value-here"
+  } \end{verbatim}  
+creates a set of key-value pairs for your HTML webpage
+
+\subsubsection{NodeJS}
+JS runtime for asynchronous events
+\textbf{Event Handler Paradigm:} Write your program as a set of event handlers
+\begin{verbatim}
+  while(g = getEvent())
+    handleEvent(g)
+\end{verbatim}
+is predefined by Node. We just need to write the \texttt{handleEvent(g)} portion \\ \\
+\textbf{Event Handlers}
+\begin{itemize}[leftmargin = 0pt]
+\item [] Must be fast
+\item [] Must return
+\item [] Cannot wait (split long operations up)
+\end{itemize}
+NodeJS is single-threaded, meaning at most one event handler can be active at any given time. How do we scale then? Multiprocessing: Run multiple web servers/pages
+
+\subsubsection{Multithreaded Applications}
+With multithreaded applications, we can use parallelism where multiple threads run different operations in parallel. However, it get's buggy really quickly due to race conditions: 2 threads read/write to shared memory which can end up in a deadlock quickly.
+
+\subsubsection{Multithreading vs Multiprocessing}
+\begin{itemize}[leftmargin = 0pt]
+\item [] Multithreading: Multiple threads of a process are executed at once
+\item [] Multithreading: Every thread uses shared memory
+\end{itemize}
+\begin{itemize}[leftmargin = 0pt]
+\item [] Multiprocessing: Multiple processes are executed at once
+\item [] Multiprocessing: Every process uses distinct memory
+\end{itemize}
+
+% =================================== CLIENT-SERVER =================================== %
+
+\section{Client-Server}
+\subsection{Overview}
+The client-server structure states that an application is partitioned into a server and client side. Clients send request to the server(s) and get a response. But, if the server goes down, all the clients can't use the application. 
+
+\subsection{Alternatives to Client-Server}
+\begin{itemize}[leftmargin = 0pt]
+\item [] Peer-to-Peer: The application is partitioned across the network where no node is more important than another.
+  \begin{itemize}[leftmargin = 0pt]
+  \item [] Pros: One goes down? Others stay up
+  \item [] Cons: More overhead: Everyone needs to constantly talk to each other
+  \end{itemize}
+\item [] Primary-Secondary: We have a primary controller and secondary worker bees. Primary keeps track of the state, secondary works on smaller requests
+  \begin{itemize}[leftmargin = 0pt]
+  \item [] Pros: One node in charge of state
+  \item [] Cons: If that one node goes down, you're fucked
+  \end{itemize}
+\end{itemize}
+
+\subsection{Performance}
+Two main issues:
+\begin{itemize}[leftmargin = 0pt]
+\item [] Throughput: How much data you can send through (bottleneck threshold)
+  \begin{itemize}[leftmargin = 0pt]
+  \item [] Out of Order Execution: Requests get handled out of order/in parallel to maximize efficiency
+  \item [] Downside: order of execution may matter
+  \end{itemize}
+\item [] Latency: How long it takes to communicate between the client and server (delay)
+  \begin{itemize}[leftmargin = 0pt]
+  \item [] Cache: Keep a cache of recent requests
+  \item [] Downside: Stale caches and unsynchronized applications
+  \end{itemize}
+\end{itemize}
+
+% =================================== THE INTERNET =================================== %
+\section{The Internet}
+\subsection{Circuit Switching}
+Physical network of wires connecting devices. Therefore, if there is a path from one node to another, two people can reserve those wires when they get on the line. Once someone reserves those wires, no one can use them. This is called \textbf{Guaranteed Effort}
+
+\subsection{Packet Switching}
+Proposed by Paul Brown in 1961. \\
+Strategy: Divide a piece of a message into multiple smaller packets, shipping each one individually. This is known as \textbf{Best Effort} because it isn't guaranteed that the packages will arrive in order or even arrive at all. Problems include
+\begin{itemize}[leftmargin = 0pt]
+\item [] Packets can get lost
+\item [] Packets can get receive out of order
+\item [] Packets can be duplicated
+\item [] Security issues (intercepted/corrupted packages)
+\end{itemize}
+How do we solve these issues? See \textbf{Layers of the Internet}
+
+\subsection{Layers of the Internet}
+Assuming you can establish a connection between two nodes A and B, we can add layers of abstraction. From bottom-to-top we have:
+\begin{itemize}
+\item [(1)] Physical Layer: Physical wires connecting adjacent nodes
+\item [(2)] Link Layer: Send packets to adjacent nodes
+\item [(3)] Internet Layer: Send packets to non-adjacent nodes
+\item [(4)] Transport Layer: Defines connections between the client and server, sending streams of data between A and B (stream = multiple packets)
+\item [(5)] Application Layer: Clients and servers talk to each other through API's
+\end{itemize}
+
+\subsubsection{Internet Protocol}
+We use both IPv4 and IPv6 for compatibility (we can't upgrade everyone at once). A packet can be split up into its header and its contents. \\
+\textbf{The Header}
+\begin{itemize}[leftmargin = *pt]
+\item [] Length
+\item [] Protocol Number (unique 32-bit identifier)
+\item [] Source and Destination addresses (IP addresses)
+\item [] Checksum: 16 bits to check for packet corruption
+\end{itemize}
+\textbf{IP Addresses:} are in the format \texttt{XXX.XX.XXX.X} where each set of \texttt{X}'s between the \texttt{.}'s represent a 8 bit number (0-255) \\ \\
+\textbf{TTL (Time To Live):} Every time a package gets sent, it's TTL gets decremented. When TTL = 0, the package gets thrown away (for performance) \\ \\
+\textbf{IPv6}
+\begin{itemize}[leftmargin = *pt]
+\item [] Wider addresses (hex)
+\item [] Less efficient than IPv4
+\end{itemize}
+\textbf{Communicating between IPv4 and IPv6}: Can't directly communicate with each other. Instead, we use NAT (Network Address Translation) and gateway hosts as a workaround
+
+\subsubsection{UDP and TCP}
+\textbf{UDP (User Datagram Protocol):} Thin layer above IP. Speeds up communications by not formally establishing a connection before data is transferred (mainly used for debugging and low level stuff). \\ \\
+\textbf{TCP (Transmission Control Protocol):} Built on top of IP and takes streams of data that provide transmission that's reliable, ordered, and error-checked. \\ \\
+\textbf{Flow Control (TCP):} We don't want to overload the router, so we control how many packets we send at once. Once we receive them, we want to reassemble the original message. If packets are missing or corrupted, TCP will try to retransmission said packets. \\ \\
+\textbf{Note:} Though TCP is reliable, it's slow
+
+\subsubsection{RTP and HTTP}
+\textbf{RTP (Real-Time Transport Protocol):} Builds atop UDP and is mainly used for faster but less reliable communication. Rather than wait for packets to come, it drops them and moves on (TCP wouldve been jittery because it's waiting for packets). \\ \\
+\textbf{HTTP (Hyper Text Transfer Protocol):} Builds atop TCP and is the basis for the web. Protocol is as folllows: client opens the connection on webserver and sends a request, the server responds, and closes the connection. \\ \\
+\textbf{Side Note:} \texttt{telnet} in Emacs sets a TCP connection from Emacs to leapsecond.com on port 80 (default). GET / HTTP/1.0/ tells us I want teh root document and is using HTTP protocol 1.0 (ancient). 
+
+\subsubsection{HTTP (cont.)}
+\textbf{HTTP/1.1 (1997)} broke the webpage up into pieces and allowed for connections to stay open.
+\textbf{Side Note: HTTPS} is just HTTP + encryption (doesn't encrypt metadata) \\ \\
+\textbf{HTTP/2.0 (2015} allowed for header compression, which puts more burden on the CPU but improves performance. Introduced server push (servers don't need to wait for clients to send requests), pipelining (multiple requests/responses can be sent at once, potentially out of order), and multiplexing (uses a single connection to satisfy several different web searches) \\ \\
+\textbf{HTTP/3.0 (2022)} uses UDP (technically QUIC which is a substitute for TCP with support for multiple streams), improved latency, and tried to resolve head-of-line delays. \\ \\
+\textbf{Head-of-Line Delays:} Say a recipient has packets 1 2 and 3. It hasn’t gotten packet 4 but received packet 5, 6, 7. TCP will show packets 1 2 3 but stop at packet 4 to ask for retransmission. When packet 4 comes it will show 4,5,6,7 (head of line delay). In this case, the other packets waited for head of line (packet 4) to show up.
+
+% =================================== HTML =================================== %
+\section{HTML}
+The Web = HTTPS + HTML \\
+HTML is the stream that we're sending via packets. \\
+Derived from SGML (Standard Generalized Markup Language)
+\begin{verbatim}
+  <p>
+    your SGML code here
+  </p> \end{verbatim}
+where \texttt{<p>} is the node
+\begin{verbatim}
+  <p style="your-style-here">
+    your SGML code here
+  </p> \end{verbatim}
+you can specify styles and other attributes \\ \\
+\textbf{DTD (Document Type Definition):} They sucked. Basically SGML templates with predefined node attributes/properties \\ \\
+\textbf{Note:} HTML 1-4 sucked bc they tried to standardize it, but the web expanded too quickly. HTML5 is most commonly used now because it adopted a \textbf{Living Standard} model, where new features get added regularly
+
+\subsection{Why HTML?}
+\begin{itemize}[leftmargin = 0pt]
+\item [] SGML sucked
+\item [] Compatibility issues with web-specific extensions
+\end{itemize}
+It's forgiving: if you fuck up, it'll still print something. The downside? If you fuck up, it'll still print something (harder to find bugs).
+
+\subsection{DOM (Document Object Model)}
+Specifies the type of tree you have in your browser and how you can access/manipulate elements via API's. \\ \\
+Essentially tree manipulation
+
+\subsection{XML}
+SGML turned into XML (eXtensible Markup Language) \\
+XML is very strict on syntax, but has no real weight. People tried XHTML which sucked \\ \\
+\textbf{Note:} XML is still used in many business-to-business applications mainly used to ship databases \\ \\
+\textbf{Note:} Implicit ending paragraph tags are allowed in HTML and SGML but not XML
+
+% =================================== CSS =================================== %
+\section{CSS (Cascading Style Sheets)}
+\textbf{Basic Idea:} Separate form and function \\ \\
+CSS specifies priorities between attributes in the DOM, browser, and the user specifications
+
+\subsection{Cascading}
+Style at a tree node is inherited by its descendents. That is, if the root has \texttt{style = "Times New Roman"}, its descendents inherit \texttt{style = "Times New Roman"}
+
+\subsection{Style}
+Styles are declarative. This means that CSS is easy but restrictive.
+
+% =================================== SOFTWARE CONSTRUCTION =================================== %
+\section{Software Construction}
+\subsection{Purpose of Applications}
+\begin{itemize}[leftmargin = 0pt]
+\item [] Survive power outages/OS bugs: How? Persistant storage
+\item [] Be fast: How? Cache
+\item [] Be understandable
+\end{itemize}
+\subsubsection{Test First Paradigm}
+Write test/use cases before building out the framework. This will significantly reduce time spent on refactoring code.
+
+% =================================== EMACS =================================== %
+\section{Emacs}
+\textbf{Note:} We sometimes prefer non-GUI versions of programs like Emacs because of the latency: if we \texttt{ssh} into a server that is across the world, the GUI will be slower. For example, it needs to send a request, wait, and receive a response before moving your cursor. Thus, we may prefer editing straight from the terminal.
+\subsection{Commands}
+Emacs commands are structured like a tree. For example, \texttt{C-} is the entry point, \texttt{n, p, etc.} are leaf nodes, \texttt{x} is an entry to a subtree, etc.
+
+% =================================== SHELL COMMANDS =================================== %
+\section{Shell Commands}
+\subsection{Change Working Directory}
+\texttt{cd [-L | -P] [DIRECTORY]}: Change working directory
+\begin{itemize}[leftmargin = 0pt]
+\item [] \texttt{-L}: Handle dot-dot logically; symbolic link components are \textbf{not} resolved before dot-dot components are processed
+\item [] \texttt{-P}: Handle dot-dot physically; symbolic link components are resolved before dot-dot components are processed
+\item [] \textbf{Note:} If both \texttt{-L} and \texttt{-P} are specified, the last of the options will be used. If neither is specified, the oeprand will handle dot-dot logically
+\end{itemize}
+
+\subsection{Disk Usage}
+\texttt{du [OPTIONS] FILE(S)}: Estimate file space usage (If no \texttt{FILE} is specified, list usage for all directories (recursively) and files)
+\begin{itemize}[leftmargin = 0pt]
+\item [] \texttt{-0, --null}: End each output line with \texttt{NUL}, not newline
+\item [] \texttt{-a, --all}: Write counts for all files, not just directories
+\item [] \texttt{--apparent-size}: Print apparent sizes rather than device usage; Though the apparent size is usually smaller, it may be larger due to holes in ('sparse') files, internal fragmentation, indirect blocks, etc.
+\item [] \texttt{-B, --block-size=SIZE}: scale sizes by \texttt{SIZE} before printing them; \texttt{e.g., -BM} prints sizes in units of 1,048,576 bytes
+\item [] \texttt{-b, --bytes}: Equivalent to \texttt{--apparent-size --block-size=1}
+\item [] \texttt{-c, --total}: Produce a grand total
+\item [] \texttt{-D, --dereference-args}: Dereference only symlinks that are listed on the command line
+\item [] \texttt{-d, --max-depth=N}: Recurse a max of \texttt{N} levels
+\item [] \texttt{--files0-from=F}: Summarize device usage of the \texttt{NUL}-terminated file names specified in file F; if F is -, then read names from standard input
+\item [] \texttt{-H}: See \texttt{-D, --dereference-args}
+\item [] \texttt{-h, --human-readable}: Print sizes in human readable format (e.g., \texttt{1K, 234M, 2G})
+\item [] \texttt{--inodes}: List inode usage information instead of block usage
+\item [] \texttt{-k}: Equivalent to \texttt{--block-size=1K}
+\item [] \texttt{-L, --dereference}: Dereference all symbolic links
+\item [] \texttt{-l, --count-links}: Count sizes many times if hard linked
+\item [] \texttt{-m}: Equivalent to \texttt{--block-size=1M}
+\item [] \texttt{-P, --no-dereference}: Don't follow any symbolic links (this is the default)
+\item [] \texttt{-S, --seperate-dirs}: For directories, do not include size of subdirectories
+\item [] \texttt{--si}: Like \texttt{-h}, but uses powers of 1000, not 1024
+\item [] \texttt{-t, --threshold=SIZE}: Exclude entries smaller than \texttt{SIZE} if positive, or entries greater than \texttt{SIZE} if negative
+\item [] \texttt{--time}: Show time of the last modification of any file in the new directory, or any of its subdirectories
+\item [] \texttt{--time=WORD}: Show time as \texttt{WORD} insetad of modification time: \texttt{atime, access, use, ctime or status}
+\item [] \texttt{--time-style=STYLE}: Show times using \texttt{STYLE}, which can be: \texttt{full-iso, long-iso, iso, or +FORMAT}; \texttt{FORMAT} is interpreted like in 'date'
+\item [] \texttt{-X, --exclude-from=FILE}: Exclude files that match the pattern \texttt{FILE}
+\item [] \texttt{--exclude=PATTERN}: Exclude files that match \texttt{PATTERN}
+\item [] \texttt{-x, --one-file-system}: Skip directories on different file systems
+\end{itemize}
+
+\subsection{Kill (\texttt{kill})}
+\texttt{kill [OPTION] PROCESS}
+\begin{itemize}[leftmargin = 0pt]
+\item [] \texttt{-9} Kill request cannot ignore
+\end{itemize}
+\textbf{Note:} Kill sends a request to tell a process to kill itself
+
+\subsection{Link}
+\texttt{ln [OPTIONS] TARGET LINK\_NAME} \\
+\texttt{ln [OPTIONS] TARGET} \\
+\texttt{ln [OPTIONS] TARGET DIRECTORY} \\
+\texttt{ln [OPTIONS] -t DIRECTORY TARGET}: Create a link to \texttt{TARGET} with name \texttt{LINK\_NAME}
+\begin{itemize}[leftmargin = 0pt]
+\item [] \texttt{--backup}: Make a backup of each destination file
+\item [] \texttt{-b}: Like \texttt{--backup} without an argument
+\item [] \texttt{-d, -F, --directory}: Allow superuser to attempt to hard link directories (will probably fail due to system restrictions)
+\item [] \texttt{-f, --force}: Remove existing destination files
+\item [] \texttt{-i, --interactive}: Prompt before removing destinations
+\item [] \texttt{-L, --logical}: Dereference \texttt{TARGET}'s that are symbolic links
+\item [] \texttt{-n, --no-dereference}: Treat \texttt{LINK\_NAME} as a normal file if it's a symbolic link to a directory
+\item [] \texttt{-P, --physical}: Make hard links directly to symbolic links
+\item [] \texttt{-r, --relative}: Used with \texttt{-s, --symbolic}; Create links relative to link location
+\item [] \texttt{-s, --symbolic}: Make symbolic links instead of hard links
+\item [] \texttt{-t, --target-directory}: Specify a \texttt{DIRECTORY} in which to create the links
+\item [] \texttt{-T, --no-target-directory}: Treat \texttt{LINK\_NAME} as a normal file
+\item [] \texttt{-v, --verbose}: Print name of each linked file
+\end{itemize}
+
+\subsection{List  Directory Contents (\texttt{ls})}
+\texttt{ls [OPTIONS] DIRECTORY}
+\begin{itemize}[leftmargin = 0pt]
+\item [] \texttt{-a, --all}: Do not ignore entries starting with \texttt{.}
+\item [] \texttt{-A, --almost-all}: Only ignore the implied \texttt{., ..}
+\item [] \texttt{-c}: With \texttt{-lt}: sort by, and show, ctime (time of last modification of file status information); with \texttt{-l}: show ctime and sort by name; otherwise: sort by ctime, newest first
+\item [] \texttt{-f}: List all entries in directory order
+\item [] \texttt{-g}: Like \texttt{-l}, but do not list owner
+\item [] \texttt{-G, --no-group}: Used with \texttt{-l}, but do not list group
+\item [] \texttt{-i, --inode}: Print the index number of each file (value of the pointer)
+\item [] \texttt{-l}: Use long listing format
+\item [] \texttt{-o}: Same as \texttt{-lG}
+\item [] \texttt{-R}: Recursively list subdirectories and files
+\item [] \texttt{-t}: Sort by time, newest first
+\end{itemize}
+\texttt{ls -l} Columns
+\begin{itemize}[leftmargin = 0pt]
+\item [1] File type and permissions (see \textbf{File Permissions})
+\item [2] Hard link count
+\item [3] Owner of the file
+\item [4] Group of the file
+\item [5] Size of the file (in bytes)
+\item [6, 7, 8] Last modified date MMM DD TT:TT
+\item [9] \texttt{name} \textbf{or} \texttt{name -> contents} if symbolic link
+\end{itemize}
+
+\subsection{Move}
+\texttt{mv [OPTIONS] -T SOURCE DESTINATION} \\
+\texttt{mv [OPTIONS] SOURCE DIRECTORY} \\
+\texttt{mv [OPTIONS] -t DIRECTORY SOURCE}: Move file from source to directory
+\begin{itemize}[leftmargin = 0pt]
+\item [] \texttt{-f, --force}: Do not prompt before overwriting
+\item [] \texttt{-i, --interactive}: Prompt before every overwrite
+\item [] \texttt{-n, --no-clobber}: Do not overwrite existing files
+\item [] \texttt{-t, --target-directory}: Move all \texttt{SOURCE} to \texttt{DIRECTORY}
+\item [] \texttt{-T, --no-target-directory}: Treat \texttt{DIRECTORY} as a file
+\item [] \texttt{-u, --update}: Move only when \texttt{SOURCE} is newer than or is missing \texttt{DESTINATION}
+\item [] \texttt{-v, --verbose}: Explain what is being done
+\end{itemize}
+
+\subsection{Remove}
+\texttt{rm [OPTIONS] [FILE/DIRECTORY]}: Remove a file or directory
+\begin{itemize}[leftmargin = 0pt]
+\item [] \texttt{-f, --force}: Forcefully remove
+\item [] \texttt{-i, --interactive}: Prompt before every removal
+\item [] \texttt{r, -R, --recursive}: Remove directories and all their contents recursively
+\item [] \texttt{-d, --dir}: Remove empty directories
+\item [] \texttt{-v, --verbose}: Explain what is being done
+\end{itemize}
+\textbf{Note:} \texttt{rm} does not remove files themselves. They simply remove the hard/symbolic link to a file
+
+\subsection{Sequence (\texttt{seq})}
+\texttt{seq [OPTIONS] LAST} \\
+\texttt{seq [OPTIONS] FIRST LAST} \\
+\texttt{seq [OPTION] FIRST INCREMENT LAST}: Print numbers from \texttt{FIRST} to \texttt{LAST}, in steps of \texttt{INCREMENT}
+\begin{itemize}[leftmargin = 0pt]
+\item [] \texttt{-f, --foramt=FORMAT}: Use \texttt{printf} style floating-point \texttt{FORMAT}
+\item [] \texttt{-s, --separator=STRING}: Use \texttt{STRING} to separate numbers (default: \texttt{\textbackslash n})
+\item [] \texttt{-w, --equal width}: Equalize width by padding with leading zeroes
+\end{itemize}
+
+\subsection{Stream Editor (\texttt{sed})}
+\texttt{sed [OPTIONS] FILE(S)}: A stream editor to perform basic text transformations on inputs \\
+\textbf{Note:} \texttt{sed} makes only \textbf{one} pass over input(s)
+\begin{itemize}[leftmargin = 0pt]
+\item [] \texttt{-n, --quiet, --silent}: Suppress automatic pattern space printing
+\item [] \texttt{--debug}: Annotate execution
+\item [] \texttt{-e SCRIPT, --expression=SCRIPT}: Add the script to the commands to be executed
+\item [] \texttt{-f SCRIPT\_FILE, --file=SCRIPT\_FILE}: Add the contents of \texttt{SCRIPT\_FILE} to the commands to be executed
+\item [] \texttt{--follow-symlinks}: Follow symlinks when processing in place
+\item [] \texttt{-i[SUFFIX], --in-place[=SUFFIX]}: Edit files in place (Makes backup if \texttt{SUFFIX} is applied
+\item [] \texttt{-l N, --line-length=N}: Specify desired line-wrap length
+\item [] \texttt{--posix}: Disable all GNU extensions
+\item [] \texttt{-E, -r, --regexp-extended}: Use extended regular expressions in teh script (for portability use POSIX -E)
+\item [] \texttt{-s, --separate}: Consider files as separate rather than a single, continuous long stream
+\item [] \texttt{--sandbox}: Operate in sandbox mode (disable e/r/w commands)
+\item [] \texttt{-u, --unbuffered}: Load minimal amounts of data from teh input files and flush the output buffers more often
+\item [] \texttt{-z, --null-data}: Separate lines by \texttt{NUL} characters
+\end{itemize}
+
+
+% =============== VERSION CONTROL ===============%
+\section{Version Control (\texttt{git})}
+\subsection{Overview}
+\texttt{git} is a version control system for software development, and is arguably the most important part of software construction. There are two main things that \texttt{git} maintains:
+\begin{itemize}[label=,leftmargin=*]
+\item An object database: A repository of objects that records the history of your project
+\item An index (cache): Records the future\footnote{Future: plans for the future of the project, immediate or long-term} of the project.
+\end{itemize}
+
+
+
+
+
+\subsection{Getting Started}
+There are two main ways to start a git repository: \texttt{git init TARGET\_DIRECTORY\_HERE} and \texttt{git clone TARGET\_REPOSITORY\_HERE}
+
+\begin{itemize} [label=,leftmargin=*]
+\item \texttt{git init TARGET\_DIRECTORY\_HERE} initializes an empty project inside the target directory (current directory if not specified) with a \texttt{.git} folder. This is less common, as a lot of people don't start a project from scratch.
+\item \texttt{git clone TARGET\_REPOSITORY\_HERE} clones an existing repository, creating a directory on your computer containing a copty of all of the files in that repository with the \texttt{.git} folder inside that directory. \\ \\
+  \textbf{\textit{Note:}} When cloning a repository, it is possible to clone from a device. \\ \\
+  \textbf{\textit{Note:}} \texttt{git} will remember where you're cloning from; that is, if you run
+\begin{verbatim}
+  git clone REMOTE_REPOSITORY
+  git clone ./REMOTE_REPOSITORY \end{verbatim}
+\texttt{git} will identify that the second clone was from a device, whereas the first clone was from a remote location.
+\end{itemize}
+When working with \texttt{git}, it is important to remember that remote-to-local repositories are a downstream structure; that is, cloning from a remote repository sends a repository "downstream" to your device.
+
+
+
+
+
+\subsection{The Repository}
+What do you put inside your repository?
+\begin{itemize}[label=,leftmargin=*]
+\item Stuff you change by hand
+\end{itemize}
+What should you \textbf{NOT} put inside your repository?
+\begin{itemize}[label=,leftmargin=*]
+\item Automatically generated files (e.g. \texttt{node\_modules})
+\item Stuff that isn't portable/shouldn't be portable (e.g. \texttt{.env.local})
+\end{itemize}
+\texttt{.gitignore}: By default, \texttt{git} creates this file, which will tell \texttt{git} to automatically ignore file/type(s) that are specified inside \texttt{.gitignore}. This file is a very important one, especially to keep your repository clean and portable.
+
+\subsubsection*{ASIDE: \texttt{Shorthand for Commit ID's}}
+\begin{itemize}[label=,leftmargin=*]
+\item \texttt{COMMIT\_ID\^}: The commit before \texttt{COMMIT\_ID}
+\item \texttt{COMMIT\_ID\textasciitilde n}: The \texttt{HEAD} - n$^\text{th}$ commit
+\item \texttt{COMMIT\_ID\^}\texttt{!}: Same as \texttt{COMMIT\_ID\^}\texttt{..COMMIT\_ID}
+\item \texttt{COMMIT\_ID..COMMIT\_ID}: Range of commits (\texttt{start}, \texttt{end}]
+\end{itemize}
+
+
+
+
+
+\subsection{Managing the Repository}
+The following subsections will cover common git commands that are used to manage the repository. \\ \\
+\textbf{\textit{Note:}} All of these commands are called under the assumption that you're in the current repository folder.
+
+\subsubsection{State}
+This set of commands gives information of the state of the repository.
+
+\subsubsection*{\texttt{git status}}
+\texttt{git status}: Tells you the current status of your repository. Mainly, it will list all files that have been added, modified, or deleted relative to your last commit.
+
+\subsubsection*{\texttt{git ls-files}}
+\texttt{git ls-files}: Lists all working files managed by \texttt{git} to \texttt{stdout}. Files that are not tracked by git will not show up on this list(hence why we do not just use \texttt{ls}).
+
+\subsubsection*{\texttt{git blame}}
+\texttt{git blame}: Returns a line-by-line history of a specified file in a specified commit (\texttt{HEAD} if not specified) with the author and timestamp of each line.
+
+\subsubsection*{\texttt{git diff}}
+\texttt{git diff COMMIT\_A..COMMIT\_B}: Takes a \texttt{diff} of two commits and prints to \texttt{stdout} \textbf{(See \texttt{git log} for navigating the Terminal output)}.
+
+\subsubsection*{\texttt{git grep PATTERN}}
+\texttt{git grep PATTERN}: Same as doing \texttt{grep PATTERN \$(git ls-files)} \textbf{(See \texttt{grep})}
+
+\subsubsection*{\texttt{git log}}
+\texttt{git log [OPTIONS] (start-point..end-point]}: Prints the commit history between \texttt{start-point} exclusive to \texttt{end-point} inclusive in reverse-time order (new $\rightarrow$ old). Prints the entire commit history from the first commit to the most recent commit if no \texttt{start-point, end-point} are specified.
+
+\textbf{Options}
+\begin{itemize}[label=]
+\item \texttt{-n}: Look at the HEAD - n$^\text{th}$ commit
+\item \texttt{--decorate[$\ldots$]}: Format git log output with specified parameters \textbf{(See HW4)}
+\end{itemize}
+
+\textbf{Navigating \texttt{git log} in the Terminal}
+\begin{itemize}[label=]
+\item \texttt{/PATTERN}: Searches for a pattern in the output.
+\item \texttt{n} and \texttt{N}: Goes to the next and previous n$^\text{th}$ occurrence respectively
+\item \texttt{q}: Exits the log output
+\item \texttt{SHIFT-g}: Scrolls to the very bottom of the log output
+\end{itemize}
+
+\textbf{ASIDE: Using \texttt{git log}}
+\begin{itemize}[label=]
+\item \texttt{git log} is commonly piped into other commands such as \texttt{wc} \textbf{(See \texttt{Shell Commands})}
+\item \texttt{git log} outputs both the committer and author of a commit. While often times they are the same person, it may be that they are not. This is more apparent in big open source projects with controlled/reviewed commits. The person with repository access will be listed as the committer, while the person who wrote the code will be listed as the author.
+\end{itemize}
+
+
+
+
+
+
+\subsubsection{Pushing Upstream}
+This set of commands relates to pushing upstream to the central repository, mainly staging, committing, and pushing.
+
+\subsubsection*{\texttt{git clean}}
+\texttt{git clean}: Removes all untracked files from the repository.
+
+\subsubsection*{\texttt{git add}}
+\texttt{git add FILE}: Stages a file to commit. If the file was previously untracked, \texttt{git} will now track the file.
+
+\subsubsection*{\texttt{git rm}}
+\texttt{git rm FILE}: Removes file as well as untracks the file that was removed. This is equivalent to doing \texttt{rm FILE} \textbf{(See Shell Commands)} followed by \texttt{git add FILE}.
+
+\textbf{Options} 
+\begin{itemize}[label=]         
+\item \texttt{-f, --force}: Forcefully remove file and ignore any warnings
+\item \texttt{-r}: Recursively delete a directory and all of its contents
+\end{itemize}
+
+\subsubsection*{\texttt{git reset}}
+\texttt{git reset [OPTIONS]}: Unstages all modified files.
+
+\textbf{Options}
+\begin{itemize}[label=]
+\item \texttt{--soft}: Only reset \texttt{HEAD}
+\item \texttt{--hard}: Reset \texttt{HEAD}, the index, and working tree
+\end{itemize}
+
+\subsubsection*{\texttt{git commit}}
+\texttt{git commit [OPTIONS]}: Creates a commit with all of your staged files and allows for a commit message. \\
+
+\textbf{Commit Semantics}
+A commit message should explain \textbf{why} they are adding to the repository, not what they are contributing. A commit message should have the following format:
+\begin{verbatim}
+      brief summary here
+
+      * more
+      * details
+      * here
+\end{verbatim}
+
+\textbf{Options}
+\begin{itemize}
+\item [] \texttt{-m}: Write a commit message inline
+\item [] \texttt{--amend}: Amend a previous commit.
+\end{itemize}
+
+\textit{\textbf{Note:}} Amending should be done sparingly and never in big open source projects to avoid confusion.
+
+\subsubsection*{\texttt{git push}}
+\texttt{git push [OPTIONS]}: Pushes all commit(s) from your local repository upstream into the central repository.
+
+\textbf{Options}
+\begin{itemize}[label=]
+\item \texttt{-u, --set-upstream}: Set upstream branch to push to
+\item \texttt{--atomic}: Request atomic transaction on remote side
+\end{itemize}
+
+\subsubsection{Pulling Downstream}
+This set of commands relate to pulling from the upstream repository, mainly fetching and pulling.
+
+\subsubsection*{\texttt{git fetch}}
+\texttt{git fetch [OPTIONS] [BRANCH]}: Fetches metadata from a remote branch, \texttt{origin} if not specified. Note that all of the working files in the local repository remain unchanged. This is generally a safer way to update your local repository with the lastest metadata since it does not change any working files.
+
+\textbf{Options}
+\begin{itemize}[label=]
+\item \texttt{--all}: Fetch information from all remotes
+\item \texttt{--atomic}: Request atomic transaction on remote side
+\end{itemize}
+
+\subsubsection*{\texttt{git pull}}
+\texttt{git pull [OPTIONS] [BRANCH]}: Pulls metadata from a remote branch, \texttt{origin} if not specified. Note that all of the working files in the local repository will be updated to match the upstream repository. If the local branch is behind the remote, the local branch will fast forward by default. If there are divergent branches, use either the \texttt{--rebase} or \texttt{--no-rebase} option to resolve conflicts. \texttt{git pull} will fail if there is no specified method of resolving conflicts since \texttt{git} is conservative$^2$. \texttt{git pull} is equivalent to \texttt{git fetch} followed by \texttt{git merge} or \texttt{git rebase} depending on default configurations.
+
+\textbf{Options}
+\begin{itemize}[label=]
+\item \texttt{--all}: Fetch information from all remotes
+\item \texttt{--atomic}: Request atomic transaction on remote side
+\end{itemize}
+
+
+
+
+
+\subsubsection{Branch Manipulation}
+\subsubsection{Overview}
+A \texttt{branch} is a lightweight \textbf{moveable} pointer\footnote{Pointer: In \texttt{git}, \texttt{HEAD} is a reference variable that points to the tip of the current working branch.} to a commit. By default, when creating a repository, there is only one branch, \texttt{main/master}. By default, when creating a new branch, \texttt{git} will branch off of the current branch. \texttt{git} is a tree structure, meaning it  must be a \texttt{DAG} in order to work.
+
+
+\subsubsection*{\texttt{git branch}}
+\texttt{git branch [OPTIONS] [BRANCH]}: Lists all of the repository's local branches.
+
+\textbf{Options}
+\begin{itemize}[label=]
+\item \texttt{-d}: Delete the branch \texttt{BRANCH}
+\item \texttt{-D}: Delete the branch \texttt{BRANCH} without warning
+\item \texttt{-m}: Renames a branch from \texttt{A} to \texttt{B}
+\end{itemize}
+
+\subsubsection*{\texttt{git checkout}}
+\texttt{git checkout [OPTIONS] BRANCH}: Changes all of the working files to be identical to the ones in the specified \texttt{BRANCH}. Alternatively, \texttt{git switch BRANCH} is similar but has a few minor differences. \\
+When checking out, \texttt{git} is conservative\footnote{Conservative: \texttt{git} will warn you if you have uncommitted or untracked files when performing any actions that mutate your working files.} and will prevent a checkout if you have uncommitted or untracked working files.
+
+\textbf{Options}
+\begin{itemize}[label=]
+\item \texttt{-f, --force}: Force a checkout and ignore any warnings
+\item \texttt{-b}: Create a new branch \texttt{BRANCH} and start it at the \texttt{start-point} of the \texttt{main} branch
+\item \texttt{-B}: Resets \texttt{BRANCH} to a specified \texttt{start-point} if the branch exists, same as \texttt{-b} otherwise
+\end{itemize}
+
+\subsubsection*{\texttt{git merge}}
+\texttt{git merge [BRANCH]}: Merges branch \texttt{BRANCH} into the current branch. This creates a graphical commit history.
+\begin{verbatim}
+          A---B---C topic
+         /         \
+    D---E---F---G---H master
+\end{verbatim}
+
+
+\subsubsection*{\texttt{git rebase}}
+\texttt{git rebase [BRANCH]}: Reapplies commits atop a branch tip. This creates a linear history rather than a \texttt{DAG}. \\
+Given a commit history,
+\begin{verbatim}
+         A---B---C topic
+        /
+    D---E---A'---F master
+\end{verbatim}
+Running \texttt{git rebase master} will produce
+\begin{verbatim}
+                   B'---C' topic
+                  /
+    D---E---A'---F master
+\end{verbatim}
+
+\subsubsection*{\texttt{git bisect}}
+\texttt{git bisect} runs a binary search to find the first bad version.
+\begin{verbatim}
+    git bisect start
+    git bisect bad (current version)
+    git bisect good VERSION
+\end{verbatim}
+\textit{\textbf{Note:}} \texttt{git bisect} might not work on merged commit histories.
+
+
+
+
+
+\subsection{Extraneous \texttt{git} Features}
+\subsubsection{Tags}
+Tags essentially label commits, and are created by running the command \texttt{git tag COMMIT\_ID}. There are various types of tags: plain, annotated, and signed tags. They are located in \texttt{refs/tags}. It is worth noting that branches and tags can be the same names.
+
+\subsubsection*{Plain}
+Plain tags are the literally just giving names to commits. There is no metadata stored.
+
+\subsubsection*{Annotated}
+Annotated tags store metadata and can be created by running the command \texttt{git tag -a TAGNAME -m "MESSAGE" COMMIT\_ID}.
+
+\subsubsection*{Signed}
+Signed tags are for security, and have cryptographic authentication. They can be created by running the command \texttt{git tag -s}
+
+
+
+
+
+\subsubsection{Submodules}
+Submodules in git are used to "point" to another project. It contains the commit ID's within the other project and is used for version stability. To update submodules, run the command \texttt{git submodule foreach git pull origin master}.
+
+
+
+
+
+\subsubsection{Stashing}
+Stashes are implemented with a stack, and are used for switching branches. \texttt{git stash push/pop} will push/pop your modified working files onto/off the stack respectively. \texttt{git stash list} will list all of your stacks. If you want to be avant garde like Eggert, you can instead do:
+\begin{verbatim}
+git diff > mychanges.diff
+patch -p1 < mychanges.diff
+\end{verbatim}
+
+
+
+
+
+\subsection{Communicating Between Developers}
+There are multiple ways to communicate between developers:
+\begin{itemize}[label=]
+\item GUI enthusiasts: Share a repository and use pull requests via something like Github
+\item CLI enjoyers: Email patches back and forth:
+  \begin{itemize}[label=]
+  \item \texttt{git format-patch A..B}
+  \item \texttt{git send-email}
+  \item \texttt{git am FILE} (automatic merge)
+  \end{itemize}
+\item 
+
+\end{itemize}
+
+
+
+
+
+% =============== BUILD TOOLS ===============%
+\section{Build Tools}
+Who is the audience for these build tools?
+\begin{itemize}[label=]
+\item Developers: Write the source code for the software
+\item Builders: Compile source code for a particular platform
+\item Distributers: Ship programs to users in the form of distributions
+\item Installers/Configurers: Users that install and use the programs
+\end{itemize}
+
+
+
+
+
+\subsection{\texttt{make}}
+Once developers are done writing their code, they want to help builders compile it. In order to do so, they must provide metainformation about the source code and all of its dependencies. One easy way to do this is by writing a metaprogram that will automatically implement these build instructions. In simple programs, rather than a metaprogram, a README is used. Otherwise, we can write a simple script (commonly labeled \texttt{build.sh} or \texttt{setup.py}). Here's what a sample script may look lke:
+\begin{verbatim}
+    gcc -c a.c
+    gcc -c b.c
+    gcc -c c.c
+    gcc -c a.o b.o c.o -o foo
+\end{verbatim}
+
+\subsubsection{Flaws/Fixes}
+There are a couple downsides to this approach
+\begin{enumerate}[label=(\alph*)]
+\item  Maintaining this file can be too time consuming/get confusing
+\item Rebuilding after small changes is expensive
+\item Not scalable
+\item It's slow (missing parallelism)
+\end{enumerate}
+How do we fix these issues? We can't fix all of these issues, but we can use a separate build tool rather than write our own script via \texttt{Makefiles}.
+
+\subsubsection{Makefiles}
+Makefiles are similar to shellscripts but are more efficient: they only rebuild what is necessary. A sample Makefile may look like:
+\begin{verbatim}
+    a.o: a.c
+        gcc -c a.c
+    b.o: b.c
+        gcc -c b.c
+    c.o: c.c
+        gcc -c c.c
+    foo: a.o b.o c.o
+        gcc a.o b.o c.o -o foo
+\end{verbatim}
+\texttt{make} will determine what needs to be rebuilt by looking at file timestamps. Additionally, we can run jobs in parallel with \texttt{make -j 10}This solves (a), but this approach also creates new problems/doesn't fix old problems.
+
+\begin{enumerate}[label=(\roman*)]
+\item Clock skew: Different machines might differ in their exact system time and if they’re operating on the same set of files, it's possible that one system writes a timestamp that is ahead of another system’s time or the program file generated by make is older than the edited timestamp.
+\item Missing/Extra Dependencies may cause the program to break//rebuild unnecessarily.
+\end{enumerate}
+
+
+
+
+
+\subsection{Syntax}
+
+\subsubsection{\texttt{\$}}
+\texttt{\$}: Expands a variable
+\begin{verbatim}
+    OBJ = a.o b.o c.o
+    foo: $(OBJ)
+        gcc $(OBJ) -o foo
+\end{verbatim}
+is equivalent to 
+\begin{verbatim}
+    foo: a.o b.o c.o
+        gcc a.o b.o c.o -o foo
+\end{verbatim}
+
+\subsubsection{\texttt{\$@}}
+\texttt{\$@}: Expands to the rule name.
+\begin{verbatim}
+    foo: a.o b.o c.o
+        gcc a.o b.o c.o -o $@
+\end{verbatim}
+is equivalent to 
+\begin{verbatim}
+    foo: a.o b.o c.o
+        gcc a.o b.o c.o -o foo
+\end{verbatim}
+
+\subsubsection{Rules and Recipes}
+Rules have the following syntax:
+\begin{verbatim}
+    TARGET: DEPENDENCIES
+        RECIPE
+\end{verbatim}
+\textit{\textbf{Note:}} Recipes are shellscripts. Furthermore, \texttt{make} is a thin layer around the shell.
+
+
+
+
+
+% =============== C ===============%
+\section{C (The Superior Language)}
+C is the predecessor to C++, so it is missing a lot of 'features' that C++ has. Some of these are:
+\begin{enumerate}[label=(\alph*)]
+\item STL
+\item Classes and Objects
+  \begin{enumerate}[label=(\roman*)]
+  \item Polymorphism (\texttt{foo(int\& a)} and \texttt{foo(bool a)})
+  \item Inheritance (\texttt{class Dog: public Animal})
+  \item Encapsulation (\texttt{private})
+  \end{enumerate}
+\item Namespace Control
+\item Explicit use of \texttt{static} to create singular instances
+\item Exception Handling
+\item Memory Management: \texttt{new} and \texttt{delete} (wrappers for \texttt{malloc()} and \texttt{free()} respectively)
+\item \texttt{cin}, \texttt{cout}, \texttt{<< >>}
+\item Function Overloading
+\end{enumerate}
+
+
+
+
+
+\subsection{Architecture of a C Environment}
+Compilation is broken up into different stages:
+\begin{enumerate}[label=(\arabic*)]
+\item Preprocessing (\texttt{gcc -E foo.c} $\implies$ \texttt{foo.i})
+\item Conversion to ASM (\texttt{gcc -S foo.i} $\implies$ \texttt{foo.s})
+\item Create Object Files (\texttt{gcc -c foo.s} $\implies$ \texttt{foo.o})
+\item Linking (\texttt{gcc *.o} $\implies$ \texttt{a.out})
+\end{enumerate}
+\textit{\textbf{Note:}} At (3), the object files have holes in them. We need to resolve this by linking all of the \texttt{.o} files which produces a single executable which will cut and paste all of the \texttt{.o} files in the correct place. \\
+\textit{\textbf{Note:}} The preprocessing phase is usually omitted by higher level languages (e.g. Python). Essentially, preprocessing allows for conditional compilation via \texttt{\#ifdef, \#ifndef, \#endif}, and other macros.
+
+
+
+
+
+% =============== DEBUGGING ===============%
+\section{Debugging}
+Debugging a program serves two main purposes:
+\begin{enumerate}[label=(\arabic*)]
+\item Correctness: Verifying that the expected output matches the actual output
+\item Performance: Change code to optimize for hardware/better performance
+\end{enumerate}
+In real-time systems (car brakes), correctness and performance are indistinguishable, since they are dependent on each other. In general, try to avoid using a debugger (Eggert's words not mine). Below are some alternatives to debugging that should be tried before busting out a debugger.
+\begin{enumerate}[label=(\arabic*)]
+\item Print Statements (\texttt{cout}, \texttt{printf()}, $\ldots$): To track variable states
+\item \texttt{time}: To measure the efficiency of the program (and deduce any timing issues)
+\item \texttt{ps -ef}: Prints all active processes
+\item \texttt{ps -efjt}: Similar to \texttt{-ef}, but in tree form
+\item \texttt{top}: List of top-consuming processes (by CPU \%)
+\item \texttt{kill}: Kills a process
+\item \texttt{strace ./a.out foo}: Logs to \texttt{stderr} all system calls
+\end{enumerate}
+\textit{\textbf{Note:}} Most often, (1) and (2) are most commonly labeled under developer tools, while (3) and its subitems are labeled under operation team tools.
+
+\subsection*{ASIDE: System Calls}
+System calls are special commands executed by the OS kernel, which lives right atop the hardware level. This is more of an OS topic but it still proves relevant in this course, especially since we talk about the \texttt{gcc} compiler. System calls are special since only the OS kernal can actually execute these instructions. Most other applications must \textbf{ask} the OS kernel to execute the syscall.
+
+
+
+
+
+
+\subsection{\texttt{valgrind}}
+\texttt{valgrind} is a debugging tool mainly used to detect memory-related bugs and to log \textbf{all} instructions a program executes. \\
+\texttt{valigrind ./a.out foo} \\
+\texttt{valgrind} isn't perfect, but it does help against many trivial memory-related bugs such as bad references. \texttt{valgrind} will catch
+\begin{verbatim}
+    char *p = NULL;
+    *p = 'x';
+\end{verbatim}
+but won't catch
+\begin{verbatim}
+    char a [10000];
+    char *p = &a[10000];
+    *p = 'x';
+\end{verbatim}
+since \texttt{valgrind} won't do trivial boundary checks by default. \textbf{See HW 5} for more information.
+
+\subsubsection*{ASIDE: The Stack}
+\texttt{gcc -fstack-protector} is there for a reason: to prevent malicious people from injecting code into the program's instruction list, overflowing the buffer, and taking control.
+
+
+
+
+
+\subsection{\texttt{gcc}}
+\texttt{gcc [OPTIONS] [FILE]} has many options to help you debug. Here is an important one: \\
+\texttt{-fstack-protector}: Protects against stack overflow errors by inserting a canary right around stack boundaries. If the canary is not a predictable value, the stack was corrupted, so the program will crash gracefully. Note that this won't always work since there are ways to get around this and still cause stack overflow errors.
+
+\subsubsection{Profiling}
+\texttt{gcc --coverage} will profile your program, creating a temperature graph by injecting code into your program like
+\begin{verbatim}
+    if(x < 0)
+       counter[19246]++;
+       f();
+\end{verbatim}
+and will output \texttt{counter} to an output file (\texttt{counter} is the profile). Note that profiling is input-dependent. \\ \\
+Profiling is done to find bugs with cold functions (a.k.a why are the cold?). However, this is also test-case dependent, since if functions are labeled cold, it might be because your test cases never touch them.
+
+\subsubsection{Static Checking}
+Static checking prevents your code from compiling if it fails a static check/assert and are used to document your code and assumptions. They have the format \\
+\texttt{static\_assert(E)}, where \texttt{E} is a constant expression. So, asserts like
+\begin{verbatim}
+    int f(int n) {
+        static_assert(0 < n);
+    }
+\end{verbatim}
+will not work, since \texttt{n} is not a constant variable.
+
+\subsubsection{Warning Flags}
+
+\begin{itemize}[label=]
+\item \texttt{-Wall}: \texttt{gcc} will turn on all "useful" warning flags
+\item \texttt{-Wcomment}: Catches bad comments like \texttt{/* bad /* comment */}
+\item \texttt{-Wparentheses}: Catches potential arithmetic errors like \texttt{return a << b + c} (\texttt{+} has higher operator precedence than \texttt{<<})
+\item \texttt{-Waddress}: Warns about using addresses that are probably wrong. e.g. Consider the following:
+\begin{verbatim}
+    char* p = f(x);
+    if (p == "abc")
+        return 27;
+\end{verbatim}
+
+\item \texttt{-Wstrict-aliasing}: Warns against "bad" casts. e.g. Consider the following:
+\begin{verbatim}
+    long l = -27;
+    int *p = (int*)&l;
+    *p = 0;
+\end{verbatim}
+\item \texttt{-Wmaybe-uninitialized}: Warns if you're using potentially uninitialized variables.
+\end{itemize}
+
+\subsubsection{Optimization}
+\texttt{gcc} has an optimization flag that will trade compile time for faster executables. \\
+\texttt{gcc -O\#} (0-4, 2 being the most common) will determine the level of optimization.
+
+\subsubsection{Overview}
+The two most common ways \texttt{gcc} optimizes your source code is by caching in registers and executing out of order. This makes your code harder to debug when you run it, since what you see is not always what you wrote in the source code.
+
+\subsubsection{\texttt{-O\#} Alternative: \texttt{-flto}}
+\texttt{gcc -flto}: An alternative to the plain \texttt{-O\#} flag, we have \texttt{gcc -flto}, or File Time Link Optimization. This will put a copy of the source code into all of the \texttt{.o} files and will optimize the entire program at once, with all of the modules linked. This way, there is more opportunity for optimization. The main downside to this approach is that compile times are even slower.
+
+\subsubsection{Built-In Compiler Functions}
+Below are a list of common functions to help optimize or debug your source code:
+\begin{enumerate}[label=(\alph*)]
+\item \texttt{\_\_builtin.unreachable()}: Tells the compiler that if the program ever reaches \texttt{unreachable()}, then behavior is undefined. This allows for further optimizations. e.g. Consider the following:
+\begin{verbatim}
+    if(x < 0)
+        __builtin.unreachable();
+    return x / 16;
+\end{verbatim}
+  Since the compiler knows that \texttt{x} \textit{should} never be negative, it can use the bitshift operation \texttt{x >> 4} to optimize.
+
+\item \texttt{\_\_attribute\_\_(ATTR)}: Advice to the compiler (can be ignored). Does not change the program. This allows for further, nuanced optimization. e.g. Consider the following:
+\begin{verbatim}
+    #ifdef __GNUC__
+    #define __attribute__(x)
+    #endif
+\end{verbatim}
+  The above code will disable the attribute if compiled with a non-gcc compiler.
+\end{enumerate}
+
+\subsubsection{Attributes}
+\begin{verbatim}
+charbuf[1000]__attribute__((aligned(8)));
+\end{verbatim}
+\texttt{aligned(x)} makes sure that \texttt{charbuf} has an address with a multiple of \texttt{x}, where \texttt{x} is a power of 2. This is to maximize the number of CPU cache hits. Since RAM is divided into cache boundaries, the machine will cache (usually) 64-bytes of memory on the CPU. Doing \texttt{aligned(x)} will (try to) ensure that the array fits into the cache's 64-byte boundaries.
+\begin{verbatim}
+void func(void) __attribute__((cold))
+\end{verbatim}
+\texttt{(cold)/(hot)} labels a function either cold or hot, respectively. A cold function is one that is rarely executed, whereas a hot function is one that is executed frequently. The motive behind this is so that the instruction pointer does not have to jump around everywhere and can execute (relatively) sequentially.
+\begin{verbatim}
+    instruction pointer
+    V
+    ------------------------
+    | hot | program | cold |
+    ------------------------
+\end{verbatim}
+This is how the compiler will order your code using attributes.
+\begin{verbatim}
+int hash(char*, ptrdiff_t) __attribute__((pure, access(read_only, 1)));
+int a = hash(p, 27);
+int b = hash(p, 27);
+\end{verbatim}
+\texttt{pure} means that there is no user-visible storage. In this case, \texttt{a} must equal \texttt{b}.
+\begin{verbatim}
+int square(int)__attribute__((const));
+\end{verbatim}
+\texttt{const} means that the value is both \texttt{pure} and does not depend on user-visible storage.
+In C, \texttt{pure} $\equiv$ \texttt{[[reproduceable]]} and \texttt{const} $\equiv$ \texttt{[[unsequenced]]}
+\begin{verbatim}
+void *myalloc(ptrdiff_t) __attribute__((alloc_size(1), malloc(free, 1), returns_nonnull))
+\end{verbatim}
+
+\subsubsection{Runtime Checking}
+\begin{itemize}[label=]
+\item \texttt{-fsanitize=undefined}: Runtime check for overflows
+\item \texttt{-fsanitize=address}: Crash if bad pointers are used
+\item \texttt{-fsanitize=leak}: Check for memory leaks
+\item \texttt{-fsanitize=thread}: Check for race conditions
+\end{itemize}
+
+\subsubsection*{ASIDE: \texttt{unsigned}}
+\texttt{unsigned} is a disaster for one very specific reason. Let \texttt{x} be an unsigned integer. Now consider:
+\begin{verbatim}
+    if (x <= -1)
+\end{verbatim}
+This statement will always evaluate to true because \texttt{x} is unsigned. Logically however, this makes no sense.
+
+
+
+
+
+\subsection{Debugging: Using gdb}
+There are a couple prerequisites before using gdb:
+\begin{enumerate}[label=(\arabic*)]
+\item Stabalize the failure (make sure it consistently breaks)
+\item Locate the source of failure (point of failure)
+\item Optionally, \texttt{gcc -g} will put information such as names of local variables to make debugging easier.
+\end{enumerate}
+\begin{verbatim}
+1. (gdb) set cwd /usr
+2. (gdb) set env TZ American/Chicago
+3. (gdb) set disable randomization on(default)/off
+4. (gdb) r -c foo < bar >baz
+5. (gdb) r
+\end{verbatim}
+\begin{itemize}[label=(\texttt{gdb}),leftmargin=*]
+\item \texttt{attach PID}: Takes over process id
+\item \texttt{b foo}: Breakpoint at \texttt{foo}
+\item \texttt{info break}: Lists breakpoints
+\item \texttt{del \#}: Delete breakpoint \texttt{\#}
+\item \texttt{step, s}: Step to the next line
+\item \texttt{stepi}: Step into the next machine instruction
+\item \texttt{next, n}: Step over function calls
+\item \texttt{cont, c}: Continue execution
+\item \texttt{fin}: Finish current function
+\item \texttt{bt}: Backtrace (examine current state)
+\item \texttt{p E}: Print the value of the expression \texttt{E}
+\item \texttt{target TARGET}: Target a specified architecture
+\item \texttt{reverse continue, rc}: Reverse execution
+\item \texttt{checkpoint}: Will output a unique id of the program state
+\item \texttt{restart ID}: Restarts execution starting from \texttt{ID}
+\item \texttt{watch E}: Pause execution when \texttt{E} changes
+\end{itemize}
+
+\subsubsection{gdb with Optimization}
+When debugging it is important to remember that the executable may behave differently than what is written in the source code due to \textbf{optimization (See Optimization)}.
+
+\subsubsection*{Out-of-Order Execution}
+Consider the following source code:
+\begin{verbatim}
+(1) q = a / b;
+(2) r = a % b;
+\end{verbatim}
+may turn into
+\begin{verbatim}
+r = a % b;
+q = a / b;
+\end{verbatim}
+since, in a lot of architectures, the instruction \texttt{idivq} will calculate both the division and modulo. This is due to the "as-if" rule: The compiler can generate any code whose behavior is "as if" it did the obvious. Therefore, one method of debugging is to do the following:
+\begin{verbatim}
+gcc foo.c
+gdb a.out
+[debug]
+gcc -O2 foo.c
+[run]
+\end{verbatim}
+The problem with this is that the optimizer may be buggy (unlikely), or the optimizer exposed a bug that wasn't caught when debugging (more likely).
+
+\subsubsection{Finding Bugs}
+Suppose
+\begin{verbatim}
+start
+...
+bug triggered*
+...
+...
+failure
+\end{verbatim}
+How do you find the point of failure(\texttt{*})? \\
+In small programs or programs with easy test cases, we can:
+\begin{itemize}[label=]
+\item Come up with a reproducable test case
+\item Make sure the program doesn't take too long to execute
+\item Rerun the program until you find it
+\end{itemize}
+For larger programs, we can use gdb's \textbf{Reverse Execution} to find the bug(s).
+
+\subsubsection*{Reverse Execution}
+gdb will start executing the program backwards. Note that this is a very expensive process since gdb has to cache all program states. To efficiently use \texttt{gdb rc}, we can use commands like \texttt{checkpoint}, \texttt{restart} and \texttt{watch}. Catchpoints stop the program if it throws an error (similar to a try/catch block). \\
+\textit{\textbf{Note:}} \texttt{gdb watch} is so cool that a lot of architectures have hardware support for \texttt{watch}, meaning it's fast. On x86-64, you can \texttt{watch} up to 4 memory locations. 
+
+\subsubsection{Review}
+\begin{itemize}[label=]
+\item Try not to do it; that is, write good test cases
+\item Test cases $>$ source code: Test-Driven Development - Write test cases before coding the corresponding part
+\item Use a better platform: e.g. Subscript errors? C++ $\rightarrow$ Rust or Java
+\item Defensive Programming
+  \begin{itemize}[label=]
+  \item Assume other devs are useless
+  \item Runtime checking
+  \item Trace/log what the program does along the way (helps debugging later)
+  \item Assertions
+  \item Exception handlers (try/catch)
+  \end{itemize}
+\item Barricades: Middleware to take in any data and only pass through "safe" data into the program
+\end{itemize}
+
+
+
+
+% =============== GIT INTERNALS ===============%
+\section{\texttt{git} Internals}
+
+
+
+
+
+\subsection{Preface: Atomicity and SHA-1}
+An atomic operation only has two states: not executed or executed e.g. \texttt{cd}. Non-atomic operations such as \texttt{cp} are logical since it is possible to be in the middle of writing a file when execution stops (unexpectedly). \texttt{git} uses many atomic operations to keep the working tree clean and to prevent corrupting the repository. For example, \texttt{git commit} is built atop atomic operations because it would not be good to only have half of a commit. \\ \\
+The SHA-1 checksum is the hash function that \texttt{git} uses to create commit ids and object hashes. Though it has been cracked, \texttt{git} still uses it because:
+\begin{itemize}[label=]
+\item The probability of collisions is $\frac{1}{2^n}$, where $n$ is 160 in this case
+\item Finding a byestring to match a given hash is expensive (O($2^n$)) (SHA-1 is a one-way hash)
+\item Finding collisions is expensive (O($2^n$))
+\end{itemize}
+
+
+
+
+
+\subsection{Overview}
+\texttt{git} is like an application-specific "file system" (because it was built by file system designers). It is built atop an ordinary file system and has many similar issues that file systems have. \texttt{git} is split up into to parts: plumbing and porcelain. The plumbing part deals with the internals such as data structures and low level commands, while the porcelain part is what the user interfaces with (e.g. \texttt{git commit}).One of the main issues with \texttt{git} is distinguishing data with metadata.
+
+
+
+
+
+\subsection{.git/}
+Below are some of the subdirectories/files under \texttt{.git/} and their usage.
+\begin{itemize}[label=\texttt{.git/}]
+\item \texttt{branches/}: Legacy folder (for backwards compatability) that used to store branches
+\item \texttt{config}: \texttt{git}'s configuration file. Analogous to a barricade \textbf{(See Debugging)}
+\item \texttt{description}: Descriptor for the repository
+\item \texttt{HEAD}: The pointer\footnote{See \textit{Pointer} in \textbf{Managing the Repository: Branch Manipulation}} that points to the tip of the current working branch
+\item \texttt{hooks/}: \texttt{git}'s callbacks
+\item \texttt{index}: Binary data structure keeping track of your commit
+\item \texttt{info/exclude}: Contains blobs that git will ignore (like \texttt{.gitignore}, but not for working files)
+\item \texttt{logs/}: Record your branch tips and logs changes to branches (2$^{nd}$ order history: history of the \textbf{repository})
+\item \texttt{objects/}: Contains the object database with records of all objects managed by the repository
+\item \texttt{refs/}: The references directory to store commits and tags
+\item \texttt{packed-refs}: Condensed version of \texttt{refs}
+\end{itemize}
+Below are some more notes on the following contents of \texttt{.git/}
+
+\subsubsection*{config}
+There is no mixing of data and metadata. That is, do not include anything in the .git folder in the repository. This leads to a very natural question: How do I share my \texttt{.git/config} file? The solution is to write a script to set up the \texttt{config} file and put instructions in a README.
+
+\subsubsection*{objects/}
+Objects in \texttt{git} are identified via a 40-digit hexadecimal (160-bit) checksum\footnote{The checksum is calculated via the SHA-1 hash, and is used to avoid collisions.}. The objects folder will store all objects managed by \texttt{git}. The subdirectories (e.g. \texttt{objects/0f}) contains the first two digits, while the file descriptor inside contains the remaining 38 digits. This was done to meet the storage requirements at the time. Nowadays, it's still formatted this way for backwards compatability.
+
+\subsubsection*{refs/}
+\texttt{refs/heads/BRANCH\_NAME} \\
+Points to the last \textbf{local} commit ID of \texttt{BRANCH\_NAME}. e.g. \texttt{.../main} will contain the most recent \textbf{local} commit ID of \texttt{main}. \\ \\
+\texttt{./remotes/origin/HEAD} \\
+Contains the relative file path of where HEAD points. e.g. \texttt{ref: refs/remotes/origin/main}. \\ \\
+\texttt{refs/remotes/origin/BRANCH\_NAME} \\
+Points to the last \textbf{remote} commit ID of \texttt{BRANCH\_NAME}. e.g. \texttt{.../main} will contain the most recent \textbf{remote} commit ID of \texttt{main}. \\ \\
+\texttt{refs/tags/TAG} \\
+Contains all of the repository's tags
+
+
+
+
+
+\subsection{Representing Objects in \texttt{git}}
+Objects in \texttt{git} are not files. Rather, they are a blob containing a hashed byte-string. The following subsections will manually build a \texttt{commit} object.
+
+\subsubsection{Working Files $\rightarrow$ \texttt{blob}}
+The command \texttt{git hash-object FILENAME -w} will create an object with the 40-digit SHA-1 checksum (hash) for its file descriptor. Note that if two files have the exact same contents, then \texttt{git hash-object} will return the same 40-digit checksum. \\
+\textit{\textbf{Note:}} \texttt{git cat-file -p/t HASH} will print either the contents or type of the object with the hash \texttt{HASH} respectively.
+
+\subsubsection{\texttt{blob} $\rightarrow$ \texttt{tree}}
+The command \texttt{git update-index --add --cacheinfo <MODE> <HASH> <FILENAME>} will add the object to the index, where \texttt{MODE} is the type of object (e.g. \texttt{blob} = 100644). The first 3 digits is the filetype (100 = regular file) while the next 3 is the octal representation of permissions (644 = o+rw, ag+r). \\
+The command \texttt{git write-tree} will create a tree object using the current index.
+
+\subsubsection{The commit Object}
+A \texttt{commit} object contains the following:
+\begin{itemize}[label=]
+\item tree
+\item commit message
+\item author + timestamp
+\item committer + timestamp
+\item parent commit(s)
+\end{itemize}
+\textit{\textbf{Note:}} \texttt{BRANCH\_NAME} is a commit object. More generally, branches deal with commit objects. Additionally, \texttt{git} compresses objects.
+
+
+
+
+
+\subsection{Compression}
+
+\subsubsection{Overview}
+Compression is the process of reducing file size while preserving as much data as possible. Many techniques are used to compress data, and the various compression algorithms are application-specific. There are trade offs to compressing: CPU time to compress/decompress, \% compressed/decompressed, and RAM usage are all inversely related. \\ \\
+\textbf{Problems} \\
+If any data gets corrupted during compression or decompression, neither algorithms works and any remaining data is now suspect.
+
+\subsubsection{Huffman Coding}
+The algorithm for huffman coding is very straightforward:
+\begin{enumerate}[label=(\arabic*)]
+\item Sort character frequency in non-decreasing order
+\item Take the least two likely symbols with the smallest weights and combine them, adding their weights
+\item Delete the two individual symbols from the list and add the new combined symbol(s) to the list
+\item Repeat (2) and (3) until there is only one node left
+\end{enumerate}
+Adaptive Huffman Coding is a variation of the huffman tree, in which the decompressor builds the Huffman tree as it receives data, updating the tree in real-time.
+
+\subsubsection{Dictionary Compression}
+The Dictionary Compression algorithm is similar to a sliding window algorithm, and is as follows:
+\begin{enumerate}[label=(\arabic*)]
+\item Create a dictionary of byte string
+\item Send one byte string at a time, sending the offset and size between a recurrence (if there is one) and the first occurrence (if within the sliding window) instead.
+\item Repeat until End of File
+\end{enumerate}
+
+\subsubsection{\texttt{git} Compression}
+To compress objects, \texttt{git} uses \texttt{zlib/gzip} which use both \textbf{Huffman Coding} and \textbf{Dictionary Compression} (e.g. Raw Data $\rightarrow$ Dictionary Compression $\rightarrow$ Huffman Coding).
+
+
+
+
+
+% =============== CHARACTER ENCODINGS ===============%
+\section{A 1h 20m Aside: Character Encodings}
+
+\subsection{Overview}
+In computers, there is no such thing as a character. Computers only store numbers, so characters are just mapped integers. An easy example is the C/++ character. In C/++, the character 'x' can be represented as 'x', 120, or '\textbackslash170'. Therefore, characters are just an individual symbol that corresponds to a small integer.
+
+\subsubsection*{Corollary}
+A character string is a sequence of characters. From above, we have that a character is just an integer. So, it follows that a character string is a sequence of integers.
+
+
+
+
+
+\subsection{Dark Ages}
+In 1960, There were only 64-bit character encodings: A-Z, 0-9, +, -, *, /, etc. There is a problem with this approach however. If, by example, the wordsize is only 24 bits, 26 bits are being wasted. A simple fix is to afix wordsizes to be 36 bits. Then, take a corresponding 36-bit word and divide it into 6 blocks, where each block is any character that can be represented with 6-bits. Below are diagrams for the 24-bit and 36-bit wordsizes respectively.
+\begin{verbatim}
+                      char                        
+                        V
+    -----------------------
+    | 0 | 0 | ... | 0 | 6 |
+    -----------------------
+\end{verbatim}
+
+\begin{verbatim}
+    -------------------------
+    | 6 | 6 | 6 | 6 | 6 | 6 |
+    -------------------------
+\end{verbatim}
+
+
+
+
+\subsection{EBCDIC}
+In 1964, IBM System 360 (Mainframe) introduced byte addressing which separates addresses of bytes. They used 8-bit bytes and 32-bit/4-byte words. Current x86-64 machines have 512-bit registers and 64-bit words. EBCDIC expanded the character set to 8-bits.
+
+\subsubsection{Flaws/Fixes}
+For some reason, they did not make lowercase letters contiguous and left gaps/holes in the character encoding table. These idiots did not listen to Eggert and clearly did not follow test-driven development, since they would've made it better otherwise. This is why no one uses it anymore. \\ \\
+There are no fixes for this bum-ass character set. Notably, Eggert wasn't able to write a C program that did character arithmetic, so they got an F in CS35L and did not pass.
+
+
+
+
+
+\subsection{ASCII}
+ASCII is a 7-bit character set and is superior to EBCDIC since they listened to Eggert's request of wanting to write a C program that did character arithmetic. They use 8-bit word sizes, but the first bit is a parity bit\footnote{A parity bit XORS all of the other bits for error detection}. There are 32 control characters that won't print to the console (0-31$^{st}$ characters on the table). Some interesting things to note is that NULL is all bits 0 (7'b0) and DEL is all bits 1 (7'b1) for historical reasons.
+
+\subsubsection{Flaws/Fixes}
+ASCII does not natively support other languages since it's character set is so small. The devs clacked their three braincells together and came up with ISO/IEC 8859 (why 8859 I have no idea), which was a guide for how to extend\footnote{These extensions were not allowed to collide with the original ASCII encodings} ASCII to other languages.
+
+\begin{enumerate}[label=8859-]
+\item 1: Latin-1 (Western-European languages)
+\item 2: Latin-2 (Central + East-European languages)
+\item 3: Latin-3 (Southern-European languages)
+\item 4: Latin-4 (Northern-European languages)
+\item 5: Latin-5 (Cyrillic languages)
+\item 15: Latin-9 ("Fixed" Latin-1 which added some bullshit French character and minor languages, and added the euro symbol)
+\end{enumerate}
+While these were great bandaids, these bums clearly fell asleep in Eggert's lecture on test-driven development, since these extensions are not cross-compatible. Furthermore, metadata for character encodings is required to determine which character set to use when parsing (e.g. For HTTPS, we have Content type $\ldots$ charset = "ISO 8859-1" in the header). Lastly, the developers did not take into consideration Asian languages, which I can't really knock them for since Asian languages have character sets longer than my notes for this class.
+
+
+
+
+
+\subsection{Encoding for Asian Languages}
+Developers said "fuck it we ball" and increased to 16-bit character sets to encapsulate Asian languages like basic Chinese. In C, we cannot use \texttt{char} anymore, so we have to use \texttt{short}'s. 
+
+\subsubsection{Flaws/Fixes}
+The problem now is that it's completely incompatible with any other character encoding schema. e.g. Something like "Hello" will be parsed (in ASCII) as
+\begin{verbatim}
+    -------------------------------------
+    | 0 , 'H' | 0 , 'e' | ... | 0 , 'o' |
+    -------------------------------------
+\end{verbatim}
+where \texttt{0} is the null-byte. Furthermore, this encoding is very obviously bloated. \\ \\
+To fix the incompatibility, they used multibyte characters, which had the following format:
+\begin{itemize}[label=]
+\item 1-byte characters for ASCII had parity bit 0
+\item 2-byte characters for others (e.g. Kanji) had parity bit 1
+\end{itemize}
+This encoding was called ShiftJIS and was adopted by Microsoft and ASCII\footnote{ASCII was a Japanese company completely unrelated to US-ASCII (similar to how Javascript is not related to Java in any way)}. These developers were big fans of the Hydra\footnote{In Greek mythology, the Hydra was a serpentine water beast which, when one of its heads were cut off, two more would grow back in its place} because their "fix" also introduced two issues. Firstly, the file \textbf{must} be processed sequentially due to character \textbf{context}. Moreover, this schema introduced more invalid encodings.
+
+
+
+
+
+\subsection{Unicode Consortium}
+Unicode was an attempt to "unify" Asian languages and have a single universal charcter set for all characters and languages. There are currently 149,186 assignments. In the 1990's, the developers did not futureproof for emojis and though that a 16-bit character set would be enough.
+
+\subsubsection{Flaws}
+Unicode has a lot of repeat characters that are virtually identical but there were national debates over some goddamn lines and that's why we have a lot of repeat characters (most common in Asian languages). One of Eggert's favorite examples is the Latin vs. Cyrillic 'o'. They look the same but apparently there's a slight difference. I'm not going to do a \texttt{diff} of the character pixel maps so I'll take his word for it.
+
+\subsection{UTF-8}
+UTF-8 is upwards compatible with ASCII. Its schema is as follows:
+\begin{itemize}[label=]
+\item Every multibyte sequence has only non-ASCII bytes (parity bit 1). This way, it is easy to see character boundaries
+\item There are 3 byte types:
+  \begin{itemize}[label=]
+  \item ASCII byte: parity bit 1
+  \item Continuation byte: parity bit 1 and 2nd bit 0. It an \textbf{never} be a leading byte.
+  \item Length + Leading bits byte: First $k$ bytes are the length of the character
+  \end{itemize}
+\end{itemize}
+
+\subsubsection*{UTF-8 Boundaries}
+\begin{verbatim}
+    ------------
+    | 0XXXXXXX |
+    ------------
+\end{verbatim}
+U+0000 - U+007F
+\begin{verbatim}
+    ------------  ------------
+    | 110XXXXX |  | 10YYYYYY |
+    ------------  ------------
+\end{verbatim}
+U+0080 - U+07FF
+\begin{verbatim}
+    ------------  ------------  ------------
+    | 1110XXXX |  | 10YYYYYY |  | 10ZZZZZZ |
+    ------------  ------------  ------------
+\end{verbatim}
+U+0800 - U+FFFF
+\begin{verbatim}
+    ------------  ------------  ------------  ------------
+    | 11110XXX |  | 10YYYYYY |  | 10ZZZZZZ |  | 10WWWWWW |
+    ------------  ------------  ------------  ------------
+\end{verbatim}
+U+FFFF - U+10FFF
+
+\subsubsection{Flaws}
+No character encoding is perfect, UTF-8 included. There are gaps in UTF-8 encoding since there are multiple ways to spell characters:
+\begin{verbatim}
+11000001 10111111
+\end{verbatim}
+is technically the DEL key, but these encodings were accounted for (as invalid UTF-8 encodings) since the developers did not fall asleep in Eggert's lecture on character encodings. Moreover, byte-for-byte comparisons won't work because something like \texttt{strcmp("UCLA", "UCLA");}, where the first and second UCLA's are 1-byte and 2-byte respectively, will return false. Additionally, something like
+\begin{verbatim}
+char *p = XXXXXX;
+p[strlen(p)/2] = 0;
+\end{verbatim}
+won't work in UTF-8. \\ \\
+\textbf{More invalid UTF-8}
+\begin{verbatim}
+| ------------- 
+| | 10XXXXXXX | 
+| -------------
+\end{verbatim}
+Continuation byte \textbf{must} follow length bytes
+\begin{verbatim}
+------------
+| 111110XX |
+------------
+\end{verbatim}
+Max length is 4
+\begin{verbatim}
+------------ |
+| 1110XXXX | |
+------------ |
+\end{verbatim}
+Length bytes must be at the start* \\ \\
+\textit{\textbf{*Note:}} This may be a part of a datastream that hasn't sent all of its packages over yet, so you have to be careful when checking for valid UTF-8 encoding. This is why \texttt{Barricades} are important. \\ \\
+One common coding convention is to use ASCII only to prevent any encoding errors.
+
+
+
+
+
+% =============== BACKUPS ===============%
+\section{Backups}
+According to Eggert, we backed up a total of 100 ZB\footnote{1 ZB = 10$^{21}$} in the past year, roughly 90\% of which is dulicate data and roughly 50\% in the cloud. Backups very clearly dominate storage, and there is a cost for backups (global warming, apparently). Do we need all of these backups? If you look at M152A computers, you'll know that to a certain group, 93 backups (with extremely similar names) are necessary for a singular lab.
+\subsection{Overview}
+Backups are a snapshot of file contents (with metadata for each file). There are two types of backups: abstract and concrete. \\ \\
+\textbf{Abstract}: Each file is a byte string (byte sequence with separate byte strings for data, metadata, etc.). This means it's dependent on OS but it isn't wasteful since you only copy over exactly what you need. \\
+\textbf{Concrete}: Abstract the actual data into blobs\footnote{Blobs stand for "Binary Large OBjectS" and "isn't made up", which I don't really believe but whatever.} and instead, copy the blocks in the underlying device. This means it's independent of the OS and captures the exact state of the device, but it could potentially be wasteful since in practice, the device might contain bloat. \\ \\
+Regardless of methodology, backups address a multitude of problems:
+\begin{enumerate}[label=(\arabic*)]
+\item Data loss
+\item Hardware failure
+\item Tracking history
+\item Accidentally trashing a working copy because you didn't follow Eggert's Best Practices$^{\text{TM}}$
+\item Corrupted drives (Hardware failure but with some chest hair)
+\item Security (ransomware)
+\end{enumerate}
+Backups used to just be an operaton staff (Ops) problem, but they couldn't handle it so now it's a DevOps problem.
+
+
+
+
+
+\subsection{Cheaper Alternatives}
+\begin{enumerate}[label=(\arabic*)]
+\item Simply generate less data, use compression or back up less often (who would've thought)
+\item Multiplex your backup: multiple drives backed up onto one bigger drive
+\item Incremental backups: Back up only what changes. Note that this is more fragile (but is very similar to (1))
+\item Selective backups: Determine what is worth backing up.
+\item Snapshots: \textbf{See Snapshots)}
+\item Backup to cheapder devices. e.g.
+\begin{verbatim}
+    Flash => Disk => Optical
+    Main    Backup  Secondary
+                     Backup
+\end{verbatim}
+\item Redundancy in devices: \textbf{(See RAID (Redundant Array of Inexpensive Disks))}
+\end{enumerate}
+
+\subsubsection{Incremental Backups}
+At the file level, each backup has a timestamp, so take a similar approach to \texttt{make} \textbf{(See \texttt{make})} and only backup files with t' $>$ t. Consequently, we run into the same problems as \texttt{make} like clock-skew. So, in yet another layer of abstraction, we rely on the clocks being monotonically nondecreasing. One other problem with this is that deleted files are not addressed in this schema. \\ \\
+Within a given file F, consider $\Delta$F. You can do \texttt{diff -u F $\Delta$F > t}. You now have an "edit script" that will patch a file F to $\Delta$F by running \texttt{patch <t F}. This is good for text files.
+
+\subsubsection{Automated Data Grooming}
+Deduplication is the process of automatically removing data we don't need. The algorithm works as follows:
+\begin{verbatim}
+find all file where g == f
+    for each g
+        rm g
+        ln f g (there is a race condition BUT ln -f f g is atomic)
+\end{verbatim}
+This assumes the files are read-only, since if you now change \texttt{g}, \texttt{f} is also changed \textbf{(See Hard Links)}. To remedy this problem, we have Copy-on-Write (CoW), which will make a copy of a file if it's link count $>$ 1, writing to the copy. The idea is to share read-only files, and make a copy for writes. \\ \\
+This leads to another issue: If metadata(f) $\neq$ metadata(g), g will lose metadata. To solve this issue, we change the definition of equality. Finally, there's the issue of not having enough storage to copy on write.
+
+\subsubsection*{Block-level Deduplication}
+Let a particular file system have 8 KiB blocks. We can represent it as:
+\begin{verbatim}
+-----------------
+|   | A  |   | A |
+-----------------
+\end{verbatim}
+Using block-level deduplication, there is only one copy of A. More generally, the file system will only save distinct blocks (this is default on many Linux distros). This way, we get an implicit Copy-on-Write for free. There are three main issues with this type of deduplication:
+\begin{enumerate}[label=(\arabic*)]
+\item Allocation: Not enough storage to copy on write
+\item Slower access time: "What's another level of indirection?" is what the devs said, laughing
+\item Reliability: If a block goes bad, you're screwed
+\end{enumerate}
+
+\subsection{Backups and Encryption}
+Reasons for encrypting backups:
+\begin{enumerate}[label=(\arabic*)]
+\item You don't trust your cloud provider
+\item You don't trust your operations staff (lol)
+\item Data must be encrypted for other reasons (security)
+\end{enumerate}
+
+
+
+
+
+\subsection{Bridge to Version Control Systems}
+\subsubsection{Preface: Versioning and File Systems}
+Do applications need to know about backups? \\ \\
+\textbf{Yes:} Software like Files-11 (OpenVMS) will create viewable backup files, so when you do \texttt{ls -l}, you get something like
+\begin{verbatim}
+foo.c; 1
+foo.c; 2
+...
+\end{verbatim}
+so that applications now have an API for versioning.
+
+\subsubsection{Snapshots}
+\textbf{No:} Utilize snapshots, which captures the current state of your file system in user-specified invervals. This method is used on SEASnet via a NetApp file server that runs WAFL (block-level deduplicaiton).
+\subsubsection*{ASIDE}
+Directory size is irrelevant (it has a nice personality). Why? You can't directly read from a directory; that is, you cannot do something like \texttt{cat DIRECTORY}.
+
+\subsubsection{History}
+SCCS in 1972 was the first major proprietary VCS, and it worked as follows: for each source file F, $\exists$ s.F which contained the entire history of F in increasing time order as well as metadata (committer, message, etc.). This let a user read any version via a single sequential pass. However, the downside was that the cost of retrieval, at worst, was now O(size of history). \\ \\
+A free alternative was RCS, which was similar to SCCS, but structuerd as follows: for each working file F, $\exists$ RCS/F.v, where F.v was the history of the file in the format:
+\begin{verbatim}
+------------------
+     Metadata
+------------------
+Most recent change
+------------------
+Reverse time order (e.g. 12 => 11)
+------------------
+...
+------------------
+2 => 1
+------------------
+\end{verbatim}
+One major issue with RCS was that it was a per-file VCS. The creator of RCS wasn't as smart as Linus Torvalds. \\ \\
+CVS (not the pharmacy) introduced commits that can address multiple files, and had a client-server model for repositories. A descendent of CVS was SVN, which was CVS on steroids. \\ \\
+The Linux kernal initially used: CVS $\rightarrow$ SVN $\rightarrow$ BitKeeper (proprietary software). Linus Torvalds said "fuck that I want free" so naturally, he built \texttt{git}, which hilariously ran BitKeeper out of business (they open sourced in 2016 but hardly anyone uses BitKeeper anymore).
+
+
+
+
+
+% =============== SOFTWARE AND LAW ===============%
+\section{A 10 min Overview of Compiler Internals}
+Compiled languages (like C/++) compile in multiple stages \textbf{(See C)}. The hardest part however is converting into general ASM. Compilers answer the question of "How do I turn \\ \texttt{a += *b[5]} into \\ \texttt{movq b, \%rbx \\movl 0 XX}" \\ \\
+Let $L$ denote the many source languages (C/++, Python, etc.) and $M$ denote the many architectures (x86-64, ARM, RISC-V, etc.). Do we have to write $L \cdot M$ compilers? No! Instead, we have a set of common compiler internals that take in a language $l \in L$ and translate it to a specific architecture $m \in M$, which then converts into general ASM. This way, we only need to do $c + L + M$ work, where $c$ is a constant.
+
+
+
+
+
+% =============== SOFTWARE AND LAW ===============%
+\section{Software and Law}
+\subsection{Software}
+Software is:
+\begin{enumerate}[label=]
+\item A set of instructions to a computer
+\item A way to collaborate with other users and developers to solve problems
+\end{enumerate}
+
+\subsection{Law}
+Law is "the art of predicting judges"\footnote{This quote was authored by Paul Eggert, UCLA Senior Lecturer, in La Kretz Hall 110 on February 16, 2023}. It can be broken up into multiple categories:
+\begin{enumerate}[label=]
+\item How to collaborate
+\item How to deal with failures in collaboration
+\item Civil/Contract/Commercial
+\item Criminal
+\item Constitutional
+\item International
+\item Admiralty (oceanic)
+\end{enumerate}
+
+\subsubsection{Commercial Law and Software}
+Back in the Dark Ages, copyrights and patents were very different. Copyrights were reserved for creative works like books, while patents were reserved for functional inventions like a urinal headrest\footnote{Hilariously enough, this was a real, granted patent.}. Nowadays, the line between copyrights and patents are starting to blur due to software. \\ \\
+Software is used with hardware, but software would technically be copyrighted while hardware would be patented.
+
+\subsubsection*{Trade Secrets}
+Trade Secrets have no expiration date, and expire when the secret is disclosed. Note that if you illegally disclose a secret, it is still legally a secret. There are agreements to keep secrets called "Trade Secret Agreements". This is more commonly referred to as an NDA, or a Non-disclosure Agreement and many companies make you sign one.
+
+\subsubsection*{Trademarks}
+Like Trade Secrets, Trademarks don't expire until a company stops using it. The goal is to avoid customer confusion. So, if trademarks don't collide, it's ok (e.g. Apple computers and Apple Records).
+
+\subsubsection*{Personal Data}
+Whenever you visit a site, websites have access to your IP address and browser fingerprint.
+
+\subsubsection*{Copyright}
+Copyrights cover creative works, and protects the form, not the idea. (e.g. I can write a book about whale-catching and I wouldn't be infringing on Moby Dick's copyright). Inversely, the Public Domain is any creative work that is free to use and isn't copyrighted.
+
+\subsubsection*{Patents}
+Patents cover practical works like inventions and utility. To be granted a patent, you have to apply for one, and it gets reviewed. The invention must be: novel, useful, and it has to work.
+
+\subsubsection{Infringement}
+Legal protection for copyright/patent holders (under civil law). Infringement penalties include damages (actual\footnote{Actual: Calculated losses} or statutory\footnote{A minimum they pull out of their ass}) and takedown notices (DMCA).
+
+\subsubsection{Technical Protection}
+For software, you can use SaaS (Software as a Service) or program obfuscation.
+
+\subsection{Licensing}
+A license is \textbf{not} a contract, but rather a grant permitting you to do something, and is often part of a contract and has strings attached. When do they come up?
+\begin{enumerate}[label=]
+\item Buy vs Build: Using already developed software or writing your own
+\item Derivative works: Building off of other people's work
+\end{enumerate}
+The different types of licenses (free $\rightarrow$ proprietary) is as follows:
+\begin{enumerate}[label=]
+\item Public Domain: Free use
+\item Academic: Must give credit (e.g. MIT License)
+\item Reciprocal: Share and share alike (e.g. GNU Public License)
+\item Corporate: e.g. Apple, Oracle
+\item Proprietary: Paid service
+\end{enumerate}
+
+\subsubsection{Dual Licenses}
+Products can be distributed under multiple licenses (e.g. MariaDB has a proprietary version and a free (1 yr delayed) version). The reasoning for licensing and free software is so that you are in the company's ecosystem.
+
+\subsection{Software and Laws of War}
+"casus belli" and "jus ad bellum" translate to "case for war" and "justification for war" respectively. Is a software attack enough justification to go to war?
+\end{document}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

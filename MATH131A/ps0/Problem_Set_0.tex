@@ -1,0 +1,147 @@
+\documentclass[13pt]{article}
+\usepackage{amsmath, amsthm, amssymb, graphicx, enumitem, esvect}
+
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+\title{Problem Set 9}
+\author{Warren Kim}
+
+\begin{document}
+\maketitle
+
+\newpage
+\section*{Question 2}
+Complete the following truth table:
+\[
+  \begin{array}{c|c|c|c|c|c|c}
+    P & Q & \neg Q & P \land Q & P \lor Q & P \implies Q & P \iff Q \\
+    \hline
+      &  &  &  &  &  &  \\
+      &  &  &  &  &  &  \\
+      &  &  &  &  &  &  \\
+      &  &  &  &  &  & 
+  \end{array}
+\]
+
+\subsection*{Response}
+\[
+  \begin{array}{c|c|c|c|c|c|c}
+    P & Q & \neg Q & P \land Q & P \lor Q & P \implies Q & P \iff Q \\
+    \hline
+    T & T & F & T & T & T & T \\
+    T & F & T & F & T & F & F \\
+    F & T & F & F & T & T & F \\
+    F & F & T & F & F & T & T
+  \end{array}
+\]
+
+
+
+
+
+\newpage
+\section*{Question 3 part (e)}
+Given any two statements P and Q, and using C to denote a contradiction (i.e., a
+statement that is always false), prove that the following statements are tautologies (i.e.,
+they are always true):
+\begin{enumerate}
+\item [(e)] $((P \land \neg Q) \implies C) \implies (P \implies Q)$
+\end{enumerate}
+
+\subsection*{Response}
+\begin{proof}
+  \[
+    \begin{array}{c|c|c|c|c|c|c}
+      P & Q & C & P \land \neg Q & (P \land \neg Q) \implies C & P \implies Q & ((P \land \neg Q) \implies C)
+                                                                                \implies (P \implies Q) \\
+      \hline
+      T & T & F & F & T & T & T \\
+      T & F & F & T & F & F & T \\
+      F & T & F & F & T & T & T \\
+      F & F & F & F & T & T & T 
+    \end{array}
+  \]
+  Since the statement is true for all cases of P, Q, and C, it is a tautology.
+\end{proof}
+
+
+
+
+
+\newpage
+\section*{Question 8}
+Convert the following statements into plain English:
+\[\forall x \in \mathbb{Z} \ \exists y \in \mathbb{Z} : x + y = 0\]
+\[\exists y \in \mathbb{Z} \ \forall x \in \mathbb{Z} : x + y = 0\]
+Decide on the truth values of each statement and then provide a proof.
+
+\subsection*{Response}
+\begin{enumerate}[label=,leftmargin=0pt]
+\item $\forall x \in \mathbb{Z} \ \exists y \in \mathbb{Z} : x + y = 0$ \\
+"For every integer $x$, there exists an integer $y$ such that $x + y = 0$".
+\begin{proof}
+  This statement is true. Let $x \in \mathbb{Z}$. Since $\mathbb{Z}$ is a field, there exists an
+  additive inverse $-x \in \mathbb{Z}$. So, we have
+  \begin{align*}
+    x + y &= 0 \\
+    x + y &= x + -x && \text{existence of an additive inverse} \\
+    y &= -x
+  \end{align*}
+  Substituting $-x$ for $y$, we get $x + y = x + -x = 0$.
+\end{proof}
+\item
+\item $\exists y \in \mathbb{Z} \ \forall x \in \mathbb{Z} : x + y = 0$ \\
+"There exists an integer $y$ such that $x + y = 0$ for every integer $x$".
+\begin{proof}
+  We will prove that this statement is false by counter-example. We want to prove that there exists at least one
+  $x \in \mathbb{Z}$ such that $x + y \neq 0$. Let $x = 2$ and $y = -1$. Then, $x + y = 2 + -1 = 1 \neq 0$.
+  Therefore, the statement is false.
+\end{proof}
+\end{enumerate}
+
+
+
+
+
+\newpage
+\section*{Question 10}
+\begin{enumerate}[label=(\alph*)]
+\item Suppose $p \in \mathbb{N}$. Show that if $p^2$ is divisible by $5$ then $p$ is also divisible by $5$.
+\item Prove $\sqrt{5}$ is irrational.
+\item Suppose you try the same argument to prove $\sqrt{4}$ is irrational. The proof must fail,
+but where exactly does it fail?
+\end{enumerate}
+
+\subsection*{Response}
+\begin{enumerate}[label=(\alph*)]
+\item
+  \begin{proof}
+    To prove the statement, it is equivalent to prove its contrapositive: If $p$ is not divisible by $5$,
+    $p^2$ is not divisible by $5$. Note that $p$ can be rewritten as $p = 5s + r$, where $s, r \in \mathbb{N}$.
+    By definition, $r \neq 0$ since $r \in \mathbb{N}$ and $0 \not\in \mathbb{N}$. So, $p$ is not divisible by $5$.
+    To prove $p^2$ is not divisible by $5$,
+    \begin{align*}
+      p^2 &= (5s + r)^2 \\
+          &= 25s^2 + 10sr + r^2 \\
+      p^2 &= 5(5s^2 + 2sr) + r(r) \\
+    \end{align*}
+    Since $r \neq 0$, $p^2$ is not divisible by $5$.
+  \end{proof}
+\item
+  \begin{proof}
+    Assume by contradiction that $\sqrt{5}$ is rational. By the Rational Zeros Theorem, we can rewrite $\sqrt{5}$
+    as $x^2 - 5 = 0$, where $x \in \mathbb{Q}$. The only possible solutions are $\pm 1, \pm 5$, neither of which
+    are solutions, which is a contradiction.
+  \end{proof}
+\item The proof fails when calculating $x^2 - 4 = 0$. $\pm 1, \pm 2, \pm 4$ are possible solutions, where $x = \pm 2$
+  is a valid solution and is written as $(x + 2)(x - 2) = 0$.
+\end{enumerate}
+\end{document}
+

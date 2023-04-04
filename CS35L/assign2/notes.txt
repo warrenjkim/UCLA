@@ -1,0 +1,78 @@
+2.1
+
+1.
+(* (expt 2 (- 607 1)) (- (expt 2 607) 1))
+141053783706712069063207958086063189881486743514715667838838675999954867742652380114104193329037690251561950568709829327164087724366370087116731268159313652487450652439805877296207297446723295166658228846926807786652870188920867879451478364569313922060370695064736073572378695176473055266826253284886383715072974324463835300053138429460296575143368065570759537328128
+
+2.
+(+ (logb (* (expt 2 (- 607 1)) (- (expt 2 607) 1))) 1)
+1213
+
+3. 
+C-h k C-h k describes how the C-h k command works. This is because when C-h k is invoked, it calles the describe-key command which will wait for a second set of commands, giving information on said command. C-h k runs the command describe-key (found in global-map), which is an interactive byte-compiled Lisp function in ‘help.el’.
+
+It is bound to C-h k, <f1> k, <help> k, <menu-bar> <help-menu> <describe> <describe-key-1>.
+
+
+4.
+C-h k M-SPC describes how the M-SPC command works. This is because when C-h k is invoked, it calles the describe-key command which will wait for a second set of commands, giving information on said command. M-SPC runs the command just-one-space (found in global-map), which is an interactive byte-compiled Lisp function in ‘simple.el’.
+
+It is bound to M-SPC.
+
+5.
+M-x just-one-space
+
+Homework
+1. when the script is invoked on an empty file, it prints an error from python's random package.
+
+2. when invoking the script in python3, there is a syntax error because StandardError was deprecated, and you must now package up your error arguments instead of passing multiple arguments into the function.
+
+3. my implementation of shuf.py does not work on Python2 because it uses the f-string feature which was implemented in Python 3.6
+
+4. my implementation of shuf.py does not work on the older Python3 because it uses the match case feature which was implemented in Python 3.10.
+
+5.
+BENCHMARK 1
+real 0m0.709s
+user 0m0.549s
+sys  0m0.070s
+SUM: 0m0.619s
+
+BENCHMARK 2
+real 0m0.635s
+user 0m0.560s
+sys  0m0.059s
+SUM: 0m0.619
+
+BENCHMARK 3
+real 0m0.631s
+user 0m0.554s
+sys  0m0.061s
+SUM: 0m0.615s
+
+Python3 version: Python 3.11.1
+MEDIAN: BENCHMARK 2 = 0m0.619s
+
+Architecture:        x86_64
+CPU op-mode(s):      32-bit, 64-bit
+Byte Order:          Little Endian
+CPU(s):              4
+On-line CPU(s) list: 0-3
+Thread(s) per core:  1
+Core(s) per socket:  4
+Socket(s):           1
+NUMA node(s):        1
+Vendor ID:           GenuineIntel
+CPU family:          6
+Model:               85
+Model name:          Intel(R) Xeon(R) Silver 4116 CPU @ 2.10GHz
+Stepping:            4
+CPU MHz:             2095.075
+BogoMIPS:            4190.15
+Hypervisor vendor:   Microsoft
+Virtualization type: full
+L1d cache:           32K
+L1i cache:           32K
+L2 cache:            1024K
+L3 cache:            16896K
+NUMA node0 CPU(s):   0-3

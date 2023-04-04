@@ -1,0 +1,92 @@
+1. sh, and type are located in /usr/bin. sleep is located in /usr/local/cs/bin
+which sh sleep type RET
+
+2. sed and seq are executable programs in /usr/bin that are exactly 3 characters long and start with "se".
+which /usr/bin/se? RET
+info sed information RET
+info seq information RET
+
+
+sed: sed' is a stream editor.  A stream editor is used to perform basic text
+transformations on an input stream (a file or input from a pipeline).
+While in some ways similar to an editor which permits scripted edits
+(such as 'ed'), 'sed' works by making only one pass over the input(s),
+and is consequently more efficient.  But it is 'sed''s ability to filter
+text in a pipeline which particularly distinguishes it from other types
+of editors.
+
+seq: ‘seq’ prints the numbers from FIRST to LAST by INCREMENT.  By
+default, each number is printed on a separate line.  When INCREMENT is
+not specified, it defaults to ‘1’, even when FIRST is larger than LAST.
+FIRST also defaults to ‘1’.  So ‘seq 1’ prints ‘1’, but ‘seq 0’ and ‘seq
+10 5’ produce no output.  The sequence of numbers ends when the sum of
+the current number and INCREMENT would become greater than LAST, so ‘seq
+1 10 10’ only produces ‘1’.  INCREMENT must not be ‘0’; use the tool
+‘yes’ to get repeated output of a constant number.  FIRST, INCREMENT and
+LAST must not be ‘NaN’, but ‘inf’ is supported.  Floating-point numbers
+may be specified in either the current or the C locale.
+
+3. The file that is executed by the symbolic link is /usr/local/cs/emacs-28.2/bin/emacs-28.2
+ls -l /usr/local/cs/bin/emacs RET
+lrwxrwxrwx 2 eggert csfac 28 Sep 12 11:10 /usr/local/cs/bin/emacs -> ../emacs-28.2/bin/emacs-28.2
+
+4. The version of /usr/bin/gcc is 8.5.0 20210514. The version of the palin gcc is 12.2.0. They're different because they're two different installations of gcc. The gcc version we use is the one in /usr/local/cs/bin because we prepended it to our .profile.
+gcc --version RET
+gcc (GCC) 12.2.0
+Copyright (C) 2022 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+/usr/bin/gcc --version RET
+gcc (GCC) 8.5.0 20210514 (Red Hat 8.5.0-10)
+Copyright (C) 2018 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+5. chmod u+sx,o-w: u+sx: give the file user permissions when executing, and then turn the executable bit on. o-w: remove the write permission for users who don't own the file.
+
+6. There are 1022 files that were modified after/on the first day of this class that are located under /usr/local/cs.
+wc -l <(find /usr/local/cs -type d -newermt '2023-01-10 00:00:00')
+
+7. There are 258 symbolic links in the same directory as find.
+wc -l <(find /usr/bin -type l)
+
+8. The oldest file in the /usr/lib64 directory is libbz2.so.1 which is a symbolic link to libbz2.so.1.0.6
+tail -1 <(ls -lta /usr/lib64)
+
+9. There are 7 commands with the word transpose in their name: transpose-chars, transpose-lines, transpose-paragraphs, transpose-regions, transpose-sentences, transpose-sexps, transpose-words.
+C-h a transpose RET
+
+10. yank pastes the content that is currently in the clipboard. It can be invoked using C-y.
+C-h b RET
+C-s 'C-y' RET
+M-f RET
+
+11. ls -l will not list hidden directories (directories that start with '.'). dired will list hidden directories (directories that start with '.').
+ls -l RET
+M-x dired RET RET
+
+12. My own login shell's process: 2979163, its descendent(s): 2979224, its ancestors: 2979161 (sshd: warren@pts/12), 2979157 (sshd: warren [priv]), 1699 (/usr/sbin/sshd -D), 1 (/usr/lib/systemd/systemd). The shellscript "printpstree" will print my own login shell's process and all of its ancestors and descendents.
+[warren@lnxsrv12 ~]$ ps
+    PID TTY          TIME CMD
+2979163 pts/12   00:00:00 bash
+2979214 pts/12   00:00:00 ps
+[warren@lnxsrv12 ~]$ ps --ppid $$
+    PID TTY          TIME CMD
+2979224 pts/12   00:00:00 ps
+[warren@lnxsrv12 ~]$ ps -f
+UID          PID    PPID  C STIME TTY          TIME CMD
+warren   2979163 2979161  0 20:15 pts/12   00:00:00 -bash
+warren   2979228 2979163  0 20:15 pts/12   00:00:00 ps -f
+[warren@lnxsrv12 ~]$ ps -f 2979161
+UID          PID    PPID  C STIME TTY      STAT   TIME CMD
+warren   2979161 2979157  0 20:15 ?        S      0:00 sshd: warren@pts/12
+[warren@lnxsrv12 ~]$ ps -f 2979157
+UID          PID    PPID  C STIME TTY      STAT   TIME CMD
+root     2979157    1699  0 20:15 ?        Ss     0:00 sshd: warren [priv]
+[warren@lnxsrv12 ~]$ ps -f 1699
+UID          PID    PPID  C STIME TTY      STAT   TIME CMD
+root        1699       1  0  2022 ?        Ss     0:34 /usr/sbin/sshd -D -oCiphers=aes256-gcm@openssh.com,chacha20-poly13
+[warren@lnxsrv12 ~]$ ps -f 1
+UID          PID    PPID  C STIME TTY      STAT   TIME CMD
+root           1       0  0  2022 ?        Ss    78:32 /usr/lib/systemd/systemd --switched-root --system --deserialize 17

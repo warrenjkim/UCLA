@@ -1,0 +1,26 @@
+- Starting the tutorial, I downloaded the .zip so that I was able to work on my local machine and use localhost:3000 rather than using the site's coding sandbox.
+- Run npm install => npm start to run the app on localhost:3000.
+- Fixed a minor bug by adding 'import React from "react";' to be able to run without errors.p
+- React is a component based language, meaning every part of the user interface can be thought of as a component.
+- export and default are JS keywords: export means that the function is accessible outside of the file and default tells other files that this is the main function in the file.
+- The Square() function returns a button with a property/prop className="square" and an X inside the button.
+- props are used to tell CSS how to style the button.
+- JSX tags are in the format <tag>your-code-here</tag>
+- In styles.css, the square selector is predefined for us.
+- index.js contains all the necessary elements to connect our App.js to the web browser. It has 4 parts: import React, it's library (React DOM), styles, and our App.js
+- React components can only return a single JSX element. To get around this, we need to wrap multiple elements in a JSX fragment, denoted as the empty tags <>your-elements-here</>
+- Created grid of squares labeled 1-9 by grouping squares into divs and renamed the function to Board()
+- Created a Square() component and replaced the buttons in Board() to Squares.
+- Modified Square to take in a value parameter to display different numbers
+- Created a function to handle a click and added the onClick event listener
+- useState is used to remember the state of a component
+- In [value, setValue] = useState(null), value is the value, and setValue is a function to update the state.
+- When we call setValue, it rerenders that component.
+- So far, I created a 3x3 grid that rerenders a cell whenever it's clicked, changing it from an empty cell to 'X'.
+- Create a state for the board by doing const [squares, setSquares] = useState(Array(9).fill(null)); since the board is a 3 x 3 grid and has 9 elements in total.
+- Refactored Square() to take in a value and also deleted the onClick event handler.
+- Added an event handler inside Board() to change a cell from blank to 'X'.
+- We want to be able to take turns now.
+- Create a state for who's turn it is (we alternate turns) and refactor the event handler accordingly.
+- After someone makes a turn, check to see if there is a winner.
+- Done
