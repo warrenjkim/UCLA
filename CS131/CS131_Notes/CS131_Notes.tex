@@ -1,0 +1,84 @@
+\documentclass[13pt]{article}
+\usepackage{amsmath, amsthm, amssymb, graphicx, enumitem, esvect}
+
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+\title{Problem Set 0}
+\author{Warren Kim}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+
+\newpage
+\section{Overview}
+\subsection{What is a Programming Language?}
+A programming language is a structured system of communication designed to express computations in an 
+abstract manner.
+
+\subsection{Why Different Languages?}
+Different languages are built for different use cases. Below are popular languages that were built for
+their respective use cases:
+\begin{itemize}[label=,leftmargin=*]
+\item Javascript is the most popular language for anything related to web development. There are many
+  frameworks for vanilla Javascript (e.g. React) as well as derivative languages (e.g. Typescript).
+\item C/++ is a popular language for programs that require high performance (e.g. Linux).
+\item C# is most commonly used for programs that are in Microsoft's .NET ecosystem.
+\item Python is a popular language used in the field of artificial intelligence.
+\item ba/z/sh is a scripting language for UNIX-based operating systems.
+\item R is a popular language among statiticians (not sure why).
+\item Lisp is a functional language used in the field of artificial intelligence and was used to 
+  write Emacs.
+\item SQL and its variants are a set of querying languages used to communicate with databases.
+\end{itemize}
+
+\section{Language Paradigms}
+There are four main language paradigms:
+\begin{itemize}[label=,leftmargin=*]
+\item Imperative
+\item Object-Oriented
+\item Functional
+\item Logic
+\end{itemize}
+
+\subsection{Imperative Paradigm}
+Imperative programming uses a set of statements (e.g. control structures, mutable variables) that 
+directly change the state of the program. More specifically, these statements are commands that control 
+how the program behaves. Common examples of imperative languages include FORTRAN and C.
+
+\subsection{Object-Oriented Paradigm}
+The object-oriented programming is a type of imperative programming, and contains support for
+structured objects and classes that "talk" to each other via methods (e.g. \texttt{d} is a \texttt{Dog} 
+object with the class method \texttt{bark()}, where \texttt{d.bark()} will invoke the \texttt{bark}
+function for the object \texttt{d}). Common examples of object-oriented languages include Java and C++.
+
+\subsection{Functional Paradigm}
+Functional programming is a type of declarative programming. They use expressions, functions, 
+constants, and recursion to change the state of the program. There is no iteration or mutable 
+variables. Common examples of functional languages include Haskell and Lua.
+
+\subsection{Logic Paradigm}
+Logic programming the most abstract and is a type of declarative programming. A set of facts and
+rules are defined within the scope of the program. Common examples of logic languages are Prolog and
+ASP.
+
+\section{Language Choices}
+There are many things to consider when building a programming language. Some of these include:
+\begin{itemize}[label=,leftmargin=*]
+\item Static/Dynamic type checking
+\item Passing parameters by value/reference/pointer/object reference
+\item Scoping semantics
+\item Manual/Automatic memory management
+\item Implicit/Explicit variable declaration
+\item Manual/Automatic bounds checking
+\end{itemize}
+Generally, a programming language can be broken down into its syntax and semantics.
+\end{document}
