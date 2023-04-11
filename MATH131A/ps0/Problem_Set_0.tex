@@ -10,7 +10,7 @@
 % Replace `letterpaper' with `a4paper' for UK/EU standard size
 \usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
 
-\title{Problem Set 0}
+\title{Problem Set 0 (Graded Questions 2, 3(e), 8, 10)}
 \author{Warren Kim}
 
 \begin{document}
@@ -87,11 +87,11 @@ Decide on the truth values of each statement and then provide a proof.
 \item $\forall x \in \mathbb{Z} \ \exists y \in \mathbb{Z} : x + y = 0$ \\
 "For every integer $x$, there exists an integer $y$ such that $x + y = 0$".
 \begin{proof}
-  This statement is true. Let $x \in \mathbb{Z}$. Since $\mathbb{Z}$ is a field, there exists an
-  additive inverse $-x \in \mathbb{Z}$. So, we have
+  This statement is true. Let $x \in \mathbb{Z}$. By definition of $\mathbb{Z}$, since $x \in \mathbb{Z}$, there exists an
+  additive inverse $-x \in \mathbb{Z}$ such that $x + -x = 0$. So, we have
   \begin{align*}
     x + y &= 0 \\
-    x + y &= x + -x && \text{existence of an additive inverse} \\
+    x + y &= x + -x \\
     y &= -x
   \end{align*}
   Substituting $-x$ for $y$, we get $x + y = x + -x = 0$.
@@ -100,9 +100,10 @@ Decide on the truth values of each statement and then provide a proof.
 \item $\exists y \in \mathbb{Z} \ \forall x \in \mathbb{Z} : x + y = 0$ \\
 "There exists an integer $y$ such that $x + y = 0$ for every integer $x$".
 \begin{proof}
-  We will prove that this statement is false by counter-example. We want to prove that there exists at least one
-  $x \in \mathbb{Z}$ such that $x + y \neq 0$. Let $x = 2$ and $y = -1$. Then, $x + y = 2 + -1 = 1 \neq 0$.
-  Therefore, the statement is false.
+  We will prove that this statement is false. Assume by contradiction that the above statement is true.
+  Let $x = 2$ and $y = -1$. Clearly, $x, y \in \mathbb{Z}$. Then, $x + y = 2 + -1 = 1 \neq 0$ which
+  is a contradiction to the statement that there exists an integer $y$ such that for \textbf{every} integer $x$,
+  $x + y = 0$.
 \end{proof}
 \end{enumerate}
 
@@ -124,9 +125,8 @@ but where exactly does it fail?
 \item
   \begin{proof}
     To prove the statement, it is equivalent to prove its contrapositive: If $p$ is not divisible by $5$,
-    $p^2$ is not divisible by $5$. Note that $p$ can be rewritten as $p = 5s + r$, where $s, r \in \mathbb{N}$.
-    By definition, $r \neq 0$ since $r \in \mathbb{N}$ and $0 \not\in \mathbb{N}$. So, $p$ is not divisible by $5$.
-    To prove $p^2$ is not divisible by $5$,
+    $p^2$ is not divisible by $5$. Since $p$ is not divisble by 5, $p$ can be rewritten as $p = 5s + r$, where
+    $s, r \in \mathbb{N}$. To prove $p^2$ is not divisible by $5$,
     \begin{align*}
       p^2 &= (5s + r)^2 \\
           &= 25s^2 + 10sr + r^2 \\
@@ -144,25 +144,18 @@ but where exactly does it fail?
       5q^2 &= p^2 \\
       q^2 &= \frac{1}{5}p^2 && \text{from (a), since $p^2$ is divisible by 5, $p$ is also divisible by
                                5} \\
-      q^2 &= \frac{1}{5}(5r)^2 && \text{since $\mathbb{Q}$ is a field, }
-                                  \exists r \in \mathbb{Q} : p = 5r \\
+      q^2 &= \frac{1}{5}(5r)^2 && \exists r \in \mathbb{Q} : p = 5r \text{ since $p$ is divisible by 5} \\
                &= \frac{1}{5}(25r^2) \\
       q^2 &= 5r^2 \\
       \frac{1}{5}q^2 &= r^2 && \text{from (a), since $q^2$ is divisible by 5, $q$ is also divisible by
                                5}
     \end{align}
-    which means that both $p$ and $q$ are divisible by $5$, which is a contradiction. Therefore,
-    $\sqrt{5}$ is irrational.
+    which means that both $p$ and $q$ are divisible by $5$, which is a contradiction to the statement that
+    $p, q$ are coprime. Therefore, $\sqrt{5}$ is irrational.
   \end{proof}
 \item The proof fails because the statement "if $p^2$ is divisible by $4$, $p$ is divisible by $4$"
-  does not always hold (e.g. $p = 2$). Therefore, we cannot assume that $p = 4r$ in (4) and (8).
-  % \begin{proof}
-  %   Assume by contradiction that $\sqrt{5}$ is rational. By the Rational Zeros Theorem, we can rewrite
-  %   $\sqrt{5}$ as $x^2 - 5 = 0$, where $x \in \mathbb{Q}$. The only possible solutions are $\pm 1,
-  %   \pm 5$, neither of which are solutions, which is a contradiction.
-  % \end{proof}
-% \item The proof fails when calculating $x^2 - 4 = 0$. $\pm 1, \pm 2, \pm 4$ are possible solutions, where $x = \pm 2$
-%   is a valid solution and is written as $(x + 2)(x - 2) = 0$.
+  does not always hold (e.g. If $p = 2$, $\frac{p}{4} = \frac{1}{2} \not\in \mathbb{Z}$ but $\frac{p^2}{4} = 1
+  \in \mathbb{Z}$). Therefore, we cannot assume that $p = 4r$ in (4) and (8).
 \end{enumerate}
 \end{document}
 
