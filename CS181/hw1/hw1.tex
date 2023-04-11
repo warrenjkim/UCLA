@@ -144,9 +144,9 @@ Give state diagrams of DFAs recognizing the following languages. In all parts, t
 
       
       \draw (init) edge[->, loop above] node{$0$} (init);
-      \draw (init) edge[->, above] node{$1$} (q1);
+      \draw (init) edge[->, bend left, above] node{$1$} (q1);
 
-      \draw (q1) edge[->, loop above] node{$0$} (q1);
+      \draw (q1) edge[->, bend left, below] node{$0$} (init);
       \draw (q1) edge[->, above] node{$1$} (q2);
 
       \draw (q2) edge[->, loop above] node{$1$} (q2);
@@ -162,22 +162,22 @@ Give state diagrams of DFAs recognizing the following languages. In all parts, t
       \node[state, accepting, initial] (init) {};
       \node[state, accepting, right of=init] (q1) {};
       \node[state, right of=q1] (q2) {};
+      \node[state, accepting, right of=q1, below of=q1] (goal) {};
       \node[state, right of=q2] (q3) {};
-      \node[state, accepting, right of=q3] (q4) {};
 
       
-      \draw (init) edge[->, loop above] node{$0$} (init);
+      \draw (init) edge[->, below] node{$0$} (goal);
       \draw (init) edge[->, above] node{$1$} (q1);
 
-      \draw (q1) edge[->, loop above] node{$0$} (q1);
-      \draw (q1) edge[->, bend left, above] node{$1$} (q2);
+      \draw (goal) edge[->, loop below] node{$0, 1$} (goal);
       
-      \draw (q2) edge[->, bend left, below] node{$0$} (q1);
+      \draw (q1) edge[->, right] node{$0$} (goal);
+      \draw (q1) edge[->, above] node{$1$} (q2);
+      
+      \draw (q2) edge[->, right] node{$0$} (goal);
       \draw (q2) edge[->, above] node{$1$} (q3);
       
-      \draw (q3) edge[->, above] node{$0, 1$} (q4);
-
-      \draw (q4) edge[->, loop above] node{$0, 1$} (q4);
+      \draw (q3) edge[->, right] node{$0, 1$} (goal);
     \end{tikzpicture}
   \]
 
@@ -229,10 +229,10 @@ Give state diagrams of DFAs recognizing the following languages. In all parts, t
       \node[state, right of=q1] (sink) {};
 
       
-      \draw (init) edge[->, below] node{$0$} (q1);
+      \draw (init) edge[->, above] node{$0$} (q1);
       \draw (init) edge[->, bend left, above] node{$1$} (sink);
 
-      \draw (q1) edge[->, below] node{$0, 1$} (sink);
+      \draw (q1) edge[->, above] node{$0, 1$} (sink);
       
       \draw (sink) edge[->, loop above] node{$0, 1$} (sink);
     \end{tikzpicture}
