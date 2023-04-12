@@ -61,3 +61,13 @@ is_odd n = is_odd (n - 2)
 is_even 0 = True
 is_even 1 = False
 is_even n = is_even (n - 2)
+
+
+-- count occurrences will return the number of ways all elements of a_1 appear in a_2
+count_occurrences [] a_2 = 1
+count_occurrences a_2 [] = 0
+count_occurrences a_1 a_2 =
+  if (head a_1) == (head a_2) then
+    count_occurrences a_1 (tail a_2) + 1
+  else
+    count_occurrences (tail a_1) a_2
