@@ -41,18 +41,41 @@ test_4b n expected = do
   else
     "Failed: Expected " ++ (if expected then "True" else "False") ++ " but " ++ (if output then "True" else "False") ++ " was returned"
 
+test_5 :: [Integer] -> [Integer] -> Integer -> String
+test_5 a_1 a_2 expected = do
+  let output = Hw1.count_occurrences a_1 a_2
+  if output == expected then
+    "Passed"
+    else
+    "Failed: Expected " ++ show expected ++ " but " ++ show output ++ " was returned"
+
 
 check = do
-  print("Testing Question 1")
-  print("")
-  print(test_1 "cat" "banana" "banana")
-  print(test_1 "Carey" "rocks" "Carey")
-  print("")
-  print("Testing Question 3")
-  print(test_3a 1 [1])
-  print((test_3a 42 [1, 2, 3, 6, 7, 14, 21, 42]))
-  print(test_3b [6, 28, 496, 8128])
-  print("")
-  print("Testing Question 4")
-  print(test_4a 8 False)
-  print(test_4b 8 True)
+  putStrLn("Testing Question 1")
+  putStrLn(test_1 "cat" "banana" "banana")
+  putStrLn(test_1 "Carey" "rocks" "Carey")
+  putStrLn("")
+  putStrLn("Testing Question 3")
+  putStrLn(test_3a 1 [1])
+  putStrLn(test_3a 42 [1, 2, 3, 6, 7, 14, 21, 42])
+  putStrLn(test_3b [6, 28, 496, 8128])
+  putStrLn("")
+  putStrLn("Testing Question 4")
+  putStrLn(test_4a 8 False)
+  putStrLn(test_4b 8 True)
+  putStrLn("")
+  putStrLn("Testing Question 5")
+  putStrLn(test_5 a_1 a_2 1)
+  putStrLn(test_5 b_1 a_2 2)
+  putStrLn(test_5 c_1 a_2 0)
+  putStrLn(test_5 d_1 a_2 3)
+  putStrLn(test_5 [] a_2 1)
+  putStrLn(test_5 [] [] 1)
+  putStrLn(test_5 [5] [] 0)
+
+  where
+    a_1 = [10, 20, 40]
+    b_1 = [10, 40, 30]
+    c_1 = [20, 10, 40]
+    d_1 = [50, 40, 30]
+    a_2 = [10, 50, 40, 20, 50, 40, 30]

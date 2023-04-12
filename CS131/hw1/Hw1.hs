@@ -68,6 +68,6 @@ count_occurrences [] a_2 = 1
 count_occurrences a_2 [] = 0
 count_occurrences a_1 a_2 =
   if (head a_1) == (head a_2) then
-    count_occurrences a_1 (tail a_2) + 1
+    count_occurrences a_1 (tail a_2) + count_occurrences (tail a_1) (tail a_2)
   else
-    count_occurrences (tail a_1) a_2
+    count_occurrences a_1 (tail a_2)
