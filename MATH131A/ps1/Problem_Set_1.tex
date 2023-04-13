@@ -26,6 +26,65 @@ the equivalent laws in set theory.
   \[(A \cap B)^c = A^c \cup B^c\]
 \end{enumerate}
 
+\subsection*{Response}
+\begin{proof}
+  $(A \cup B)^c \subseteq A^c \cap B^c$ \\
+  Let $x \in (A \cup B)^c$ Then, by definition, $x$ is neither in $A$ or $B$; that is, $x \not\in A$
+  and $x \not\in B$. But this is equivalent to $x \in A^c$ and $x \in B^c$. Thus, $x \in A^c \cap
+  B^c$, so $(A \cup B)^c \subseteq A^c \cap B^c$. \\ \\
+  $A^c \cap B^c \subseteq (A \cup B)^c$ \\
+  Let $x \in A^c \cap B^c$. Then, $x \not\in A$ and $x \not\in B$; that is, $x \not\in A \cup B$,
+  or $x \in (A \cup B)^c$. Thus, $A^c \cap B^c \subseteq (A \cup B)^c$ \\ \\
+  Therefore, $(A \cup B)^c = A^c \cap B^c$.
+\end{proof}
+
+
+
+
+
+\newpage
+\section*{Question 5 parts (b), (c), (d)}
+Consider a function $f : X \rightarrow Y$ and let $A \subseteq X$ and $B \subseteq X$.
+\begin{enumerate}[label=(\alph*)]
+\item Show that $(f(A \cup B) = f(A) \cup f(B)$.
+\item Show that $(f(A \cup B) \subseteq f(A) \cup f(B)$.
+\item Let $A, B$ be sets such that $A \cap B \neq \emptyset$. Prove the converse statement $f(A) \cap f(B)
+  \subseteq f(A \cap B)$ is false. \\
+  (\textbf{Hint:} find a counterexample) \\ \\
+  {[The converse statement is still false when $A \cap B = \emptyset$ as long as $f(A) \cap f(B) \neq \emptyset$,
+  but imposing $A \cap B \neq \emptyset$ is more interesting. Note that $f(\emptyset) = \emptyset$.]}
+\item Give an extra condition on $f$ which makes this statement $f(A) \cap f(B) \subseteq f(A \cap B)$ true and
+  prove this result.
+\end{enumerate}
+
+\subsection*{Response}
+
+
+
+
+
+\newpage
+\section{Question 7 parts (a), (c), (e)}
+In class, we saw an axiomatic foundation of N. Making use of the notion of successor, we can make an appropriate
+definition of + (i.e. addition behaves as we learnt way back). Furthermore, we can make sense of $m - n$ when
+$m > n$. You may assume these two facts from now on. Now, you will be guided through a foundational construction
+of $\mathbb{Z}$. Consider the set $\mathbb{N} \times \mathbb{N}$ and the following relation:
+\[(m_1, n_1) \sim (m_2, n_2) \text{ if } m_1 + n_2 = n_1 + m_2\]
+(Perhaps after the end of this problem, I recommend coming back and trying to understand why the equivalence
+relation defined as above would work to construct $\mathbb{Z}$. Try to draw a picture.)
+\begin{enumerate}
+\item [(a)] Show that $\sim$ is an equivalence relation on $\mathbb{N} \times \mathbb{N}$ (recall the
+  \textit{cancellative law:} $m + n = m + l$, for $m, n, l \in \mathbb{N}$, then $n = l$)
+\item [(c)] Use part (b) to show the following: if $[m_1, n_1)] = [m_2, n_2)]$ and $[a_1, b_1)] = [a_2, b_2)]$,
+  then $[(m_1 + a_1, n_1 + b_1)] = [(m_2 + a_2, n_2 + b_2)]$ \\ \\
+  Part (c) shows us how to define addition $+$ on $\mathbb{Z}$ as follows: we define $[(m, n)] + [(a, b)] =
+  [(m + a, n + b)]$
+\item [(e)] Show that for every $[(m, n)] \in \mathbb{Z}$, we have $[(m, n)] + [(n, m)] = [(1, 1)]$ \\ \\
+  Part (e) tells us that the additive inverse of $[(m, n)]$ is $[(n, m)]$ and we write $[(n, m)] = -[(m, n)]$.
+  In particular, we have made sense of what we usually denote by $-n$ for $n \in \mathbb{N}$
+\end{enumerate}
+\subsection*{Response}
+
 \end{document}
 
 %%% Local Variables:

@@ -1,5 +1,3 @@
-module Hw1 where
-
 -- Returns the larger of the two strings (first string if equal)
 largest str1 str2 =
   if (length str2) <= (length str1) then
@@ -23,37 +21,37 @@ perfect_numbers =
 -- note: even numbers take the form n = 2k
 -- note: odd numbers take the form n = 2k + 1
 
--- (1)
--- is_odd n =
---   if n == 0 then
---     False
---   else if n < 0 then
---     True
---   else 
---     is_odd (n - 2)
+-- (1) using if then else
+is_odd n =
+  if n == 0 then
+    False
+  else if n < 0 then
+    True
+  else 
+    is_odd (n - 2)
     
--- is_even n =
---   if n == 0 then
---     True
---   else if n < 0 then
---     False
---   else
---     is_even (n - 2)
+is_even n =
+  if n == 0 then
+    True
+  else if n < 0 then
+    False
+  else
+    is_even (n - 2)
 
 
--- (2)
--- is_odd n
---   | n == 0    = False
---   | n < 0     = True
---   | otherwise = is_odd (n - 2)
+-- (2) using pipe operators
+is_odd n
+  | n == 0    = False
+  | n < 0     = True
+  | otherwise = is_odd (n - 2)
 
--- is_even n
---   | n == 0    = True
---   | n < 0     = False
---   | otherwise = is_even (n - 2)
+is_even n
+  | n == 0    = True
+  | n < 0     = False
+  | otherwise = is_even (n - 2)
 
 
--- (3)
+-- (3) using guard clauses
 is_odd 0 = False
 is_odd 1 = True
 is_odd n = is_odd (n - 2)
@@ -65,7 +63,7 @@ is_even n = is_even (n - 2)
 
 -- count occurrences will return the number of ways all elements of a_1 appear in a_2
 count_occurrences [] a_2 = 1
-count_occurrences a_2 [] = 0
+count_occurrences a_1 [] = 0
 count_occurrences a_1 a_2 =
   if (head a_1) == (head a_2) then
     count_occurrences a_1 (tail a_2) + count_occurrences (tail a_1) (tail a_2)
