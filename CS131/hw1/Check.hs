@@ -49,8 +49,8 @@ test_5 a_1 a_2 expected = do
     else
     "Failed: Expected " ++ show expected ++ " but " ++ show output ++ " was returned"
 
-
-check = do
+main :: <IO>
+main = do
   putStrLn("Testing Question 1")
   putStrLn(test_1 "cat" "banana" "banana")
   putStrLn(test_1 "Carey" "rocks" "Carey")
