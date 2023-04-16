@@ -68,8 +68,8 @@ count_if_with_fold f (x:xs) =
 -- foo x y z t = map t [x, x + z..y]
 
 -- Rewritten as a chain of lambda expressions that take in **one** variable (curried version of foo):
--- foo :: Integer -> (Integer -> (Integer -> ((Integer -> a) -> [a])))
--- foo = \x -> (\y -> (\z -> (\t -> map t [x, x + z..y])))
+foo :: Integer -> (Integer -> (Integer -> ((Integer -> a) -> [a])))
+foo = \x -> (\y -> (\z -> (\t -> map t [x, x + z..y])))
 
 -- 4 Consider the following Haskell function:
 -- f a b =
