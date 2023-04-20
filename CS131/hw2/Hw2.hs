@@ -197,13 +197,10 @@ unsigned maxValue(Tree* root) {
         if(!curr)
             continue;
         
-        unsigned curr_value = curr->value;
-        std::vector<Tree*> children = curr->children;
-        
-        if(curr_value > max)
-            max = curr_value;
+        if(curr->value > max)
+            max = curr->value;
             
-        for(const auto& child : children)
+        for(const auto& child : curr->children)
             q.push(child);
     }
     
