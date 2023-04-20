@@ -1,4 +1,3 @@
-module Hw2 where
 -- Homework 2
 
 -- 1 (a): map a list: for all x in list, x * factor
@@ -53,7 +52,7 @@ count_if_with_fold f (x:xs) =
 -- Currying is the process of representing a function as a group of individual, nested, functions that each take in one parameter and
 -- return its nested function. Partial application is the process of fixing a certain parameter(s) of a function and calling the "partial"
 -- or remainder of the function (with the fixed arguments filling in for the missing parameter(s)). Currying decomposes a function,
--- whereas partial applications allow for fixed assignments to arguments.
+-- whereas partial applications allow for fixed assignments to arguments on those decomposed functions.
 
 -- 3 (b) function equivalence
 -- (i)  (a -> b) -> c
@@ -84,28 +83,30 @@ foo = \x -> (\y -> (\z -> (\t -> map t [x, x + z..y])))
 
 -- 4 (c) The variables c, d are captured in (3)
 
--- 4 (d) a = 4, b = 5, c = 4, d = 5, e = 6, f = 7 (LATER)
+-- 4 (d) a = 4, b = 5, c = 4, d = 5, e = 6, f = 7. Only b and e are used in f's implementation. This is because in (1), a = 4 is never used since the lambda 
+-- takes in a parameter (in the form \a -> ...). (2) uses b = 5 to define d = b. In (3), e = 6 is used by not f = 7.
 
 
 -- 5
 -- Haskell closures are first-class citizens. Closures can capture any free variable in scope, whereas function pointers cannot, since they are just a pointer
--- to the memory address of the function. So, they are limited to the parameters that are passed into the function.
+-- to the memory address of the function. So, they are limited to the parameters that are passed into the function. In contrast, since Haskell is immutable, 
+-- closures will contain a copy of the variable when capturing free variables in scope.
 
 -- 6 (a)
--- data InstagramUser = Influencer | Normie
+data InstagramUser = Influencer | Normie
 
 -- -- 6 (b)
--- lit_collab :: InstagramUser -> InstagramUser -> Bool
--- lit_collab Influencer Influencer = True
--- list_collab _ _ = False
+lit_collab :: InstagramUser -> InstagramUser -> Bool
+lit_collab Influencer Influencer = True
+list_collab _ _ = False
 
 -- -- 6 (c)
--- data InstagramUser = Influencer [String] | Normie
+data InstagramUser = Influencer [String] | Normie
 
 -- -- 6 (d)
--- is_sponsor :: InstagramUser -> String -> Bool
--- is_sponsor Normie _ = False
--- is_sponsor (InstagramUser sponsors) sponsor = sponsor `elem` sponsors
+is_sponsor :: InstagramUser -> String -> Bool
+is_sponsor Normie _ = False
+is_sponsor (InstagramUser sponsors) sponsor = sponsor `elem` sponsors
 
 -- 6 (e)
 data InstagramUser = Influencer [String] [InstagramUser] | Normie
@@ -183,7 +184,32 @@ longest_run list =
         helper (max max_so_far curr_max) 0 xs
 
 -- 8 (c)
-
+{- 
+unsigned maxValue(Tree* root) {
+    unsigned max = 0;
+    std::queue<Tree*> q;
+    q.push(root);
+    
+    while(!q.empty()) {
+        Tree* curr = q.front();
+        q.pop();
+        
+        if(!curr)
+            continue;
+        
+        unsigned curr_value = curr->value;
+        std::vector<Tree*> children = curr->children;
+        
+        if(curr_value > max)
+            max = curr_value;
+            
+        for(const auto& child : children)
+            q.push(child);
+    }
+    
+    return max;
+ }
+-}
 
 -- 8 (d)
 data Tree = Empty | Node Integer [Tree]
