@@ -61,14 +61,15 @@ Consider a function $f : X \rightarrow Y$ and let $A \subseteq X$ and $B \subset
 \item [(b)]
   \begin{proof}
     Let $y \in f(A \cap B)$. Then, $\exists x \in A \cap B$ such that $f(x) = y$. Then, $f(x) \in f(A)$ and
-    $f(x) \in f(B)$; that is, $f(x) \in f(A) \cap f(B)$. But $f(x) = y$, so $y \in f(A) \cap f(B)$. Thus, $f(A
+    $f(x) \in f(B)$; that is, $f(x) \in f(A) \cap f(B)$. But $f(x) = y$, and $y \in f(A) \cap f(B)$. Thus, $f(A
     \cap B) \subseteq f(A) \cap f(B)$.
   \end{proof}
 
 \item [(c)]
   \begin{proof}
-    Assume by contradiction that $f(A) \cap f(B) \subseteq f(A \cap B)$. Consider $f : \mathbb{R} \rightarrow
-    \mathbb{R}, \ f(S) := \{x^2 \in S : \forall x \in S\}$, where $A = \{0, 1\}, \ B = \{-1, 0\}$.
+    Assume by contradiction that $\forall f, A, B, \ f(A) \cap f(B) \subseteq f(A \cap B)$ where $f$ is a function and $A, B$ are sets.
+    Consider $f : \mathbb{R} \rightarrow \mathbb{R}, \ f(S) := \{x^2 \in S : \forall x \in S\}$,
+    where $A = \{0, 1\}, \ B = \{-1, 0\}$.
     Clearly, $f(A \cap B) = \{0\}, \ f(A) = f(B) = \{0, 1\}$. So, $f(A) \cap f(B) = \{0, 1\}$, but
     $f(A \cap B) = \{0\}$, so $f(A) \cap f(B) \not \subseteq f(A \cap B)$,
     which is a contradiction to our assumption.
@@ -78,8 +79,8 @@ Consider a function $f : X \rightarrow Y$ and let $A \subseteq X$ and $B \subset
   \begin{proof}
     Consider a function $f : X \rightarrow Y$ and let $A \subseteq X$ and $B \subseteq X$. Now, let $y \in
     f(A) \cap f(B)$. Then, $\exists a \in A, \ \exists b \in B$ such that $f(a) = y = f(b) \implies a = b
-    \implies  a \in B, \ b \in A$. Since $f$ is injective. Thus, $x \in A \cap B \implies f(x) \in f(A \cap B)$.
-    But $f(x) = y$, so $y \in f(A) \cap f(B)$. Thus, $f(A) \cap f(B) \subseteq f(A \cap B)$.
+    \implies  a \in B, \ b \in A$ since $f$ is injective. Thus, $x \in A \cap B \implies f(x) \in f(A \cap B)$.
+    But $f(x) = y$, and $y \in f(A) \cap f(B)$. Thus, $f(A) \cap f(B) \subseteq f(A \cap B)$.
   \end{proof}
 \end{enumerate}
 
@@ -116,7 +117,8 @@ relation defined as above would work to construct $\mathbb{Z}$. Try to draw a pi
     \textbf{(Reflexive)} $(m_1, n_1) \sim (m_1, n_1) \iff m_1 + n_1 = n_1 + m_1$. Because addition is
     commutative, $\sim$ is reflexive. \\ \\
     \textbf{(Symmetric)} Because $(m_1, n_1) \sim (m_2, n_2)$, we want to show that $(m_2, n_2) \sim (m_1, n_1)$.
-    \\ $(m_2, n_2) \sim (m_1, n_1) \iff m_2 + n_1 = n_2 + m_1$. Clearly, $\sim$ is symmetric. \\ \\
+    \\ $(m_2, n_2) \sim (m_1, n_1) \iff m_2 + n_1 = n_2 + m_1$. Since the equality operator can be read in either
+    direction and since addition is commutative, $\sim$ is symmetric. \\ \\
     \textbf{(Transitive)} If $(m_1, n_1) \sim (m_2, n_2)$ and $(m_2, n_2) \sim (m_3, n_3)$, we want to show that
     \\ $(m_1, n_1) \sim (m_3, n_3)$. Recall that
     \[(1)\ (m_1, n_1) \sim (m_2, n_2) \iff m_1 + n_2 = n_1 + m_2\]
@@ -136,8 +138,9 @@ relation defined as above would work to construct $\mathbb{Z}$. Try to draw a pi
 \item [(c)]
   \begin{proof}
     Let $[(m_1, n_1)] = [(m_2, n_2)]$ and $[(a_1, b_1)] = [(a_2, b_2)]$. Then, $(m_1, n_1) \sim (m_2, n_2)$ and
-    $(a_1, b_1) \sim (a_2, b_2)$. From (b), $(m_1 + a_1, n_1 + b_1) \sim (m_2 + a_2, n_2 + b_2)$, so
-    $[(m_1 + a_1, n_1 + b_1)] = [(m_2 + a_2, n_2, + b_2)]$
+    $(a_1, b_1) \sim (a_2, b_2)$. From (b), $(a_1, b_1) + (m_1, n_1) = (m_1 + a_1, n_1 + b_1) \sim
+    (m_2 + a_2, n_2 + b_2) = (a_2, b_2) + (m_2, n_2)$, so
+    $[(m_1, n_1)] + [(a_1, b_1)] = [[(m_1 + a_1, n_1 + b_1)] = [(m_2 + a_2, n_2, + b_2)] = [(m_2, n_2)] + [(a_2, b_2)]$
   \end{proof}
 
 \item [(e)]
@@ -150,7 +153,8 @@ relation defined as above would work to construct $\mathbb{Z}$. Try to draw a pi
       [(m + n, n + m)] &= [(1, 1)] && \text{from (c)} \\
                           &\iff (m + n, n + m) \sim (1, 1) \\
                           &\iff (m + n) + 1 = (n + m) + 1 \\
-                          &\iff (m + n) + 1 = (m + n) + 1 &&\text{commutativity and associativity of addition}
+                          &\iff (m + n) + 1 = (m + n) + 1 && \text{commutativity and associativity of addition} \\
+                          &\iff m + n = m + n && \text{cancellative law}
     \end{align*}
   \end{proof}
 \end{enumerate}
