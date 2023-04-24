@@ -1,0 +1,85 @@
+\documentclass[13pt]{article}
+\usepackage{amsmath, amsthm, amssymb, graphicx, enumitem, esvect, tikz, graphicx}
+\usetikzlibrary{automata, positioning, arrows}
+\tikzset{
+  ->,
+  ->/.style={thick},
+  every state/.style={thick, fill=gray!10},
+  node distance=2.5cm,
+  initial text=$ $,
+}
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+\title{Problem Set 1}
+\author{Warren Kim}
+
+\begin{document}
+\maketitle
+
+\newpage
+\section*{Question 1}
+\subsection*{Response}
+
+\newpage
+\section*{Question 1.32}
+\subsection*{Response}
+
+\newpage
+\section*{Question 1.40}
+
+\subsection*{Response}
+
+\newpage
+\section*{Question 1.41}
+For languages $A$ and $B$, let the \textit{\textbf{perfect shuffle}}
+of $A$ and $B$ be the the language 
+\[\{w : w = a_1b_1 \cdots a_kb_k, where a_1 \cdots a_k \in A, b_1
+  \cdots b_k \in B, \text{ each } a_i, b_i \in \Sigma\}\]
+Show that the class of regular languages is closed under perfect
+shuffle.
+
+\subsection*{Response}
+Let $D_1 = (Q_1, \Sigma, \delta_1, q_1, F_1), D_2 = (Q_2, \Sigma,
+\delta_2, q_2, F_2)$ be two DFA's that recognize $A$ and $B$
+respectively. Now, let $N = (Q, \Sigma, \delta, q_0, F)$ be the NFA
+recognizing \textit{\textbf{perfect shuffle}} and be constructed as:
+\begin{align*}
+  Q &= Q_1 \times Q_2 \times \{odd, even\} \\
+  \Sigma &= \Sigma \\
+  q_0 &= \{(q_1, q_2, odd)\} \\
+  F &= F_1 \times F_2 \times \{odd\} \\
+  \delta((q_1, q_2, X), \sigma) &=
+           \begin{cases}
+             (\delta_1(q, \sigma), even) & q \in Q_2 \setminus F_2, \sigma
+                                       \in \Sigma \\
+             (\delta_2(q, \sigma), odd) & q \in Q_1 \setminus F_1, \sigma
+                                       \in \Sigma \\
+             \{\}
+             \emptyset & otherwise
+           \end{cases}
+\end{align*}
+
+\newpage
+\section*{Question 1.62}
+\subsection*{Response}
+
+\newpage
+\section*{Question 1.66}
+\subsection*{Response}
+
+\newpage
+\section*{Question 1.69}
+\subsection*{Response}
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
