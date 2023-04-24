@@ -135,21 +135,34 @@ This is called the \textit{absolute value} function. Notice that $|x| \geq 0$ fo
 \item [(f)]
   \begin{proof}
     $\implies$ Let $x = y$. We want to prove that $|x - y| < \varepsilon$. $x = y \implies x - y = 0$.
-    Then, $|x - y| = |0| = 0$ by definition of the \textit{absolute value} function. It follows that
-    $|x - y| < \varepsilon \implies 0 < \varepsilon$, using the observation $|x - y| = 0$ from before. \\ \\
+    Then, $|x - y| = |0| = 0$ by definition of the \textit{absolute value} function. Substituting $|x - y| = 0$,
+    we get $|x - y| < \varepsilon = 0 < \varepsilon$. Clearly, for any $\varepsilon > 0$, $0 < \varepsilon$ holds
+    true. \\ \\
     $\impliedby$ Assume by contradiction that $x \neq y$. Then, $0 \leq |x - y|$ by definition of the
     \textit{absolute value} function. Now take $\varepsilon = \frac{1}{2}|x - y|$. Clearly, $0 < \frac{1}{2}
     |x - y| < |x - y|$. Then, we have $\frac{1}{2}|x - y| < |x - y| \implies \varepsilon < |x - y|$, which
-    is a contradiction to the statement $|x - y| < \varepsilon$.
+    is a contradiction to the statement for any $\varepsilon > 0, \ |x - y| < \varepsilon$.
   \end{proof}
 \end{enumerate}
 
 \newpage
 \section*{Question 13 part (a)}
-Assume $\alpha \in \mathbb{R}$. is an upper bound for a set $A \subseteq \mathbb{R}$, which is a
+Assume $\alpha \in \mathbb{R}$ is an upper bound for a set $A \subseteq \mathbb{R}$, which is a
 non-empty and bounded above. Prove that $\alpha = \sup{A}$ if and only if for every $\varepsilon
 > 0$, there exists an $a \in A$ such that $\alpha - \varepsilon \leq a$.
 \subsection*{Response}
+\begin{proof}
+  $\implies$ Let $\alpha = \sup{A}$. Assume by contradiction that $\exists \varepsilon > 0$ such that $\forall a \in
+  A$, we have $a < \alpha - \varepsilon$. Then $\alpha - \varepsilon$ is an upper bound for $A$. But $\alpha
+  - \varepsilon < \alpha$, which is a contradiction to the statement that $\alpha$ is the \textit{least} upper bound
+  for $A$. Therefore, $\forall \varepsilon > 0, \exists a \in A$ such that $\alpha - \varepsilon \leq a$. \\ \\
+  $\impliedby$ Assume $\forall \varepsilon > 0$, there exists some $a \in A$ such that $\alpha - \varepsilon \leq a$.
+  Assume by contradiction that $\alpha \neq \sup{A}$. Since $\sup{A}$ is the least upper bound for $A$, we have that
+  $\sup{A} < \alpha$ since $\alpha$ is an upper bound by the problem statement. Let $\varepsilon = \alpha - \sup{A}$.
+  Clearly, since $\sup{A} < \alpha$, $0 < \varepsilon$. Then, there exists some $a \in A$ such that $\alpha -
+  \varepsilon \leq a$. Substituting $\varepsilon = \alpha - \sup{A}$, we have $\alpha - (\alpha - \sup{A}) \leq a
+  \implies \sup{A} \leq a$ which is a contradiction to the statement that $\sup{A}$ is a supremum for $A$.
+\end{proof}
 
 \newpage
 \section*{Question 14}
@@ -161,7 +174,9 @@ B$. Show that $\sup{A} \leq \sup{B}$.
   the supremum, $\sup{B}$ exists. We now want to show that $\sup{A}$ exists. Since $A \subseteq B$, by the
   transitive property of the subset relation, $A \subseteq \mathbb{R}$. By the problem statement, $A$ is also
   non-empty and bounded above. Therefore, by definition of the supremum, $\sup{A}$ exists. Note that since
-  $A \subseteq B$, we have $\forall \ a \in A, \ a \in B$. 
+  $A \subseteq B$, we have $\forall a \in A, \ a \in B \implies \forall a \in A, \ a \leq \sup{B}$. So, $\sup{B}$ is
+  an upper bound for $A$. Since $\sup{A}$ is the \textit{least} upper bound for $A$, by the definition of the supremum,
+  $\sup{A} \leq \sup{B}$.
 \end{proof}
 \end{document}
 
