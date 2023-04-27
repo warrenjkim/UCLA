@@ -51,6 +51,7 @@ element so $\inf{S} \leq s \leq \sup{S} \implies \alpha \leq s \leq
 \end{proof}
 
 \textbf{Prove $\lim \frac{(-1)^n}{n} = 0$}
+
 \textit{Scratch:}
   \begin{align*}
     \bigg| \frac{(-1)^n}{n} - 0 \bigg| &< \varepsilon \\
@@ -74,30 +75,68 @@ element so $\inf{S} \leq s \leq \sup{S} \implies \alpha \leq s \leq
   Therefore, $\lim \frac{(-1)^n}{n} = 0$.
 \end{proof}
 
+\newpage
 \textbf{Prove $\lim \frac{1}{n^{1/3}} = 0$}
 
+\textit{Scratch:}
+\begin{align*}
+  \bigg| \frac{1}{n^{1/3}} - 0 \bigg| &< \varepsilon \\
+  \frac{1}{n^{1/3}} &< \varepsilon \\
+  n &> \frac{1}{\varepsilon^3}
+\end{align*}
+\begin{proof}
+  Let $\varepsilon > 0$. Let $N \geq \frac{1}{\varepsilon^3}$. Then $\forall n > N$, we have
+  \[n > \frac{1}{\varepsilon^3} \implies   \bigg| \frac{1}{n^{1/3}} -
+    0 \bigg| < \varepsilon\] by the scratch work above.
+\end{proof}
+
 \textbf{Prove $\lim \frac{2n - 1}{3n + 2} = \frac{2}{3}$}
+
 \textit{Scratch:}
   \begin{align*}
     \bigg| \frac{2n - 1}{3n + 2} - \frac{2}{3} \bigg| &< \varepsilon \\
-    \bigg| \frac{2n - 1 - (2n + 4)}{3n + 2} \bigg| &< \varepsilon \\
-    \bigg| \frac{-5}{3n + 2} \bigg| &< \varepsilon \\
-    \frac{5}{3n + 2} &< \varepsilon && \text{note: } \bigg|
-                                       \frac{-5}{3n + 2} \bigg| \leq
-                                                                  \frac{5}{3n + 2} \\
-    5 &< 3n\varepsilon + 2\varepsilon \\
-    n &> \frac{5 - 2\varepsilon}{3\varepsilon}
+    \bigg| \frac{6n - 3 - (6n + 4)}{3(3n + 2)} \bigg| &< \varepsilon \\
+    \bigg| \frac{-7}{3(3n + 2)} \bigg| &< \varepsilon \\
+    \frac{7}{3(3n + 2)} &< \varepsilon && \text{note: } \bigg|
+                                          \frac{-7}{3(3n + 2)} \bigg|
+                                          \leq \frac{7}{3(3n + 2)} \\
+    \frac{7}{9n + 6} &< \varepsilon \\
+    n > \frac{7 - 6\varepsilon}{9\epsilon}
   \end{align*}
 \begin{proof}
-  Let $\varepsilon > 0$. Let $N \geq \frac{5 - 2\varepsilon}{3\varepsilon}$. Then
+  Let $\varepsilon > 0$. Let $N \geq \frac{7 - 6\varepsilon}{9\epsilon}$. Then
   $\forall n > N$, we have
-  \begin{align*}
-    n &> \frac{5 - 2\varepsilon}{3\varepsilon}
-  \end{align*}
-  From the scratch work above, $\bigg| \frac{2n - 1}{3n + 2} - \frac{2}{3} \bigg| < \varepsilon$.
+  \[n > \frac{7 - 6\varepsilon}{9\epsilon} \implies \bigg|
+    \frac{2n - 1}{3n + 2} - \frac{2}{3} \bigg| < \varepsilon\] 
+  by the scratch work above.
 \end{proof}
 
 \textbf{Prove $\lim \frac{n + 6}{n^2 - 6} = 0$}
+
+\textit{Scratch:}
+\begin{align*}
+  \bigg| \frac{n + 6}{n^2 - 6} - 0 \bigg| &< \varepsilon \\
+  \bigg| \frac{n + 6}{n^2 - 6} \bigg| &< \varepsilon
+\end{align*}
+Note that when $n \geq 6$, we have that $|n + 6| \leq 2n$, $|n^2 - 6|
+\geq \frac{1}{2}n^2$.
+\begin{align*}
+  \bigg| \frac{n + 6}{n^2 - 6} \bigg| \leq \frac{2n}{\frac{1}{2}n^2}
+  &< \varepsilon \\
+  \frac{4n}{n^2} < \varepsilon \\
+  \frac{4}{n} < \varepsilon \\
+  n > \max{\{\frac{4}{\varepsilon}, 6\}}
+\end{align*}
+\begin{proof}
+  Let $\varepsilon > 0$. Let $N \geq \max{\{\frac{4}{\varepsilon}, 6\}}$. Then
+  $\forall n > N$, we have
+  \[n > \frac{4}{\varepsilon} \implies \bigg| \frac{n + 6}{n^2 - 6}
+    \bigg| \leq \frac{2n}{\frac{1}{2}n^2} < \varepsilon\]
+  from the scratch work above. Taking the extremes of both sides of
+  the inequality, we get
+  \[\bigg| \frac{n + 6}{n^2 - 6} - 0 \bigg| < \varepsilon\]
+\end{proof}
+
 \end{document}
 %%% Local Variables:
 %%% mode: latex
