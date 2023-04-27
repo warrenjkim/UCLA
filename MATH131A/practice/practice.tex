@@ -1,0 +1,105 @@
+\documentclass[13pt]{letter}
+\usepackage{amsmath, amsthm, amssymb, graphicx, enumitem, esvect}
+
+\usepackage[english]{babel}
+
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+
+\begin{document}
+\textbf{Prove $\inf{S} \leq \sup{S}$:}
+\begin{proof}
+  Since $S \neq \emptyset$, $S \subseteq
+  \mathbb{R}$, $S$ is bounded above and below, $\inf{S}, \sup{S}$
+  exist. Since $S \neq \emptyset$, $\exists s \in S$. By definiation,
+  $\inf{S} \leq s \leq \sup{S}$ for all $s \in S$. Taking the extremes of the
+  inequality, we get $\inf{S} \leq \sup{S}$.
+\end{proof}
+\textbf{What if $\inf{S} = \sup{S}$?} \\
+If $\alpha = \inf{S} = \sup{S}$, then we know $S$ contains only one
+element so $\inf{S} \leq s \leq \sup{S} \implies \alpha \leq s \leq
+\alpha \implies s = \alpha$. 
+
+\textbf{Let $S$ and $T$ be nonempty subsets of $\mathbb{R}$ with the
+  following property: $s \leq t$ for all $s \in S$ and $t \in
+  T$. Prove $S \subseteq T \implies \inf{T} \leq \inf{S} \leq \inf{S} \leq \sup{T}$:}
+\begin{proof}
+  Since both $S, T \neq \emptyset, \ S, T \subseteq \mathbb{R}$, and
+  bounded, $\inf{S}, \inf{T}, \sup{S}, \sup{T}$ exist. Then, since $S
+  \subseteq T$, $\forall s \in S, s \in T$. Since $\forall t \in T, t
+  \leq \sup{T}$, $\sup{T}$ is an upper bound for $S$. Since $\sup{S}$
+  is the \textit{least} upper bound by definition, we have that
+  $\sup{S} \leq \sup{T}$. Since $\forall t \in T, \inf{T} \leq t$, we
+  have that $\inf{T}$ is a lower bound for $S$. Since $\inf{S}$ is the
+  \textit{greatest} lower bound by definition, we have that $\inf{T}
+  \leq \inf{S}$. Note that since $S \neq \emptyset$, $\forall s \in
+  S$, $\inf{S} \leq s \leq \sup{S}$, so we get the following
+  inequality: $\inf{T} \leq \inf{S} \leq s \leq \sup{S} \leq \sup{T}$
+  so $\inf{T} \leq \inf{S} \leq \sup{S} \leq \sup{T}$
+\end{proof}
+
+\textbf{Prove that if $a > 0$, then there exists $n \in \mathbb{N}$
+  such that $\frac{1}{n} < a < n$:}
+\begin{proof}
+  Multiplying $n$ on both sides of $\frac{1}{n} < a$, we get $1 <
+  na$. By the Archemedian property, since $a, 1 > 0$, there exists
+  an $n \in \mathbb{N}$ s.t. $na > 1$.
+
+  Since $a, 1 > 0$ in the inequality  $a < 1 \cdot n$, by the
+  Archemedian property, there exists an $n \in \mathbb{N}$ s.t. $n >
+  a$. Therefore, $\frac{1}{n} < a < n$.
+\end{proof}
+
+\textbf{Prove $\lim \frac{(-1)^n}{n} = 0$}
+\textit{Scratch:}
+  \begin{align*}
+    \bigg| \frac{(-1)^n}{n} - 0 \bigg| &< \varepsilon \\
+    \bigg| \frac{(-1)^n}{n} \bigg| &< \varepsilon \\
+    \frac{1}{n} &< \varepsilon && \text{note: } \bigg|
+                                    \frac{(-1)^n}{n} - 0 \bigg| \leq
+                                  \frac{1}{n} \\
+    n &> \frac{1}{\varepsilon}
+  \end{align*}
+\begin{proof}
+  Let $\varepsilon > 0$. Let $N \geq \frac{1}{\varepsilon}$. The,
+  $\forall n > N$, we have
+  \begin{align*}
+    n &> \frac{1}{\varepsilon} \\
+    \frac{1}{n} &< \varepsilon \\
+    \bigg| \frac{(-1)^n}{n} - 0 \bigg| \leq \frac{1}{n} &< \varepsilon \\
+    \bigg| \frac{(-1)^n}{n} - 0 \bigg| &< \varepsilon && \text{taking
+                                                         the extremes
+                                                         of the inequalities}
+  \end{align*}
+  Therefore, $\lim \frac{(-1)^n}{n} = 0$.
+\end{proof}
+
+\textbf{Prove $\lim \frac{1}{n^{1/3}} = 0$}
+
+\textbf{Prove $\lim \frac{2n - 1}{3n + 2} = \frac{2}{3}$}
+\textit{Scratch:}
+  \begin{align*}
+    \bigg| \frac{2n - 1}{3n + 2} - \frac{2}{3} \bigg| &< \varepsilon \\
+    \bigg| \frac{2n - 1 - (2n + 4)}{3n + 2} \bigg| &< \varepsilon \\
+    \bigg| \frac{-5}{3n + 2} \bigg| &< \varepsilon \\
+    \frac{5}{3n + 2} &< \varepsilon && \text{note: } \bigg|
+                                       \frac{-5}{3n + 2} \bigg| \leq
+                                                                  \frac{5}{3n + 2} \\
+    5 &< 3n\varepsilon + 2\varepsilon \\
+    n &> \frac{5 - 2\varepsilon}{3\varepsilon}
+  \end{align*}
+\begin{proof}
+  Let $\varepsilon > 0$. Let $N \geq \frac{5 - 2\varepsilon}{3\varepsilon}$. Then
+  $\forall n > N$, we have
+  \begin{align*}
+    n &> \frac{5 - 2\varepsilon}{3\varepsilon}
+  \end{align*}
+  From the scratch work above, $\bigg| \frac{2n - 1}{3n + 2} - \frac{2}{3} \bigg| < \varepsilon$.
+\end{proof}
+
+\textbf{Prove $\lim \frac{n + 6}{n^2 - 6} = 0$}
+\end{document}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
