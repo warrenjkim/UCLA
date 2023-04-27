@@ -1,0 +1,58 @@
+\documentclass{letter}
+\usepackage{amsmath, amsthm, amssymb, graphicx, enumitem, esvect}
+
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=0cm,bottom=0cm,left=0.1cm,right=0.1cm,marginparwidth=0cm]{geometry}
+\begin{document}
+{\small
+\textbf{Partial Order:}
+$\forall x, y, z \in A$: Reflexive: $x \mathcal{R} x$, Anti-symmetric:
+$x \mathcal{R} y, y \mathcal{R} x \implies x = y$, Transitive: $x \mathcal{R} y, y
+\mathcal{R} z \implies x \mathcal{R} z$.
+\textbf{Total:} $\forall x, y \in A, x \mathcal{R} y \lor y \mathcal{R} x$ \\
+\textbf{Equivalence Relation:}
+$\forall x, y, z \in A$: Reflexive: $x \mathcal{R} x$, Symmetric:
+$x \mathcal{R} y = y \mathcal{R} x$, Transitive: $x \mathcal{R} y, y
+\mathcal{R} z \implies x \mathcal{R} z$.
+\textbf{Eq. Class:} $[x] := \{y \in A : x \sim y\}$ \\
+\textbf{Induction:} \textbf{Base step:} $(i) \ P_1$ \textit{is
+true}. \textbf{Inductive Hypothesis:} \textit{$(ii)$ Assume $P_n$ is true
+for some $n \in \mathbb{N}$. Prove $P_{n + 1}$ is true}. Then, $P_n$
+is true $\forall n \in \mathbb{N}$.
+\textbf{Ordered Fields:} A field with a partial order ($\leq$) s.t.:
+$(i)$ If $x, y , z \in \mathbb{F}, \ x < y \implies x + z < x + y$,
+$(ii) \ x, y \in \mathbb{F}, \ x, y > 0 \implies xy > 0$ \\
+\textbf{Algebraic Number:} $a$ is algebraic if it solves $c_nx^n +
+\cdots + c_1x + c_0 = 0$ for some $n \in \mathbb{N}, c_0, c_n \in
+\mathbb{Z}, c_n \neq 0$ (e.g. $\sqrt[n]{2}$. \textit{\textbf{Note:}}
+$\mathbb{Q} \subset \{algebraic \ numbers\}$) \\
+{\scriptsize \textbf{RZT:} \textit{Suppose $c_0, \cdots, c_n \in
+\mathbb{Z}, \ r \in \mathbb{Q}$ satisfies $c_nr^n + \cdots + c_1r +
+c_0 = 0$ for some $n \in \mathbb{N}, \ c_n \neq 0$. Let $r =
+\frac{c}{d}, c, d \in \mathbb{Z}, d \neq 0$, be coprime. Then $c, \ d$
+divides $c_0, c_n$}.} \\
+\textbf{LUBP:}
+Given $A \in \mathbb{E}$ where $\mathbb{E}$ is an ordered field,
+$\exists \sup{A} \in \mathbb{E} \iff A \neq \O$, $A \subseteq
+\mathbb{E}$, $A$ is bounded above. $\sup{A} := \alpha, \ \exists \alpha, \beta \in
+\mathbb{E}$ s.t. $\forall a \in A, \ a \leq \alpha \leq \beta$. \\
+\textbf{GLBP:}
+Given $A \in \mathbb{E}$ where $\mathbb{E}$ is an ordered field,
+$\exists \sup{A} \in \mathbb{E} \iff A \neq \O$, $A \subseteq
+\mathbb{E}$, $A$ is bounded below. $\inf{A} := \alpha, \ \exists \alpha, \beta \in
+\mathbb{E}$ s.t. $\forall a \in A, \ a \leq \beta \leq \alpha$.
+}
+
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
