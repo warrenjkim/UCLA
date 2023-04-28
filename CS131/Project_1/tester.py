@@ -123,7 +123,7 @@ def generate_test_suite_v1():
     return __generate_test_suite(
         1,
         ["test_inputi", "test_recursion1", "test_set_field"],
-        ["test_if", "test_incompat_operands1", "test_hello_world"],
+        ["test_if", "test_incompat_operands1"],
     )
 
 

@@ -6,11 +6,15 @@ class Method:
         self.name = name
         self.args = args
         self.statements = []
+        self.variables = { }
 
     def add_statement(self, statement):
         self.statements.append(statement)
 
+    def add_variable(self, name, value):
+        self.variables[name] = value
 
+        
 class Field:
     def __init__(self, name = "", value = None):
         self.name = name
@@ -19,6 +23,7 @@ class Field:
 
     def change_value(self, new_value):
         self.value = new_value
+
 
 
 class Class:
@@ -34,17 +39,45 @@ class Class:
         self.fields[name] = Field(name, value)
 
 
-
 class Interpreter(base):
     def __init__(self, console_output = True, inp = None, wtfisthis = None):
         super().__init__(console_output, inp)
         self.classes = { }
 
-    def p_input(self, tokens = None, class_name = None, method_name = None):
+    def run(self, program):
+        self.reset()
+        self.p_input(program)
+        terminated = False
+        
+        while(not terminated):
+            terminated = self.interpret()
+        
 
-        if tokens is None:
-            tokens = self.inp
-            
+    def call(self, who, method, args):
+        print(who)
+        print(method.name + ", " + method.args.__str__() + ", " + method.statements.__str__())
+        print(args)
+
+        
+    
+    def interpret(self):
+        main = self.classes["main"].methods["main"]
+        for statement in main.statements:
+            if statement[0] == self.PRINT_DEF:
+                if type(statement[1]) is not list:
+                    self.output(statement[1].replace("\"", ""))
+                else:
+                    subcall = statement[1]
+                    if subcall[0] == "call":
+                        who = subcall[1]
+                        method = self.classes["main"].methods[subcall[2]]
+                        args = subcall[3:]
+
+                        self.call(who, method, args)
+                        
+        return True
+    
+    def p_input(self, tokens = None, class_name = None, method_name = None):
         for i, token in enumerate(tokens):
             # recurse if nested
             if type(token) is list:
@@ -75,7 +108,7 @@ class Interpreter(base):
 
             # null
             elif token == self.SET_DEF:
-                pass
+                self.classes[class_name].methods[method_name].add_variable(tokens[i + 1], tokens[ i + 2])
 
             # null
             elif token == self.NEW_DEF:
@@ -89,23 +122,24 @@ class Interpreter(base):
             elif token == self.WHILE_DEF:
                 pass
 
-            # new print statement
+            # print statement
             elif token == self.PRINT_DEF:
                 self.classes[class_name].methods[method_name].add_statement((tokens[i], tokens[i + 1]))
 
 
 
 def main():
+    x = Interpreter()
     program_source = ['(class main',
                       '(field x true)',
                       ' (method main ()',
                       '(begin',
-                      '   (print (call me hello))',
-                      '(print (something else))',
+                      '   (print (call me other "hello"))',
+                      '(print "something else")',
                       ' ) # end of method',
                       ')',
                       ' (method other (one)',
-                      '  (print "other")',
+                      '  (print one)',
                       ')',
                       ') # end of class',
                       '(class other_class',
@@ -115,22 +149,23 @@ def main():
                       '(field ffo 12.33)',
                       ')']
 
+    
     _, program = BParser.parse(program_source)
+    x.run(program)
+    # x = Interpreter(inp = program)
+    # x.p_input()
 
-    x = Interpreter(inp = program)
-    x.p_input()
+    # print(f"class(es): {x.classes}")
 
-    print(f"class(es): {x.classes}")
-
-    for c in x.classes:
-        for f in x.classes[c].fields:
-            print(f"field {f}: {x.classes[c].fields[f].name}, {x.classes[c].fields[f].value}, {x.classes[c].fields[f].type}")
+    # for c in x.classes:
+    #     for f in x.classes[c].fields:
+    #         print(f"field {f}: {x.classes[c].fields[f].name}, {x.classes[c].fields[f].value}, {x.classes[c].fields[f].type}")
             
-        print(f"class '{c}' method(s): {x.classes[c].methods}")
-        for m in x.classes[c].methods:
-            print(f"method '{m}' statements: {x.classes[c].methods[m].statements}")
+    #     print(f"class '{c}' method(s): {x.classes[c].methods}")
+    #     for m in x.classes[c].methods:
+    #         print(f"method '{m}' statements: {x.classes[c].methods[m].statements}")
 
-        print()
+    #     print()
 
     
 
