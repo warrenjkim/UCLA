@@ -27,25 +27,25 @@ class InterpreterBase:
     """
 
     # constants
-    CLASS_DEF = "class"
-    METHOD_DEF = "method"
+    CLASS_DEF = "class" # done
+    METHOD_DEF = "method" # done
     FIELD_DEF = "field"
     NULL_DEF = "null"
-    BEGIN_DEF = "begin"
+    BEGIN_DEF = "begin" # done (i think)
     SET_DEF = "set"
     NEW_DEF = "new"
     IF_DEF = "if"
     WHILE_DEF = "while"
-    MAIN_CLASS_DEF = "main"
-    MAIN_FUNC_DEF = "main"
+    MAIN_CLASS_DEF = "main" # 
+    MAIN_FUNC_DEF = "main" #
     CALL_DEF = "call"
     TEMPLATE_CLASS_DEF = "tclass"
     RETURN_DEF = "return"
-    INPUT_STRING_DEF = "inputs"
-    INPUT_INT_DEF = "inputi"
+    INPUT_STRING_DEF = "inputs" # done
+    INPUT_INT_DEF = "inputi" # done
     TRUE_DEF = "true"
     FALSE_DEF = "false"
-    PRINT_DEF = "print"
+    PRINT_DEF = "print" # done
     ME_DEF = "me"
     NOTHING_DEF = "nothing"
     INHERITS_DEF = "inherits"
