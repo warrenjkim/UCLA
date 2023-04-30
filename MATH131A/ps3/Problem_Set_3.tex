@@ -63,17 +63,17 @@ Let $x_n = \frac{2n + 1}{3n + 7}$.
                                         \frac{1}{n} && \lim_{n
                                                        \rightarrow
                                                        \infty} (x_n +
-                                                       y_n) = x + y \\
+                                                       y_n) = x + y \text{ by ALT} \\
                                       &= 2 + 0 && \lim_{n \rightarrow \infty} c = c, \ \lim_{n
                                                   \rightarrow \infty} \frac{1}{n} = 0 \text{ from
-                                                  lecture} \\
+                                                  lecture and by ALT} \\
       \lim_{n \rightarrow \infty} a_n &= 2 \\ \\
       \lim_{n \rightarrow \infty} b_n &= \lim_{n \rightarrow \infty} 3
                                         + \lim_{n \rightarrow \infty}
                                         7\bigg(\frac{1}{n}\bigg) && \lim_{n
                                                        \rightarrow
                                                        \infty} (x_n +
-                                                       y_n) = x + y \\
+                                                       y_n) = x + y \text{ by ALT} \\
                                       &= 3 + 0 && \lim_{n \rightarrow
                                                   \infty} c = c, \
                                                   \lim_{n \rightarrow
@@ -81,7 +81,7 @@ Let $x_n = \frac{2n + 1}{3n + 7}$.
                                                   \lim_{n \rightarrow
                                                   \infty} \frac{1}{n}
                                                   = 0 \text{ from
-                                                  lecture} \\
+                                                  lecture and by ALT} \\
       \lim_{n \rightarrow \infty} b_n &= 3
     \end{align*}
     Since $\lim_{n \rightarrow \infty} b_n \neq 0$, we have $\lim_{n
@@ -119,12 +119,13 @@ Let $x_n = \frac{2n + 1}{3n + 7}$.
       |y_n - 0| &< \frac{\varepsilon}{M} \\
       |y_n| &< \frac{\varepsilon}{M} \\
     \end{align*}
-    so
+    Let $N \geq \frac{\varepsilon}{M}$. Then,
     \begin{align*}
-      |x_ny_n - 0| &< M \cdot \frac{\varepsilon}{M} \\
+      |x_ny_n - 0| &< M \cdot N \\
+      |x_ny_n| &< M \cdot \frac{\varepsilon}{M} \\
       |x_ny_n| &< \varepsilon
     \end{align*}
-    for all $n > N$. Therefore, $x_ny_n \rightarrow 0$ as $n
+    Therefore, $x_ny_n \rightarrow 0$ as $n
     \rightarrow \infty$.
   \end{proof}
   We cannot use the algebraic limit theorem since $(x_n)$ is only bounded
@@ -135,11 +136,11 @@ Let $x_n = \frac{2n + 1}{3n + 7}$.
   does not converge and that $y_n \rightarrow 1$, so $y \neq 0$ by the algebraic
   limit theorem and lecture. However,
   \begin{align*}
-    x_ny_n &= (-1)^n(1 + \frac{1}{n}) \\
+    x_ny_n &= (-1)^n\bigg(1 + \frac{1}{n}\bigg) \\
            &= (-1)^n + \frac{(-1)^n}{n} \\
   \end{align*}
-  From part (a), we have that $\frac{(-1)^n}{n}$ converges to 1 since
-  $\lim_{n \rightarrow \infty} \frac{1}{n} = 0$. However, $(-1)^n$ is
+  From part (a), we have that $\frac{(-1)^n}{n}$ converges since
+  $\lim_{n \rightarrow \infty} \frac{1}{n} = 0$ (set $x_n = (-1)^n$, $y_n = \frac{1}{n}$). However, $(-1)^n$ is
   not convergent.
 \end{enumerate}
 
@@ -167,10 +168,10 @@ request is possible. You may appeal to results from lectures.
 \begin{enumerate}[label=(\alph*)]
 \item $x_n = n$, $y_n = -n$. Clearly both $x_n, \ y_n$ diverge, but
   $x_n + y_n = n + (-n) = (0, 0, \cdots)$ so $(x_n + y_n)$ converges.
-  
-\item This is impossible. By the algebraic limit theorem, if $(x_n +
-  y_n)$ converges, then $(x_n)$ and $(y_n)$ must both converge. Therefore,
-  $(y_n)$ cannot diverge if $(x_n + y_n)$ converges.
+
+\item This is impossible. By the algebraic limit theorem, if $(x_n)$
+  and $(x_n + y_n)$ both converge, $(x_n + y_n - x_n) = (y_n)$ also
+  converges, which is a contradiction to the statement that $(y_n)$ diverges.
 
 \item $x_n = \frac{1}{n}$. $x_n$ converges (from
   lecture) but $(1/x_n) = 1/\frac{1}{n} = n$ diverges.
