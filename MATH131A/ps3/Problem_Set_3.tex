@@ -27,6 +27,71 @@ Let $x_n = \frac{2n + 1}{3n + 7}$.
 \end{enumerate}
 
 \subsection*{Response}
+\begin{enumerate}[label=(\alph*)]
+\item
+  \textit{Scratch work:}
+  \begin{align*}
+    \bigg|\frac{2n + 1}{3n + 7} - \frac{2}{3}\bigg| &< \varepsilon \\
+    \bigg|\frac{2n + 1}{3n + 7} - \frac{2(n + \frac{7}{3})}{3(n +
+    \frac{7}{3})}\bigg| &< \varepsilon \\
+    \bigg|\frac{3(2n + 1) - 6n - 7}{3(3n + 7)}\bigg| &< \varepsilon
+    \\
+    \bigg|\frac{6n + 3 - 6n - 7}{3(3n + 7)}\bigg| &< \varepsilon \\
+    \bigg|\frac{-4}{3(3n + 7)}\bigg| &< \varepsilon \\
+    \frac{4}{9n + 49} &< \varepsilon \\
+    n &> \frac{4 - 49\varepsilon}{9\varepsilon}
+  \end{align*}
+  \begin{proof}
+    Let $\varepsilon > 0$. Let $N > \frac{4 -
+      49\varepsilon}{9\varepsilon}$. Then, for all $n > N$, we have
+    \begin{align*}
+      n &> \frac{4 - 49\varepsilon}{9\varepsilon} \\
+      \frac{4}{9n + 49} &< \varepsilon \\
+      \bigg|\frac{-4}{3(3n + 7)}\bigg| &< \varepsilon \\
+      \bigg|\frac{2n + 1}{3n + 7} - \frac{2}{3}\bigg| &< \varepsilon
+    \end{align*}
+    so $\lim_{n \rightarrow \infty} x_n = \frac{2}{3}$.
+  \end{proof}
+
+\item
+  \begin{proof}
+    \[\frac{2n + 1}{3n + 7} = \frac{2 + \frac{1}{n}}{3 + \frac{7}{n}}\]
+    Let $a_n = 2 + \frac{1}{n}$ and $b_n = 3 + \frac{7}{n}$. Then,
+    \begin{align*}
+      \lim_{n \rightarrow \infty} a_n &= \lim_{n \rightarrow \infty} 2 +
+                                        \lim_{n \rightarrow \infty}
+                                        \frac{1}{n} && \lim_{n
+                                                       \rightarrow
+                                                       \infty} (x_n +
+                                                       y_n) = x + y \\
+                                      &= 2 + 0 && \lim_{n \rightarrow \infty} c = c, \ \lim_{n
+                                                  \rightarrow \infty} \frac{1}{n} = 0 \text{ from
+                                                  lecture} \\
+      \lim_{n \rightarrow \infty} a_n &= 2 \\ \\
+      \lim_{n \rightarrow \infty} b_n &= \lim_{n \rightarrow \infty} 3
+                                        + \lim_{n \rightarrow \infty}
+                                        7\bigg(\frac{1}{n}\bigg) && \lim_{n
+                                                       \rightarrow
+                                                       \infty} (x_n +
+                                                       y_n) = x + y \\
+                                      &= 3 + 0 && \lim_{n \rightarrow
+                                                  \infty} c = c, \
+                                                  \lim_{n \rightarrow
+                                                  \infty} cx_n = cx, \
+                                                  \lim_{n \rightarrow
+                                                  \infty} \frac{1}{n}
+                                                  = 0 \text{ from
+                                                  lecture} \\
+      \lim_{n \rightarrow \infty} b_n &= 3
+    \end{align*}
+    Since $\lim_{n \rightarrow \infty} b_n \neq 0$, we have $\lim_{n
+      \rightarrow \infty} x_n = \lim_{n \rightarrow \infty}
+    \frac{a_n}{b_n} = \frac{2}{3}$ ($\lim_{n \rightarrow \infty}
+    \frac{x_n}{y_n} = \frac{x}{y}, \ y \neq 0$ by the algebraic limit
+    theorem). So, $\lim_{n \rightarrow \infty} x_n = \frac{2}{3}$ by
+    the algebraic limit theorem.
+  \end{proof}
+\end{enumerate}
 
 
 
@@ -36,15 +101,47 @@ Let $x_n = \frac{2n + 1}{3n + 7}$.
 \section*{Question 10}
 \begin{enumerate}[label=(\alph*)]
 \item Let $(x_n)$ be bounded (not necessarily convergent) and assume that
-$y_n \rightarrow 0$ as $n \rightarrow \infty$. Show that $x_ny_n
-\rightarrow 0 $ as $n \rightarrow \infty$. (Why can we not just use
-the Algebraic limit theorem?)
+  $y_n \rightarrow 0$ as $n \rightarrow \infty$. Show that $x_ny_n
+  \rightarrow 0 $ as $n \rightarrow \infty$. (Why can we not just use
+  the Algebraic limit theorem?)
 \item Let $(x_n)$ be bounded and $y_n \rightarrow y$ with $y \neq
   0$. Does $(x_ny_n)$ converge? If yes, show it. If not, give a counter-example.
 \end{enumerate}
 
 \subsection*{Response}
-
+\begin{enumerate}[label=(\alph*)]
+\item
+  \begin{proof}
+    Since $(x_n)$ is bounded, $\exists M \in \mathbb{R}$ such that
+    $|x_n| \leq M \ \forall n \in \mathbb{N}$. Then, $\forall \varepsilon > 0, \
+    \exists N \in \mathbb{N}$ such that $\forall n > N$,
+    \begin{align*}
+      |y_n - 0| &< \frac{\varepsilon}{M} \\
+      |y_n| &< \frac{\varepsilon}{M} \\
+    \end{align*}
+    so
+    \begin{align*}
+      |x_ny_n - 0| &< M \cdot \frac{\varepsilon}{M} \\
+      |x_ny_n| &< \varepsilon
+    \end{align*}
+    for all $n > N$. Therefore, $x_ny_n \rightarrow 0$ as $n
+    \rightarrow \infty$.
+  \end{proof}
+  We cannot use the algebraic limit theorem since $(x_n)$ is only bounded
+  by the problem statement, so it need not converge.
+  
+\item $(x_ny_n)$ is not necessarily convergent. Consider $x_n =
+  (-1)^n$, $y_n = 1 + \frac{1}{n}$. From lecture, we have that $x_n$
+  does not converge and that $y_n \rightarrow 1$, so $y \neq 0$ by the algebraic
+  limit theorem and lecture. However,
+  \begin{align*}
+    x_ny_n &= (-1)^n(1 + \frac{1}{n}) \\
+           &= (-1)^n + \frac{(-1)^n}{n} \\
+  \end{align*}
+  From part (a), we have that $\frac{(-1)^n}{n}$ converges to 1 since
+  $\lim_{n \rightarrow \infty} \frac{1}{n} = 0$. However, $(-1)^n$ is
+  not convergent.
+\end{enumerate}
 
 
 
@@ -60,11 +157,38 @@ request is possible. You may appeal to results from lectures.
   but whose sum $(x_n + y_n)$ converges.
 \item A convergent sequence $(x_n)$, such that $x_n \neq 0$ for all $n
   \in \mathbb{N}$ and $(1/x_n)$ diverges.
-\item An unbounded sequence $(x_n)$ and $(y_n)$, where $(x_ny_n)$ and
+\item An unbounded sequence $(x_n)$ and a convergent sequence $(y_n)$
+  with $(x_n - y_n)$ bounded.
+\item Two sequences  $(x_n)$ and $(y_n)$, where $(x_ny_n)$ and
   $(x_n)$ converge, but $(y_n)$ does not converge.
 \end{enumerate}
 
 \subsection*{Response}
+\begin{enumerate}[label=(\alph*)]
+\item $x_n = n$, $y_n = -n$. Clearly both $x_n, \ y_n$ diverge, but
+  $x_n + y_n = n + (-n) = (0, 0, \cdots)$ so $(x_n + y_n)$ converges.
+  
+\item This is impossible. By the algebraic limit theorem, if $(x_n +
+  y_n)$ converges, then $(x_n)$ and $(y_n)$ must both converge. Therefore,
+  $(y_n)$ cannot diverge if $(x_n + y_n)$ converges.
+
+\item $x_n = \frac{1}{n}$. $x_n$ converges (from
+  lecture) but $(1/x_n) = 1/\frac{1}{n} = n$ diverges.
+
+\item This is impossible. Since $y_n$ is bounded (by the theorem that
+  states convergent sequences are bounded, since $y_n$ converges, it
+  is bounded) and $(x_n - y_n)$ is bounded, we have that $|x_n| \leq
+  N_1 \ \forall n \in \mathbb{N}$ and $|x_n - y_n| \leq N_2 \ \forall n \in
+  \mathbb{N}$. Then, $|x_n - y_n + y_n| \leq N_2 + N_1 \implies |x_n|
+  \leq N_1 + N_2$ means that $(x_n)$ is bounded, which is a
+  contradiction to the statement that $(x_n)$ is unbounded. 
+  
+\item $x_n = \frac{1}{n}, \ y_n = n$. $x_n$ converges from lecture and
+  $y_n$ is unbounded and therefore does not converge (by the
+  contrapositive of the theorem that states that convergent sequences
+  are bounded). However, $x_ny_n = \frac{1}{n}(n) = (1, 1, \cdots)$
+  which converges. 
+\end{enumerate}
 
 \end{document}
 
