@@ -1,41 +1,7 @@
 from intbase import InterpreterBase as base
 from bparser import BParser
-
-class Method:
-    def __init__(self, name = "", args = []):
-        self.name = name
-        self.args = args
-        self.statements = []
-        self.variables = { }
-        
-    def add_statements(self, statements):
-        self.statements = statements
-
-    def add_variable(self, name, value):
-        self.variables[name] = value
-
-
-class Field:
-    def __init__(self, name = "", value = None):
-        self.name = name
-        self.value = value
-        # self.type = bool if value == base.TRUE_DEF or value == base.FALSE_DEF else type(eval(value))
-
-    def change_value(self, new_value):
-        self.value = new_value
-
-
-class Class:
-    def __init__(self, name = ""):
-        self.name = name
-        self.methods = { }
-        self.fields = { }
-
-    def add_method(self, name, args):
-        self.methods[name] = Method(name, args)
-
-    def add_field(self, name, value):
-        self.fields[name] = Field(name, value)
+from objects import Field, Class, Method
+from operators import add
 
 
 class Interpreter(base):
@@ -72,16 +38,24 @@ class Interpreter(base):
             # statement is 'inputs'
             elif statement[0] == self.INPUT_STRING_DEF:
                 self.inputs_statement(main, statement[1])
-    
+                
+            elif statement[0] == '+':
+                add(statement[1], statement[2])
         return True
 
     # add typechecking to inputi
     def inputi_statement(self, who, variable_name):
-        who.add_variable(variable_name, self.get_input())
+        value = self.get_input()
+        if not isinstance(eval(value), int):
+            print('not an int')
+        who.add_variable(variable_name, value)
 
     # add typechecking to inputs
     def inputs_statement(self, who, variable_name):
-        who.add_variable(variable_name, self.get_input())
+        value = self.get_input()
+        if not isinstance(eval(value), str):
+            print('not a string')
+        who.add_variable(variable_name, value)
 
     
     # finish function calls
@@ -94,6 +68,8 @@ class Interpreter(base):
             # the argument is a constant
             else:
                 self.output(args.strip("\""))
+        else:
+            self.output(add(args[1], args[2]))
             
 
     # parse input into classes, fields, and methods
