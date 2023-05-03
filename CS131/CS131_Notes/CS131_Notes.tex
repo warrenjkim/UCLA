@@ -1,4 +1,4 @@
-\documentclass[13pt]{article}
+\documentclass{article}
 \usepackage{amsmath, amsthm, amssymb, graphicx, enumitem, esvect}
 
 
@@ -20,85 +20,220 @@
 
 \newpage
 \section{Overview}
-\section{Functional Programming (Haskell)}
-\subsection{Overview}
-We will talk about functional programming as it pertains to
-\textit{Haskell}, a purely functional language. All functions must
-have the following properties:
-\begin{itemize}[leftmargin=*]
+
+\subsection{What is a Programming Language?}  A programming language
+is a structured system of communication designed to express
+computations in an abstract manner.
+
+\subsection{Why Different Languages?}  Different languages are built
+for different use cases. Below are popular languages that were built
+for their respective use cases:
+\begin{enumerate}[label=(\roman*),align=left]
+\item Javascript is the most popular language for anything related to
+web development. There are many frameworks for vanilla Javascript
+(e.g. React) as well as derivative languages (e.g. Typescript).
+\item C/++ is a popular language for programs that require high
+performance (e.g. Linux).
+\item C\# is most commonly used for programs that are in Microsoft's
+.NET ecosystem.
+\item Python is a popular language used in the field of artificial
+intelligence.
+\item ba/z/sh is a scripting language for UNIX-based operating
+systems.
+\item R is a popular language among statiticians (not sure why).
+\item Lisp is a functional language used in the field of artificial
+intelligence and was used to write Emacs.
+\item SQL and its variants are a set of querying languages used to
+communicate with databases.
+\end{enumerate}
+
+\subsection{Language Paradigms} There are four main language paradigms:
+\begin{enumerate}[label=(\roman*),align=left]
+\item Imperative
+\item Object-Oriented
+\item Functional
+\item Logic
+\end{enumerate}
+
+\subsubsection{Imperative Paradigm} Imperative programs use a set of
+statements (e.g. control structures, mutable variables) that directly
+change the state of the program. More specifically, these statements
+are commands that control how the program behaves. Common examples of
+imperative languages include FORTRAN and C.
+
+\subsubsection{Object-Oriented Paradigm} The object-oriented paradigm
+is a type of imperative programming, and contains support for
+structured objects and classes that "talk" to each other via methods
+(e.g. \texttt{d} is a \texttt{Dog} object with the class method
+\texttt{bark()}, where \texttt{d.bark()} will invoke the \texttt{bark}
+function for the object \texttt{d}). Common examples of
+object-oriented languages include Java and C++.
+
+\subsubsection{Functional Paradigm} Functional programming is a type of
+declarative programming. They use expressions, functions, constants,
+and recursion to change the state of the program. There is no
+iteration or mutable variables. Common examples of functional
+languages include Haskell and Lua.
+
+\subsubsection{Logic Paradigm} Logic programming the most abstract and is
+a type of declarative programming. A set of facts and rules are
+defined within the scope of the program. Common examples of logic
+languages are Prolog and ASP.
+
+\subsection{Language Choices} There are many things to consider when
+building a programming language. Some of these include:
+\begin{enumerate}[label=(\roman*),align=left]
+\item Static/Dynamic type checking
+\item Passing parameters by value/reference/pointer/object reference
+\item Scoping semantics
+\item Manual/Automatic memory management
+\item Implicit/Explicit variable declaration
+\item Manual/Automatic bounds checking
+\end{enumerate} Generally, a programming language can be broken down
+into its syntax and semantics.
+
+
+\section{Functional Programming (Haskell)} We will talk about
+functional programming as it pertains to \textit{Haskell}, a purely
+functional language. 
+\subsection{Overview} Haskell is a \textbf{statically typed} language
+that uses \textbf{type inference}. All functions must have the
+following properties: 
+\begin{enumerate}[label=(\roman*),align=left]
 \item Functions must take in an argument
 \item Functions must return a value
 \item Be pure (does not change the state of the program
-  (\textit{\textbf{Note:}} This includes I/O!)
+(\textit{\textbf{Note:}} This includes I/O!)
 \item In functions, all variables are immutable
 \item Functions are \textbf{first-class citizens}, so they are treated
-  as data
-\end{itemize}
+as data
+\end{enumerate}
+
+\subsection{Pure Functions} Given a fixed input $x$, it always returns
+the same output $y$. That is, it does not modify any data beyond
+initializing local variables. Some consequences of this are:
+\begin{enumerate}[label=(\roman*),align=left]
+\item Multithreading easy in functional languages since there are no
+  race conditions (everything is immutable)
+\item Execution order doesn't matter: Functions are pure, so there are
+  no side effects. \textbf{Haskell} has lazy evalueation, so it will
+  only execute what is referenced.
+\end{enumerate}
+
+\subsection{Syntax} \textbf{Haskell} syntax for defining a function is
+as follows: 
+\begin{verbatim} function_name params = function_body \end{verbatim}
+
+\subsubsection{Indentation} In Haskell, any part of an expression must be
+indented further than the beginning of the function. e.g.
+\begin{verbatim}
+mult x y =
+  x * y \end{verbatim}
+
+\subsection{Data Types}
+Since Haskell is statically typed and uses type inference, though the
+variables' types are figured out at compile time, we need not
+explicitly annotate them (though possible). The following are some of
+Haskell's primitives:
+\begin{enumerate}[align=left]
+\item [\texttt{Int}] 64-bit signed integer
+\item [\texttt{Integer}] Arbitrary-precision signed integer
+\item [\texttt{Bool}] Boolean (True/False)
+\item [\texttt{Char}] Characters  
+\item [\texttt{Float}] 32-bit (single-precision) floating point
+\item [\texttt{Double}] 64-bit (double-precision) floating point
+\item [\textit{\textbf{Syntax}}] \texttt{variable\_name = value :: type}
+\item [\textit{\textbf{Note}}] \texttt{:t variable\_name} Returns the type of a variable
+\end{enumerate}
+
+\subsection{Operations} Arithmetic operations include \texttt{+, -, *,
+  /, \string^ `div`, `mod`}. \\ \\
+\textit{\textbf{Note:}} Parentheses are required for the unary \texttt{-}
+(e.g. \texttt{(-3)} represents -3) \\ \\
+\textit{\textbf{Note:}} Airthmetic operators can also be called using
+prefixed notation (e.g. \texttt{(+) a b} is equivalent to \texttt{a + b})
+
+\subsection{Composite Data Types} Some of the common composite data
+types are:
+\begin{enumerate}[align=left]
+\item [\texttt{()}] Tuples: A \textbf{fixed-size} collection of data (may be different types)
+\item [\texttt{[]}] Lists: A collection of data of the \textbf{same type} (internally, they
+  are structured like a linked list)
+\item [\texttt{[Char]}] Strings: A list of characters
+\end{enumerate}
+
+\subsubsection{Tuples} Tuples have two built-in functions:
+\texttt{fst, snd} which retrieve the first and second elements
+respectively. Consequently, accessing any element after the second
+requires a user-defined function. 
+
+\subsubsection{Lists} Lists are \textbf{not} arrays, and are
+structured internally like linked-lists. Therefore, most operations
+are \texttt{O(n)} in time complexity.
+\begin{enumerate}[align=left]
+\item [\texttt{head :: [a] -> a}]
+\item [\texttt{head LIST}] Returns the head of the list. \\
+\item [\texttt{tail :: [a] -> a}]
+\item [\texttt{tail LIST}] Returns the tail of the list. \\
+\item [\texttt{take :: Int -> [a] -> [a]}]
+\item [\texttt{take n LIST}] Returns the first \texttt{n} elements of
+  the list. \\
+\item [\texttt{drop :: Int -> [a] -> [a]}]
+t\item [\texttt{drop n LIST}] Returns the last \texttt{(length LIST) -
+  n} elements of the list. \\
+\item [\texttt{(!!) :: [a] -> Int -> a}]
+\item [\texttt{LIST !! n}] Returns the \texttt{n$^th$} item of the
+  list. \\
+\item [\texttt{zip :: [a] -> [b] -> [(a, b)]}]  
+\item [\texttt{zip LIST\_1 LIST\_2}] Returns a list of tuples of
+  the form \texttt{(a$_i$, b$_i$)}. \\ \footnote{\texttt{(a$_i$, b$_i$)}
+    where \texttt{a$_i \in$ LIST\_1}, \texttt{b$_i \in$ LIST\_2}, $0
+    \leq$ \texttt{i} $\leq$ \texttt{(min (length LIST\_1) (length
+      LIST\_2))}}
+\item [\texttt{length :: [a] -> Int}]
+\item [\texttt{length n LIST}] Returns the length of the list. \\
+\item [\texttt{elem :: a -> [a] -> Bool}]
+\item [\texttt{elem ITEM LIST}] Returns \texttt{True} if
+  \texttt{ITEM} $\in$ \texttt{LIST}, \texttt{False} otherwise. \\
+\item [\texttt{sum :: [a] -> a}]
+\item [\texttt{sum LIST}] Returns the summation of all elements of then
+  list. \\
+\item [\texttt{(++) :: [a] -> [a] -> [a]}]
+\item [\texttt{LIST\_1 ++ LIST\_2}] Concatenates two lists of the same
+  type. \\
+\item [\texttt{(:) :: a -> [a] -> [a]}]
+\item [\texttt{ITEM ++ LIST\_2}] Appends a single element to the front
+  of the list. \\
+\end{enumerate}
+
+\subsubsection{Strings}
+Strings are just a list of characters. Therefore, we can concatenate
+strings and perform list operations:
+\begin{verbatim}
+str :: String
+str = "some"
+
+other_str :: String
+other_str = " string"
+
+combined_str :: String
+combined_str = str ++ other_string \end{verbatim}
+will return \texttt{"some string"}. Moreover,
+\begin{verbatim}
+"same" == ['s', 'a', 'm', 'e']
+\end{verbatim}
+will return \texttt{True}
+
+\subsection{List Processing}
+\subsubsection{Creating Lists (Concatenation and Cons)} Lists can be
+concatenated using the \texttt{(++)} operator. 
 
 
-% \subsection{What is a Programming Language?}
-% A programming language is a structured system of communication designed to express computations in an 
-% abstract manner.
-
-% \subsection{Why Different Languages?}
-% Different languages are built for different use cases. Below are popular languages that were built for
-% their respective use cases:
-% \begin{itemize}[label=,leftmargin=*]
-% \item Javascript is the most popular language for anything related to web development. There are many
-%   frameworks for vanilla Javascript (e.g. React) as well as derivative languages (e.g. Typescript).
-% \item C/++ is a popular language for programs that require high performance (e.g. Linux).
-% \item C\# is most commonly used for programs that are in Microsoft's .NET ecosystem.
-% \item Python is a popular language used in the field of artificial intelligence.
-% \item ba/z/sh is a scripting language for UNIX-based operating systems.
-% \item R is a popular language among statiticians (not sure why).
-% \item Lisp is a functional language used in the field of artificial intelligence and was used to 
-%   write Emacs.
-% \item SQL and its variants are a set of querying languages used to communicate with databases.
-% \end{itemize}
-
-% \section{Language Paradigms}
-% There are four main language paradigms:
-% \begin{itemize}[label=,leftmargin=*]
-% \item Imperative
-% \item Object-Oriented
-% \item Functional
-% \item Logic
-% \end{itemize}
-
-% \subsection{Imperative Paradigm}
-% Imperative programming uses a set of statements (e.g. control structures, mutable variables) that 
-% directly change the state of the program. More specifically, these statements are commands that control 
-% how the program behaves. Common examples of imperative languages include FORTRAN and C.
-
-% \subsection{Object-Oriented Paradigm}
-% The object-oriented programming is a type of imperative programming, and contains support for
-% structured objects and classes that "talk" to each other via methods (e.g. \texttt{d} is a \texttt{Dog} 
-% object with the class method \texttt{bark()}, where \texttt{d.bark()} will invoke the \texttt{bark}
-% function for the object \texttt{d}). Common examples of object-oriented languages include Java and C++.
-
-% \subsection{Functional Paradigm}
-% Functional programming is a type of declarative programming. They use expressions, functions, 
-% constants, and recursion to change the state of the program. There is no iteration or mutable 
-% variables. Common examples of functional languages include Haskell and Lua.
-
-% \subsection{Logic Paradigm}
-% Logic programming the most abstract and is a type of declarative programming. A set of facts and
-% rules are defined within the scope of the program. Common examples of logic languages are Prolog and
-% ASP.
-
-% \section{Language Choices}
-% There are many things to consider when building a programming language. Some of these include:
-% \begin{itemize}[label=,leftmargin=*]
-% \item Static/Dynamic type checking
-% \item Passing parameters by value/reference/pointer/object reference
-% \item Scoping semantics
-% \item Manual/Automatic memory management
-% \item Implicit/Explicit variable declaration
-% \item Manual/Automatic bounds checking
-% \end{itemize}
-% Generally, a programming language can be broken down into its syntax and semantics.
 
 \end{document}
+
+
+
 %%% Local Variables:
 %%% mode: latex
 %%% TeX-master: t
