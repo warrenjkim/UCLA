@@ -25,6 +25,10 @@
 is a structured system of communication designed to express
 computations in an abstract manner.
 
+
+
+
+
 \subsection{Why Different Languages?}  Different languages are built
 for different use cases. Below are popular languages that were built
 for their respective use cases:
@@ -47,6 +51,10 @@ intelligence and was used to write Emacs.
 communicate with databases.
 \end{enumerate}
 
+
+
+
+
 \subsection{Language Paradigms} There are four main language paradigms:
 \begin{enumerate}[label=(\roman*),align=left]
 \item Imperative
@@ -55,11 +63,19 @@ communicate with databases.
 \item Logic
 \end{enumerate}
 
+
+
+
+
 \subsubsection{Imperative Paradigm} Imperative programs use a set of
 statements (e.g. control structures, mutable variables) that directly
 change the state of the program. More specifically, these statements
 are commands that control how the program behaves. Common examples of
 imperative languages include FORTRAN and C.
+
+
+
+
 
 \subsubsection{Object-Oriented Paradigm} The object-oriented paradigm
 is a type of imperative programming, and contains support for
@@ -69,16 +85,28 @@ structured objects and classes that "talk" to each other via methods
 function for the object \texttt{d}). Common examples of
 object-oriented languages include Java and C++.
 
+
+
+
+
 \subsubsection{Functional Paradigm} Functional programming is a type of
 declarative programming. They use expressions, functions, constants,
 and recursion to change the state of the program. There is no
 iteration or mutable variables. Common examples of functional
 languages include Haskell and Lua.
 
+
+
+
+
 \subsubsection{Logic Paradigm} Logic programming the most abstract and is
 a type of declarative programming. A set of facts and rules are
 defined within the scope of the program. Common examples of logic
 languages are Prolog and ASP.
+
+
+
+
 
 \subsection{Language Choices} There are many things to consider when
 building a programming language. Some of these include:
@@ -93,9 +121,17 @@ building a programming language. Some of these include:
 into its syntax and semantics.
 
 
+
+
+
 \section{Functional Programming (Haskell)} We will talk about
 functional programming as it pertains to \textit{Haskell}, a purely
 functional language. 
+
+
+
+
+
 \subsection{Overview} Haskell is a \textbf{statically typed} language
 that uses \textbf{type inference}. All functions must have the
 following properties: 
@@ -109,6 +145,10 @@ following properties:
 as data
 \end{enumerate}
 
+
+
+
+
 \subsection{Pure Functions} Given a fixed input $x$, it always returns
 the same output $y$. That is, it does not modify any data beyond
 initializing local variables. Some consequences of this are:
@@ -120,15 +160,27 @@ initializing local variables. Some consequences of this are:
   only execute what is referenced.
 \end{enumerate}
 
+
+
+
+
 \subsection{Syntax} \textbf{Haskell} syntax for defining a function is
 as follows: 
 \begin{verbatim} function_name params = function_body \end{verbatim}
+
+
+
+
 
 \subsubsection{Indentation} In Haskell, any part of an expression must be
 indented further than the beginning of the function. e.g.
 \begin{verbatim}
 mult x y =
   x * y \end{verbatim}
+
+
+
+
 
 \subsection{Data Types}
 Since Haskell is statically typed and uses type inference, though the
@@ -146,12 +198,20 @@ Haskell's primitives:
 \item [\textit{\textbf{Note}}] \texttt{:t variable\_name} Returns the type of a variable
 \end{enumerate}
 
+
+
+
+
 \subsection{Operations} Arithmetic operations include \texttt{+, -, *,
   /, \string^ `div`, `mod`}. \\ \\
 \textit{\textbf{Note:}} Parentheses are required for the unary \texttt{-}
 (e.g. \texttt{(-3)} represents -3) \\ \\
 \textit{\textbf{Note:}} Airthmetic operators can also be called using
 prefixed notation (e.g. \texttt{(+) a b} is equivalent to \texttt{a + b})
+
+
+
+
 
 \subsection{Composite Data Types} Some of the common composite data
 types are:
@@ -162,10 +222,18 @@ types are:
 \item [\texttt{[Char]}] Strings: A list of characters
 \end{enumerate}
 
+
+
+
+
 \subsubsection{Tuples} Tuples have two built-in functions:
 \texttt{fst, snd} which retrieve the first and second elements
 respectively. Consequently, accessing any element after the second
 requires a user-defined function. 
+
+
+
+
 
 \subsubsection{Lists} Lists are \textbf{not} arrays, and are
 structured internally like linked-lists. Therefore, most operations
@@ -182,7 +250,7 @@ are \texttt{O(n)} in time complexity.
 t\item [\texttt{drop n LIST}] Returns the last \texttt{(length LIST) -
   n} elements of the list. \\
 \item [\texttt{(!!) :: [a] -> Int -> a}]
-\item [\texttt{LIST !! n}] Returns the \texttt{n$^th$} item of the
+\item [\texttt{LIST !! n}] Returns the \texttt{n$^{th}$} item of the
   list. \\
 \item [\texttt{zip :: [a] -> [b] -> [(a, b)]}]  
 \item [\texttt{zip LIST\_1 LIST\_2}] Returns a list of tuples of
@@ -206,6 +274,10 @@ t\item [\texttt{drop n LIST}] Returns the last \texttt{(length LIST) -
   of the list. \\
 \end{enumerate}
 
+
+
+
+
 \subsubsection{Strings}
 Strings are just a list of characters. Therefore, we can concatenate
 strings and perform list operations:
@@ -224,15 +296,464 @@ will return \texttt{"some string"}. Moreover,
 \end{verbatim}
 will return \texttt{True}
 
+
+
+
+
 \subsection{List Processing}
 \subsubsection{Creating Lists (Concatenation and Cons)} Lists can be
-concatenated using the \texttt{(++)} operator. 
+created directly or indirectly via concatenation or consing:
+
+\subsubsection*{Direct Creation}
+\begin{verbatim}
+some_list = [1, 2, 3]
+\end{verbatim}
+
+\subsubsection*{Concatenation}
+\begin{verbatim}
+some_list = [1, 2, 3]
+new_list = some_list ++ [4, 5, 6]
+\end{verbatim}
+Here, \texttt{new\_list} is \texttt{[1, 2, 3, 4, 5, 6]}
+
+\subsubsection*{Consing}
+\begin{verbatim}
+some_list = [1, 2, 3]
+new_list = 0 : some_list
+\end{verbatim}
+Here, \texttt{new\_list} is \texttt{[0, 1, 2, 3]}
 
 
 
+
+
+\subsubsection{Ranges} Ranges are inclusive from both sides. By
+default, they are incremented by 1.
+
+\subsubsection*{Incremented by 1}
+\begin{verbatim}
+one_to_ten = [1..10]
+\end{verbatim}
+Here, \texttt{one\_to\_ten} is \texttt{[1, 2, 3, 4, 5, 6, 7, 8, 9,
+  10]}
+
+\subsubsection*{Incremented by X (= 2)}
+\begin{verbatim}
+odds = [1, 3..10]
+\end{verbatim}
+Here, \texttt{odds} is \texttt{[1, 3, 5, 7, 9]}
+
+\subsubsection*{Infinite Lists}
+\begin{verbatim}
+infty = [1..]
+\end{verbatim}
+Here, \texttt{infty} is \texttt{[1, 2, ...]}
+
+\subsubsection*{Cyclic Lists}
+\begin{verbatim}
+cyclic = cycle [1, 2, 3]
+\end{verbatim}
+Here, \texttt{cyclic} is \texttt{[1, 2, 3, 1, 2, 3, ...]}
+
+
+
+
+
+\subsubsection{List Comprehensions} List comprehensions create lists
+from one (or more) existing lists. They have a similar syntax to
+set-builder notation in Mathematics. A list comprehension has the
+following:\footnote{See HW for more examples}
+\begin{enumerate}[label=(\roman*),align=left]
+\item Generators: One or more input list(s)
+\item Guards: Filters or conditions on the generators
+\item Transformation: Applied to inputs (that satisfy the guard
+  clauses) before adding them to the output list
+\end{enumerate}
+
+\subsubsection*{Example with Numbers}
+\begin{verbatim}
+squares = [x^2 | x <- [1..3]
+\end{verbatim}
+Here, \texttt{squares} is \texttt{[1, 4, 9]}
+
+\subsubsection*{Example with Strings}
+\begin{verbatim}
+nouns = ["party","exam","studying"]
+adjs = ["lit","brutal","chill"]
+combos = [adj ++ " " ++ noun | adj <- adjs, noun <- nouns]
+\end{verbatim}
+Here, \texttt{combos} is \texttt{["lit party", "brutal exam", "chill studying"]}
+
+
+
+
+
+\subsection{Type Annotations} Functions have optional
+type declarations that take the form \\
+\texttt{name :: type -> ... -> return\_type} where \texttt{type ->
+  ... ->} are parameter types. Type variables are denoted by any
+lowercase variable name in place of \texttt{type} and represent any
+type. \\
+\textit{\textbf{Note:}} Type annotations of the form \\
+\texttt{name :: type -> (type -> ... -> return\_type) -> ... ->
+  return\_type} indicate that the function takes in another function
+\texttt{(type -> ... -> return\_type)} as a parameter.
+
+
+
+
+
+\subsection{Functions}
+Functions are left-associative by default. That is, \\
+\texttt{a b c $\iff$ ((a b) c)}. Additionally, they get called before
+operators. Below are equivalences between mathematical functions and
+Haskell's function-calling syntax
+\begin{align*}
+  f(x) &\iff \texttt{f x} \\
+  f(x, y) &\iff \texttt{f x y} \\
+  f(g(x)) &\iff \texttt{f (g x)} \\
+  f(x, g(y)) &\iff \texttt{f x (g y)} \\
+  f(x)g(y) &\iff \texttt{(f x) * (g y)} \iff \texttt{f x * g y}
+\end{align*}
+
+
+
+
+
+\subsubsection{First Class/Higher Order Functions}
+First class functions are treated like data. That is, they can be:
+\begin{enumerate}[label=(\roman*),align=left]
+\item Stored in variables
+\item Passed as arguments to other functions
+\item Returned as values by a function
+\item Stored in data structures
+\end{enumerate}
+Higher order functions are functions that accept another function as
+an argument or return another function as its return value.
+
+\subsubsection*{Functions as Arguments} \texttt{Int -> (Int -> Int) ->
+Int} indicates a function that takes in an \texttt{Int} and a
+\textbf{function} that takes in and returns an \texttt{Int} and returns an \texttt{Int}.
+
+\subsubsection*{Returning a function} \texttt{Int -> (Int -> Int)}
+indicates a function that takes in an \texttt{Int} and returns a
+function that takes in an \texttt{Int} and returns an \texttt{Int}.
+
+
+
+
+
+\subsection{Map, Filter, Reduce} \texttt{map, filter, reduce} are a
+set of powerful higher-order functions:
+\begin{enumerate}[align=left]
+\item [\texttt{map :: (a -> b) -> [a] -> [b]}]
+\item [\texttt{map}] A (one-to-one) transformation on a list \\
+\item [\texttt{filter :: (a -> Bool) -> [a] -> [b]}]
+\item [\texttt{filter}] Filter a list via a predicate function \\
+\item [\texttt{foldl :: (a -> b -> a) -> a -> [b] -> a}]
+\item [\texttt{foldr :: (a -> b -> b) -> b -> [a] -> b}]
+\item [\texttt{reduce}] Collapse a list into a single output value
+\end{enumerate}
+
+\subsubsection{\texttt{map}} To implement \texttt{map}, we do
+\begin{verbatim}
+map :: (a -> b) -> [a] -> [b]
+map func [] = []
+map func (x:xs) =
+  (func x) : (map func xs)
+\end{verbatim}
+An example of \texttt{map}:
+\begin{verbatim}
+cube :: Double -> Double
+cube x = x^3
+
+mapped = map cube [1, 2, 3]
+\end{verbatim}
+Here, \texttt{mapped} is \texttt{[1, 8, 27]}
+
+\subsubsection{\texttt{filter}} To implement \texttt{filter}, we do
+\begin{verbatim}
+filter :: (a -> Bool) -> [a] -> [a]
+filter predicate [] = []
+filter predicate (x:xs) =
+  | (predicate x) = x : (filter predicate xs)
+  | otherwise = filter predicate xs
+\end{verbatim}
+An example of \texttt{filter}:
+\begin{verbatim}
+even :: Int -> Bool
+even n =
+  n `mod` 2 == 0
+
+filtered = filter even [1, 2, 3, 4]
+\end{verbatim}
+Here, \texttt{filtered} is \texttt{[2, 4]}
+
+\subsubsection{\texttt{reduce}} There are two ways to reduce:
+\texttt{foldl, foldr} to force associativity of
+functions. \texttt{foldl} is left-associative; that is, \texttt{foldl}
+calls \texttt{f(f...f(accum, x$_1$)..., x$_n$)} whereas \texttt{foldr} is
+right-associative; that is, \texttt{foldr} calls \texttt{f(x$_1$, f(x$_2$,
+  ... f(x$_n$, accum)...))} To implement \texttt{foldl}, we do:
+\begin{verbatim}
+foldl :: (a -> b -> a) -> a -> [b] -> a
+foldl func accum [] = accum
+foldl f accum (x:xs) =
+  foldl f new_accum xs
+  where new_accum = (f accum x)
+\end{verbatim}
+To implement \texttt{foldr}, we do:
+\begin{verbatim}
+foldr :: (a -> b -> b) -> b -> [a] -> b
+foldr func accum [] = accum
+foldr func accum (x:xs) =
+  func x (foldr func accum xs)
+\end{verbatim}
+An example of \texttt{foldl}:
+\begin{verbatim}
+sub :: Int -> Int -> Int
+sub x y = y -x
+
+left = foldl sub 100 [10, 20]
+right = foldr sub 100 [10, 20]
+\end{verbatim}
+Here, \texttt{left} is \texttt{110} \\
+Here, \texttt{right} is \texttt{-90}
+
+
+
+
+
+\subsection{Lambda Functions}
+A lambda function is a function without a name attached to it. They
+are most often thought of as throwaway functions (e.g. \texttt{cube x
+  = x \textasciicircum 3 $\iff$ \textbackslash x -> x \textasciicircum
+  3}).
+\subsubsection{Defining Lambdas}
+To define a lambda, we do
+\begin{verbatim}
+\param, param, ..., param -> expression
+\end{verbatim}
+
+\subsection{Closures}
+A closure is a combination of a lambda expression and all captured
+variables. For example, consider
+\begin{verbatim}
+slope_int m b = (\x -> m * x + b)
+two_x_plus_one = slope_intercept 2 1
+
+result = two_x_plus_one 9
+\end{verbatim}
+Here, \texttt{result} is \texttt{19}. When we define
+\texttt{two\_x\_plus\_one}, it is assigned \texttt{(\textbackslash x
+  -> 2 * x + b)} Therefore, calling \texttt{two\_x\_plus\_one 9}
+passes in \texttt{9} to \texttt{x}, which then evaluates the lambda
+expression \texttt{\textbackslash (x = 9) -> 2 * (x = 9) + 1 $\implies$ 19}, hence,
+\texttt{result} is \texttt{19}. \\ \\
+A closure captures all free variables and its lambda's bounded 
+parameters. That is, \texttt{m, b} are free while \texttt{x} is
+bounded to the lambda expression (from the example above). Both of
+these make up its closure. \\ \\
+More generally, a closure consists of two things:
+\begin{enumerate}[label=(\roman*),align=left]
+\item A function of 0 or more arguments that we wish to run at some
+  point in the future.
+\item A list of free variables and their values that we captured at
+  the time the closure was created.
+\end{enumerate}
+
+
+
+
+
+\subsection{Currying}
+Currying is the process of transforming a single function with
+multiple parameters into multiple functions with a single
+parameter.\footnote{Haskell curries functions implicitly} For example,
+\begin{verbatim}
+f :: Int -> Int -> Int -> Int
+f(x, y, z) = x + y * z
+
+f :: Int -> (Int -> (Int -> Int))
+f = \x -> (\y -> (\z-> (x + y * z)))
+
+f :: Int -> Int -> Int -> Int
+f = \x -> \y -> \z -> x + y * z
+\end{verbatim}
+All three functions behave identically. Note that currying is
+\textbf{right-associative}. Currying is used for partial function
+application.
+
+
+
+
+
+
+\subsection{Partial Function Application}
+Parital function application fixes one or more parameters of a
+function. For example, consider:
+\begin{verbatim}
+mult = \x -> (\y -> (\z -> x * y * z))
+f1 = mult 2
+f2 = f1 3
+result = f2 5
+\end{verbatim}
+Here, \texttt{result} is \texttt{5}. \texttt{f1} is defined as \\
+\texttt{\textbackslash (x = 2) -> (\textbackslash y -> (\textbackslash
+  z -> (x = 2) * y * z} \\
+and \texttt{f2} is defined as \\
+\texttt{\textbackslash (x = 2) -> (\textbackslash (y = 3) ->
+  (\textbackslash z -> (x = 2) * (y = 3) * z}. \\
+So, when we call \texttt{f2 5}, we get \\
+\texttt{\textbackslash (x = 2) -> (\textbackslash (y = 3) ->
+  (\textbackslash (z = 5) -> (x = 2) * (y = 3) * (z = 5) $\implies$
+  30}, hence, \texttt{result} is \texttt{30}.
+
+
+
+
+
+\subsection{Algebraic Data Types/Immutable Data Structures}
+An ADT is a user-defined data type that can have multiple fields
+(similar to C++ enum). Note that all type names must be capitalized.
+For example,
+\begin{verbatim}
+data Drink = Water | Coke | Redbull
+data Veggie = Cucumber | Lettuce | Tomato
+data Protein = Eggs | Beef | Chicken | Beans
+data Meal =
+  Breakfast Drink Protein |
+  Lunch Drink Protein Veggie |
+  Dinner Drink Protein Protein Veggie |
+  Fasting
+
+meal = Breakfast Redbull Eggs
+\end{verbatim}
+Here, \texttt{meal} is a \texttt{Meal} data type with values
+\texttt{Redbull} and \texttt{Eggs} for \texttt{Drink} and
+\texttt{Protein} respectively. \\ \\
+Note that Algebraic Data Type fields are positional, and the pipe operator
+\texttt{|} distinguishes variants.
+
+
+
+
+
+\subsection{Local Bindings (\texttt{let} and \texttt{where})} To
+create temporary variables, we use \texttt{let} and
+\texttt{where}. Note that we can create (nested) helper functions
+using these keywords. The syntax is as follows:
+
+\subsubsection{\texttt{let}}
+\begin{verbatim}
+some_function arg =
+  let
+    x = 10 + arg
+    *statements*
+  in
+    if x == 10 then
+      *something*
+    else
+      *something else*
+\end{verbatim}
+
+\subsubsection{\texttt{where}}
+\begin{verbatim}
+some_function arg =
+    if x == 10 then
+      *something*
+    else
+      *something else*
+  where
+    x = 10 + arg
+    *statements*
+\end{verbatim}
+
+
+
+
+
+\subsection{Control Flow}
+\subsubsection{\texttt{if then else}} Haskell has standard \texttt{if
+  then else} logic. However, note that in Haskell, an \texttt{if} must
+be closed with an \texttt{else}. The syntax is as follows:
+\begin{verbatim}
+some_function = 
+  if *condition* then
+    *statements*
+  else
+    *statements*
+\end{verbatim}
+
+
+
+
+
+\subsubsection{Guard Clauses (\texttt{|})} Guard clauses are similar
+to switch cases. Note that they don't require an \texttt{=} after the
+function name. Additionally, \texttt{otherwise} can be replaced with
+\texttt{\_}. The syntax is as follows:
+\begin{verbatim}
+some_function
+  | *condition* = *statements*
+  | *other condition* = * statements*
+  ...
+  | otherwise = *statements*
+\end{verbatim}
+
+
+
+
+
+\subsection{Pattern Matching}
+In the following subsections, we discuss different ways to pattern
+match. Note that in all of them, we can replace a parameter 
+with \texttt{\_}, which indicates that we will not use it and
+therefore it does not matter.
+
+\subsubsection{Constants}
+To pattern match functions with constants, we define multiple versions
+of the same functions that all have the same number and types of
+arguments. Then, we define \textbf{unique} parameters. Note that
+\textbf{order matters}. Haskell will try to match top to
+bottom. The syntax is as follows:
+\begin{verbatim}
+multiply :: Int -> Int -> Int
+multiply 10 b =
+  10 * b
+multiply a 10 =
+  a * 10
+multiply a b =
+  a * b
+\end{verbatim}
+
+\subsubsection{Tuples}
+Pattern matching with tuples is similar, but we can decompose the
+tuple. The syntax is as follows: 
+\begin{verbatim}
+exp :: (Int, Int) -> Int
+exp (_, 0) = 1
+exp (a, b) = a ^ b
+\end{verbatim}
+
+\subsubsection{Lists}
+Pattern matching lists are similar to pattern matching tuples. Note
+that we can decompose a list multiple different ways:
+\begin{enumerate}[label=(\roman*),align=left]
+\item \texttt{(x:xs)} where \texttt{x} is the head and \texttt{xs} is
+  the rest of the list (excluding \texttt{x}).
+\item \texttt{x:...:xs)} where \texttt{...} represents the second to
+  \texttt{i$^{th}$} element of a list.
+\item \texttt{[a, b, c]} where \texttt{a, b, c} correspond to the
+  first, second, and third elements of the list respectively.
+\end{enumerate}
+
+
+
+
+
+\section{Scripting (Python)}
 \end{document}
-
-
 
 %%% Local Variables:
 %%% mode: latex
