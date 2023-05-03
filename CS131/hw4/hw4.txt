@@ -1,0 +1,27 @@
+1a)
+Note: X subtype Y <==> Y supertype X
+
+* Int is a subtype of Integer
+* Float is a subtype of Fractional
+* Integer and Fractional are subtypes of Num
+
+1b)
+div and mod operate on Integers (and therefore Ints), while + operates
+on Nums. This is due to Haskell's type system and restrictions on
+certain operations. While Integers are subtypes of Nums and therefore
+can do the same set of operations as Nums, they have extra integer
+arithmetic that Fractionals don't have.
+
+1c)
+Note: X subtype Y <==> Y supertype X
+
+* float is a subtype of const float
+* int is a subtype of const int
+* float and int have no relation to each other
+
+1d)
+boolean subtype of int in Python
+True * 1 = 1 since boolean is a subtype of int in Python
+
+2a)
+
