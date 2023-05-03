@@ -6,7 +6,7 @@ class Method:
         self.variables = { }
         
     def add_statements(self, statements):
-        self.statements = statements
+        self.statements.extend(statements)
 
     def add_variable(self, name, value):
         self.variables[name] = value

@@ -1,7 +1,8 @@
 from intbase import InterpreterBase as base
+from intbase import ErrorType as errno
 from bparser import BParser
 from objects import Field, Class, Method
-from operators import add
+from operators import *
 
 
 class Interpreter(base):
@@ -40,21 +41,24 @@ class Interpreter(base):
                 self.inputs_statement(main, statement[1])
                 
             elif statement[0] == '+':
-                add(statement[1], statement[2])
+                try:
+                    add(statement[1], statement[2])
+                except:
+                    self.error(self, errno.TYPE_ERROR)
         return True
 
     # add typechecking to inputi
     def inputi_statement(self, who, variable_name):
         value = self.get_input()
         if not isinstance(eval(value), int):
-            print('not an int')
+            base.error(self, errno.TYPE_ERROR)
         who.add_variable(variable_name, value)
 
     # add typechecking to inputs
     def inputs_statement(self, who, variable_name):
         value = self.get_input()
         if not isinstance(eval(value), str):
-            print('not a string')
+            base.error(self, errno.TYPE_ERROR)
         who.add_variable(variable_name, value)
 
     
@@ -68,14 +72,51 @@ class Interpreter(base):
             # the argument is a constant
             else:
                 self.output(args.strip("\""))
+        # the argument is nested: auxiliary function call(s)
         else:
-            self.output(add(args[1], args[2]))
-            
+            # binary operators
+            if args[0] == '+':
+                try:
+                    self.output(add(args[1], args[2]))
+                except:
+                    base.error(self, errno.TYPE_ERROR)
+            elif args[0] == '-':
+                try:
+                    self.output(subtract(args[1], args[2]))
+                except:
+                    base.error(self, errno.TYPE_ERROR)
+            elif args[0] == '*':
+                try:
+                    self.output(multiply(args[1], args[2]))
+                except:
+                    base.error(self, errno.TYPE_ERROR)
+            elif args[0] == '/':
+                try:
+                    self.output(divide(args[1], args[2]))
+                except:
+                    base.error(self, errno.TYPE_ERROR)
+            # function call
+            else:
+                if args[0] == "call":
+                    self.output(self.call_method(args[1], args[2], args[3]))
 
+    def call_method(self, who, method_name, args = []):
+        # call internally
+        if who == "me":
+            method = self.classes['main'].methods[method_name]
+            for statement in method.statements:
+                if statement[0] == self.RETURN_DEF:
+                    # nested call(s)
+                    if isinstance(statement[1], list):
+                        # TODO
+                        pass
+                    return statement[1]
+                    
     # parse input into classes, fields, and methods
     def itemize_input(self, tokens = [], class_name = None, method_name = None):
         # for each token, itemize it into its respective class (class, field, method)
         for i, token in enumerate(tokens):
+            
             # recurse if nested
             if isinstance(token, list):
                 self.itemize_input(token, class_name, method_name)
@@ -90,6 +131,7 @@ class Interpreter(base):
                 class_name = tokens[i + 1]
                 # add the class to the dictionary with key = class name
                 self.classes[class_name] = Class(class_name)
+                continue
                 
             # token is 'field' **TODO**
             elif token == self.FIELD_DEF:
@@ -103,13 +145,33 @@ class Interpreter(base):
                 method_args = tokens[i + 2]
                 # add method to the current class (class_name)
                 self.classes[class_name].add_method(method_name, method_args)
+                self.parse_method(class_name, method_name, tokens[i + 3:])
+                return
 
 
             # ***** STATEMENTS *****
             # we parse statements in these if blocks
 
-            # token is 'begin'
-            elif token == self.BEGIN_DEF:
-                # we parse the rest of the statements inside the begin block
-                self.classes[class_name].methods[method_name].add_statements(tokens[i + 1:])
+            # # token is 'begin'
+            # elif token == self.BEGIN_DEF:
+            #     print('read begin')
+            #     # we parse the rest of the statements inside the begin block
+            #     self.classes[class_name].methods[method_name].add_statements(tokens[i + 1:])
+            #     print(f'in {class_name} class, {method_name} method')
+            #     return
+                
+            # elif token == self.PRINT_DEF:
+            #     print('only one statement')
+            #     self.classes[class_name].methods[method_name].add_statements([tokens[i:]])
+            #     print(f'in {class_name} class, {method_name} method')
 
+
+    def parse_method(self, class_name, method_name, tokens):
+        tokens = tokens[0]
+        if tokens[0] == self.BEGIN_DEF:
+            self.classes[class_name].methods[method_name].add_statements(tokens[1:])
+
+        else:
+            self.classes[class_name].methods[method_name].add_statements([tokens[0:]])
+
+        return
