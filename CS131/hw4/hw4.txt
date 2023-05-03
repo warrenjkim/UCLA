@@ -24,4 +24,90 @@ boolean subtype of int in Python
 True * 1 = 1 since boolean is a subtype of int in Python
 
 2a)
+The language is dynamically typed since the type of user_id is bound
+to the current value of user_id.
 
+2b)
+This language uses lexical scoping, as the function beep() does not
+have the a variable 'x' in scope. Therefore, it does not use dynamic
+scoping like Lisp does. It uses the LEGB scoping paradigm: Local,
+Enclosing, Global, Built-in. Since 'x' is neither global nor built-in
+and 'x' cannot be found in the local or enclosing scope of beep(), it
+is not in scope for the function beep().
+
+2c)
+This language uses lexical scoping since it uses the LEGB scoping
+paradigm: 'x' is in the local scope of the second set of { } therefore
+'x' = 1 is used. in the enclosing scope, 'x' = 0 is defined and therefore
+the second print statement uses 'x' = 0. 'x' is then redefined to be
+"Mystery Language". Since it is the most local to the last print
+statement, 'x' = "Mystery Language" is printed. Since 'x' is being
+redifined, we can infer that this language allows variable shadowing
+within a scope.
+
+2d)
+This language will point (at least) small integers to the same address
+but will point (potentially identical) strings to different
+addresses. From this example, numbers can be compared using either
+value or address. Strings however are compared by value since puts s1
+== s2 returns true. from the line 's2 = s1', we can infer that
+assignment will point the variable to the same address rather than
+making a deep copy. This language is similar to Python since Python
+has similar binding semantics.
+
+3a)
+nth_fibonacci :: Float -> Float
+
+3b)
+data StrNil = None | String str
+get_network_type :: object -> StrNil
+
+3c)
+No. Since Python overloads the '+' operator to also add strings,
+lists, etc., restricting add to just numbers will break functionality
+of the aforementioned overloaded operations.
+
+4a)
+This tells us that C++ is weakly typed since there is undefined
+behavior (with float f), since it is never defined but still returns a
+value. This is similar to unsafe memory access since we are
+technically accessing an uninitialized variable, leading to undefined
+behavior.
+
+4b)
+The error tells us that Zig is strongly typed, since it does not allow
+access to an inactive union field, implying it does not allow/have any
+undefined behavior. This is in contrast to C++'s allowance of
+accessing inactive union fields. Zig is probably better for catching
+bugs related to untagged union fields.
+
+5a)
+name and res have the same (local) scope in boop()
+* name's lifetime: starts at the beginning of boop(), ends at the end of
+  boop()
+* res' lifetimes: starts when res is created (in boop()), ends at the
+  end of boop()
+* value bound to res' lifetime: starts when res is created (in
+  boop()), ends after the print statements
+
+The lifetimes of res and the value bound to res are different since
+the value of res is returned by boop(), so its lifetime is extended.
+
+5b)
+The scope of x and n are different than their lifetimes. x's lifetime
+starts and ends within { } and is only in scope between { }, but n's
+lifetime starts above { and ends after }, thus, the memory address of
+'x' gets garbage collected, so 'n' becomes a dangling pointer.
+
+5c)
+In C++, the memory that holds the value is not zeroed out at the end
+of its lifetime, but rather just sits there but now, it is able to be
+overwritten. Therefore, since we haven't overwritten it yet, we can
+still access the value 42 that sits at x's old address (before going
+out of scope).
+
+Bonus Question)
+This is a lambda function that takes in no parameters and outputs the
+square of 5 (25) to the console. This function is immediately invoked,
+meaning the function is locally scoped and its lifetime begins and
+ends with the scope of the function.
