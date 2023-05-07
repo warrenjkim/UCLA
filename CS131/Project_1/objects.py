@@ -1,5 +1,7 @@
+from intbase import InterpreterBase as base
+
 class Method:
-    def __init__(self, name = "", args = []):
+    def __init__(self, name = "", args = {}):
         self.name = name
         self.args = args
         self.statements = []
@@ -8,8 +10,23 @@ class Method:
     def add_statements(self, statements):
         self.statements.extend(statements)
 
+    def assign_args(self, argv):
+        i = 0
+        for key in self.args:
+            self.args[key] = argv[i]
+            i += 1
+
     def add_variable(self, name, value):
         self.variables[name] = value
+
+
+
+
+
+
+
+
+
 
 
 class Field:
@@ -33,3 +50,8 @@ class Class:
 
     def add_field(self, name, value):
         self.fields[name] = Field(name, value)
+
+
+class Object:
+    def __init__(self, method):
+        self.method = method

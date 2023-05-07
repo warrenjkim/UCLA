@@ -1,0 +1,13 @@
+(class main
+  (method main ()
+    (begin
+      (print "Enter a number: ")
+      (print "hello")
+    )
+  )
+  (method something ()
+    (begin
+      (print "nothing")
+    )
+  )
+)

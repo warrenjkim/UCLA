@@ -1,0 +1,10 @@
+(class main
+        (field x 0)
+        (method main () 
+          (begin
+            (print "hello")
+            (print "world")
+            (print "goodbye")
+          )
+  )
+)

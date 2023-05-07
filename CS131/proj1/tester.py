@@ -122,10 +122,8 @@ def generate_test_suite_v1():
     """wrapper for generate_test_suite for v1"""
     return __generate_test_suite(
         1,
-        ["test_hello_world", "test_multiple_statements", "test_inputi", "test_inputs", "test_add", "test_nested", "test_function_call", "test_nested_func_call", "test_recursion1"],
-        ["test_incompat_operands1"]
-        # ["test_inputi", "test_recursion1", "test_set_field"],
-        # ["test_if", ],
+        ["test_hello_world", "test_multiple_statements", "test_add", "test_inputi", "test_inputs", "test_nested", "test_function_call", "test_recursion1", "test_if_begin", "test_mult_prints_spec"],
+        ["test_incompat_operands1", "test_if"]
     )
 
 

@@ -1,0 +1,9 @@
+(class main
+ (field x 0)
+ (field y "test")
+ (method main ()
+  (begin
+   (print (+ 2 3))
+  )
+ )
+)

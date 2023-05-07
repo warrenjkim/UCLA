@@ -1,0 +1,16 @@
+(class main
+  (method fact (n)
+   (if (== n 1)
+     (begin
+     (print 1)
+     (print 2))
+     (print n)
+   )
+  )
+  (method main ()
+    (begin
+    (call me fact 5)
+    (call me fact 1)
+    )
+  ) 
+)
