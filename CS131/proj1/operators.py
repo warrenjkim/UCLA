@@ -1,128 +1,189 @@
-from intbase import InterpreterBase as base
-from intbase import ErrorType as errno
-from objects import Field, Method
-from interpreterv1 import Interpreter
+class Operators:
+    def __init__(self, object_on_stack = None):
+        self.object_on_stack = object_on_stack
 
-binary_operators = ['+', '-', '*', '/', '<', '<=', '==', '>', '>=']
+    def parse_binary_operator(self, args):
+        # print(f'now evaluating: {args}')
+        # first argument is always the operator
+        operator = args[0]
+        # second argument is always the lhs
+        lhs = args[1]
+        # third argument is always the rhs
+        rhs = args[2]
 
-def parse_binary_operator(operator):
-    lhs = operator[1]
-    rhs = operator[2]
+        if operator == '+':
+            return self.add(lhs, rhs)
 
-    ##### arithmetic operators #####
-    
-    # addition
-    if operator[0] == '+':
-        return add(lhs, rhs)
-
-    # subtracttion
-    elif operator[0] == '-':
-        return subtract(lhs, rhs)
-
-    # multiplication
-    elif operator[0] == '*':
-        return multiply(lhs, rhs)
-
-    # division
-    elif operator[0] == '/':
-        return divide(lhs, rhs)
-
-
-    ##### control flow #####
-
-    # less than
-    if operator[0] == "<":
-        return less(lhs, rhs)
-    
-    # less than or equal
-    elif operator[0] == "<=":
-        return less(lhs, rhs) or eq(lhs, rhs)
-    
-    # equality
-    elif operator[0] == "==":
-        return equal(lhs, rhs)
-    
-    # greater than
-    elif operator[0] == ">":
-        return less(rhs, lhs)
-    # greater than or equal
-    
-    elif operator[0] == ">=":
-        return less(rhs, lhs) or eq(lhs, rhs)
-
-
-# add
-def add(lhs, rhs):
-    if isinstance(lhs, list):
-        if lhs[0] in binary_operators:
-            return add(parse_binary_operator(lhs), rhs)
-        elif lhs[0] == base.CALL_DEF:
-            return add(Interpreter.call_statement(lhs), rhs)
+        elif operator == '-':
+            return self.subtract(lhs, rhs)
         
-    if isinstance(rhs, list):
-        if rhs[0] in binary_operators:
-            return add(lhs, parse_binary_operator(rhs))
-        elif rhs[0] == base.CALL_DEF:
-            return add(lhs, Interpreter.call_statement(rhs))
+        elif operator == '*':
+            return self.multiply(lhs, rhs)
 
-    return str(eval(lhs) + eval(rhs))
-
-
-# subtract
-def subtract(lhs, rhs):
-    if isinstance(lhs, list):
-        if lhs[0] in binary_operators:
-            return subtract(parse_binary_operator(lhs), rhs)
-        elif lhs[0] == base.CALL_DEF:
-            return subtract(Interpreter.call_statement(lhs), rhs)
+        elif operator == '%':
+            return self.modulo(lhs, rhs)
         
-    if isinstance(rhs, list):
-        if rhs[0] in binary_operators:
-            return subtract(lhs, parse_binary_operator(rhs))
-        elif rhs[0] == base.CALL_DEF:
-            return subtract(lhs, Interpreter.call_statement(rhs))
-
-    return str(eval(lhs) - eval(rhs))
+        elif operator == '/':
+            return self.divide(lhs, rhs)
 
 
-# multiply
-def multiply(lhs, rhs):
-    if isinstance(lhs, list):
-        if lhs[0] in binary_operators:
-            return multiply(parse_binary_operator(lhs), rhs)
-        elif lhs[0] == base.CALL_DEF:
-            return multiply(Interpreter.call_statement(lhs), rhs)
-        
-    if isinstance(rhs, list):
-        if rhs[0] in binary_operators:
-            return multiply(lhs, parse_binary_operator(rhs))
-        elif rhs[0] == base.CALL_DEF:
-            return multiply(lhs, Interpreter.call_statement(rhs))
+        # equality operators
+        if operator == "<":
+            return self.less(lhs, rhs)
 
-    return str(eval(lhs) * eval(rhs))
+        elif operator == "<=":
+            return self.less(lhs, rhs) or self.equal(lhs, rhs)
 
-
-# divide
-def divide(lhs, rhs):
-    if isinstance(lhs, list):
-        if lhs[0] in binary_operators:
-            return divide(parse_binary_operator(lhs), rhs)
-        elif lhs[0] == base.CALL_DEF:
-            return divide(Interpreter.call_statement(lhs), rhs)
-        
-    if isinstance(rhs, list):
-        if rhs[0] in binary_operators:
-            return divide(lhs, parse_binary_operator(rhs))
-        elif rhs[0] == base.CALL_DEF:
-            return divide(lhs, Interpreter.call_statement(rhs))
+        elif operator == "==":
+            return self.equal(lhs, rhs)
     
-    return str(eval(lhs) / eval(rhs))
+        elif operator == ">":
+            return self.less(rhs, lhs)
     
+        elif operator == ">=":
+            return self.less(rhs, lhs) or self.equal(lhs, rhs)
 
-# less than
-def less(lhs, rhs):
-    return eval(lhs) < eval(rhs)
+        # invalid operand
+        else:
+            self.object_on_stack.console.error(errno.TYPE_ERROR)
+            
+    def add(self, lhs, rhs):
+        if isinstance(lhs, list):
+            if lhs[0] == self.object_on_stack.console.CALL_DEF:
+                return self.add(self.object_on_stack.run_statement(lhs), rhs)
+            return self.add(self.parse_binary_operator(lhs), rhs)
+        if isinstance(rhs, list):
+            if rhs[0] == self.object_on_stack.console.CALL_DEF:
+                return self.add(lhs, self.object_on_stack.run_statement(rhs))
+            return self.add(lhs, self.parse_binary_operator(rhs))
 
-# equal to
-def equal(lhs, rhs):
-    return eval(lhs) == eval(rhs)
+        evaluated_lhs = self.object_on_stack.fields.get(lhs)
+        evaluated_rhs = self.object_on_stack.fields.get(rhs)
+        if evaluated_lhs is not None:
+            lhs = evaluated_lhs
+        if evaluated_rhs is not None:
+            rhs = evaluated_rhs
+            
+        return str(eval(lhs) + eval(rhs))
+    
+    def subtract(self, lhs, rhs):
+        if isinstance(lhs, list):
+            if lhs[0] == self.object_on_stack.console.CALL_DEF:
+                return self.subtract(self.object_on_stack.run_statement(lhs), rhs)
+            return self.subtract(self.parse_binary_operator(lhs), rhs)
+        if isinstance(rhs, list):
+            if rhs[0] == self.object_on_stack.console.CALL_DEF:
+                return self.subtract(lhs, self.object_on_stack.run_statement(rhs))
+            return self.subtract(lhs, self.parse_binary_operator(rhs))
+
+        evaluated_lhs = self.object_on_stack.fields.get(lhs)
+        evaluated_rhs = self.object_on_stack.fields.get(rhs)
+        if evaluated_lhs is not None:
+            lhs = evaluated_lhs
+        if evaluated_rhs is not None:
+            rhs = evaluated_rhs
+            
+        evaluated_lhs = self.object_on_stack.fields.get(lhs)
+        evaluated_rhs = self.object_on_stack.fields.get(rhs)
+        if evaluated_lhs is not None:
+            lhs = evaluated_lhs
+        if evaluated_rhs is not None:
+            rhs = evaluated_rhs
+            
+        return str(eval(lhs) - eval(rhs))
+
+    def multiply(self, lhs, rhs):
+        if isinstance(lhs, list):
+            if lhs[0] == self.object_on_stack.console.CALL_DEF:
+                return self.multiply(self.object_on_stack.run_statement(lhs), rhs)
+            return self.multiply(self.parse_binary_operator(lhs), rhs)
+        if isinstance(rhs, list):
+            if rhs[0] == self.object_on_stack.console.CALL_DEF:
+                return self.multiply(lhs, self.object_on_stack.run_statement(rhs))
+            return self.multiply(lhs, self.parse_binary_operator(rhs))
+
+        evaluated_lhs = self.object_on_stack.fields.get(lhs)
+        evaluated_rhs = self.object_on_stack.fields.get(rhs)
+        if evaluated_lhs is not None:
+            lhs = evaluated_lhs
+        if evaluated_rhs is not None:
+            rhs = evaluated_rhs
+        
+        return str(eval(lhs) * eval(rhs))
+
+    def modulo(self, lhs, rhs):
+        if isinstance(lhs, list):
+            if lhs[0] == self.object_on_stack.console.CALL_DEF:
+                return self.modulo(self.object_on_stack.run_statement(lhs), rhs)
+            return self.modulo(self.parse_binary_operator(lhs), rhs)
+        if isinstance(rhs, list):
+            if rhs[0] == self.object_on_stack.console.CALL_DEF:
+                return self.modulo(lhs, self.object_on_stack.run_statement(rhs))
+            return self.modulo(lhs, self.parse_binary_operator(rhs))
+
+        # print(f'in modulo, lhs: {lhs}, rhs: {rhs}')
+        evaluated_lhs = self.object_on_stack.fields.get(lhs)
+        evaluated_rhs = self.object_on_stack.fields.get(rhs)
+        if evaluated_lhs is not None:
+            lhs = evaluated_lhs
+        if evaluated_rhs is not None:
+            rhs = evaluated_rhs
+        
+        return str(eval(lhs) % eval(rhs))
+    
+    def divide(self, lhs, rhs):
+        if isinstance(lhs, list):
+            if lhs[0] == self.object_on_stack.console.CALL_DEF:
+                return self.divide(self.object_on_stack.run_statement(lhs), rhs)
+            return self.divide(self.parse_binary_operator(lhs), rhs)
+        if isinstance(rhs, list):
+            if rhs[0] == self.object_on_stack.console.CALL_DEF:
+                return self.divide(lhs, self.object_on_stack.run_statement(rhs))
+            return self.divide(lhs, self.parse_binary_operator(rhs))
+
+        evaluated_lhs = self.object_on_stack.fields.get(lhs)
+        evaluated_rhs = self.object_on_stack.fields.get(rhs)
+        if evaluated_lhs is not None:
+            lhs = evaluated_lhs
+        if evaluated_rhs is not None:
+            rhs = evaluated_rhs
+            
+        return str(eval(lhs) / eval(rhs))
+
+    def equal(self, lhs, rhs):
+        if isinstance(lhs, list):
+            if lhs[0] == self.object_on_stack.console.CALL_DEF:
+                return self.equal(self.object_on_stack.run_statement(lhs), rhs)
+            return self.equal(self.parse_binary_operator(lhs), rhs)
+        if isinstance(rhs, list):
+            if rhs[0] == self.object_on_stack.console.CALL_DEF:
+                return self.equal(lhs, self.object_on_stack.run_statement(rhs))
+            return self.equal(lhs, self.parse_binary_operator(rhs))
+
+        evaluated_lhs = self.object_on_stack.fields.get(lhs)
+        evaluated_rhs = self.object_on_stack.fields.get(rhs)
+        if evaluated_lhs is not None:
+            lhs = evaluated_lhs
+        if evaluated_rhs is not None:
+            rhs = evaluated_rhs
+            
+        return eval(lhs) == eval(rhs)
+
+    def less(self, lhs, rhs):
+        if isinstance(lhs, list):
+            if lhs[0] == self.object_on_stack.console.CALL_DEF:
+                return self.less(self.object_on_stack.run_statement(lhs), rhs)
+            return self.less(self.parse_binary_operator(lhs), rhs)
+        if isinstance(rhs, list):
+            if rhs[0] == self.object_on_stack.console.CALL_DEF:
+                return self.less(lhs, self.object_on_stack.run_statement(rhs))
+            return self.less(lhs, self.parse_binary_operator(rhs))
+
+        evaluated_lhs = self.object_on_stack.fields.get(lhs)
+        evaluated_rhs = self.object_on_stack.fields.get(rhs)
+        if evaluated_lhs is not None:
+            lhs = evaluated_lhs
+        if evaluated_rhs is not None:
+            rhs = evaluated_rhs
+            
+        return eval(lhs) < eval(rhs)

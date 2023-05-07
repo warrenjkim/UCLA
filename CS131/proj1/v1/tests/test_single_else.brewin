@@ -6,10 +6,9 @@
            (inputi x)	# input value from user, store in x variable
            (if (== 0 (% x 2)) 
              (print "x is even")
-	     (begin
              (print "x is odd")   # else clause
-             (return))
-	   )       
+             (return 2)     
+            )       
            (if (== x 7) 
              (print "lucky seven")  # no else clause in this version
            )  
