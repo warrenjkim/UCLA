@@ -1,0 +1,8 @@
+(class main
+ (method two_params (a b) (return (+ a b)))	
+ (method main ()
+  (begin
+   (print (call me two_params 1 2))
+  )
+ )
+)

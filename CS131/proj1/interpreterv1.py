@@ -35,8 +35,8 @@ class Interpreter(base):
 
     def interpret(self):
         entry_point = self.classes[self.MAIN_CLASS_DEF]
-        main = Object(entry_point.methods[self.MAIN_FUNC_DEF], self)
-        main.run()
+        main = Object(self.MAIN_CLASS_DEF, self)
+        main.run(self.MAIN_FUNC_DEF)
         return True
 
 
