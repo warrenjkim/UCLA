@@ -47,6 +47,7 @@ class Operators:
         self.object_on_stack = object_on_stack
 
     def parse_binary_operator(self, args):
+        # print(f'now evaluating: {args}')
         # first argument is always the operator
         operator = args[0]
         # second argument is always the lhs
@@ -63,6 +64,9 @@ class Operators:
         elif operator == '*':
             return self.multiply(lhs, rhs)
 
+        elif operator == '%':
+            return self.modulo(lhs, rhs)
+        
         elif operator == '/':
             return self.divide(lhs, rhs)
 
@@ -90,37 +94,39 @@ class Operators:
     def add(self, lhs, rhs):
         if isinstance(lhs, list):
             if lhs[0] == self.object_on_stack.console.CALL_DEF:
-                who = rhs[1]
-                method_name = rhs[2]
-                method_args = rhs[3:]
-                return self.add(lhs, self.object_on_stack.call_statement(who, method_name, method_args))
+                return self.add(self.object_on_stack.run_statement(lhs), rhs)
             return self.add(self.parse_binary_operator(lhs), rhs)
         if isinstance(rhs, list):
             if rhs[0] == self.object_on_stack.console.CALL_DEF:
-                who = rhs[1]
-                method_name = rhs[2] 
-                method_args = rhs[3:]
-                return self.add(lhs, self.object_on_stack.call_statement(who, method_name, method_args))
+                return self.add(lhs, self.object_on_stack.run_statement(rhs))
             return self.add(lhs, self.parse_binary_operator(rhs))
 
+        evaluated_lhs = self.object_on_stack.fields.get(lhs)
+        evaluated_rhs = self.object_on_stack.fields.get(rhs)
+        if evaluated_lhs is not None:
+            lhs = evaluated_lhs
+        if evaluated_rhs is not None:
+            rhs = evaluated_rhs
+            
         return str(eval(lhs) + eval(rhs))
     
     def subtract(self, lhs, rhs):
         if isinstance(lhs, list):
             if lhs[0] == self.object_on_stack.console.CALL_DEF:
-                who = rhs[1]
-                method_name = rhs[2]
-                method_args = rhs[3:]
-                return self.subtract(lhs, self.object_on_stack.call_statement(who, method_name, method_args))
+                return self.subtract(self.object_on_stack.run_statement(lhs), rhs)
             return self.subtract(self.parse_binary_operator(lhs), rhs)
         if isinstance(rhs, list):
             if rhs[0] == self.object_on_stack.console.CALL_DEF:
-                who = rhs[1]
-                method_name = rhs[2] 
-                method_args = rhs[3:]
-                return self.subtract(lhs, self.object_on_stack.call_statement(who, method_name, method_args))
+                return self.subtract(lhs, self.object_on_stack.run_statement(rhs))
             return self.subtract(lhs, self.parse_binary_operator(rhs))
 
+        evaluated_lhs = self.object_on_stack.fields.get(lhs)
+        evaluated_rhs = self.object_on_stack.fields.get(rhs)
+        if evaluated_lhs is not None:
+            lhs = evaluated_lhs
+        if evaluated_rhs is not None:
+            rhs = evaluated_rhs
+            
         evaluated_lhs = self.object_on_stack.fields.get(lhs)
         evaluated_rhs = self.object_on_stack.fields.get(rhs)
         if evaluated_lhs is not None:
@@ -133,89 +139,88 @@ class Operators:
     def multiply(self, lhs, rhs):
         if isinstance(lhs, list):
             if lhs[0] == self.object_on_stack.console.CALL_DEF:
-                who = rhs[1]
-                method_name = rhs[2]
-                method_args = rhs[3:]
-                return self.multiply(lhs, self.object_on_stack.call_statement(who, method_name, method_args))
+                return self.multiply(self.object_on_stack.run_statement(lhs), rhs)
             return self.multiply(self.parse_binary_operator(lhs), rhs)
         if isinstance(rhs, list):
             if rhs[0] == self.object_on_stack.console.CALL_DEF:
-                who = rhs[1]
-                method_name = rhs[2] 
-                method_args = rhs[3:]
-                return self.multiply(lhs, self.object_on_stack.call_statement(who, method_name, method_args))
+                return self.multiply(lhs, self.object_on_stack.run_statement(rhs))
             return self.multiply(lhs, self.parse_binary_operator(rhs))
 
+        evaluated_lhs = self.object_on_stack.fields.get(lhs)
+        evaluated_rhs = self.object_on_stack.fields.get(rhs)
+        if evaluated_lhs is not None:
+            lhs = evaluated_lhs
+        if evaluated_rhs is not None:
+            rhs = evaluated_rhs
+        
         return str(eval(lhs) * eval(rhs))
 
     def modulo(self, lhs, rhs):
         if isinstance(lhs, list):
             if lhs[0] == self.object_on_stack.console.CALL_DEF:
-                who = rhs[1]
-                method_name = rhs[2]
-                method_args = rhs[3:]
-                return self.modulo(lhs, self.object_on_stack.call_statement(who, method_name, method_args))
+                return self.modulo(self.object_on_stack.run_statement(lhs), rhs)
             return self.modulo(self.parse_binary_operator(lhs), rhs)
         if isinstance(rhs, list):
             if rhs[0] == self.object_on_stack.console.CALL_DEF:
-                who = rhs[1]
-                method_name = rhs[2] 
-                method_args = rhs[3:]
-                return self.modulo(lhs, self.object_on_stack.call_statement(who, method_name, method_args))
+                return self.modulo(lhs, self.object_on_stack.run_statement(rhs))
             return self.modulo(lhs, self.parse_binary_operator(rhs))
 
+        # print(f'in modulo, lhs: {lhs}, rhs: {rhs}')
+        evaluated_lhs = self.object_on_stack.fields.get(lhs)
+        evaluated_rhs = self.object_on_stack.fields.get(rhs)
+        if evaluated_lhs is not None:
+            lhs = evaluated_lhs
+        if evaluated_rhs is not None:
+            rhs = evaluated_rhs
+        
         return str(eval(lhs) % eval(rhs))
     
     def divide(self, lhs, rhs):
         if isinstance(lhs, list):
             if lhs[0] == self.object_on_stack.console.CALL_DEF:
-                who = rhs[1]
-                method_name = rhs[2]
-                method_args = rhs[3:]
-                return self.divide(lhs, self.object_on_stack.call_statement(who, method_name, method_args))
+                return self.divide(self.object_on_stack.run_statement(lhs), rhs)
             return self.divide(self.parse_binary_operator(lhs), rhs)
         if isinstance(rhs, list):
             if rhs[0] == self.object_on_stack.console.CALL_DEF:
-                who = rhs[1]
-                method_name = rhs[2] 
-                method_args = rhs[3:]
-                return self.divide(lhs, self.object_on_stack.call_statement(who, method_name, method_args))
+                return self.divide(lhs, self.object_on_stack.run_statement(rhs))
             return self.divide(lhs, self.parse_binary_operator(rhs))
 
+        evaluated_lhs = self.object_on_stack.fields.get(lhs)
+        evaluated_rhs = self.object_on_stack.fields.get(rhs)
+        if evaluated_lhs is not None:
+            lhs = evaluated_lhs
+        if evaluated_rhs is not None:
+            rhs = evaluated_rhs
+            
         return str(eval(lhs) / eval(rhs))
 
     def equal(self, lhs, rhs):
         if isinstance(lhs, list):
             if lhs[0] == self.object_on_stack.console.CALL_DEF:
-                who = rhs[1]
-                method_name = rhs[2]
-                method_args = rhs[3:]
-                return self.equal(lhs, self.object_on_stack.call_statement(who, method_name, method_args))
+                return self.equal(self.object_on_stack.run_statement(lhs), rhs)
             return self.equal(self.parse_binary_operator(lhs), rhs)
         if isinstance(rhs, list):
             if rhs[0] == self.object_on_stack.console.CALL_DEF:
-                who = rhs[1]
-                method_name = rhs[2] 
-                method_args = rhs[3:]
-                return self.equal(lhs, self.object_on_stack.call_statement(who, method_name, method_args))
+                return self.equal(lhs, self.object_on_stack.run_statement(rhs))
             return self.equal(lhs, self.parse_binary_operator(rhs))
 
+        evaluated_lhs = self.object_on_stack.fields.get(lhs)
+        evaluated_rhs = self.object_on_stack.fields.get(rhs)
+        if evaluated_lhs is not None:
+            lhs = evaluated_lhs
+        if evaluated_rhs is not None:
+            rhs = evaluated_rhs
+            
         return eval(lhs) == eval(rhs)
 
     def less(self, lhs, rhs):
         if isinstance(lhs, list):
             if lhs[0] == self.object_on_stack.console.CALL_DEF:
-                who = rhs[1]
-                method_name = rhs[2]
-                method_args = rhs[3:]
-                return self.less(lhs, self.object_on_stack.call_statement(who, method_name, method_args))
+                return self.less(self.object_on_stack.run_statement(lhs), rhs)
             return self.less(self.parse_binary_operator(lhs), rhs)
         if isinstance(rhs, list):
             if rhs[0] == self.object_on_stack.console.CALL_DEF:
-                who = rhs[1]
-                method_name = rhs[2] 
-                method_args = rhs[3:]
-                return self.less(lhs, self.object_on_stack.call_statement(who, method_name, method_args))
+                return self.less(lhs, self.object_on_stack.run_statement(rhs))
             return self.less(lhs, self.parse_binary_operator(rhs))
 
         evaluated_lhs = self.object_on_stack.fields.get(lhs)
@@ -235,8 +240,8 @@ class Object:
     def __init__(self, class_name, console):
         self.class_name = class_name
         self.console = console
-        self.methods = self.console.classes[class_name].methods
-        self.fields = self.console.classes[class_name].fields
+        self.methods = console.classes.get(class_name).methods
+        self.fields = console.classes.get(class_name).fields
         self.operator = Operators(self)
         self.current_method = None
 
@@ -250,23 +255,24 @@ class Object:
                 
         for statement in statements:
             return_value = self.run_statement(statement)
+            if return_value == self.console.RETURN_DEF:
+                return
 
         return return_value
 
     def run_statement(self, statement):
-        # print(f'now running: {statement}')
+        print(f'now running: {statement}')
         # we check each token
         for i, token in enumerate(statement):
             # token is print
             if token == self.console.PRINT_DEF:
-                self.print_statement(statement[i + 1:])
+                return self.print_statement(statement[i + 1:])
             # token is a binary operator
             elif token in self.BINARY_OPERATORS:
                 try:
                     return self.operator.parse_binary_operator(statement)
                 except TypeError:
                     self.console.error(errno.TYPE_ERROR)
-                    
             # token is inputi
             elif token == self.console.INPUT_INT_DEF:
                 self.inputi_statement(statement[i + 1])
@@ -275,20 +281,10 @@ class Object:
                 self.inputs_statement(statement[i + 1])
             # token is call
             elif token == self.console.CALL_DEF:
-                # statement takes the form:
-                # statement[i + 1] = who
-                # statement[i + 2] = method name
-                # statement[i + 3] = method arguments
-                who = statement[i + 1]
-                method_name = statement[i + 2]
-                method_args = statement[i + 3:]
-                return self.call_statement(who, method_name, method_args)
+                return self.call_statement(statement[i + 1:])
             # token is return
             elif token == self.console.RETURN_DEF:
-                if isinstance(statement[i + 1], list):
-                    return self.run_statement(statement[i + 1])
-                else:
-                    return statement[i + 1]
+                return self.return_statement(statement)
             # token is if
             elif token == self.console.IF_DEF:
                 if not self.valid_boolean(statement[i + 1]):
@@ -297,8 +293,7 @@ class Object:
                     return self.if_statement(statement[i + 1:])
             # token is begin
             elif token == self.console.BEGIN_DEF:
-                for nested_statement in statement[i + 1:]:
-                    self.run_statement(nested_statement)
+                return self.begin_statement(statement[i + 1:])
             # token is while
             elif token == self.console.WHILE_DEF:
                 if not self.valid_boolean(statement[i + 1]):
@@ -313,7 +308,22 @@ class Object:
                 set_name = statement[i + 1]
                 set_value = statement[i + 2]
                 self.set_statement(set_name, set_value)
-                
+            # token is new
+            elif token == self.console.NEW_DEF:
+                return self.new_statement(statement[i + 1])
+
+
+    def return_statement(self, statement):
+        if len(statement) < 2:
+            return
+        if isinstance(statement[1], list):
+            return self.run_statement(statement[1])
+        else:
+            evaluated_field = self.fields.get(statement[1])
+            if evaluated_field is not None:
+                return evaluated_field
+            else:
+                return statement[1]
     
 
     def print_statement(self, args):
@@ -325,14 +335,14 @@ class Object:
             if not isinstance(arg, list):
                 evaluated_field = self.fields.get(arg)
                 if evaluated_field is not None:
-                    to_print += evaluated_field
+                    to_print += str(evaluated_field)
                     # self.console.output(evaluated_field)
                 else:
-                    to_print += arg.strip('"')
+                    to_print += str(arg.strip('"'))
                     # self.console.output(arg.strip('"'))
             # there are nested calls
             else:
-                to_print += self.run_statement(arg)
+                to_print += str(self.run_statement(arg))
             # self.console.output(self.run_statement(arg))
 
         self.console.output(to_print)
@@ -345,6 +355,7 @@ class Object:
             self.console.error(errno.TYPE_ERROR)
         self.fields[field_name] = value
 
+
     # string input
     def inputs_statement(self, field_name):
         value = self.console.get_input()
@@ -353,8 +364,24 @@ class Object:
         self.fields[field_name] = value
 
     # call statement
-    def call_statement(self, who, method_name, method_args):
-        class_name = self.console.MAIN_CLASS_DEF if who == "me" else args[0]
+    
+    def call_statement(self, statement):
+        # statement takes the form:
+        # statement[0] = who
+        # statement[1] = method name
+        # statement[2:] = method arguments
+        who = statement[0]
+        method_name = statement[1]
+        method_args = statement[2:]
+
+        evaluated_who = self.fields.get(who)
+        
+        if who == self.console.ME_DEF:
+            class_name = self.console.MAIN_CLASS_DEF
+        elif evaluated_who is not None:
+            class_name = evaluated_who.class_name
+        else:
+            self.console.error(errno.NAME_ERROR)
 
         evaluated_method_args = []
         
@@ -375,14 +402,32 @@ class Object:
     # statement[1] = expression was true
     # statement[2] = expression was false
     def if_statement(self, statement):
-        if self.operator.parse_binary_operator(statement[0]):
-            return self.run_statement(statement[1])
-        else:
-            return self.run_statement(statement[2])
+        # print(f'now running: {statement}')
+        condition = statement[0]
+        true_statement = statement[1]
 
+        if len(statement) < 3:
+            false_statement = None
+        else:
+            false_statement = statement[2]
+
+        if self.evaluate_condition(condition):
+            return self.run_statement(true_statement)
+        else:
+            if false_statement is not None:
+                return self.run_statement(false_statement)
+
+
+    def begin_statement(self, statement):
+        for nested_statement in statement:
+            self.run_statement(nested_statement)
+
+        
     def while_statement(self, statement):
-        while self.operator.parse_binary_operator(statement[0]):
-            self.run_statement(statement[1])
+        condition = statement[0]
+        true_statement = statement[1]
+        while self.operator.parse_binary_operator(condition):
+            self.run_statement(true_statement)
 
 
     def set_statement(self, set_name, set_value):
@@ -391,6 +436,15 @@ class Object:
             self.fields[set_name] = self.run_statement(set_value)
         else:
             self.fields[set_name] = set_value.strip('"')
+
+    def new_statement(self, class_name):
+        # statement takes the form:
+        # statement[0] = class_name
+
+        if self.find_class(class_name) is None:
+            self.console.error(errno.TYPE_ERROR)
+            
+        return Object(class_name, self.console)
         
     def replace_arg_with_argv(self, tokens, arg, argv):
         for i, token in enumerate(tokens):
@@ -401,8 +455,27 @@ class Object:
                     tokens[i] = argv
 
     def find_method(self, class_name, method_name):
-        return self.console.classes[class_name].methods[method_name]
+        return self.console.classes.get(class_name).methods.get(method_name)
+
+    def find_class(self, class_name):
+        return self.console.classes.get(class_name)
                     
     def valid_boolean(self, statement):
-        return isinstance(statement, list)
-                                  
+        if isinstance(statement, list):
+            return True
+        else:
+            evaluated_statement = self.fields.get(statement)
+            if evaluated_statement is not None:
+                return evaluated_statement == self.console.TRUE_DEF or evaluated_statement == self.console.FALSE_DEF
+            else:
+                return statement == self.console.TRUE_DEF or statement == self.console.FALSE_DEF        
+    
+    def evaluate_condition(self, condition):
+        if isinstance(condition, list):
+            return self.operator.parse_binary_operator(condition)
+        else:
+            evaluated_condition = self.fields.get(condition)
+            if evaluated_condition is not None:
+                return evaluated_condition == self.console.TRUE_DEF or evaluated_condition != self.console.FALSE_DEF
+            else:
+                return condition == self.console.TRUE_DEF or condition != self.console.FALSE_DEF

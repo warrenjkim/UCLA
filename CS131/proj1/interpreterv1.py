@@ -24,7 +24,7 @@ class Interpreter(base):
         valid, parsed_program = BParser.parse(program)
         
         if not valid:
-            self.output('bro you fucked up')
+            print("bro you fucked up lol")
             
         self.itemize_input(parsed_program)
         terminated = False
@@ -57,24 +57,35 @@ class Interpreter(base):
             elif token == self.CLASS_DEF:
                 # name of the class must be tokens[i + 1]
                 class_name = tokens[i + 1]
-                # add the class to the dictionary with key = class name
+
+                # add the class to the dictionary with key = class name                    
                 self.classes[class_name] = Class(class_name)
-                continue
                 
             # token is 'field'
             elif token == self.FIELD_DEF:
                 field_name = tokens[i + 1]
                 field_value = tokens[i + 2]
-                self.classes[class_name].add_field(field_name, field_value)
+                self.classes.get(class_name).add_field(field_name, field_value)
                 
             # token is 'method'
             elif token == self.METHOD_DEF:
                 # name of the method must be tokens[i + 1]
                 method_name = tokens[i + 1]
+
+                # check to see if method name is unique
+                if self.classes.get(class_name).methods.get(method_name) is not None:
+                    self.error(errno.NAME_ERROR)
+
+                # check for duplicate names
+                for name in tokens[i + 2]:
+                    if tokens.count(name) > 1:
+                        self.error(errno.NAME_ERROR)
+
                 # arguments of the method must be tokens[i + 2]
                 method_args = {key: None for key in tokens[i + 2]}
+                
                 # add method to the current class (class_name)
-                self.classes[class_name].add_method(method_name, method_args)
+                self.classes.get(class_name).add_method(method_name, method_args)
                 self.parse_method(class_name, method_name, tokens[i + 3:])
                 return
 
