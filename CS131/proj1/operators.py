@@ -3,6 +3,7 @@ class Operators:
         self.object_on_stack = object_on_stack
 
     def parse_binary_operator(self, args):
+        
         # print(f'now evaluating: {args}')
         # first argument is always the operator
         operator = args[0]

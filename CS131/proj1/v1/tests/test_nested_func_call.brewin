@@ -1,6 +1,0 @@
-(class main
-  (method fact (n)
-     (return (+ 2 1))
-  )
-  (method main () (print (call me fact 5)))
-)

@@ -2,8 +2,7 @@
   (field x 0)
   (method main ()
      (begin
-       (inputi x)
-       (while (> x 0)
+       (while (+ 1 0)
          (begin
            (print "x is " x)
            (set x (- x 1))

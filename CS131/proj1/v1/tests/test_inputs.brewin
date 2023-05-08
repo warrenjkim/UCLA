@@ -1,11 +1,13 @@
 (class main
  (field x 0)
- (field y "test")
  (method main ()
+  (call me test "")
+ )
+ (method test (y)
   (begin
    (inputs x)
    (print x)
-   (inputi y)
+   (inputs y)
    (print y)
   )
  )

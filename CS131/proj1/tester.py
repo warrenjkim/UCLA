@@ -1,7 +1,7 @@
 """
 Implements all CS 131-related test logic; is entry-point for testing framework.
 """
-
+from pathlib import Path
 import asyncio
 import importlib
 from os import environ
@@ -120,11 +120,14 @@ def __generate_test_suite(version, successes, failures):
 
 def generate_test_suite_v1():
     """wrapper for generate_test_suite for v1"""
-    return __generate_test_suite(
-        1,
-        ["test_add", "test_function_call", "test_hello_world", "test_if_begin", "test_inputi", "test_inputs", "test_mult_prints_spec", "test_multiple_statements", "test_nested", "test_nested_func_call", "test_recursion1", "test_multiple_params", "test_set_field", "test_while", "test_new", "test_shadowing", "test_fact", "test_person", "test_true", "test_false", "test_booleans", "test_no_ret_value"],
-        ["test_incompat_operands1", "test_if", "test_same_method_names", "test_person_fail", "test_type_class", "test_multiple_errors"]
-    )
+    tests_dir = Path("v1/tests")
+    fails_dir = Path("v1/fails")
+    test_names = [file.stem for file in tests_dir.iterdir()
+                  if file.suffix == ".brewin"]
+    fail_names = [file.stem for file in fails_dir.iterdir()
+                  if file.suffix == ".brewin"]
+    return __generate_test_suite(1, test_names, fail_names)
+
 
 
 def generate_test_suite_v2():

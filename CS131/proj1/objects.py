@@ -59,8 +59,6 @@ class Object:
         self.current_method.bind_args(method_args)
         statements = deepcopy(self.current_method.statements)
                 
-        for key in self.current_method.args:
-            self.replace_arg_with_argv(statements, key, self.current_method.args[key])
                 
         for statement in statements:
             return_value = self.run_statement(statement)
@@ -70,7 +68,7 @@ class Object:
         return return_value
 
     def run_statement(self, statement):
-        #print(f'now running: {statement}')
+        print(f'now running: {statement}')
         # we check each token
         for i, token in enumerate(statement):
             # token is print
@@ -110,7 +108,7 @@ class Object:
                 if not self.valid_boolean(statement[i + 1]):
                     self.console.error(errno.TYPE_ERROR)
                 else:
-                    self.while_statement(statement[i + 1:])
+                    return self.while_statement(statement[i + 1:])
             # token is set
             elif token == self.console.SET_DEF:
                 # statement takes the form:
@@ -118,6 +116,7 @@ class Object:
                 # statement[i + 2] = set value
                 set_name = statement[i + 1]
                 set_value = statement[i + 2]
+                self.evaluate_args(set_value, self.current_method.args)
                 self.set_statement(set_name, set_value)
             # token is new
             elif token == self.console.NEW_DEF:
@@ -241,7 +240,9 @@ class Object:
         condition = statement[0]
         true_statement = statement[1]
         while self.operator.parse_binary_operator(condition):
-            self.run_statement(true_statement)
+            return_value = self.run_statement(true_statement)
+            if return_value is not None:
+                return return_value
 
 
     def set_statement(self, set_name, set_value):
@@ -261,7 +262,12 @@ class Object:
             self.console.error(errno.TYPE_ERROR)
             
         return Object(class_name, self.console)
-        
+
+
+    def evaluate_args(self, statement, args):
+        for key in args:
+            self.replace_arg_with_argv(statement, key, args)
+    
     def replace_arg_with_argv(self, tokens, arg, argv):
         for i, token in enumerate(tokens):
             if isinstance(token, list):
@@ -280,7 +286,10 @@ class Object:
 
     def valid_boolean(self, statement):
         if isinstance(statement, list):
-            return True
+            if isinstance(self.evaluate_condition(statement), bool):
+                return True
+            else:
+                return False
         else:
             evaluated_statement = self.fields.get(statement)
             if evaluated_statement is not None:
