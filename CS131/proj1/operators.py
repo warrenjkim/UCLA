@@ -1,10 +1,27 @@
+from intbase import ErrorType as errno
+def deepcopy(nested_content):
+    if not isinstance(nested_content,list):
+        return nested_content
+    else:
+        temp = []
+        for sub_content in nested_content:
+            temp.append(deepcopy(sub_content))
+        return temp
+    
 class Operators:
     def __init__(self, object_on_stack = None):
         self.object_on_stack = object_on_stack
 
     def parse_binary_operator(self, args):
+        args = deepcopy(args)
+        print(f'now evaluating: {args}')
         
-        # print(f'now evaluating: {args}')
+        self.replace_with_primitives(args)
+        self.object_on_stack.evaluate_args(args, self.object_on_stack.current_method.args)
+        self.object_on_stack.evaluate_args(args, self.object_on_stack.fields)
+
+        print(f'now evaluating: {args}')
+        
         # first argument is always the operator
         operator = args[0]
         # second argument is always the lhs
@@ -37,6 +54,9 @@ class Operators:
 
         elif operator == "==":
             return self.equal(lhs, rhs)
+
+        elif operator == '!=':
+            return not self.equal(lhs, rhs)
     
         elif operator == ">":
             return self.less(rhs, lhs)
@@ -122,7 +142,6 @@ class Operators:
                 return self.modulo(lhs, self.object_on_stack.run_statement(rhs))
             return self.modulo(lhs, self.parse_binary_operator(rhs))
 
-        # print(f'in modulo, lhs: {lhs}, rhs: {rhs}')
         evaluated_lhs = self.object_on_stack.fields.get(lhs)
         evaluated_rhs = self.object_on_stack.fields.get(rhs)
         if evaluated_lhs is not None:
@@ -167,6 +186,18 @@ class Operators:
             lhs = evaluated_lhs
         if evaluated_rhs is not None:
             rhs = evaluated_rhs
+
+        if isinstance(lhs, type(self.object_on_stack)):
+            if isinstance(rhs, type(self.object_on_stack)) or isinstance(rhs, type(None)):
+                return lhs == rhs
+            else:
+                return lhs == eval(rhs)
+
+        if isinstance(rhs, type(self.object_on_stack)):
+            if isinstance(lhs, type(self.object_on_stack)) or isinstance(lhs, type(None)):
+                return lhs == rhs
+            else:
+                return eval(lhs) == rhs
             
         return eval(lhs) == eval(rhs)
 
@@ -188,3 +219,15 @@ class Operators:
             rhs = evaluated_rhs
             
         return eval(lhs) < eval(rhs)
+
+    def replace_with_primitives(self, tokens):
+        for i, token in enumerate(tokens):
+            if isinstance(token, list):
+                self.replace_with_primitives(token)
+            else:
+                if token == self.object_on_stack.console.FALSE_DEF:
+                    tokens[i] = 'False'
+                elif token == self.object_on_stack.console.TRUE_DEF:
+                    tokens[i] = 'True'
+                elif token == self.object_on_stack.console.NULL_DEF:
+                    tokens[i] = 'None'

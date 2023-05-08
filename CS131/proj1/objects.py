@@ -111,12 +111,12 @@ class Object:
                     return self.while_statement(statement[i + 1:])
             # token is set
             elif token == self.console.SET_DEF:
+                print(f'IN SET: {statement}')
                 # statement takes the form:
                 # statement[i + 1] = set name
                 # statement[i + 2] = set value
                 set_name = statement[i + 1]
                 set_value = statement[i + 2]
-                self.evaluate_args(set_value, self.current_method.args)
                 self.set_statement(set_name, set_value)
             # token is new
             elif token == self.console.NEW_DEF:
@@ -124,6 +124,10 @@ class Object:
 
 
     def return_statement(self, statement):
+        statement = deepcopy(statement)
+        self.evaluate_args(statement, self.current_method.args)
+        self.evaluate_args(statement, self.fields)
+        print(f'RETURN: {statement}')
         if len(statement) < 2:
             return self.console.RETURN_DEF
         if isinstance(statement[1], list):
@@ -137,19 +141,22 @@ class Object:
     
 
     def print_statement(self, args):
-        # print(f'now printing: {args}')
+        args = deepcopy(args)
+        print(f'now printing: {args}')
         to_print = ""
         
         for arg in args:            
             # no nested calls
             if not isinstance(arg, list):
+                evaluated_method = self.current_method.args.get(arg)
                 evaluated_field = self.fields.get(arg)
-                if evaluated_field is not None:
-                    to_print += str(evaluated_field)
-                    # self.console.output(evaluated_field)
+                
+                if evaluated_method is not None:
+                    to_print += evaluated_method.strip('"')
+                elif evaluated_field is not None:
+                    to_print += evaluated_field.strip('"')
                 else:
                     to_print += str(arg.strip('"'))
-                    # self.console.output(arg.strip('"'))
             # there are nested calls
             else:
                 to_print += str(self.run_statement(arg))
@@ -160,45 +167,80 @@ class Object:
 
     # integer input
     def inputi_statement(self, field_name):
+        print(f'INPUTI: {field_name}')
+        method_var = self.current_method.args.get(field_name)
+        field = self.fields.get(field_name)
+
         value = self.console.get_input()
         if not isinstance(eval(value), int):
             self.console.error(errno.TYPE_ERROR)
-        self.fields[field_name] = value
+        if method_var is not None:
+            self.current_method.args[field_name] = value
+        elif field is not None:
+            self.fields[field_name] = value
 
 
     # string input
     def inputs_statement(self, field_name):
-        value = self.console.get_input()
-        if not isinstance(eval(value), str):
-            self.console.error(errno.TYPE_ERROR)
-        self.fields[field_name] = value
+        print(f'INPUTS: {field_name}')
+        method_var = self.current_method.args.get(field_name)
+        field = self.fields.get(field_name)
 
+        value = self.console.get_input()
+        print(value)
+        if not isinstance(value, str):
+            self.console.error(errno.TYPE_ERROR)
+        if method_var is not None:
+            self.current_method.args[field_name] = value
+        elif field is not None:
+            self.fields[field_name] = value
+            
     # call statement
     def call_statement(self, statement):
+        statement = deepcopy(statement)
+        print(f'CALL {statement}')
         # statement takes the form:
         # statement[0] = who
         # statement[1] = method name
         # statement[2:] = method arguments
         who = statement[0]
         method_name = statement[1]
-        method_args = statement[2:]
+        method_args = deepcopy(statement[2:])
+        
+        if isinstance(who, list):
+            who = self.run_statement(who)
+        elif isinstance(who, Object):
+            who = who.class_name
+            
+        evaluated_method = self.current_method.args.get(who)
+        evaluated_field = self.fields.get(who)
+        class_itself = self.console.classes.get(who)
 
-        evaluated_who = self.fields.get(who)
+
         
         if who == self.console.ME_DEF:
             class_name = self.console.MAIN_CLASS_DEF
-        elif evaluated_who is not None:
-            class_name = evaluated_who.class_name
+        elif class_itself is not None:
+            class_name = who
+        elif evaluated_method is not None:
+            class_name = evaluated_method.class_name
+        elif evaluated_field is not None:
+            class_name = evaluated_field.class_name
         else:
             self.console.error(errno.NAME_ERROR)
 
         evaluated_method_args = []
-        
+
+        print(f'METHODARGS: {method_args}')
+        self.evaluate_args(method_args, self.fields)
         for arg in method_args:
             if isinstance(arg, list):
                 evaluated_method_args.append(self.run_statement(arg))
             else:
                 evaluated_method_args.append(arg)
+
+        print(f'evaluated: {evaluated_method_args}')
+        print(f'dictionary: {self.fields}')
             
 
         class_object = Object(class_name, self.console)
@@ -211,7 +253,8 @@ class Object:
     # statement[1] = expression was true
     # statement[2] = expression was false
     def if_statement(self, statement):
-        # print(f'now running: {statement}')
+        statement = deepcopy(statement)
+        print(f'IF: {statement}')
         condition = statement[0]
         true_statement = statement[1]
 
@@ -228,7 +271,7 @@ class Object:
 
 
     def begin_statement(self, statement):
-        #print(f'statements: {statement}')
+        print(f'BEGIN: {statement}')
         for nested_statement in statement:
             return_value = self.run_statement(nested_statement)
             if return_value is not None:
@@ -237,22 +280,42 @@ class Object:
 
         
     def while_statement(self, statement):
+        statement = deepcopy(statement)
+        print(f'WHILE: {statement}')
         condition = statement[0]
+        print(f'condition: {condition}')
         true_statement = statement[1]
-        while self.operator.parse_binary_operator(condition):
+        while self.evaluate_condition(condition):
             return_value = self.run_statement(true_statement)
             if return_value is not None:
                 return return_value
 
 
     def set_statement(self, set_name, set_value):
-        # print(f'arg is: {set_name}, {set_value}')
-        if self.fields.get(set_name) is None:
+        print(f'arg is: {set_name}, {set_value}')
+        print(f'METHOD ARGS: {self.current_method.args}')
+        print(f'DICT: {self.fields}')
+        set_value = deepcopy(set_value)
+        if self.fields.get(set_name) is None and self.current_method.args.get(set_name) is None:
             self.console.error(errno.NAME_ERROR)
-        if isinstance(set_value, list):
-            self.fields[set_name] = self.run_statement(set_value)
-        else:
-            self.fields[set_name] = set_value.strip('"')
+        if self.current_method.args.get(set_name) is not None:
+            if isinstance(set_value, list):
+                self.evaluate_args(set_value, self.current_method.args)
+                self.evaluate_args(set_value, self.fields)
+                self.current_method.args[set_name] = self.run_statement(set_value)
+            else:
+                self.current_method.args[set_name] = set_value.strip('"')
+            print(f'NOW: {self.current_method.args}')
+
+        elif self.fields.get(set_name) is not None:
+            if isinstance(set_value, list):
+                self.evaluate_args(set_value, self.current_method.args)
+                self.evaluate_args(set_value, self.fields)
+                self.fields[set_name] = self.run_statement(set_value)
+            else:
+                self.fields[set_name] = set_value.strip('"')
+
+            print(f'now: {self.fields}')
 
     def new_statement(self, class_name):
         # statement takes the form:
@@ -265,8 +328,11 @@ class Object:
 
 
     def evaluate_args(self, statement, args):
+        print(f'before eval: {statement}')
         for key in args:
-            self.replace_arg_with_argv(statement, key, args)
+            self.replace_arg_with_argv(statement, key, args[key])
+
+        print(f'AFTER EVAL: {statement}')
     
     def replace_arg_with_argv(self, tokens, arg, argv):
         for i, token in enumerate(tokens):
@@ -285,6 +351,10 @@ class Object:
 
 
     def valid_boolean(self, statement):
+        statement = deepcopy(statement)
+        self.evaluate_args(statement, self.current_method.args)
+        self.evaluate_args(statement, self.fields)
+        print(f'valid boolean statement: {statement}')
         if isinstance(statement, list):
             if isinstance(self.evaluate_condition(statement), bool):
                 return True
@@ -299,6 +369,9 @@ class Object:
 
     
     def evaluate_condition(self, condition):
+        condition = deepcopy(condition)
+        self.evaluate_args(condition, self.current_method.args)
+        self.evaluate_args(condition, self.fields)
         if isinstance(condition, list):
             return self.operator.parse_binary_operator(condition)
         else:
