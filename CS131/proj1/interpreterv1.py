@@ -2,16 +2,7 @@ from intbase import InterpreterBase as base
 from intbase import ErrorType as errno
 from bparser import BParser
 from objects import Class, Method, Object
-
-def deepcopy(nested_content):
-    if not isinstance(nested_content,list):
-        return nested_content
-    else:
-        temp = []
-        for sub_content in nested_content:
-            temp.append(deepcopy(sub_content))
-        return temp
-
+from copy import deepcopy
 
 
 class Interpreter(base):
@@ -21,27 +12,50 @@ class Interpreter(base):
 
     def run(self, program):
         self.reset()
+        self.classes = { }
+        
+        # parse the program
         valid, parsed_program = BParser.parse(program)
-        
+
+        # if not a valid Brewin program, error
         if not valid:
-            print("bro you fucked up lol")
-            
+            self.error(errno.FAULT_ERROR)
+
+        # itemize input into classes
         self.itemize_input(parsed_program)
+
+        # terminated flag
         terminated = False
-        
+
+        # while the program is still running
         while(not terminated):
+            # interpret the program
             terminated = self.interpret()
 
 
     def interpret(self):
-        entry_point = self.classes[self.MAIN_CLASS_DEF]
+        # entry point of the program (main class)
+        entry_point = self.classes.get(self.MAIN_CLASS_DEF)
+
+        # check to see if there is a main class
+        if entry_point is None:
+            # type error if we don't have a main class
+            self.error(errno.TYPE_ERROR)
+
+        # create main class object
         main = Object(self.MAIN_CLASS_DEF, self)
+        # run the main method
         main.run(self.MAIN_FUNC_DEF)
+
+        # return true when we finish executing the program
         return True
 
 
-        # parse input into classes, fields, and methods
+    # parse input into classes, fields, and methods
     def itemize_input(self, tokens = [], class_name = None, method_name = None):
+        # check for duplicates
+        self.check_duplicates(tokens)
+        
         # for each token, itemize it into its respective class (class, field, method)
         for i, token in enumerate(tokens):
             
@@ -72,15 +86,6 @@ class Interpreter(base):
                 # name of the method must be tokens[i + 1]
                 method_name = tokens[i + 1]
 
-                # check to see if method name is unique
-                if self.classes.get(class_name).methods.get(method_name) is not None:
-                    self.error(errno.NAME_ERROR)
-
-                # check for duplicate names
-                for name in tokens[i + 2]:
-                    if tokens.count(name) > 1:
-                        self.error(errno.NAME_ERROR)
-
                 # arguments of the method must be tokens[i + 2]
                 method_args = {key: None for key in tokens[i + 2]}
                 
@@ -96,3 +101,37 @@ class Interpreter(base):
 
         else:
             self.classes[class_name].methods[method_name].add_statements([tokens[0:]])
+
+    def check_duplicates(self, parsed_program):
+        # deep copy parsed program
+        parsed_program = deepcopy(parsed_program)
+
+        # flatten the program
+        flattened_program = [item for sub_list in parsed_program for item in sub_list]
+
+        # get all class/method/field names
+        class_names = []
+        method_names = []
+        field_names = []
+
+        # add each class/method/field name into their respective lists
+        for i, token in enumerate(flattened_program):
+            if token == self.CLASS_DEF:
+                class_names.append(flattened_program[i + 1])
+            elif token == self.METHOD_DEF:
+                method_names.append(flattened_program[i + 1])
+            elif token == self.FIELD_DEF:
+                field_names.append(flattened_program[i + 1])
+
+        # check for duplicates
+        class_set = set(class_names)
+        method_set = set(method_names)
+        field_set = set(field_names)
+
+        # if the lengths are different, error respectively
+        if len(class_set) != len(class_names):
+            self.error(errno.TYPE_ERROR)
+        if len(method_set) != len(method_names):
+            self.error(errno.NAME_ERROR)
+        if len(field_set) != len(field_names):
+            self.error(errno.NAME_ERROR)

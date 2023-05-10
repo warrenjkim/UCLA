@@ -1,0 +1,11 @@
+(class main
+  (field x null)
+  (method main ()
+    (begin
+      (print (| false true))
+      (print (| false false))	
+      (print (& true true))
+      (print (& false true))
+      )
+  )
+)
