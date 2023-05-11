@@ -1,0 +1,7 @@
+BREWIN++ Notes
+
+Format
+class: unchanged
+field: [field, NAME, TYPE, VALUE]
+method: [method, TYPE, NAME, [ARGS]]
+method args: [NAME, TYPE]

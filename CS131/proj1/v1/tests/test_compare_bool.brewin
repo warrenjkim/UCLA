@@ -1,6 +1,0 @@
-(class main
-  (field x true)
-  (method main ()
-    (if (!= false x) (print 1))
-  )
-)
