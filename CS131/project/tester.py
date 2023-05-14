@@ -140,6 +140,7 @@ def generate_test_suite_v2():
                   if file.suffix == ".brewin"]
     return __generate_test_suite(2, test_names, fail_names)
 
+    # return __generate_test_suite(2, ['test_return_default1'], [])
 
 def generate_test_suite_v3():
     """wrapper for generate_test_suite for v3"""

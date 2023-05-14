@@ -1,0 +1,8 @@
+(class main
+ (method int foo ((int x))
+     (return x)
+ )
+ (method void main ()
+   (print (call me foo 10))
+ )
+)

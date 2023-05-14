@@ -1,7 +1,5 @@
 from intbase import ErrorType as errno
 from copy import deepcopy
-from brewintypes import Type
-from variable import Variable
 
     
 class Operators:
@@ -53,8 +51,6 @@ class Operators:
 
     def equal(self, lhs, rhs):
         self.__validate_operands('==', lhs, rhs)
-        lhs = self.__evaluate(lhs)
-        rhs = self.__evaluate(rhs)        
         return lhs == rhs
 
 
@@ -92,8 +88,8 @@ class Operators:
                     tokens[i] = 'False'
                 elif token == self.__curr_object.console.TRUE_DEF:
                     tokens[i] = 'True'
-                elif token == None:
-                    tokens[i] = Type.NULL
+                elif token == self.__curr_object.console.NULL_DEF:
+                    tokens[i] = 'None'
 
 
 
@@ -103,8 +99,19 @@ class Operators:
 
 
     def __evaluate(self, value):
-        if isinstance(value, Variable):
-            return value.value
+        if isinstance(value, type(self.__curr_object)) or value is None:
+            return value
+        elif isinstance(value, str):
+            try:
+                if isinstance(eval(value), float):
+                    self.__curr_object.console.error(errno.NAME_ERROR)
+                else:
+                    return eval(value)
+            except:
+                if isinstance(value, float):
+                    self.__curr_object.console.error(errno.NAME_ERROR)
+                else:
+                    return value
         else:
             return value
 
@@ -203,6 +210,7 @@ class Operators:
 
                 # invalid types
                 if not (type(lhs) == int or isinstance(lhs, str)):
+                    print(f'incompatible types: {lhs}, {rhs}')
                     return self.__curr_object.console.error(errno.TYPE_ERROR)
                 
             # arithmetic operations (except addition)
@@ -221,14 +229,6 @@ class Operators:
                 if not self.__same_types(lhs, rhs):
                     # check for null
                     if lhs is None or rhs is None:
-                        return True
-                    if isinstance(lhs, Variable):
-                        if lhs.value == Type.NULL:
-                            return True
-                    if isinstance(rhs, Variable):
-                        if rhs.value == Type.NULL:
-                            return True
-                    if lhs == Type.NULL or rhs == Type.NULL:
                         return True
                     else:
                         return self.__curr_object.console.error(errno.TYPE_ERROR)
