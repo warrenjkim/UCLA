@@ -100,14 +100,105 @@ Let $\sum_{n = 1}^{\infty} x_{n}$ and $\sum_{n = 1}^{\infty} y_{n}$ be convergen
     + \sum_{n = 1}^{\infty} y_{n}$ converges.
   \end{proof}
   
-\item Show that the assumption that \textit{both} series converge is
-  necessary for part (b).
+\item Assume by contradiction that the requirement that both series
+  converge is not required for (b). Consider $x_n = n$, $y_n =
+  \frac{1}{n^2}$. From lecture, $x_n$ diverges and $y_n$
+  converges. Then, $\sum_{n = 1}^{\infty} x_n + y_n = \sum_{n = 
+    1}^{\infty} n + \frac{1}{n^2}$ converges by assumption. However,
+  $\lim_{n \rightarrow \infty} \sum_{n = 1}^{\infty} n +
+  \frac{1}{n^2}$ does not converge, which is a
+  contradiction. Therefore, both series must converge so that part (b)
+  holds.
   
-\item Is it true that if $\sum_{n = 1}^{\infty} x_{n}$ and $\sum_{n =
-    1}^{\infty} y_{n}$ converge then $\sum_{n = 1}^{\infty}
-  x_{n}y_{n}$ converges?
+\item No. Consider $x_n = y_n = \frac{(-1)^n}{\sqrt{n}}$. By the
+  Alternating Series Test from lecture, both $\sum_{n = 1}^{\infty}
+  x_n$ and $ \sum_{n = 1}^{\infty} y_n$ converge. However, $\sum_{n =
+    1}^{\infty} x_ny_n$ does not converge since $x_ny_n = \frac{1}{n}$
+  and $\sum_{n = 1}^{\infty} \frac{1}{n}$ does not converge from lecture.
 \end{enumerate}
 
+
+\newpage
+\section*{Question 7}
+Study the convergence of the following series:
+\begin{enumerate}[label=(\alph*)]
+\item $\sum_{n = 1}^{\infty} \frac{2^n}{n^2}$
+\item $\sum_{n = 1}^{\infty} \frac{n^2}{2^n}$
+\item $\sum_{n = 1}^{\infty} (-1)^{n + 1} \frac{n^2 + 2}{n^2 + 1}$
+\item $\sum_{n = 1}^{\infty} \frac{n^{\log n}}{(\log n)^n}$
+\item $\sum_{n = 1}^{\infty} \frac{\sqrt{n + 1} - \sqrt{n}}{n}$
+\item $\sum_{n = 1}^{\infty} (x_{n + 1} - x_n)$ for any sequence $(x_n)$
+\end{enumerate}
+
+\subsection*{Response}
+\begin{enumerate}[label=(\alph*)]
+\item Apply the ratio test:
+  \begin{align*}
+    \lim_{n \rightarrow \infty} \bigg|\frac{2^{n + 1}}{(n + 1)^2}\bigg|
+    \bigg|\frac{n^2}{2^n}\bigg| &= \lim_{n \rightarrow \infty} \bigg|
+                                  \frac{2^{n + 1}}{2^n} \frac{n^2}{(n
+                                  + 1)^2}\bigg| \\
+                                &= \lim_{n \rightarrow \infty} \bigg|
+                                  \frac{2n^2}{(n + 1)^2} \bigg| \\
+    \lim_{n \rightarrow \infty} \bigg|\frac{2^{n + 1}}{(n + 1)^2}\bigg|
+    \bigg|\frac{n^2}{2^n}\bigg|  &= 2
+  \end{align*}
+  Since $2 > 1$, by the ratio test, $\sum_{n = 1}^{\infty} \frac{2^n}{n^2}$ diverges.
+
+\item
+  \begin{align*}
+    \lim_{n \rightarrow \infty} \bigg|\frac{(n + 1)^2}{2^{n + 1}}\bigg|
+    \bigg|\frac{2^n}{n^2}\bigg| &= \lim_{n \rightarrow \infty} \bigg|
+                                  \frac{2^{n}}{2^{n + 1}} \frac{(n
+                                  + 1)^2}{n^2}\bigg| \\
+                                &= \lim_{n \rightarrow \infty} \bigg|
+                                  \frac{(n + 1)^2}{2n^2} \bigg| \\
+                                &= \frac{1}{2}
+  \end{align*}
+  Since $\frac{1}{2} < 1$, by the ratio test, $\sum_{n = 1}^{\infty}
+  \frac{n^2}{2^n}$ converges.
+  
+\item Apply the Alternating Series Test: We need to check that
+  \begin{enumerate}[label=(\roman*)]
+  \item $\left|\frac{n^2 + 2}{n^2 + 1}\right|$ is monotonically
+    decreasing: $\frac{\left|\frac{(n + 1)^2 + 2}{(n + 1)^2 +
+          1}\right|}{\left|\frac{n^2 + 2}{n^2 + 1}\right|} = \frac{n^4
+      + 4n^3 + 5n^2 + 4n + 3}{n^4 + 4n^3 + 5n^2 + 5n + 2} \leq 1$ so
+    the sequence is monotonically decreasing.
+  \item $\lim_{n \rightarrow \infty} \left|\frac{n^2 + 2}{n^2 +
+        1}\right| = 0$: \\
+    Note that $n^2 + 1$ is never 0 for any $n$. Therefore, by ALT, we have
+    $\lim_{n \rightarrow \infty} \left|\frac{n^2 + 2}{n^2 + 1}\right|
+    = 1 \neq 0$.
+  \end{enumerate}
+  Since (ii) does not hold, $\sum_{n = 1}^{\infty} (-1)^{n + 1}
+  \frac{n^2 + 2}{n^2 + 1}$ diverges.
+\item Apply the root test:
+  \begin{align*}
+    \lim_{n \rightarrow \infty} \sqrt[n]{\left|\frac{n^{\log n}}{(\log
+    n)^n}\right|} &= \lim_{n \rightarrow \infty} \frac{n^{\frac{\log
+                    n}{n}}}{\log n} \\
+                  &= \lim_{n \rightarrow \infty} \frac{e^{\frac{(\log n)^2}{n}}}{\log n} \\
+                  &= \lim_{n \rightarrow \infty} e^{\frac{(\log
+                    n)^2}{n}} \cdot \lim_{n \rightarrow \infty} (\log
+                    n)^{-1} \\
+                  &= 1 \cdot 0 \\
+    \lim_{n \rightarrow \infty} \sqrt[n]{\left|\frac{n^{\log n}}{(\log
+    n)^n}\right|} &= 0
+  \end{align*}
+  Therefore, by the root test, $\sum_{n = 1}^{\infty} \frac{n^{\log
+      n}}{(\log n)^n}$ converges.
+\item Apply the comparison test:
+  Let $x_n = \frac{\sqrt{n + 1} - \sqrt{n}}{n}$ and $y_n =
+  \frac{1}{n^{\frac{3}{2}}}$. Then, we have that $0 \leq x_n \leq
+  y_n$. Now apply the p-series test to $n$. Since $p = \frac{3}{2} >
+  1$, by the p-series test, the series converges. Therefore, $x_n$
+  also converges. So, $\sum_{n = 1}^{\infty} \frac{\sqrt{n + 1} -
+    \sqrt{n}}{n}$ converges.
+\item Inconclusive: If the sequence $(x_{n + 1} - x_n)$ converges,
+  then so does the series. Otherwise, the series also
+  diverges. Therefore, the convergence of the series is dependent on $(x_n)$.
+\end{enumerate}
 \end{document}
 
 
