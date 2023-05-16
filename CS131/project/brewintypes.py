@@ -1,5 +1,6 @@
 from enum import Enum
 from intbase import InterpreterBase as base
+from intbase import ErrorType as errno
 
 class Type(Enum):
     INT = base.INT_DEF
@@ -11,16 +12,25 @@ class Type(Enum):
 
 
 def typeof(value):
+    if value == Type.OBJECT:
+        return Type.OBJECT
     if value == base.NULL_DEF or value == Type.NULL:
         return Type.NULL
-    if value == base.VOID_DEF:
+    elif value == base.VOID_DEF:
         return Type.VOID
-    if value == base.TRUE_DEF or value == base.FALSE_DEF:
+    elif value == base.TRUE_DEF or value == base.FALSE_DEF:
         return Type.BOOL
-    if isinstance(eval(value), int):
+    elif isinstance(eval(value), int):
         return Type.INT
-    if isinstance(eval(value), str):
+    if isinstance(value, str):
+        try:
+            if isinstance(eval(value), int):
+                return Type.INT
+        except:
+            return errno.NAME_ERROR
+        
         return Type.STRING
+
 
 
 def type_to_enum(value):

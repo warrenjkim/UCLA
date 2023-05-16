@@ -1,0 +1,11 @@
+(class main
+  (field int x null)
+  (method void main ()
+    (begin
+      (print (| false true))
+      (print (| false false))	
+      (print (& true true))
+      (print (& false true))
+      )
+  )
+)

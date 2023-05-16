@@ -53,8 +53,8 @@ class Operators:
 
     def equal(self, lhs, rhs):
         self.__validate_operands('==', lhs, rhs)
-        lhs = self.__evaluate(lhs)
-        rhs = self.__evaluate(rhs)        
+        if isinstance(lhs, type(self.__curr_object)):
+            return lhs is rhs
         return lhs == rhs
 
 
@@ -89,11 +89,12 @@ class Operators:
                 self.__replace_identifiers_with_primitives(token)
             else:
                 if token == self.__curr_object.console.FALSE_DEF:
-                    tokens[i] = 'False'
+                    tokens[i] = False
                 elif token == self.__curr_object.console.TRUE_DEF:
-                    tokens[i] = 'True'
+                    tokens[i] = True
                 elif token == None:
                     tokens[i] = Type.NULL
+
 
 
 
@@ -104,9 +105,15 @@ class Operators:
 
     def __evaluate(self, value):
         if isinstance(value, Variable):
-            return value.value
+            try:
+                return eval(value.value)
+            except:
+                return value.value
         else:
-            return value
+            try:
+                return eval(value)
+            except:
+                return value
 
 
 
@@ -154,7 +161,8 @@ class Operators:
         # reduce to primitive values (if possible)
         lhs = self.__evaluate(lhs)
         rhs = self.__evaluate(rhs)
-
+        # print(f'lhs,rhs: {lhs, rhs}')
+        
         # arithmetic operators
         if operator == '+':
             return self.add(lhs, rhs)
@@ -235,6 +243,7 @@ class Operators:
 
             # inequality
             case '<' | '>':
+                # print(f'lhs, rhs: {lhs, rhs}')
                 # incompatible types
                 if not self.__same_types(lhs, rhs):
                     return self.__curr_object.console.error(errno.TYPE_ERROR)

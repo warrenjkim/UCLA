@@ -1,0 +1,46 @@
+(class linkedlist
+  (field int value 0)
+  (field linkedlist temp null)
+  (field linkedlist next null)
+
+  (method void init ((int v))
+    (set value v)
+  )
+  (method void append ((int v))
+    (if (== next null)
+      (begin
+        (set temp (new linkedlist))
+        (call temp init v)
+        (set next temp)
+      )
+      (call next append v)
+    )
+  )
+  (method void print_all ()
+    (begin
+      (print value)
+      (if (!= next null)
+        (call next print_all)
+      )
+    )
+  )
+)
+
+(class main
+  (field linkedlist list null)
+  (field int counter 1)
+  (method void main ()
+    (begin
+      (set list (new linkedlist))
+      (call list init 0)
+      (while (<= counter 5)
+        (begin
+          (call list append counter)
+          (set counter (+ counter 1))
+        )
+      )
+      (call list print_all)
+    )
+  )
+)
+

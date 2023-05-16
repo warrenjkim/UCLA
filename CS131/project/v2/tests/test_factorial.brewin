@@ -1,0 +1,17 @@
+(class main
+  (field int num 0)
+  (field int result 1)
+  (method void main ()
+    (begin
+      (print "Enter a number:")
+      (inputi num)
+      (print num " factorial is " (call me factorial num))))
+
+  (method int factorial ((int n))
+    (begin
+      (set result 1)
+      (while (> n 0)
+        (begin
+          (set result (* n result))
+          (set n (- n 1))))
+      (return result))))
