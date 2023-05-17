@@ -1,3 +1,7 @@
 (class main
-  (method void main () (print "ab" "cd" "ef"))
+  (method void main ()
+    (begin
+      (print "hel" "lo")
+    )
+  )
 )

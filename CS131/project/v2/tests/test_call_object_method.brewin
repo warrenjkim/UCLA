@@ -1,10 +1,3 @@
-(class cat
-  (field int x 0)
-  (method void meow ()
-    (print "meow")
-  )
-)
-
 (class main
   (field cat myCat null)
   (method void main ()
@@ -18,3 +11,9 @@
   )
 )
 
+(class cat
+  (field int x 0)
+  (method void meow ()
+    (print "meow")
+  )
+)

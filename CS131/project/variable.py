@@ -40,6 +40,8 @@ def evaluate(value):
         return False
     try:
         value = eval(value)
+        if isinstance(value, int):
+            return value
         if isinstance(value, str):
             if value == 'True' or value == 'False':
                 value = eval(value)
@@ -58,8 +60,9 @@ def stringify(value):
     if isinstance(value, Type):
         return value
     if isinstance(value, str):
-        if value[0] == '"':
-            return value
+        if len(value) != 0:
+            if value[0] == '"':
+                return value
         try:
             if isinstance(eval(value), int):
                 return str(eval(value))

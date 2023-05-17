@@ -1,10 +1,9 @@
 (class main
-  (method main ()
-    (print "hello")
-  )
+  (method void main ())
 )
-(class main
-  (method main ()
-    (print "hello")
-  )
+(class dog
+  (method void main () (return))
+)
+(class dog
+  (method void main () (return))
 )

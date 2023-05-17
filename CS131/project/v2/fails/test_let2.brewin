@@ -1,6 +1,6 @@
 (class main
  (method void foo ((int x))
-   (begin 
+   (begin
      (let ((int y false))
        (print y)
      )

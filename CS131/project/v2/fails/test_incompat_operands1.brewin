@@ -1,7 +1,5 @@
 (class main
- (method main ()
-  (begin
-		(print (+ 100 "abc"))
-  )
+ (method void main ()
+    (print (+ 100 "abc"))
  )
 )

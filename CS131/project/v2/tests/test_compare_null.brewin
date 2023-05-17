@@ -3,6 +3,7 @@
  (method void main ()
    (begin
      (if (== x null) (print "yes"))
+     (if (== null x) (print "yes"))
      (set x (new main))
      (if (!= x null) (print "yes"))
    )

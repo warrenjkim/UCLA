@@ -12,8 +12,6 @@ class Type(Enum):
 
 
 def typeof(value):
-    if value == Type.OBJECT:
-        return Type.OBJECT
     if value == base.NULL_DEF or value == Type.NULL:
         return Type.NULL
     elif value == base.VOID_DEF:
@@ -22,8 +20,10 @@ def typeof(value):
         return Type.BOOL
     elif isinstance(value, int):
         return Type.INT
-    if isinstance(value, str):
+    elif isinstance(value, str):
         return Type.STRING
+    else:
+        return Type.OBJECT
 
 
 
@@ -39,6 +39,6 @@ def type_to_enum(value):
     if value == base.STRING_DEF:
         return Type.STRING
     else:
-        return Type.OBJECT
+        return value
     
 

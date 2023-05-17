@@ -1,18 +1,7 @@
 (class main
- (field int x 0)
- (method void main ()
-  (begin
-   (if true
-    (print 1)
-    (print 2)
-   )
-   (if (== 0 (% x 2))
-    (print 1)
-    (print 2)
-   )
-   (if (== x 0) 
-    (print 1)
-   )
+  (method void main ()
+    (if true
+      (print "hello")
+    )
   )
- )
 )

@@ -1,11 +1,7 @@
 (class main
-  (field int num 0)
   (field int result 1)
   (method void main ()
-    (begin
-      (print "Enter a number:")
-      (inputi num)
-      (print num " factorial is " (call me factorial num))))
+    (print (call me factorial 4)))
 
   (method int factorial ((int n))
     (begin

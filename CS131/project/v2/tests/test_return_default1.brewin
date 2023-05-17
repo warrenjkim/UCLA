@@ -2,13 +2,11 @@
  (method int i () (return))
  (method string s () (return))
  (method bool b () (return))
- (method main v () (return))
  (method void main ()
    (begin
       (print (call me i))
       (print (call me s))
       (print (call me b))
-      (print (call me v))
    )
  )
 )

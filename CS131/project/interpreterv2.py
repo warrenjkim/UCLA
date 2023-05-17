@@ -3,7 +3,7 @@ from intbase import ErrorType as errno
 from bparser import BParser
 from objects import Class, Method, Object
 from copy import deepcopy
-from variable import Variable, stringify
+from variable import Variable, stringify, evaluate
 
 from brewintypes import Type, typeof, type_to_enum
 
@@ -91,11 +91,10 @@ class Interpreter(base):
         vtype = tokens[0]
         
         self.__validate_type(vtype)
-        
+
         name = tokens[1]
         args = self.__format_method_args(tokens[2])
         statements = tokens[3]
-
         if type_to_enum(vtype) != Type.OBJECT:
             vtype = type_to_enum(vtype)
         
@@ -103,6 +102,10 @@ class Interpreter(base):
 
         
     def __format_method_args(self, args = []):
+        arg_names = [arg[1] for arg in args]
+        if len(set(arg_names)) != len(arg_names):
+            return self.error(errno.NAME_ERROR)
+        
         formatted_args = { }
         for arg in args:
             arg_type = arg[0]
@@ -125,6 +128,7 @@ class Interpreter(base):
                 flattened.append(item)
         return flattened
 
+    
     def check_duplicates(self, parsed_program):
         # deep copy parsed program
         parsed_program = deepcopy(parsed_program)
@@ -141,6 +145,7 @@ class Interpreter(base):
                 if token == self.CLASS_DEF:
                     class_names.append(class_body[i + 1])
                     classes.append(self.flatten_list(class_body[i + 2:]))
+                    self.DEFINED_TYPES.add(class_body[i + 1])
                     break
 
 
@@ -194,9 +199,11 @@ class Interpreter(base):
         elif vtype == self.STRING_DEF:                    # string
             if not isinstance(eval(value), str):
                 return self.error(errno.TYPE_ERROR)
+        elif typeof(evaluate(vtype)) == Type.OBJECT:
+            if value != self.NULL_DEF:
+                return self.error(errno.TYPE_ERROR)
 
-
-
+        
 
 
     def print_class_tree(self):

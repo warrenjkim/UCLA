@@ -1,15 +1,6 @@
-(class dog
-  (method string bark ((string x))
-    (begin
-      (print x)
-      (return "woof")
-    )
-  )
-)
-
 (class main
  (field dog x null)
- (field string y "")
+ (field string y "asdf")
  (field string z "bark")
  (method void main ()
    (begin
@@ -18,4 +9,13 @@
      (print y)
    )
  )
+)
+
+(class dog
+  (method string bark ((string x))
+    (begin
+      (print x)
+      (return "woof")
+    )
+  )
 )

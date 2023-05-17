@@ -1,7 +1,5 @@
 (class main
- (method main ()
-  (begin
-		(print (+ 100 true))
-  )
+ (method void main ()
+    (print (+ true true))
  )
 )

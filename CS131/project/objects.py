@@ -83,20 +83,21 @@ class Object:
         statements = deepcopy(self.current_method.statements)    # deep copy statements
         self.evaluate_all_identifiers(statements)
 
+
         for statement in statements:                             # run each statement         
             return_value = self.run_statement(statement)         # check for a return value
             if return_value == Type.VOID:                        # if there is no return value, return VOID
                 return None
             if return_value is not None:                         # terminate the loop if we return a value
                 return return_value
-            
-        return return_value                                      # return a value (if any)
+
+        return stringify(evaluate(self.default_return()))
 
 
 
     def run_statement(self, statement):
         # print(f'name: {self.current_method.type()}')
-        #print(f'running:{statement}')
+        # print(f'running:{statement}')
         for i, token in enumerate(statement):                    # check each token
             if token == self.console.RETURN_DEF:                 # (return) return the return value
                 return self.return_statement(statement)
@@ -179,7 +180,7 @@ class Object:
         evaluated_method_args = []                      # evaluate the method arguments
 
         self.validate_method(owner, method_name, method_args)
-        owner = self.determine_polymorphic_function(owner, method_name)
+        owner = self.determine_polymorphic_function(owner, method_name, method_args)
 
         for arg in method_args:                         # for each argument, evaluate each argument if nested
             if isinstance(arg, list):                   # argument is nested
@@ -308,14 +309,21 @@ class Object:
 
         # variable to variable assignment
         if isinstance(value, Variable):
-            if variable.type() != value.type():
-                return self.console.error(errno.TYPE_ERROR)
+            # if variable.type() != value.type():
+            #     return self.console.error(errno.TYPE_ERROR)
+            # else:
+            #     variable.value = value.value
+            # return
+            if isinstance(value.value, Object):
+                self.validate_type(variable.type(), value.value)
             else:
-                variable.value = value.value
+                self.validate_type(variable.type(), evaluate(value))
+
+            variable.value = value.value
             return
 
         # can't assign null to primitives
-        if value == Type.NULL and variable.vtype != Type.OBJECT:
+        if value == Type.NULL and typeof(variable.value) != Type.OBJECT:
             return self.console.error(errno.TYPE_ERROR)
         
         if isinstance(value, list):
@@ -388,12 +396,11 @@ class Object:
 
         if owner.methods.get(method_name) is None:
             return self.validate_method(owner.parent, method_name, method_args)
-
+        
         method = owner.methods.get(method_name)
-
+        
         if len(method.args) != len(method_args):
-            return self.console.error(errno.TYPE_ERROR)
-
+            return self.validate_method(owner.parent, method_name, method_args)
         
 
     def valid_boolean(self, statement):
@@ -419,10 +426,10 @@ class Object:
                 variables[i] = variable.value                
 
 
-    def default_return(self, return_value):
+    def default_return(self):
         method_type = self.current_method.type()
 
-        if method_type == Type.INT:     # method expects and int 
+        if method_type == Type.INT:     # method expects and int
             return "0"
         if method_type == Type.STRING:  # method expects a string
             return "''"
@@ -443,7 +450,7 @@ class Object:
             return self
             
         if return_value == Type.VOID:                        # if return type is void, return default value
-            return self.default_return(return_value)
+            return self.default_return()
 
         return_value = evaluate(return_value)
         
@@ -457,6 +464,11 @@ class Object:
 
     def push_local_variables(self, variables):
         scope = { }
+
+        variable_names = [variable[1] for variable in variables]
+        if len(set(variable_names)) != len(variable_names):
+            return self.console.error(errno.NAME_ERROR)
+        
         for variable in variables:
             vtype = variable[0]
             name = variable[1]
@@ -465,8 +477,6 @@ class Object:
             scope[name] = Variable(name, type_to_enum(vtype), stringify(value))
 
         self.current_method.local_stack.insert(0, scope)
-
-        
 
 
     def validate_type(self, var_type, value):
@@ -493,11 +503,18 @@ class Object:
         return self.vtype
 
 
-    def determine_polymorphic_function(self, owner, method_name):
+    def determine_polymorphic_function(self, owner, method_name, method_args):
         if owner is None:
             return self.console.error(errno.NAME_ERROR)
 
         if owner.methods.get(method_name) is None:
-            return self.determine_polymorphic_function(owner.parent, method_name)
+            return self.determine_polymorphic_function(owner.parent, method_name, method_args)
+        
+        method = owner.methods.get(method_name)
+        if len(method.args) != len(method_args):
+            return self.determine_polymorphic_function(owner.parent, method_name, method_args)
+        
 
         return owner
+# 190/205
+# 77/90 gc

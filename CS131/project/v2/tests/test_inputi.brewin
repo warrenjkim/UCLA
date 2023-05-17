@@ -1,12 +1,9 @@
 (class main
  (field int x 0)
- (field string y "test")
  (method void main ()
-  (begin
-   (inputi x)
-   (print x)
-   (inputs y)
-   (print y)
-  )
+   (begin
+     (inputi x)
+     (print x)
+   )
  )
 )
