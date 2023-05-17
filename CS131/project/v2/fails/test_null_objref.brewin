@@ -1,5 +1,5 @@
 (class main
- (field obj null)
+ (field main obj null)
  (method void main ()
    (call obj foo 5)
  ) 

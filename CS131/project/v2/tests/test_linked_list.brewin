@@ -1,46 +1,55 @@
-(class linkedlist
-  (field int value 0)
-  (field linkedlist temp null)
-  (field linkedlist next null)
+(class LinkedList
+    (field int value 0)
+    (field LinkedList next null)
 
-  (method void init ((int v))
-    (set value v)
-  )
-  (method void append ((int v))
-    (if (== next null)
-      (begin
-        (set temp (new linkedlist))
-        (call temp init v)
-        (set next temp)
-      )
-      (call next append v)
+    (method int get_value ()
+        (return value)
     )
-  )
-  (method void print_all ()
-    (begin
-      (print value)
-      (if (!= next null)
-        (call next print_all)
-      )
+
+    (method void set_value ((int new_value))
+        (set value new_value)
     )
-  )
+
+    (method LinkedList get_next ()
+        (return next)
+    )
+    
+    (method void set_next ((LinkedList new_next))
+        (set next new_next)
+    )
 )
 
 (class main
-  (field linkedlist list null)
-  (field int counter 1)
-  (method void main ()
-    (begin
-      (set list (new linkedlist))
-      (call list init 0)
-      (while (<= counter 5)
-        (begin
-          (call list append counter)
-          (set counter (+ counter 1))
-        )
-      )
-      (call list print_all)
-    )
-  )
-)
+    (field LinkedList ll null)
 
+    (method LinkedList create_ll ((int one) (int two) (int three))
+        (let ((LinkedList ll_1 null) (LinkedList ll_2 null) (LinkedList ll_3 null))
+            (set ll_1 (new LinkedList))
+            (set ll_2 (new LinkedList))
+            (set ll_3 (new LinkedList))
+
+            (call ll_1 set_value one)
+            (call ll_2 set_value two)
+            (call ll_3 set_value three)
+
+            (call ll_1 set_next ll_2)
+            (call ll_2 set_next ll_3)
+
+            (return ll_1)
+        )
+    )
+
+    (method void main ()
+        (let ((LinkedList cur_node null))
+            (set ll (call me create_ll 1 2 3))
+
+            (set cur_node ll)
+            (while (!= cur_node null)
+                (begin
+                    (print (call cur_node get_value))
+                    (set cur_node (call cur_node get_next))
+                )
+            )
+        )
+    )
+)

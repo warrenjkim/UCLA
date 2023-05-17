@@ -18,17 +18,11 @@ def typeof(value):
         return Type.NULL
     elif value == base.VOID_DEF:
         return Type.VOID
-    elif value == base.TRUE_DEF or value == base.FALSE_DEF:
+    elif isinstance(value, bool):
         return Type.BOOL
-    elif isinstance(eval(value), int):
+    elif isinstance(value, int):
         return Type.INT
     if isinstance(value, str):
-        try:
-            if isinstance(eval(value), int):
-                return Type.INT
-        except:
-            return errno.NAME_ERROR
-        
         return Type.STRING
 
 
@@ -47,3 +41,4 @@ def type_to_enum(value):
     else:
         return Type.OBJECT
     
+

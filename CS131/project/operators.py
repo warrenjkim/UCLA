@@ -1,7 +1,7 @@
 from intbase import ErrorType as errno
 from copy import deepcopy
-from brewintypes import Type
-from variable import Variable
+from brewintypes import Type, typeof
+from variable import Variable, evaluate, stringify
 
     
 class Operators:
@@ -41,14 +41,13 @@ class Operators:
 
     def modulo(self, lhs, rhs):
         self.__validate_operands('%', lhs, rhs)
-        return str(lhs % rhs)
+        return str(int(lhs) % int(rhs))
 
 
 
     def divide(self, lhs, rhs):
         self.__validate_operands('/', lhs, rhs)        
         return str(int(lhs / rhs))
-
 
 
     def equal(self, lhs, rhs):
@@ -89,38 +88,19 @@ class Operators:
                 self.__replace_identifiers_with_primitives(token)
             else:
                 if token == self.__curr_object.console.FALSE_DEF:
-                    tokens[i] = False
+                    tokens[i] = "False"
                 elif token == self.__curr_object.console.TRUE_DEF:
-                    tokens[i] = True
-                elif token == None:
-                    tokens[i] = Type.NULL
-
+                    tokens[i] = "True"
 
 
 
     def __same_types(self, lhs, rhs):
-        return type(lhs) == type(rhs)
-
-
-
-    def __evaluate(self, value):
-        if isinstance(value, Variable):
-            try:
-                return eval(value.value)
-            except:
-                return value.value
-        else:
-            try:
-                return eval(value)
-            except:
-                return value
-
+        return typeof(lhs) == typeof(rhs)
 
 
     def __parse_unary_operator(self, args):
         args = deepcopy(args)
 
-        self.__curr_object.evaluate_all_identifiers(args)
         self.__replace_identifiers_with_primitives(args)
 
         operator = args[0]     # first argument is always the operator
@@ -130,10 +110,10 @@ class Operators:
         if isinstance(expression, list):
             expression = self.__curr_object.run_statement(expression)
 
-        expression = self.__evaluate(expression) # reduce to primitive values (if possible)
+        expression = evaluate(expression) # reduce to primitive values (if possible)
         
         if operator == '!':
-            return self.unary_not(expression)
+            return stringify(self.unary_not(expression))
 
         else:
             return self.__curr_object.console.error(errno.TYPE_ERROR)
@@ -143,13 +123,11 @@ class Operators:
     def __parse_binary_operator(self, args):
         args = deepcopy(args)
 
-        self.__curr_object.evaluate_all_identifiers(args)
         self.__replace_identifiers_with_primitives(args)
 
         operator = args[0]   # first argument is always the operator
         lhs = args[1]        # second argument is always the lhs
         rhs = args[2]        # third argument is always the rhs
-
 
         # reduce lhs to primitives
         if isinstance(lhs, list):
@@ -157,43 +135,43 @@ class Operators:
         # reduce rhs to primitives
         if isinstance(rhs, list):
             rhs = self.__curr_object.run_statement(rhs)
-
+        
         # reduce to primitive values (if possible)
-        lhs = self.__evaluate(lhs)
-        rhs = self.__evaluate(rhs)
+        lhs = evaluate(lhs)
+        rhs = evaluate(rhs)
         # print(f'lhs,rhs: {lhs, rhs}')
         
         # arithmetic operators
         if operator == '+':
-            return self.add(lhs, rhs)
+            return stringify(self.add(lhs, rhs))
         elif operator == '-':
-            return self.subtract(lhs, rhs)
+            return stringify(self.subtract(lhs, rhs))
         elif operator == '*':
-            return self.multiply(lhs, rhs)
+            return stringify(self.multiply(lhs, rhs))
         elif operator == '%':
-            return self.modulo(lhs, rhs)
+            return stringify(self.modulo(lhs, rhs))
         elif operator == '/':
-            return self.divide(lhs, rhs)
+            return stringify(self.divide(lhs, rhs))
 
         # equality operators
         if operator == "<":
-            return self.less(lhs, rhs)
+            return stringify(self.less(lhs, rhs))
         elif operator == "<=":
-            return self.less(lhs, rhs) or self.equal(lhs, rhs)
+            return stringify(self.less(lhs, rhs) or self.equal(lhs, rhs))
         elif operator == "==":
-            return self.equal(lhs, rhs)
+            return stringify(self.equal(lhs, rhs))
         elif operator == '!=':
-            return not self.equal(lhs, rhs)
+            return stringify(not self.equal(lhs, rhs))
         elif operator == ">":
-            return self.less(rhs, lhs)
+            return stringify(self.less(rhs, lhs))
         elif operator == ">=":
-            return self.less(rhs, lhs) or self.equal(rhs, lhs)
+            return stringify(self.less(rhs, lhs) or self.equal(rhs, lhs))
 
         # bitwise operators
         elif operator == '&':
-            return self.bitwise_and(lhs, rhs)
+            return stringify(self.bitwise_and(lhs, rhs))
         elif operator == '|':
-            return self.bitwise_or(lhs, rhs)
+            return stringify(self.bitwise_or(lhs, rhs))
 
         # invalid operator
         else:

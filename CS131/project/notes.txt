@@ -5,3 +5,9 @@ class: unchanged
 field: [field, NAME, TYPE, VALUE]
 method: [method, TYPE, NAME, [ARGS]]
 method args: [NAME, TYPE]
+
+
+TYPING
+make everything strings
+constant strings must be wrapped in ""
+variables must have values wrapped in ""

@@ -3,7 +3,7 @@ from intbase import ErrorType as errno
 from bparser import BParser
 from objects import Class, Method, Object
 from copy import deepcopy
-from variable import Variable
+from variable import Variable, stringify
 
 from brewintypes import Type, typeof, type_to_enum
 
@@ -37,6 +37,8 @@ class Interpreter(base):
 
         if entry_point is None:                              # check to see if there is a main class
             self.error(errno.TYPE_ERROR)                     # type error if we don't have a main class
+        if entry_point.methods.get(self.MAIN_FUNC_DEF) is None:
+            self.error(errno.NAME_ERROR)
 
         main = Object(self.MAIN_CLASS_DEF, self)             # create main class object
         main.run(self.MAIN_FUNC_DEF)                         # run the main method
@@ -79,11 +81,10 @@ class Interpreter(base):
         if value == self.NULL_DEF:
             value = Type.NULL
         else:
-            if vtype != self.BOOL_DEF:
-                value = eval(value)
-            else:
+            if vtype == self.BOOL_DEF:
                 value = True if value == self.TRUE_DEF else False
-        
+            value = stringify(value)
+            
         self.classes[class_name].set_field(name, type_to_enum(vtype), value)
 
     def parse_method(self, class_name, tokens):
@@ -94,9 +95,13 @@ class Interpreter(base):
         name = tokens[1]
         args = self.__format_method_args(tokens[2])
         statements = tokens[3]
-        
-        self.classes[class_name].add_method(name, type_to_enum(vtype), args, statements)
 
+        if type_to_enum(vtype) != Type.OBJECT:
+            vtype = type_to_enum(vtype)
+        
+        self.classes[class_name].add_method(name, vtype, args, statements)
+
+        
     def __format_method_args(self, args = []):
         formatted_args = { }
         for arg in args:

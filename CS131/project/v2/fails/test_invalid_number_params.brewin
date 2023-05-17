@@ -1,9 +1,9 @@
 (class main
-  (field x 0)
-  (method main ()
+  (field int x 0)
+  (method void main ()
     (call me hi)
   )
-  (method hi (x)
+  (method void hi ((int x))
     (print x)
   )
 )
