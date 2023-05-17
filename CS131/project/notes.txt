@@ -11,3 +11,8 @@ TYPING
 make everything strings
 constant strings must be wrapped in ""
 variables must have values wrapped in ""
+
+05/17, 2:15AM
+Currently at 190/205 on test cases
+Currently at 77/90 on Gradescope
+* Need to restructure inheritance model
