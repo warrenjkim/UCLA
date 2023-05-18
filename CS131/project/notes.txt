@@ -15,12 +15,26 @@ variables must have values wrapped in ""
 05/17, 2:15AM
 Currently at 190/205 on test cases
 Currently at 77/90 on Gradescope
-* Need to restructure inheritance model
+* Need to restructure inheritance model ** FINISHED **
 
 05/17, 4:20PM
-Idea for inheritance/type system: have a list of types in the form of a stack. ** scratched **
+Idea for inheritance/type system: have a list of types in the form of a stack. ** SCRATCHED **
 
 05/18, 10:30AM
 Currently at 200/205 on test cases
 Currently at 79/90 on Gradescope
-* Need to add super keyword
+* Need to add super keyword ** FINISHED **
+
+Added super keyword and got to 202/205 on test cases and 84/90 on Gradescope lmfao
+
+05/18, 10:50AM
+Currently at 203/205 on test cases
+Currently at 85/90 on Gradescope
+Fixed inheritance model
+* Working on polymorphism ** FINISHED **
+
+05/18, 10:55AM
+Currently at 205/205 on test cases
+Currently at 88/90 on Gradescope
+Fixed polymorphism
+Working on return default, return assign type on Gradescope

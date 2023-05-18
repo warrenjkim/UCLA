@@ -70,8 +70,8 @@ class Object:
         self.current_method = None                            # current method object
         self.operator = Operators(self)                       # operator object
 
+        self.child = None
         self.parent = None         # parent class (None by default)
-        self.m_stack = [self.current_class.methods]
 
 
         
@@ -141,14 +141,14 @@ class Object:
                 return return_value                       # return
 
         if len(self.current_method.local_stack) != 0:
-            self.current_method.local_stack.pop(0)            # pop scope from stack
+            self.current_method.local_stack.pop(0)        # pop scope from stack
 
 
 
     # RETURN STATEMENT
     def return_statement(self, statement):
         if len(statement) == 1:                                         # there is no return value
-            return self.return_value(Type.VOID)
+            return self.default_return()
         elif isinstance(statement[1], list):                            # there are nested calls
             return self.return_value(self.run_statement(statement[1]))  # evaluate statement(s)
         else:
@@ -167,7 +167,9 @@ class Object:
 
         # determine who the owner is
         if who == self.console.ME_DEF:                  # me (main)
-            owner = self
+            owner = self if self.child is None else self.child
+        if who == self.console.SUPER_DEF:
+            owner = self.parent
         elif isinstance(who, Object):                   # object itself
             owner = who
         elif isinstance(who, Variable):
@@ -179,9 +181,14 @@ class Object:
             self.console.error(errno.NAME_ERROR)
 
         evaluated_method_args = []                      # evaluate the method arguments
-
+        
         self.validate_method(owner, method_name, method_args)
+
+        caller = owner
         owner = self.determine_polymorphic_function(owner, method_name, method_args)
+
+        if caller != owner:
+            owner.child = caller
 
         for arg in method_args:                         # for each argument, evaluate each argument if nested
             if isinstance(arg, list):                   # argument is nested
@@ -193,7 +200,6 @@ class Object:
 
             evaluated_method_args.append(arg)
 
-        print(f'evaluated: {evaluated_method_args}')
         return owner.run(method_name, evaluated_method_args)  # return the return value of the method
 
 
@@ -326,7 +332,8 @@ class Object:
         if isinstance(value, list):
             value = self.run_statement(value)
 
-        if isinstance(value, Object): # check this
+        if isinstance(value, Object):
+            self.validate_type(variable.type(), value)
             variable.value = value
             return
         else:
@@ -413,16 +420,17 @@ class Object:
                 return False
 
         return True
-            
 
     def valid_boolean(self, statement):
+        if isinstance(statement, Variable):
+            return statement.vtype == Type.BOOL
         if isinstance(statement, list):
             if isinstance(self.evaluate_condition(statement), bool):
                 return True
             else:
                 return False
         else:
-            return statement == self.console.TRUE_DEF or statement == self.console.FALSE_DEF        
+            return statement == self.console.TRUE_DEF or statement == self.console.FALSE_DEF
 
     
     def evaluate_condition(self, condition):
@@ -447,9 +455,9 @@ class Object:
             return "''"
         if method_type == Type.BOOL:    # method expects a bool
             return "False"
-        if method_type == Type.OBJECT:  # method expects an object
-            return "None"
         if method_type == Type.VOID:    # method expects None
+            return "None"
+        if not isinstance(method_type, Type): # method expects an object
             return "None"
             
         
@@ -533,5 +541,5 @@ class Object:
         return owner
 
     
-# 200/205
-# 79/90 gc
+# 210/211
+# 88/90 gc

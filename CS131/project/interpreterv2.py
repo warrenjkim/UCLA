@@ -94,7 +94,10 @@ class Interpreter(base):
 
         name = tokens[1]
         args = self.__format_method_args(tokens[2])
-        statements = tokens[3]
+        if len(tokens) >= 4:
+            statements = tokens[3]
+        else:
+            statements = []
         if type_to_enum(vtype) != Type.OBJECT:
             vtype = type_to_enum(vtype)
         

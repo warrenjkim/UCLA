@@ -140,7 +140,7 @@ def generate_test_suite_v2():
                   if file.suffix == ".brewin"]
     return __generate_test_suite(2, test_names, fail_names)
 
-#    return __generate_test_suite(2, ['test_valid_assignment2'], []) #'test_overload1', 'test_return_default2' FAILS: 'test_invalid_param_passing3'
+#    return __generate_test_suite(2, ['test_linked_list'], []) #'test_overload1', 'test_return_default2' FAILS: 'test_invalid_param_passing3'
 
 def generate_test_suite_v3():
     """wrapper for generate_test_suite for v3"""
