@@ -38,3 +38,9 @@ Currently at 205/205 on test cases
 Currently at 88/90 on Gradescope
 Fixed polymorphism
 Working on return default, return assign type on Gradescope
+
+05/18, 12:45PM
+Currently at 211/211 on test cases
+Currently at 89/90 on Gradescope
+** FIXED return assign type **
+Working on return default on Gradescope

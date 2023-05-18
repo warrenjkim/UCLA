@@ -331,6 +331,7 @@ class Object:
         
         if isinstance(value, list):
             value = self.run_statement(value)
+            self.validate_classes(variable, value)
 
         if isinstance(value, Object):
             self.validate_type(variable.type(), value)
@@ -338,7 +339,7 @@ class Object:
             return
         else:
             value = evaluate(value)
-
+            
         self.validate_type(variable.type(), value)
 
         variable.value = stringify(value)
@@ -439,28 +440,21 @@ class Object:
         else:
             return condition == self.console.TRUE_DEF or condition != self.console.FALSE_DEF
 
-
-    def evaluate_variables(self, variables):
-        for i, variable in enumerate(variables):
-            if isinstance(variable, Variable):
-                variables[i] = variable.value                
-
-
     def default_return(self):
         method_type = self.current_method.type()
 
         if method_type == Type.INT:     # method expects and int
-            return "0"
+            return_value = "0"
         if method_type == Type.STRING:  # method expects a string
-            return "''"
+            return_value = "''"
         if method_type == Type.BOOL:    # method expects a bool
-            return "False"
+            return_value = "False"
         if method_type == Type.VOID:    # method expects None
-            return "None"
+            return_value = "None"
         if not isinstance(method_type, Type): # method expects an object
-            return "None"
+            return_value = "None"
             
-        
+        return Variable("RETURN", method_type, return_value)
 
     def return_value(self, return_value):
         vtype = self.current_method.type()                   # method return type
@@ -479,7 +473,7 @@ class Object:
         
         self.validate_type(vtype, return_value)
         
-        return stringify(return_value)                       # stringify the return value
+        return Variable("RETURN", vtype, stringify(return_value))                       # stringify the return value
 
 
     def push_local_variables(self, variables):
@@ -539,6 +533,42 @@ class Object:
             return self.determine_polymorphic_function(owner.parent, method_name, method_args)
 
         return owner
+
+
+    def validate_classes(self, lhs, rhs):
+        lhs_type = None
+        rhs_type = None
+        if isinstance(lhs, Variable):
+            if not isinstance(lhs.vtype, Type):
+                lhs_type = lhs.vtype
+        if isinstance(rhs, Variable):
+            if not isinstance(rhs.vtype, Type):
+                rhs_type = rhs.vtype
+
+        if isinstance(lhs, Object):
+            lhs_type = lhs.vtype
+        if isinstance(rhs, Object):
+            rhs_type = rhs.vtype
+
+        if lhs_type is None or rhs_type is None:
+            return
+
+        if not self.same_classes(lhs_type, rhs_type):
+            return self.console.error(errno.TYPE_ERROR)
+    
+
+    def same_classes(self, lhs_type, rhs_type):
+        lhs_class = self.console.classes.get(lhs_type)
+        rhs_class = self.console.classes.get(rhs_type)
+        
+        if rhs_class.super_class is None:
+            return lhs_class.name == rhs_class.name
+        else:
+            if lhs_class.name != rhs_class.name:
+                if lhs_class.super_class is None:
+                    return self.same_classes(lhs_type, rhs_class.super_class)
+                
+        return True
 
     
 # 210/211
