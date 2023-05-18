@@ -9,7 +9,6 @@
  (method void main ()
   (begin
    (call me foo 1000 2000)
-   (call me foo "abc" true)
   )
  )
 )

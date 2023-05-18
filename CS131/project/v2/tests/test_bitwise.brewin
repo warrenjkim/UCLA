@@ -1,5 +1,5 @@
 (class main
-  (field int x null)
+  (field int x 0)
   (method void main ()
     (begin
       (print (| false true))

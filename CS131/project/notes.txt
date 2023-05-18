@@ -16,3 +16,11 @@ variables must have values wrapped in ""
 Currently at 190/205 on test cases
 Currently at 77/90 on Gradescope
 * Need to restructure inheritance model
+
+05/17, 4:20PM
+Idea for inheritance/type system: have a list of types in the form of a stack. ** scratched **
+
+05/18, 10:30AM
+Currently at 200/205 on test cases
+Currently at 79/90 on Gradescope
+* Need to add super keyword

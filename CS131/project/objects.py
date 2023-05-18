@@ -61,7 +61,7 @@ class Object:
     def __init__(self, name, console):
         self.console = console                                # interpreter console
         self.name = name
-        self.vtype = self.name                                # current class vtype
+        self.vtype = self.name                                # current class vtype  maybe Object
         
         self.current_class = console.classes.get(name)        # current class object
         self.fields = deepcopy(self.current_class.fields)     # dictionary of fields        
@@ -97,7 +97,7 @@ class Object:
 
     def run_statement(self, statement):
         # print(f'name: {self.current_method.type()}')
-        # print(f'running:{statement}')
+#        print(f'running:{statement}')
         for i, token in enumerate(statement):                    # check each token
             if token == self.console.RETURN_DEF:                 # (return) return the return value
                 return self.return_statement(statement)
@@ -130,6 +130,7 @@ class Object:
 
 
     # LET STATEMENT
+    # replace that part with begin
     def let_statement(self, statement):
         self.push_local_variables(statement[0])           # push scope onto stack
         self.evaluate_all_identifiers(statement)          # evaluate all identifiers
@@ -189,9 +190,10 @@ class Object:
                 arg = arg.value
             elif arg == self.console.ME_DEF:            # argument is a constant
                 arg = self
-                
+
             evaluated_method_args.append(arg)
 
+        print(f'evaluated: {evaluated_method_args}')
         return owner.run(method_name, evaluated_method_args)  # return the return value of the method
 
 
@@ -309,11 +311,6 @@ class Object:
 
         # variable to variable assignment
         if isinstance(value, Variable):
-            # if variable.type() != value.type():
-            #     return self.console.error(errno.TYPE_ERROR)
-            # else:
-            #     variable.value = value.value
-            # return
             if isinstance(value.value, Object):
                 self.validate_type(variable.type(), value.value)
             else:
@@ -323,20 +320,19 @@ class Object:
             return
 
         # can't assign null to primitives
-        if value == Type.NULL and typeof(variable.value) != Type.OBJECT:
+        if value == Type.NULL and isinstance(variable.vtype, Type):
             return self.console.error(errno.TYPE_ERROR)
         
         if isinstance(value, list):
             value = self.run_statement(value)
 
-        if isinstance(value, Object):
+        if isinstance(value, Object): # check this
             variable.value = value
             return
         else:
             value = evaluate(value)
 
         self.validate_type(variable.type(), value)
-
 
         variable.value = stringify(value)
 
@@ -352,6 +348,7 @@ class Object:
     # [noreturn]
     def inputs_statement(self, name):
         value = self.console.get_input()
+        self.validate_type(name.type(), value)
         name.value = stringify(value)
 
 
@@ -401,7 +398,22 @@ class Object:
         
         if len(method.args) != len(method_args):
             return self.validate_method(owner.parent, method_name, method_args)
-        
+
+        if not self.valid_args(method, method_args):
+            return self.validate_method(owner.parent, method_name, method_args)
+            
+
+    def valid_args(self, method, method_args):
+        i = 0
+        for key, arg in method.args.items():
+            try:
+                self.validate_type(arg.type(), evaluate(method_args[i]))
+                i += 1
+            except:
+                return False
+
+        return True
+            
 
     def valid_boolean(self, statement):
         if isinstance(statement, list):
@@ -480,6 +492,10 @@ class Object:
 
 
     def validate_type(self, var_type, value):
+        if var_type == Type.VOID:
+            if value is not None:
+                return self.console.error(errno.TYPE_ERROR)
+            
         if value == Type.NULL:
             return
         if isinstance(value, Object):
@@ -513,8 +529,9 @@ class Object:
         method = owner.methods.get(method_name)
         if len(method.args) != len(method_args):
             return self.determine_polymorphic_function(owner.parent, method_name, method_args)
-        
 
         return owner
-# 190/205
-# 77/90 gc
+
+    
+# 200/205
+# 79/90 gc

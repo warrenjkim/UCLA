@@ -1,6 +1,6 @@
 from intbase import ErrorType as errno
 from copy import deepcopy
-from brewintypes import Type, typeof
+from brewintypes import Type, typeof, type_to_enum
 from variable import Variable, evaluate, stringify
 
     
@@ -95,6 +95,9 @@ class Operators:
 
 
     def __same_types(self, lhs, rhs):
+        if typeof(lhs) == Type.OBJECT and typeof(rhs) == Type.OBJECT:
+            return self.compare_objects(lhs, rhs)
+            
         return typeof(lhs) == typeof(rhs)
 
 
@@ -129,17 +132,19 @@ class Operators:
         lhs = args[1]        # second argument is always the lhs
         rhs = args[2]        # third argument is always the rhs
 
-        # reduce lhs to primitives
+        # reduce lhs to object
         if isinstance(lhs, list):
             lhs = self.__curr_object.run_statement(lhs)
-        # reduce rhs to primitives
+        # reduce rhs to object
         if isinstance(rhs, list):
             rhs = self.__curr_object.run_statement(rhs)
-        
+
+        self.validate_classes(lhs, rhs)
+            
         # reduce to primitive values (if possible)
         lhs = evaluate(lhs)
         rhs = evaluate(rhs)
-        # print(f'lhs,rhs: {lhs, rhs}')
+        #print(f'lhs,rhs: {lhs, rhs}')
         
         # arithmetic operators
         if operator == '+':
@@ -179,6 +184,7 @@ class Operators:
 
 
 
+    # figure this out
     def __validate_operands(self, operator, lhs, rhs):
         match operator:
             # addition
@@ -206,8 +212,6 @@ class Operators:
                 # incompatible types
                 if not self.__same_types(lhs, rhs):
                     # check for null
-                    if lhs is None or rhs is None:
-                        return True
                     if isinstance(lhs, Variable):
                         if lhs.value == Type.NULL:
                             return True
@@ -240,3 +244,54 @@ class Operators:
                 if not isinstance(lhs, bool):
                     return self.__curr_object.console.error(errno.TYPE_ERROR)
 
+
+    def compare_objects(self, lhs, rhs):
+        if lhs.parent is None and rhs.parent is None:
+            return lhs.vtype == rhs.vtype
+        else:
+            if lhs.vtype != rhs.vtype:
+                if lhs.parent is None:
+                    return self.compare_objects(lhs, rhs.parent)
+                if rhs.parent is None:
+                    return self.compare_objects(lhs.parent, rhs)
+
+        return True
+
+
+
+    def validate_classes(self, lhs, rhs):
+        lhs_type = None
+        rhs_type = None
+        if isinstance(lhs, Variable):
+            if not isinstance(lhs.vtype, Type):
+                lhs_type = lhs.vtype
+        if isinstance(rhs, Variable):
+            if not isinstance(rhs.vtype, Type):
+                rhs_type = rhs.vtype
+
+        if isinstance(lhs, type(self.__curr_object)):
+            lhs_type = lhs.vtype
+        if isinstance(rhs, type(self.__curr_object)):
+            rhs_type = rhs.vtype
+
+        if lhs_type is None or rhs_type is None:
+            return
+
+        if not self.same_classes(lhs_type, rhs_type):
+            return self.__curr_object.console.error(errno.TYPE_ERROR)
+    
+
+    def same_classes(self, lhs_type, rhs_type):
+        lhs_class = self.__curr_object.console.classes.get(lhs_type)
+        rhs_class = self.__curr_object.console.classes.get(rhs_type)
+        
+        if lhs_class.super_class is None and rhs_class.super_class is None:
+            return lhs_class.name == rhs_class.name
+        else:
+            if lhs_class.name != rhs_class.name:
+                if lhs_class.super_class is None:
+                    return self.same_classes(lhs_type, rhs_class.super_class)
+                if rhs_class.super_class is None:
+                    return self.same_classes(lhs_class.super_class, rhs_type)
+
+        return True

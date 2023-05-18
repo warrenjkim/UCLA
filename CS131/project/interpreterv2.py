@@ -10,7 +10,7 @@ from brewintypes import Type, typeof, type_to_enum
 
 class Interpreter(base):
     PRIMITIVES = [base.INT_DEF, base.BOOL_DEF, base.STRING_DEF, base.VOID_DEF]
-    DEFINED_TYPES = set(PRIMITIVES)
+    DEFINED_TYPES = set()
     classes = { }
     def __init__(self, console_output = True, inp = None, trace_output = None):
         super().__init__(console_output, inp)
@@ -84,7 +84,7 @@ class Interpreter(base):
             if vtype == self.BOOL_DEF:
                 value = True if value == self.TRUE_DEF else False
             value = stringify(value)
-            
+        
         self.classes[class_name].set_field(name, type_to_enum(vtype), value)
 
     def parse_method(self, class_name, tokens):
