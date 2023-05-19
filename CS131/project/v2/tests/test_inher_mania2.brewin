@@ -1,0 +1,31 @@
+(class person
+  (field int x 1)
+  (method person hia () (begin (call me hi1)))
+  (method string hi1 () (print "person hello"))
+)
+
+(class student inherits person
+  (field int x 104)
+  (method int x () (return x))
+  (method student hi1 () (print "student hello"))
+)
+
+(class nerd inherits student
+  (field int x 104)
+  (method int x () (return x))
+  (method int hi1 () (print "nerd hello"))
+)
+
+(class main inherits student
+    (method int hi1 () (print "main hello"))
+    (method string main ()
+      (let ((int x 4))
+        (set x (call (new student) x))
+        (print (call (new nerd) hia))
+        (print x)
+        (return)
+        (print )
+        (print 12345)
+      )
+    )
+  )

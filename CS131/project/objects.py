@@ -3,54 +3,8 @@ from operators import Operators
 from copy import copy, deepcopy
 from brewintypes import Type, typeof, type_to_enum
 from variable import Variable, evaluate, stringify
-
-
-
-class Method:
-    def __init__(self, name, vtype, args = {}, statements = []):
-        self.name = name
-        self.vtype = vtype
-        self.args = args
-        self.local_stack = []
-        self.statements = [statements]
-        
-    def bind_args(self, argv): ####### ADD TYPE CHECKING
-        i = 0
-        for key in self.args:
-            self.args[key].set_value(argv[i])
-            i += 1
-
-    def __repr__(self):
-        return str(self.__dict__)
-    
-    def __str__(self):
-        return str(self.__dict__)
-
-    def type(self):
-        return self.vtype
-
-
-
-class Class:
-    def __init__(self, name, super_class = None):
-        self.name = name
-        self.super_class = super_class
-        self.methods = { }
-        self.fields = { }
-
-    def add_method(self, name, vtype, args, statements):
-        self.methods[name] = Method(name, vtype, args, statements)
-
-    def set_field(self, name, vtype, value):
-        self.fields[name] = Variable(name, vtype, value)
-
-    def __repr__(self):
-        return str(self.__dict__)
-    
-    def __str__(self):
-        return str(self.__dict__)
-
-
+from method import Method
+from brewinclass import Class
 
 
 class Object:
@@ -59,37 +13,42 @@ class Object:
     OPERATORS = BINARY_OPERATORS + UNARY_OPERATOR
 
     def __init__(self, name, console):
-        self.console = console                                # interpreter console
-        self.name = name
-        self.vtype = self.name                                # current class vtype  maybe Object
+        self.console        = console                              # interpreter console
+        self.name           = name
+        self.vtype          = self.name                            # current class vtype  maybe Object
         
-        self.current_class = console.classes.get(name)        # current class object
-        self.fields = deepcopy(self.current_class.fields)     # dictionary of fields        
+        self.current_class  = console.classes.get(name)            # current class object
+        self.fields         = deepcopy(self.current_class.fields)  # dictionary of fields        
 
-        self.methods = self.current_class.methods             # dictionary of methods
-        self.current_method = None                            # current method object
-        self.operator = Operators(self)                       # operator object
+        self.methods        = self.current_class.methods           # dictionary of methods
+        self.current_method = None                                 # current method object
+        self.operator       = Operators(self)                      # operator object
 
-        self.child = None
-        self.parent = None         # parent class (None by default)
+        self.child          = None                                 # child class
+        self.parent         = None                                 # parent class
+        self.build_hierarchy()
+
 
 
         
     def run(self, method_name, method_args = []):
-        self.current_method = self.methods.get(method_name)      # define the current method
+        self.current_method = self.methods.get(method_name)               # define the current method
         self.validate_method(self, self.current_method.name, method_args) # validate current method
-        self.current_method.bind_args(method_args)               # bind the current method arguments
-        self.operator.set_object(self)                           # tbh idk why i need to do this but i do
-        statements = deepcopy(self.current_method.statements)    # deep copy statements
+        self.current_method.bind_args(method_args)                        # bind the current method arguments
+        self.operator.set_object(self)                                    # tbh idk why i need to do this but i do
+        statements = deepcopy(self.current_method.statements)             # deep copy statements
         self.evaluate_all_identifiers(statements)
 
 
-        for statement in statements:                             # run each statement         
-            return_value = self.run_statement(statement)         # check for a return value
-            if return_value == Type.VOID:                        # if there is no return value, return VOID
-                return None
-            if return_value is not None:                         # terminate the loop if we return a value
-                return return_value
+        for statement in statements:                                      # run each statement         
+            return_value = self.run_statement(statement)                  # check for a return value
+            if isinstance(return_value, Variable):                        # terminate the loop if we return a value
+                try:
+                    self.validate_type(self.current_method.type(), evaluate(return_value))
+                    return return_value
+                except:
+                    continue
+
 
         return stringify(evaluate(self.default_return()))
 
@@ -97,7 +56,7 @@ class Object:
 
     def run_statement(self, statement):
         # print(f'name: {self.current_method.type()}')
-#        print(f'running:{statement}')
+        #print(f'running:{statement}')
         for i, token in enumerate(statement):                    # check each token
             if token == self.console.RETURN_DEF:                 # (return) return the return value
                 return self.return_statement(statement)
@@ -119,46 +78,30 @@ class Object:
                 self.inputi_statement(statement[i + 1])  
             elif token == self.console.INPUT_STRING_DEF:         # (inputs) [noreturn]
                 self.inputs_statement(statement[i + 1])
+            elif token == self.console.LET_DEF:                  # (let) return evaluated statement(s)
+                return self.let_statement(statement[i + 1:])     
             elif token in self.OPERATORS:                        # (operator) return evaluated expression
                 return self.operator.parse_operator(statement)
-
-            #### LET STATEMENT WIP
-            elif token == self.console.LET_DEF:
-                return self.let_statement(statement[i + 1:])     # (let) return evaluated statement(s)
-    
-
-
-
-    # LET STATEMENT
-    # replace that part with begin
-    def let_statement(self, statement):
-        self.push_local_variables(statement[0])           # push scope onto stack
-        self.evaluate_all_identifiers(statement)          # evaluate all identifiers
-        for statement in statement[1:]:                   # run each statement
-            return_value = self.run_statement(statement)  # check for a return value
-            if return_value is not None:
-                self.current_method.local_stack.pop(0)    # pop scope from stack
-                return return_value                       # return
-
-        if len(self.current_method.local_stack) != 0:
-            self.current_method.local_stack.pop(0)        # pop scope from stack
 
 
 
     # RETURN STATEMENT
     def return_statement(self, statement):
-        if len(statement) == 1:                                         # there is no return value
+        if len(statement) == 1:                                            # there is no return value
             return self.default_return()
-        elif isinstance(statement[1], list):                            # there are nested calls
-            return self.return_value(self.run_statement(statement[1]))  # evaluate statement(s)
+        elif isinstance(statement[1], list):                               # there are nested calls
+            return self.evaluate_return(self.run_statement(statement[1]))  # evaluate statement(s)
         else:
-            return self.return_value(statement[1])                      # call return helper
+            return self.evaluate_return(statement[1])                      # call return helper
+
 
 
     # CALL STATEMENT
     def call_statement(self, statement):
         who = statement[0]                              # caller
         method_name = statement[1]                      # method name
+        if isinstance(method_name, Variable):           # potential method name shadowing
+            method_name = method_name.name
         method_args = statement[2:]                     # method arguments
         owner = None                                    # calling object
         
@@ -166,17 +109,21 @@ class Object:
             who = self.run_statement(who)
 
         # determine who the owner is
-        if who == self.console.ME_DEF:                  # me (main)
+        if who == self.console.ME_DEF:
             owner = self if self.child is None else self.child
-        if who == self.console.SUPER_DEF:
+        elif who == self.console.SUPER_DEF:
+            statement[0] = self.console.ME_DEF
             owner = self.parent
-        elif isinstance(who, Object):                   # object itself
+            if self.parent is not None:
+                self.parent.child = self
+            owner.child = self
+        elif isinstance(who, Object): 
             owner = who
         elif isinstance(who, Variable):
             owner = who.value
             if owner == Type.NULL:
                 self.console.error(errno.FAULT_ERROR)
-        
+
         if owner is None:                               # unknown identifier
             self.console.error(errno.NAME_ERROR)
 
@@ -187,8 +134,9 @@ class Object:
         caller = owner
         owner = self.determine_polymorphic_function(owner, method_name, method_args)
 
-        if caller != owner:
+        if owner.child is None:
             owner.child = caller
+
 
         for arg in method_args:                         # for each argument, evaluate each argument if nested
             if isinstance(arg, list):                   # argument is nested
@@ -197,6 +145,8 @@ class Object:
                 arg = arg.value
             elif arg == self.console.ME_DEF:            # argument is a constant
                 arg = self
+            else:
+                arg = stringify(evaluate(str(arg)))
 
             evaluated_method_args.append(arg)
 
@@ -235,8 +185,12 @@ class Object:
 
         while self.evaluate_condition(condition):               # run the while loop
             return_value = self.run_statement(true_statement)   # check for a return value
-            if return_value is not None:                        # if there is a return value, terminate and return
-                return return_value
+            if isinstance(return_value, Variable):              # if there is a return value, terminate and return
+                try:
+                    self.validate_type(self.current_method.type(), evaluate(return_value))
+                    return return_value
+                except:
+                    continue
 
 
 
@@ -244,80 +198,78 @@ class Object:
     def begin_statement(self, statement):
         for nested_statement in statement:                       # run each statement in the begin block
             return_value = self.run_statement(nested_statement)  # check for a return value
-            if return_value is not None:                         # if there is a return value, terminate and return
-                return return_value
+            if isinstance(return_value, Variable):               # if there's a return value, terminate and return
+                try:
+                    self.validate_type(self.current_method.type(), evaluate(return_value))
+                    return return_value
+                except:
+                    continue
 
 
+    # LET STATEMENT
+    def let_statement(self, statement):
+        self.push_local_variables(statement[0])                  # push scope onto stack
+        self.evaluate_all_identifiers(statement)                 # evaluate all identifiers
+        return_value = self.begin_statement(statement[1:])       # run begin statement
+        if len(self.current_method.local_stack) != 0:            # pop scope from stack
+            self.current_method.local_stack.pop(0)
 
-    def build_hierarchy(self):
-        parent_class = self.current_class.super_class
-
-        if parent_class is None:
-            return None
-
-        self.parent = Object(parent_class, self.console)
-        self.parent.build_hierarchy()
+        return return_value                                      # return value at the end of the let block
 
 
     
     # NEW STATEMENT
     def new_statement(self, class_name):
-        if self.console.classes.get(class_name) is None:  # fetch class
+        if self.console.classes.get(class_name) is None:         # fetch class
             return self.console.error(errno.TYPE_ERROR)          # invalid identifier
+        return Object(class_name, self.console)                   # new object
 
-        obj = Object(class_name, self.console)
-        obj.build_hierarchy()
 
-        return obj
-
-    
 
     # [noreturn]
     def print_statement(self, args):
-        to_print = ""
-        for arg in args:
-            if isinstance(arg, list):
-                value = evaluate(self.run_statement(arg))
-                if isinstance(value, bool):
+        to_print = ""                                      # to_string
+        for arg in args:                                   # for each argument
+            if isinstance(arg, list):                      # nested call
+                value = evaluate(self.run_statement(arg))  # -> primitive
+                if isinstance(value, bool):                # -> brewin bool
                     value = self.console.TRUE_DEF if value else self.console.FALSE_DEF
-                to_print += str(value)
-            elif isinstance(arg, Variable):
-                if arg.vtype == Type.BOOL:
-                    to_print += self.console.TRUE_DEF if evaluate(arg.value) else self.console.FALSE_DEF
-                    continue
-                elif arg.value == Type.NULL:
-                    to_print += 'None'
-                    continue
-                to_print += str(evaluate(arg.value))
+            elif isinstance(arg, Variable):                # variable
+                if arg.vtype == Type.BOOL:                 # -> brewin bool
+                    value = self.console.TRUE_DEF if evaluate(arg.value) else self.console.FALSE_DEF
+                elif arg.value == Type.NULL:               # -> None
+                    value = 'None'
+                else:                                      # -> primitive
+                    value = evaluate(arg.value)
             else:
-                value = evaluate(arg)
-
-                if isinstance(value, errno):
+                value = evaluate(arg)                      # primitive
+                if isinstance(value, errno):               # unknown identifier
                     return self.console.error(value)
-                
-                if value == Type.NULL:
-                    to_print += 'None'
-                    continue
-                if isinstance(value, bool):
+                elif value == Type.NULL:                   # -> None
+                    value = 'None'
+                elif isinstance(value, bool):              # -> brewin bool
                     value = self.console.TRUE_DEF if value else self.console.FALSE_DEF
-                to_print += str(value)
-                
-        self.console.output(to_print)              # print the value(s) to the console
+
+            to_print += str(value)                         # add to to_string
+        
+        self.console.output(to_print)                      # print the value(s) to the console
 
 
         
     def set_statement(self, statement):
-        variable = statement[0]  # variable object (name, vtype, value)
-        value    = statement[1]  # value to be assigned
+        variable = statement[0]                                     # variable object (name, vtype, value)
+        value    = statement[1]                                     # value to be assigned
 
-        #print(f'set called: {variable, value}')
-
-        if not isinstance(variable, Variable):           # invalid identifier
+        
+        if not isinstance(variable, Variable):                      # invalid identifier
             return self.console.error(errno.NAME_ERROR)
 
-        # variable to variable assignment
-        if isinstance(value, Variable):
-            if isinstance(value.value, Object):
+        if value == Type.NULL and isinstance(variable.vtype, Type): # invalid null assignment
+            return self.console.error(errno.TYPE_ERROR)
+
+
+        if isinstance(value, Variable):                             # variable to variable assignment
+            if isinstance(value.value, Object):                     # check object definition
                 self.validate_type(variable.type(), value.value)
             else:
                 self.validate_type(variable.type(), evaluate(value))
@@ -325,9 +277,6 @@ class Object:
             variable.value = value.value
             return
 
-        # can't assign null to primitives
-        if value == Type.NULL and isinstance(variable.vtype, Type):
-            return self.console.error(errno.TYPE_ERROR)
         
         if isinstance(value, list):
             value = self.run_statement(value)
@@ -456,12 +405,14 @@ class Object:
             
         return Variable("RETURN", method_type, return_value)
 
-    def return_value(self, return_value):
+
+    
+    def evaluate_return(self, return_value):
         vtype = self.current_method.type()                   # method return type
 
         if return_value == self.console.ME_DEF:              # if return me, return self
             self.validate_type(vtype, self)
-            return self
+            return Variable("RETURN", vtype, self)
             
         if return_value == Type.VOID:                        # if return type is void, return default value
             return self.default_return()
@@ -473,7 +424,8 @@ class Object:
         
         self.validate_type(vtype, return_value)
         
-        return Variable("RETURN", vtype, stringify(return_value))                       # stringify the return value
+        return Variable("RETURN", vtype, stringify(return_value))  # stringify the return value
+
 
 
     def push_local_variables(self, variables):
@@ -491,6 +443,7 @@ class Object:
             scope[name] = Variable(name, type_to_enum(vtype), stringify(value))
 
         self.current_method.local_stack.insert(0, scope)
+
 
 
     def validate_type(self, var_type, value):
@@ -570,6 +523,16 @@ class Object:
                 
         return True
 
-    
+    def build_hierarchy(self):
+        parent_class = self.current_class.super_class
+
+        if parent_class is None:
+            return None
+
+        self.parent = Object(parent_class, self.console)
+        self.parent.build_hierarchy()
+
+
+
 # 210/211
 # 88/90 gc

@@ -1,0 +1,4 @@
+p == s
+p != null
+null != p
+null == null

@@ -39,6 +39,10 @@ def evaluate(value):
     elif value == base.FALSE_DEF:
         return False
     try:
+        if isinstance(value, str):
+            if value[0] == '0':
+                return int(value)
+            
         value = eval(value)
         if isinstance(value, int):
             return value

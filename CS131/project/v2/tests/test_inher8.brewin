@@ -18,10 +18,9 @@
 
     (method void main ()
         (begin
-            (set a_ (new b))
-            (set b_ a_)
-
-            (print (call b_ m1))
+          (set a_ (new b))
+          (set b_ a_)
+          (print (call b_ m1))
         )
     )
 )
