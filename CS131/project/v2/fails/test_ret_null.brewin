@@ -1,0 +1,8 @@
+(class main
+  (method void test ()
+    (return null)
+  )
+  (method void main ()
+    (print (call me test))
+  )
+)

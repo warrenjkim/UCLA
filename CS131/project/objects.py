@@ -26,37 +26,38 @@ class Object:
 
         self.child          = None                                 # child class
         self.parent         = None                                 # parent class
-        self.build_hierarchy()
+        self.build_hierarchy()                                     # build object hierarchy
 
+
+
+    def __deepcopy__(self, memo = {}):
+        return self
 
 
         
     def run(self, method_name, method_args = []):
+        #print(f'here: {method_name}')
         self.current_method = self.methods.get(method_name)               # define the current method
         self.validate_method(self, self.current_method.name, method_args) # validate current method
         self.current_method.bind_args(method_args)                        # bind the current method arguments
-        self.operator.set_object(self)                                    # tbh idk why i need to do this but i do
         statements = deepcopy(self.current_method.statements)             # deep copy statements
         self.evaluate_all_identifiers(statements)
 
 
         for statement in statements:                                      # run each statement         
             return_value = self.run_statement(statement)                  # check for a return value
-            if isinstance(return_value, Variable):                        # terminate the loop if we return a value
-                try:
-                    self.validate_type(self.current_method.type(), evaluate(return_value))
+            if return_value is not None:
+                if return_value.name == "RETURN":
+                    return_value.name = "RUN"
                     return return_value
-                except:
-                    continue
 
-
-        return stringify(evaluate(self.default_return()))
+        return self.default_return()
 
 
 
     def run_statement(self, statement):
         # print(f'name: {self.current_method.type()}')
-        #print(f'running:{statement}')
+#        print(f'running:{statement}')
         for i, token in enumerate(statement):                    # check each token
             if token == self.console.RETURN_DEF:                 # (return) return the return value
                 return self.return_statement(statement)
@@ -88,7 +89,7 @@ class Object:
     # RETURN STATEMENT
     def return_statement(self, statement):
         if len(statement) == 1:                                            # there is no return value
-            return self.default_return()
+            return self.evaluate_return(Type.VOID)
         elif isinstance(statement[1], list):                               # there are nested calls
             return self.evaluate_return(self.run_statement(statement[1]))  # evaluate statement(s)
         else:
@@ -98,6 +99,7 @@ class Object:
 
     # CALL STATEMENT
     def call_statement(self, statement):
+#        print(f'call: {statement}')
         who = statement[0]                              # caller
         method_name = statement[1]                      # method name
         if isinstance(method_name, Variable):           # potential method name shadowing
@@ -109,19 +111,16 @@ class Object:
             who = self.run_statement(who)
 
         # determine who the owner is
-        if who == self.console.ME_DEF:
+        if who == self.console.ME_DEF:                  # child has priority over self
             owner = self if self.child is None else self.child
-        elif who == self.console.SUPER_DEF:
-            statement[0] = self.console.ME_DEF
+        elif who == self.console.SUPER_DEF:             # super class
             owner = self.parent
-            if self.parent is not None:
-                self.parent.child = self
-            owner.child = self
-        elif isinstance(who, Object): 
+            owner.child = self                          # current object is a child of super
+        elif isinstance(who, Object):                   # object defined
             owner = who
-        elif isinstance(who, Variable):
+        elif isinstance(who, Variable):                 # variable as argument
             owner = who.value
-            if owner == Type.NULL:
+            if owner == Type.NULL:                      # null dereference
                 self.console.error(errno.FAULT_ERROR)
 
         if owner is None:                               # unknown identifier
@@ -131,10 +130,10 @@ class Object:
         
         self.validate_method(owner, method_name, method_args)
 
-        caller = owner
+        caller = owner                                  # current caller
         owner = self.determine_polymorphic_function(owner, method_name, method_args)
 
-        if owner.child is None:
+        if owner.child is None:                         # assign owner.child to caller if there's no defined child
             owner.child = caller
 
 
@@ -143,10 +142,10 @@ class Object:
                 arg = owner.run_statement(arg)
             elif isinstance(arg, Variable):             # argument is a variable
                 arg = arg.value
-            elif arg == self.console.ME_DEF:            # argument is a constant
+            elif arg == self.console.ME_DEF:            # argument is me
                 arg = self
             else:
-                arg = stringify(evaluate(str(arg)))
+                arg = stringify(evaluate(arg))          # argument is a constant
 
             evaluated_method_args.append(arg)
 
@@ -185,12 +184,9 @@ class Object:
 
         while self.evaluate_condition(condition):               # run the while loop
             return_value = self.run_statement(true_statement)   # check for a return value
-            if isinstance(return_value, Variable):              # if there is a return value, terminate and return
-                try:
-                    self.validate_type(self.current_method.type(), evaluate(return_value))
+            if return_value is not None:
+                if return_value.name == "RETURN":
                     return return_value
-                except:
-                    continue
 
 
 
@@ -198,12 +194,15 @@ class Object:
     def begin_statement(self, statement):
         for nested_statement in statement:                       # run each statement in the begin block
             return_value = self.run_statement(nested_statement)  # check for a return value
-            if isinstance(return_value, Variable):               # if there's a return value, terminate and return
-                try:
-                    self.validate_type(self.current_method.type(), evaluate(return_value))
+            if return_value is not None:
+                if return_value.name == "RETURN":
                     return return_value
-                except:
-                    continue
+
+        # if return_value is not None:
+        #     return_value.name = "DEFAULT"
+        #     return return_value
+
+
 
 
     # LET STATEMENT
@@ -222,18 +221,21 @@ class Object:
     def new_statement(self, class_name):
         if self.console.classes.get(class_name) is None:         # fetch class
             return self.console.error(errno.TYPE_ERROR)          # invalid identifier
-        return Object(class_name, self.console)                   # new object
+        return Object(class_name, self.console)                  # new object
 
 
 
     # [noreturn]
     def print_statement(self, args):
+#        print(f'args: {args}')
         to_print = ""                                      # to_string
         for arg in args:                                   # for each argument
             if isinstance(arg, list):                      # nested call
                 value = evaluate(self.run_statement(arg))  # -> primitive
                 if isinstance(value, bool):                # -> brewin bool
                     value = self.console.TRUE_DEF if value else self.console.FALSE_DEF
+                elif value == Type.NULL:                   # -> None
+                    value = 'None'
             elif isinstance(arg, Variable):                # variable
                 if arg.vtype == Type.BOOL:                 # -> brewin bool
                     value = self.console.TRUE_DEF if evaluate(arg.value) else self.console.FALSE_DEF
@@ -251,6 +253,7 @@ class Object:
                     value = self.console.TRUE_DEF if value else self.console.FALSE_DEF
 
             to_print += str(value)                         # add to to_string
+
         
         self.console.output(to_print)                      # print the value(s) to the console
 
@@ -259,7 +262,6 @@ class Object:
     def set_statement(self, statement):
         variable = statement[0]                                     # variable object (name, vtype, value)
         value    = statement[1]                                     # value to be assigned
-
         
         if not isinstance(variable, Variable):                      # invalid identifier
             return self.console.error(errno.NAME_ERROR)
@@ -274,113 +276,117 @@ class Object:
             else:
                 self.validate_type(variable.type(), evaluate(value))
 
-            variable.value = value.value
+            variable.value = value.value                            # assign value and return
             return
 
-        
-        if isinstance(value, list):
-            value = self.run_statement(value)
-            self.validate_classes(variable, value)
+        if isinstance(value, list):                                 # nested call
+            value = self.run_statement(value)                       # evaluate statement(s)
+            self.validate_classes(variable, value)                  # type check
 
-        if isinstance(value, Object):
-            self.validate_type(variable.type(), value)
-            variable.value = value
+        if isinstance(value, Object):                               # object
+            self.validate_type(variable.type(), value)              # type check
+            variable.value = value                                  # assign value and return
             return
-        else:
-            value = evaluate(value)
-            
-        self.validate_type(variable.type(), value)
-
-        variable.value = stringify(value)
+        else:                                                       # primitive
+            value = evaluate(value)                                 # evaluate primitive for type checking
+            self.validate_type(variable.type(), value)              # type check
+            variable.value = stringify(value)                       # assign value and return
+            return
 
 
     # [noreturn]
-    def inputi_statement(self, name):
-        value = self.console.get_input()
-        self.validate_type(name.type(), evaluate(value))
-        name.value = value
+    def inputi_statement(self, variable):
+        value = self.console.get_input()                      # get input
+        self.validate_type(variable.type(), evaluate(value))  # type check
+        variable.value = value                                # assign value
 
 
 
     # [noreturn]
-    def inputs_statement(self, name):
-        value = self.console.get_input()
-        self.validate_type(name.type(), value)
-        name.value = stringify(value)
+    def inputs_statement(self, variable):
+        value = self.console.get_input()            # get input
+        self.validate_type(variable.type(), value)  # type check
+        variable.value = stringify(value)           # assign value
 
 
 
     ##### HELPER FUNCTIONS #####
 
     def evaluate_all_identifiers(self, statement):
-        self.replace_null(statement)
-        for variable in self.current_method.local_stack:
-            self.evaluate_args(statement, variable)
+        self.replace_null(statement)                             # replace 'null' with Type.NULL
+        for variable in self.current_method.local_stack:         # evaluate local stack first (in -> out)
+            self.evaluate_args(statement, variable)              # evaluate arguments
             
-        self.evaluate_args(statement, self.current_method.args)
-        self.evaluate_args(statement, self.fields)
+        self.evaluate_args(statement, self.current_method.args)  # evaluate method arguments next
+        self.evaluate_args(statement, self.fields)               # evaluate field arguments last
 
 
     
     def evaluate_args(self, statement, args):
-        for key in args:
-            self.replace_arg_with_argv(statement, key, args[key])
+        for key in args:                                           # for each key
+            self.replace_arg_with_argv(statement, key, args[key])  # replace key with value
 
-
-    def replace_null(self, tokens):
-        for i, token in enumerate(tokens):
-            if isinstance(token, list):
-                self.replace_null(token)                
-            else:
-                if token == self.console.NULL_DEF:
-                    tokens[i] = Type.NULL
 
     def replace_arg_with_argv(self, tokens, arg, argv):
-        for i, token in enumerate(tokens):
-            if isinstance(token, list):
-                self.replace_arg_with_argv(token, arg, argv)                
+        for i, token in enumerate(tokens):                    # for each item
+            if isinstance(token, Variable):
+                tokens[i] = token
+            if isinstance(token, list):                       # nested calls -> recurse
+                self.replace_arg_with_argv(token, arg, argv)              
             else:
-                if token == arg:
+                if token == arg:                              # replace key with value
                     tokens[i] = argv
 
 
+
+    def replace_null(self, tokens):
+        for i, token in enumerate(tokens):          # for each item
+            if isinstance(token, list):             # nested calls -> recurse
+                self.replace_null(token)                
+            else:
+                if token == self.console.NULL_DEF:  # if item is 'null', replace with Type.NULL
+                    tokens[i] = Type.NULL
+
+
+
+
     def validate_method(self, owner, method_name, method_args = []):
-        if owner is None:
+        if owner is None:                                # invalid method
             return self.console.error(errno.NAME_ERROR)
 
-        if owner.methods.get(method_name) is None:
+        if owner.methods.get(method_name) is None:       # no instance of method -> recurse up
             return self.validate_method(owner.parent, method_name, method_args)
         
-        method = owner.methods.get(method_name)
+        method = owner.methods.get(method_name)          # get method
         
-        if len(method.args) != len(method_args):
+        if len(method.args) != len(method_args):         # if arguments don't match -> recurse up
             return self.validate_method(owner.parent, method_name, method_args)
 
-        if not self.valid_args(method, method_args):
+        if not self.valid_args(method, method_args):     # if arguments are not valid -> recurse up
             return self.validate_method(owner.parent, method_name, method_args)
             
 
     def valid_args(self, method, method_args):
         i = 0
-        for key, arg in method.args.items():
+        for key, arg in method.args.items():  # for each key, validate type
             try:
                 self.validate_type(arg.type(), evaluate(method_args[i]))
                 i += 1
             except:
-                return False
+                return False                  # catch error -> invalid
 
         return True
 
     def valid_boolean(self, statement):
         if isinstance(statement, Variable):
-            return statement.vtype == Type.BOOL
+            return statement.vtype == Type.BOOL                       # check if variable is a bool
         if isinstance(statement, list):
-            if isinstance(self.evaluate_condition(statement), bool):
+            if isinstance(self.evaluate_condition(statement), bool):  # check if statement is a bool
                 return True
             else:
                 return False
         else:
-            return statement == self.console.TRUE_DEF or statement == self.console.FALSE_DEF
+            return statement == self.console.TRUE_DEF or statement == self.console.FALSE_DEF  # check brewin bool
 
     
     def evaluate_condition(self, condition):
@@ -403,19 +409,19 @@ class Object:
         if not isinstance(method_type, Type): # method expects an object
             return_value = "None"
             
-        return Variable("RETURN", method_type, return_value)
+        return Variable("DEFAULT", method_type, return_value)
 
 
     
     def evaluate_return(self, return_value):
         vtype = self.current_method.type()                   # method return type
-
+            
         if return_value == self.console.ME_DEF:              # if return me, return self
             self.validate_type(vtype, self)
             return Variable("RETURN", vtype, self)
             
         if return_value == Type.VOID:                        # if return type is void, return default value
-            return self.default_return()
+            return_value = self.default_return()
 
         return_value = evaluate(return_value)
         
@@ -452,7 +458,8 @@ class Object:
                 return self.console.error(errno.TYPE_ERROR)
             
         if value == Type.NULL:
-            return
+            if self.console.classes.get(var_type) is None:
+                return self.console.error(errno.TYPE_ERROR)
         if isinstance(value, Object):
             if var_type != value.vtype:
                 if value.parent is None:
@@ -534,5 +541,5 @@ class Object:
 
 
 
-# 210/211
-# 88/90 gc
+# 237/237
+# 89/90 gs

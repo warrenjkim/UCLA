@@ -1,0 +1,96 @@
+1a)
+refCount should be an int pointer since refCount has to be shared
+across multiple objects.
+
+1b)
+my_shared_ptr(int* ptr) {
+    this->ptr = ptr;
+    this->refCount = new int(1);
+}
+
+1c)
+my_shared_ptr(const my_shared_ptr& other) {
+    this->ptr = other;
+    this->refCount = other.refCount;
+    (*refCount)++;
+}
+
+1d)
+~my_shared_ptr() {
+    (*refCount)--;
+    if (refCount == 0) {
+        if (ptr != nullptr) {
+            delete this->ptr;
+            delete this->refCount;
+	}
+    }
+}
+
+1e)
+my_shared_ptr& operator=(const my_shared_ptr& other) {
+    if (this == &other)
+        return this;
+
+    (*refCount)--;
+    if (*refCount == 0) {
+        if (ptr != nullptr)
+	    delete ptr;
+	delete refCount;
+    }
+
+    this->ptr = other.ptr;
+    this->refCount = other.refCount;
+    (*this->refCount)++;
+
+    return *this;
+}
+
+2a)
+A program running in a space probe has to be extremely quick and
+efficient in order to transmit data at a reasonable rate. Garbage
+collection is nondeterministic and additionally pauses execution any
+time garbage collection begins. This uncertainty is suboptimal for
+realtime systems.
+
+2b)
+No. Reference counting has the issue of not being able to garbage
+collect circular references, since the reference count of those
+objects will always be at least 1. Additionally, reference counting
+still pauses execution when garbage collecting.
+
+2c)
+C# since mark-and-compact GC will better deal with random array
+lengths since it reduces fragmentation when garbage collecting.
+
+2d)
+The destructor for RoomView is most likely never being garbage
+collected. C++ destructors always run but Go finalizers do not since
+they only run at garbage collection. One thing she can do to solve
+this issue is to manually delete sockets when someone leaves a room.
+
+3a)
+This language could be using pass by reference since the values that
+were passed in are mutated after the function call.
+
+3b)
+If the values of x and y were not mutated, the language could be
+using: pass by value or object reference. This is because in
+pass by value, the value gets copied, so the original x isn't
+mutated. Pass by object reference will pass in the object reference,
+but when we reassign x and y, they are pointing to a new x and y,
+not mutating the original x and y.
+
+3c)
+Pass by value: 2
+- The function func() receives a copy of x so the original x is not
+mutated.
+
+Pass by object reference: 5
+- The function func() passes in x's object reference. The object
+reference's attribute points to a new value. Therefore, the new value
+of x.x is 5.
+
+4)
+Lines 1, 2 3 are being casted while lines 4, 5 are being
+converted. This is because only movl instructions are being
+generated. Lines 4, 5 generate conversions via movzbl and cvtsi2ssl.

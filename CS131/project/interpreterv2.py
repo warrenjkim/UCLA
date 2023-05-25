@@ -12,8 +12,12 @@ class Interpreter(base):
     PRIMITIVES = [base.INT_DEF, base.BOOL_DEF, base.STRING_DEF, base.VOID_DEF]
     DEFINED_TYPES = set()
     classes = { }
+
     def __init__(self, console_output = True, inp = None, trace_output = None):
         super().__init__(console_output, inp)
+
+    def __deepcopy__(self, memo = {}):
+        return self
 
     def run(self, program):
         self.reset()

@@ -1,11 +1,11 @@
 from intbase import ErrorType as errno
-from copy import deepcopy
+from copy import copy, deepcopy
 from brewintypes import Type, typeof, type_to_enum
 from variable import Variable, evaluate, stringify
 
     
 class Operators:
-    def __init__(self, curr_object = None):
+    def __init__(self, curr_object):
         self.__curr_object = curr_object
 
 
@@ -54,6 +54,10 @@ class Operators:
         self.__validate_operands('==', lhs, rhs)
         if isinstance(lhs, type(self.__curr_object)):
             return lhs is rhs
+        if lhs == Type.NULL:
+            lhs = None
+        if rhs == Type.NULL:
+            rhs = None
         return lhs == rhs
 
 
@@ -95,7 +99,7 @@ class Operators:
 
 
     def __same_types(self, lhs, rhs):
-        if typeof(lhs) == Type.OBJECT and typeof(rhs) == Type.OBJECT:
+        if isinstance(lhs, Variable) and isinstance(rhs, Variable):
             return self.compare_objects(lhs, rhs)
             
         return typeof(lhs) == typeof(rhs)
@@ -124,8 +128,8 @@ class Operators:
 
 
     def __parse_binary_operator(self, args):
+#        print(args)
         args = deepcopy(args)
-
         self.__replace_identifiers_with_primitives(args)
 
         operator = args[0]   # first argument is always the operator
@@ -140,12 +144,12 @@ class Operators:
             rhs = self.__curr_object.run_statement(rhs)
 
         self.validate_classes(lhs, rhs)
-            
+
         # reduce to primitive values (if possible)
         lhs = evaluate(lhs)
         rhs = evaluate(rhs)
-        #print(f'lhs,rhs: {lhs, rhs}')
-        
+#        print(f'lhs,rhs: {lhs, rhs}')
+
         # arithmetic operators
         if operator == '+':
             return stringify(self.add(lhs, rhs))

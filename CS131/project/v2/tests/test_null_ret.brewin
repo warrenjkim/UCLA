@@ -1,0 +1,10 @@
+
+
+(class main
+  (method main test ()
+    (return null)
+  )
+  (method void main ()
+    (print (call me test))
+  )
+)
