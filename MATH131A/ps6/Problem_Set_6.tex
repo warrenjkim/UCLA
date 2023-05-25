@@ -1,0 +1,186 @@
+\documentclass[13pt]{article}
+\usepackage{amsmath, amsthm, amssymb, graphicx, enumitem, esvect}
+
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+\title{Problem Set 6}
+\author{Warren Kim}
+
+\begin{document}
+\maketitle
+
+\newpage
+\section*{Question 2 part (b)}
+Show that $L_A$ is closed.
+
+\subsection*{Response}
+\begin{proof}
+Let $x \in L_{L_A}$. Then, $x$ is a limit point of $L_A$, so for all
+$\varepsilon > 0$, there exists some $y \in L_A \cap (x - \varepsilon,
+x + \varepsilon)$ such that $y \neq x$. Since $x \neq y$ by definition
+of a neighborhood, $y$ is also a limit point of $L_A$, but $y \in L_A$
+since for any two sets $A, B$, if $x \in A \cap B$ then $x \in
+A$. Since $y$ was arbitrary, this holds for every limit point in $L_A$. So,
+$x \in L_A$. Since $x$ was arbitrary, this holds for any point in
+$L_{L_A}$, so $L_A$ is closed.
+\end{proof}
+
+\newpage
+\section*{Question 3}
+Show that $c \in A$ is an isolated point if and only if it is not a
+limit point of $A$.
+
+\subsection*{Response}
+\begin{proof}
+  ($c \in A$ is an isolated point $\implies$ $c \in A$ is not a limit
+  point) \\
+  Let $c \in A$ be an isolated point. Then, by defintion, there exists
+  some $\varepsilon > 0$ such that $A \cap (c - \varepsilon, c +
+  \varepsilon) = \{c\}$ which implies that for any $y \neq c, \ y
+  \not\in \{c\}$. Then by the neighborhood definition of a limit
+  point, $c \in A$ cannot be a limit point since $\exists \varepsilon
+  > 0 : A \cap (c - \varepsilon, c + \varepsilon) : y
+  \neq c = \emptyset \iff \neg[\forall \varepsilon > 0, \ \exists y
+  \in A \cap (c - \varepsilon, c + \varepsilon) : y \neq c]$, or the
+  negation of the neighborhood definition of a limit point. Therefore,
+  if $c \in A$ is an isolated point, then it is not a limit point of
+  $A$. \\ \\
+  ($c \in A$ is an isolated point $\impliedby$ $c \in A$ is not a limit
+  point) \\
+  Let $c \in A$ not be a limit point. Then, by the neighborhood
+  definition of a limit, $\neg[\forall \varepsilon > 0, \ \exists y
+  \in A \cap (c - \varepsilon, c + \varepsilon) : y \neq c] \iff \exists \varepsilon
+  > 0 : A \cap (c - \varepsilon, c + \varepsilon) : y \neq c =
+  \emptyset$. That is, the only point in the intersection of $A$ and
+  $(c - \varepsilon, c + \varepsilon)$ is $c$ itself, since $c \in A$
+  by assumption. This is precisely the definition of an isolated
+  point. Therefore, if $c \in A$ is not a limit point, then it is
+  an isolated point. \\ \\
+  Since we proved both directions, the proof is complete.
+\end{proof}
+
+\newpage
+\section*{Question 4 part (a)}
+(a) Let $a, b \in \mathbb{R}$. Prove that the interval $[a, b] := \{ x
+\in \mathbb{R} : a \leq x \leq b \}$ is a closed set.
+
+\subsection*{Response}
+\begin{proof}
+  Assume by contradiction that $[a, b]$ is not closed. Then there
+  exists an $x \in L_{[a, b]}$ but $x \not\in [a, b]$. By the
+  neighborhood definition of a limit, for all $\varepsilon > 0$, there
+  exists some $y \in [a, b] \cap (x - \varepsilon, x +
+  \varepsilon)$. There are two cases: 
+  \begin{enumerate}[label=\textit{\textbf{Case \Roman*:}}]
+  \item $x < a$ \\
+    Choose $\varepsilon = a - x > 0$ (by assumption, $x <
+    a$). Then, $[a, b] \cap \left(x - (a - x), x + (a - x)\right)
+    = [a, b] \cap \left(x - \varepsilon, a\right) = \emptyset$, a
+    contradiction that $x$ is a limit point of $[a, b]$.
+  \item $x > b$ \\
+    Choose $\varepsilon = x - b > 0$ (by assumption,
+    $x > b$). Then, $[a, b] \cap (x - (x - b), x + (x - b))
+    = [a, b] \cap (b, x + \varepsilon) = \emptyset$, a contradiction that $x$ is a
+    limit point of $[a, b]$.
+  \end{enumerate}
+  Since $x$ was arbitrary, this holds for any $x \in \mathbb{R}
+  \setminus [a, b]$. In either case, we reach a contradiction.
+  Therefore, $[a, b]$ must be closed.
+\end{proof}
+
+\newpage
+\section*{Question 5 part (c)}
+Prove the following by using the $(\varepsilon, \delta)$-definition of
+the functional limit: \\
+(c) $\lim\limits_{x \to 1} \frac{x^2 - x + 1}{x + 1} = \frac{1}{2}$ \\ \\
+
+\subsection*{Response}
+\textit{Scratch} \\
+\begin{align*}
+  \left| \frac{x^2 - x + 1}{x + 1} - \frac{1}{2} \right|
+  &= \left| \frac{2(x^2 - x + 1) - (x + 1)}{2(x + 1)} \right| \\
+  &= \left| \frac{2x^2 - 3x + 1}{2(x + 1)} \right| \\
+  &= \left| \frac{(2x - 1)(x - 1)}{2(x + 1)} \right| \\
+  &\leq \left| \frac{2x - 1}{x + 1} \delta \right| < \varepsilon
+\end{align*}
+Let $\delta = 1$
+\begin{align*}
+  |x - 1| < 1 &\implies 0 < x < 2 \\
+  |2x - 1| < 1 &\implies -\frac{1}{2} < 2x - 1 < \frac{3}{2} \\
+  |x + 1| < 1 &\implies 1 < x + 1 < 3              
+\end{align*}
+So $1 < x < \frac{3}{2}$ to ensure that all three conditions are met. Then,
+\begin{align*}
+  \left| f(x) - \frac{1}{2} \right| &\leq \frac{3}{2} \delta <
+                                      \varepsilon \\
+  \delta &< \frac{2}{3} \varepsilon
+\end{align*}
+\begin{proof}
+  Let $\varepsilon > 0$. Choose $\delta = \min\left\{ 1,
+    \frac{2}{3}\varepsilon \right\}$. If $|x - 1| < \delta$, then $x +
+  1 \neq 0$ and 
+  $\frac{x^2 - x + 1}{x + 1} \leq \left| \frac{2x - 1}{x + 1} \delta
+  \right| < \varepsilon$. Therefore, $\lim\limits_{x \to 1} \frac{x^2 - x +
+    1}{x + 1} = \frac{1}{2}$. 
+\end{proof}
+
+\newpage
+\section*{Question 7 part (a)}
+(a) $f(x) = \frac{x}{|x|}$
+
+\subsection*{Response}
+\begin{enumerate}[label=(\roman*)]
+\item $\lim\limits_{x \to 0^+} f(x)$: \\
+  $\exists (x_n) : x_n > 0, x_n
+  \rightarrow 1$. Then, $\lim\limits_{n \to \infty} f(x_n) =
+  f(\lim\limits_{n \to \infty} x_n) =
+  f(\lim\limits_{n \to \infty} \frac{x_n}{|x_n|}) =
+  1$, so $\lim\limits_{x \to 0^+}
+  \frac{x}{|x|} = 1$.
+
+\item $\lim\limits_{x \to 0^-} f(x)$: \\
+  $\exists (x_n) : x_n < 0, x_n
+  \rightarrow -1$. Then, $\lim\limits_{n \to \infty} f(x_n) =
+  f(\lim\limits_{n \to \infty} x_n) =
+  f(\lim\limits_{n \to \infty} \frac{x_n}{|x_n|}) =
+  -1$, so $\lim\limits_{x \to 0^-} 
+  \frac{x}{|x|} = -1$.
+
+\item $\lim\limits_{x \to 0} f(x)$: \\
+  Since $\lim\limits_{x \to 0^-}
+  \frac{x}{|x|} \neq \lim\limits_{x \to 0^+} \frac{x}{|x|}$, $\lim\limits_{x \to 0}
+  \frac{x}{|x|}$ does not exist.
+
+\item $\lim\limits_{x \to +\infty} f(x)$: \\
+  $\exists (x_n) : x_n
+  \rightarrow 1$. Then, $\lim\limits_{n \to \infty} f(x_n) =
+  f(\lim\limits_{n \to \infty} x_n) =
+  f(\lim\limits_{n \to \infty} \frac{x_n}{|x_n|}) =
+  1$, so $\lim\limits_{x \to +\infty} 
+  \frac{x}{|x|} = 1$.
+
+\item $\lim\limits_{x \to -\infty} f(x)$: \\
+  $\exists (x_n) : x_n
+  \rightarrow -1$. Then, $\lim\limits_{n \to \infty} f(x_n) =
+  f(\lim\limits_{n \to \infty} x_n) =
+  f(\lim\limits_{n \to \infty} \frac{x_n}{|x_n|}) =
+  -1$, so $\lim\limits_{x \to -\infty} 
+  \frac{x}{|x|} = -1$.
+\end{enumerate}
+
+
+
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
