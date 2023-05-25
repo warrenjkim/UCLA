@@ -166,16 +166,12 @@ What is the probability density function of the time duration of your trip?
 
 \subsection*{Response}
 Given $t = \frac{d}{v}$, we have:
-$t_1 = \frac{270}{60} = 4.5$, $t_2 = \frac{270}{30} = 9$. Then,
-\[F(t) = \frac{60 - v}{30} = \frac{60 - \frac{270}{t}}{30} = 2 - \frac{9}{t}\]
-so
-\[f(t) = \frac{d}{dt} F(t) = \frac{9}{t^2}\]
-Hence,
+$t_1 = \frac{270}{60} = 4.5$, $t_2 = \frac{270}{30} = 9$. Then, given that the
+uniform probability distribution is $\frac{1}{t_2 - t_1}$, we get:
 \[f(t) =
   \begin{cases}
-    \frac{9}{t^2} & 4.5 \leq t \leq 9 \\
-    0 & t < 4.5 \\
-    1 & t > 9
+    \frac{1}{4.5} & 4.5 \leq t \leq 9 \\
+    0 & else \\
   \end{cases}
 \]
 \end{document}
