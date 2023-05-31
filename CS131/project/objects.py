@@ -14,7 +14,7 @@ class Object:
 
     def __init__(self, name, console):
         self.console        = console                              # interpreter console
-#        self.templates      = console.templates                    # templates
+        self.templates      = console.templates                    # templates
         self.name           = name
         self.vtype          = self.name                            # current class vtype  maybe Object
         
@@ -199,11 +199,6 @@ class Object:
                 if return_value.name == "RETURN":
                     return return_value
 
-        # if return_value is not None:
-        #     return_value.name = "DEFAULT"
-        #     return return_value
-
-
 
 
     # LET STATEMENT
@@ -220,7 +215,15 @@ class Object:
     
     # NEW STATEMENT
     def new_statement(self, class_name):
-        if self.console.classes.get(class_name) is None:         # fetch class
+        if self.console.TYPE_CONCAT_CHAR in class_name:
+            split      = class_name.split(self.console.TYPE_CONCAT_CHAR)  # split class name and type
+            template_name = split[0]
+            vtype      = split[1:]
+            if self.console.templates.get(template_name) is None:
+                return self.console.error(errno.TYPE_ERROR)
+
+            self.generate_concrete_class(class_name, vtype)
+        elif self.console.classes.get(class_name) is None:         # fetch class
             return self.console.error(errno.TYPE_ERROR)          # invalid identifier
         return Object(class_name, self.console)                  # new object
 
@@ -458,8 +461,15 @@ class Object:
 
 
     def validate_type(self, var_type, value):
-        if self.console.TYPE_CONCAT_CHAR in var_type:
-            return self.validate_template(var_type, value)
+        if isinstance(var_type, str):
+            if self.console.TYPE_CONCAT_CHAR in var_type:
+                template_name = var_type.split(self.console.TYPE_CONCAT_CHAR)[0]
+                if self.console.classes.get(var_type) is None:
+                    if self.templates.get(template_name) is None:
+                        return self.console.error(errno.TYPE_ERROR)
+                    else:
+                        self.new_statement(var_type)
+                        
         if var_type == Type.VOID:
             if value is not None:
                 return self.console.error(errno.TYPE_ERROR)
@@ -467,6 +477,7 @@ class Object:
         if value == Type.NULL:
             if self.console.classes.get(var_type) is None:
                 return self.console.error(errno.TYPE_ERROR)
+            
         if isinstance(value, Object):
             if var_type != value.vtype:
                 if value.parent is None:
@@ -484,9 +495,6 @@ class Object:
             if var_type != Type.STRING:
                 return self.console.error(errno.TYPE_ERROR)
 
-    def validate_template(self, var_type, value):
-        return
-        
     def type(self):
         return self.vtype
 
@@ -551,5 +559,54 @@ class Object:
 
 
 
-# 237/237
-# 89/90 gs
+    def generate_concrete_class(self, name, types):
+        template_name = name.split(self.console.TYPE_CONCAT_CHAR)[0]
+        class_name = name
+            
+        class_obj = Class(class_name)
+        template = deepcopy(self.templates[template_name])
+        self.replace_template_types(template, types)
+        class_obj.methods = template.methods
+        class_obj.fields = template.fields
+
+        self.console.classes[class_name] = class_obj
+
+
+
+    # replace fields first
+    # replace methods
+    def replace_template_types(self, template, concrete_types):
+        for i, vtype in enumerate(template.types):       # each type in the template
+            self.replace_template_objects(template.fields, vtype, concrete_types[i])
+            self.replace_template_objects(template.methods, vtype, concrete_types[i])
+            self.replace_template_methods(template.methods, vtype, concrete_types[i])
+            
+
+
+    def replace_template_methods(self, methods, template_type, concrete_type):
+        for _, method in methods.items():
+            self.replace_template_objects(method.args, template_type, concrete_type)
+            self.replace_template_tokens(method.statements, template_type, concrete_type)
+
+
+            
+    def replace_template_objects(self, objects, template_type, concrete_type):
+        for _, obj in objects.items():
+            if obj.vtype == template_type:
+                obj.vtype = type_to_enum(concrete_type)
+
+            elif not isinstance(obj.vtype, Type):                           # replacing object
+                if self.console.TYPE_CONCAT_CHAR in obj.vtype:
+                    obj.vtype = obj.vtype.replace(template_type, concrete_type)
+
+                        
+    def replace_template_tokens(self, tokens, template_type, concrete_type):
+        for i, token in enumerate(tokens):
+            if isinstance(token, list):
+                self.replace_template_tokens(token, template_type, concrete_type)
+            elif isinstance(token, Variable):
+                self.replace_template_objects(token, template_type, concrete_type)
+
+            elif isinstance(token, str):
+                if token == template_type:
+                    tokens[i] = type_to_enum(concrete_type)

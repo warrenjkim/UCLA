@@ -28,6 +28,8 @@ def typeof(value):
 
 
 def type_to_enum(value):
+    if isinstance(value, Type):
+        return value
     if value == base.NULL_DEF:
         return Type.NULL
     if value == base.VOID_DEF:

@@ -83,6 +83,7 @@ class Interpreter(base):
                 return
 
 
+            
     def parse_template_field(self, class_name, tokens):
         split = tokens[0].split(self.TYPE_CONCAT_CHAR)
         if len(split) < 2:
@@ -93,13 +94,10 @@ class Interpreter(base):
             vtype = split[1]
         name = tokens[1]
 
-        print(f'here: {template_name, vtype, name}')
         if len(tokens) == 3:
             value = tokens[2]
         else:
             value = self.__default_value(vtype)
-
-        self.__validate_type(vtype, value)
 
         if value == self.NULL_DEF:
             value = Type.NULL
@@ -109,7 +107,9 @@ class Interpreter(base):
             value = stringify(value)
         
         self.templates[class_name].set_field(name, type_to_enum(vtype), value)
-    
+
+
+        
     def parse_template_method(self, class_name, tokens):
         split = tokens[0].split(self.TYPE_CONCAT_CHAR)
         if len(split) < 2:
@@ -120,7 +120,7 @@ class Interpreter(base):
             vtype = split[1]
 
         name = tokens[1]
-        args = self.__format_method_args(tokens[2])
+        args = self.__format_method_args(tokens[2], templated = True)
         if len(tokens) >= 4:
             statements = tokens[3]
         else:
@@ -129,7 +129,9 @@ class Interpreter(base):
             vtype = type_to_enum(vtype)
         
         self.templates[class_name].add_method(name, vtype, args, statements)
-    
+
+
+        
     def parse_field(self, class_name, tokens):
         if self.templates.get(class_name) is not None:
             return self.parse_template_field(class_name, tokens)
@@ -152,6 +154,8 @@ class Interpreter(base):
         
         self.classes[class_name].set_field(name, type_to_enum(vtype), value)
 
+
+        
     def parse_method(self, class_name, tokens):
         if self.templates.get(class_name) is not None:
             return self.parse_template_method(class_name, tokens)
@@ -172,7 +176,8 @@ class Interpreter(base):
         self.classes[class_name].add_method(name, vtype, args, statements)
 
         
-    def __format_method_args(self, args = []):
+        
+    def __format_method_args(self, args = [], templated = False):
         arg_names = [arg[1] for arg in args]
         if len(set(arg_names)) != len(arg_names):
             return self.error(errno.NAME_ERROR)
@@ -180,8 +185,8 @@ class Interpreter(base):
         formatted_args = { }
         for arg in args:
             arg_type = arg[0]
-            
-            self.__validate_type(arg_type)
+
+            self.__validate_type(arg_type, templated = templated)
             
             arg_name = arg[1]
             formatted_args[arg_name] = Variable(arg_name, type_to_enum(arg_type), None)
@@ -248,9 +253,9 @@ class Interpreter(base):
             field_names = []
         
 
-    def __validate_type(self, vtype, value = None):
-        if self.TYPE_CONCAT_CHAR in vtype:
-            return self.__validate_template(vtype, value)
+    def __validate_type(self, vtype, value = None, templated = False):
+        if templated:
+            return                                        # no type checking for templates
         if vtype not in self.PRIMITIVES:                  # not a primitive type
             if vtype not in self.DEFINED_TYPES:           # not in existing class types
                 if self.classes.get(vtype) is None:       # if invalid class type
@@ -275,14 +280,6 @@ class Interpreter(base):
         elif typeof(evaluate(vtype)) == Type.OBJECT:
             if value != self.NULL_DEF:
                 return self.error(errno.TYPE_ERROR)
-
-
-    def __validate_template(self, vtype, value):
-        parsed_type = vtype.split(self.TYPE_CONCAT_CHAR)
-        template_name = parsed_type[0]
-        
-        
-
 
 
         

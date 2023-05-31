@@ -49,3 +49,8 @@ Working on return default on Gradescope
 Started working on part 3
 * Working on templates
 * Implemented default values
+
+05/31, 15:40
+Some template features working
+* TODO: try/catch
+* Probably clean up some code

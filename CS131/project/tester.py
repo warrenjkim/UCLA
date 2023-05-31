@@ -152,7 +152,7 @@ def generate_test_suite_v3():
                   if file.suffix == ".brewin"]
     return __generate_test_suite(3, test_names, fail_names)
 
-#    return __generate_test_suite(3, ['test_template8'], [])
+#    return __generate_test_suite(3, ['test_template1'], [])
 
 
 async def main():
@@ -160,7 +160,7 @@ async def main():
     if not sys.argv:
         raise ValueError("Error: Missing version number argument")
     version = sys.argv[1]
-    module_name = f"interpreterv{version}"
+    module_name = f"interpreterv3"
     interpreter = importlib.import_module(module_name)
 
     scaffold = TestScaffold(interpreter)

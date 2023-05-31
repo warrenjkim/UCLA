@@ -20,7 +20,9 @@ class Template:
     
     def __str__(self):
         return str(self.__dict__)
-    
+
+
+
 class Class:
     def __init__(self, name, super_class = None):
         self.name = name
