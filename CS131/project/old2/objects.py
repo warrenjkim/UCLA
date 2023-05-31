@@ -445,10 +445,11 @@ class Object:
         for variable in variables:
             vtype = variable[0]
             name = variable[1]
-            if len(variable) == 3:
-                value = evaluate(variable[2])
-            else:
-                value = evaluate(self.console.__default_value(vtype))
+            value = evaluate(variable[2])
+            # if len(variable) == 3:
+            #     value = evaluate(variable[2])
+            # else:
+            #     value = evaluate(self.console.__default_value(vtype))
                 
             self.validate_type(type_to_enum(vtype), value)
             scope[name] = Variable(name, type_to_enum(vtype), stringify(value))
@@ -458,8 +459,6 @@ class Object:
 
 
     def validate_type(self, var_type, value):
-        if self.console.TYPE_CONCAT_CHAR in var_type:
-            return self.validate_template(var_type, value)
         if var_type == Type.VOID:
             if value is not None:
                 return self.console.error(errno.TYPE_ERROR)
@@ -484,9 +483,6 @@ class Object:
             if var_type != Type.STRING:
                 return self.console.error(errno.TYPE_ERROR)
 
-    def validate_template(self, var_type, value):
-        return
-        
     def type(self):
         return self.vtype
 

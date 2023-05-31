@@ -12,35 +12,40 @@ make everything strings
 constant strings must be wrapped in ""
 variables must have values wrapped in ""
 
-05/17, 2:15AM
+05/17, 02:15
 Currently at 190/205 on test cases
 Currently at 77/90 on Gradescope
 * Need to restructure inheritance model ** FINISHED **
 
-05/17, 4:20PM
+05/17, 16:20
 Idea for inheritance/type system: have a list of types in the form of a stack. ** SCRATCHED **
 
-05/18, 10:30AM
+05/18, 10:30
 Currently at 200/205 on test cases
 Currently at 79/90 on Gradescope
 * Need to add super keyword ** FINISHED **
 
 Added super keyword and got to 202/205 on test cases and 84/90 on Gradescope lmfao
 
-05/18, 10:50AM
+05/18, 10:50
 Currently at 203/205 on test cases
 Currently at 85/90 on Gradescope
 Fixed inheritance model
 * Working on polymorphism ** FINISHED **
 
-05/18, 10:55AM
+05/18, 10:55
 Currently at 205/205 on test cases
 Currently at 88/90 on Gradescope
 Fixed polymorphism
 Working on return default, return assign type on Gradescope
 
-05/18, 12:45PM
+05/18, 12:45
 Currently at 211/211 on test cases
 Currently at 89/90 on Gradescope
 ** FIXED return assign type **
 Working on return default on Gradescope
+
+05/30, 20:20
+Started working on part 3
+* Working on templates
+* Implemented default values

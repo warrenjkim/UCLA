@@ -144,7 +144,15 @@ def generate_test_suite_v2():
 
 def generate_test_suite_v3():
     """wrapper for generate_test_suite for v3"""
-    return __generate_test_suite(3, [], [])
+    tests_dir = Path("v3/tests")
+    fails_dir = Path("v3/fails")
+    test_names = [file.stem for file in tests_dir.iterdir()
+                  if file.suffix == ".brewin"]
+    fail_names = [file.stem for file in fails_dir.iterdir()
+                  if file.suffix == ".brewin"]
+    return __generate_test_suite(3, test_names, fail_names)
+
+#    return __generate_test_suite(3, ['test_template8'], [])
 
 
 async def main():
