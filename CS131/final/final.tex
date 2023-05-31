@@ -1,0 +1,944 @@
+\documentclass{article}
+\usepackage{amsmath, amsthm, amssymb, graphicx, enumitem, esvect}
+
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+\usepackage[arrow]{xy}
+
+\title{CS 131}
+\author{Warren Kim}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+
+\newpage
+\section{Parameter Passing}
+\subsection{Semantics}
+\begin{enumerate}[label=(\roman*)]
+\item Pass by Value: A copy of the argument's value/object gets passed
+  in to the formal parameter.
+\item Pass by Reference: The formal parameter is an alias for the
+  argument's value/object.
+\item Pass by Object Reference: A pointer to the argument's
+  value/object gets passed in to the formal parameter.
+\item Pass by Name/Need: The parameter points to an expression graph
+  that represents the argument.
+\end{enumerate}
+
+\subsubsection{Examples}
+\subsubsection*{Pass by Value}
+\begin{verbatim}
+void add_to_string(std::string n) {
+    std::string t = n + " add";
+    n = t;
+}
+
+int main() {
+    std::string s = "String";
+    add_to_string(s);
+    std::cout << s;
+}
+\end{verbatim}
+prints out: \texttt{String}
+
+\subsubsection*{Pass by Reference}
+\begin{verbatim}
+void add_to_string(std::string& n) { ... }
+void main() { see example above }
+\end{verbatim}
+prints out: \texttt{String add}
+
+\subsubsection*{Pass by Object Reference}
+\begin{verbatim}
+class Nerd:
+    def __init__(self, name, iq):
+        self.name = name
+        self.iq = iq
+
+    def study(self):
+        self.iq = self.iq + 50
+...
+
+def increase_iq(n):
+    n.study()
+
+def main():
+    a = Nerd("name", 100)
+    increase_iq(a)
+    print(a.iq())
+\end{verbatim}
+prints out: \texttt{150}
+
+
+
+
+
+
+\subsection{Positional/Named/Optional Parameters}
+\begin{enumerate}[label=(\roman*)]
+\item Positional Parameters: Arguments must match the order of the
+  formal parameters.
+\item Named Parameters: The name of the parameter must be explicitly
+  defined in the function call (e.g. \texttt{your\_function(arg =
+    10)}). The arguments need not be in the same order as the formal parameters.
+\item Optional Parameters: Default values can be set to formal
+  parameters (e.g. \texttt{your\_function(one, two = 10)}. Here,
+  \texttt{two} has a default value of 10, so calling
+  \texttt{your\_function(20)} will assign the formal parameters: \texttt{one = 20, two = 10}).
+\end{enumerate}
+
+\subsection{Variadic Functions}
+A function that can take in a variable number of arguments
+(e.g. Python's \texttt{print()}). \\
+Most languages gather variadic arguments and add them to a container
+(e.g. array, dictionary, tuple, etc.) and pass the container into the
+function for processing.
+
+
+
+
+
+
+\section{Returning Results/Error Handling}
+\subsection{Bugs/Errors/Results}
+\begin{enumerate}[label=(\roman*)]
+\item Bugs: A logic flaw. \\
+  e.g. out of bounds access, dereferencing a nullptr, divide by zero,
+  illegal cast, unmet pre/postconditions/invalid object state. 
+\item Unrecoverable Errors: Non-bug errors where the only option is to
+  abort the program. \\
+  e.g. out of memory error, network host not found, disk is full
+  error, invalid app configuration. 
+\item Recoverable Errors: Non-bug errors where recovery is possible
+  and the program can continue executing. \\
+  e.g. file not found, network service temporarily overloaded,
+  malformed email address.
+\item Results: Operation status. \\
+  e.g. return value of \texttt{container.find(key)} (\texttt{null,
+    value}), password correctness.
+\end{enumerate}
+
+\subsection{Error Handling Techniques}
+\begin{enumerate}[label=(\roman*)]
+\item Come up with your own: Create your own error handling system. \\
+  e.g. Defining enumerated types for return status.
+\item Error Objects\footnote{Related to:
+    \textit{\textbf{Recoverable Errors, Results}}.}: language-specific
+  objects used to return an explicit error result from a function to its
+  caller regardless of return value. They are returned along the
+  function's result as a separate return value. 
+\item Optional Objects$^1$: Return a single
+  result that can be either a valid value or a generic failure
+  condition. Most often represented as a \texttt{struct} that holds a
+  \texttt{value} and a \texttt{bool}, indicating whether or not the
+  \texttt{value} is valid. Used only if there's an \textbf{obvious, single
+  failure mode}.
+\item Result Objects$^1$: Return a single result that can be either a
+  valid value or a specified Error Object.
+\item Assertions/Conditions\footnote{Related to: \textit{\textbf{Bugs,
+        Unrecoverable Errors}}}: Checks a condition, aborting if not met.
+\item Exceptions/Panics: Exceptions are thrown up the calling
+  hierarchy and are either caught and handled or the program terminates.
+\end{enumerate}
+
+\subsubsection*{Example: Error Objects}
+\begin{verbatim}
+func area(rad float32) (float32, error) {
+    if rad >= 0
+        return math.Pi * rad * rad, nil
+    else
+        return 0, errors.New("negative radius")
+}
+
+func cost(rad float32, cost float32) (float32, error) {
+    area, err := area(rad)
+    if err != nil
+        return 0, err
+    return cost * area, nil
+}
+\end{verbatim}
+
+\subsubsection*{Example: Optionals}
+\begin{verbatim}
+func divide(a: Float, b: Float) -> Float? {
+    if b == 0
+        return nil;
+    return a / b;
+}
+
+var opt: Float?;
+opt = divide(a: 10, b: 20);
+
+if opt != nil
+    let c: Float = opt!;
+else
+    print("error");
+\end{verbatim}
+
+\subsubsection*{Example: Results}
+\begin{verbatim}
+enum ArithmeticError: Error {
+    case divideByZero
+    ...
+}
+
+func divide(x: Double, y: Double) -> Result<Double, ArithmeticError> {
+    if y == 0
+        return .failure(.divideByZero)
+    else
+        return .success(x / y)
+
+let result = divide(x: 10, y: 0)
+switch result {
+    case .success(let number):
+        print(number)
+    case .failure(let error):
+        handleError(error)
+\end{verbatim}
+
+\subsubsection*{Assertions: Pre/Post Conditions, Invariants}
+\begin{enumerate}[label=(\roman*)]
+\item Precondition: Something that must be true at the start of a
+  function for it to work correctly.
+\item Postcondition: Something that the function guarantees is true
+  once it finishes.
+\item Invariants: Condition(s) that are expected to be true across a
+  function or class's execution.
+\end{enumerate}
+
+\subsection{Exception Handling}
+Exsception handling\footnote{Related to \textit{\textbf{Bugs,
+      Unrecoverable/Recoverable Errors}}.} handles exceptional
+situations/unexpected errors independently of the main logic.
+\subsubsection{Throw and Catch}
+A thrower will throw an exception object to the calling function if an operation
+results in an error. A catcher will try a block of code, catching any
+errors that the function returns, handling it in the catch block.
+\subsubsection*{Example}
+\begin{verbatim}
+void f() {
+    try {
+        g();
+        h();
+    }
+    catch (Exception& e) {
+        handle(e);
+    }
+
+void g() { ... }
+void h() {
+    ...
+    throw runtime_error("...");
+    ...
+}
+\end{verbatim}
+Exceptions will propagate up until someone catches it. If no one
+catches the exception, the program will terminate.
+\subsubsection{Finally} The finally block will always execute after a
+try/catch block \textbf{no matter what}.
+\subsubsection{Exception Handling Guarantees} When writing exceptions,
+ensure that at least one of the following is met:
+\begin{enumerate}[label=(\roman*)]
+\item No-throw/Failure Transparency: A function guarantees it won't
+  throw an exception. If an exception occurs within the function, it
+  will handle it internally.
+\item Strong Exception: If a function throws an exception, the
+  program's state will be rolled back to before the function call.
+\item Basic Exception: If a function throws an exception, it leaves
+  the program in a valid state (no resources are leaked, all
+  invariants are in tact).
+\end{enumerate}
+
+\subsection{Panics}
+Panics\footnote{Related to \textit{\textbf{Bugs, Unrecoverable
+      Errors}}.} are used to abort execution. They are like exceptions
+that are never caught.
+
+
+
+
+
+\section{n-class Functions}
+\begin{enumerate}[label=(\roman*)]
+\item First-class: Functions are treated as data.
+\item Second-class: Functions can be passed as arguments but not
+  returned/assigned to variables.
+\item Third-class: Functions can only be called.
+\end{enumerate}
+
+\subsection{Anonymous (Lambda) Functions}
+Lambdas are smaller functions without a name and can be implemented in
+multiple ways: pure or not pure.
+
+
+
+
+
+\section{Polymorphism}
+\subsection{Statically Typed Polymorphism}
+\begin{enumerate}[label=(\roman*)]
+\item Ad-hoc: Define specialized version of the same function for each
+  type (overloading).
+\item Parametric: Define a single version of a function/class that can
+  operate on many, potentially unrelated, types
+  (e.g. templates/generics)\footnote{Parametric polymorphism in
+    dynamically typed languages are implemented via duck typing.}.
+\item Subtype: A function is designed to operate on objects of a base
+  class and all of its subclass/derived classes.
+\end{enumerate}
+
+\subsubsection*{Example: Ad-hoc Polymorphism}
+\begin{verbatim}
+bool greater(Dog a, Dog b) {
+    return a.bark() > b.bark();
+}
+bool greater(Student a, Student b) {
+    return a.GPA() > b.GPA();
+}
+
+int main() {
+    Dog spot, penny;
+    if(greater(spot, penny))
+        std::cout << "spot wins" << std::endl;
+
+    Dog carey, david;
+    if(greater(carey, david))
+        std::cout << "carey wins" << std::endl;
+}
+\end{verbatim}
+
+\subsubsection{Parametric Polymorphism: Templates}
+The compiler will generate a concrete version of the templated
+function/class by substituting the type parameter. Templates are
+type-safe, as the compiler generates a concrete version, so it will
+also type-check. Templates have the same runtime efficiency since they
+are compiled into concrete versions beforehand.
+
+\subsubsection{Parametric Polymorphism: Generics}
+Each generic function/class is compiled on its own, independent of any
+code that might use it later. Because of this, generics don't make any
+assumptions about types. The cokmpiler will ensure the code uses the
+generic's interfaces correctly on a case by case basis. Bounding is a
+process where we place restrictions on what types can be used with the
+generic. Generics are type-safe since the compiler will verify that
+the type is compatible with the generic. In unbounded generics, you
+can only call methods that are common among all objects.
+
+\subsubsection{Specialization}
+Specialization is when a dedicated version of a function/class is
+defined for a specific type. This dedicated version is used instead of
+the generic/templated version for that type. This handles special
+cases and/or improves efficiency.
+
+
+
+\subsection{Subtype Polymorphism}
+Subtype polymorphism is the ability to substitute an object of a
+subtype anywhere a supertype is expected (e.g. \texttt{Circle} $\to$
+\texttt{Shape}). All sub/super typing rules apply to sub/super
+classes. Subtyping is implemented in statically typed
+languages. Dynamically typed languages use duck typing to achieve the
+same semantics.
+
+
+\section{Corollary: Static Dispatch}
+Static dispatch is when the correct function implementation can be
+determined at compile time.
+
+\section{Corollary: Dynamic Dispatch}
+Dynamic dispatch is the process that determines which function
+implementation to invoke when a function is called. It is determined
+at runtime (even for statically typed languages) either:
+\begin{enumerate}[label=(\roman*)]
+\item Based on the target's object class.
+\item By seeing if the target object has a matching method (regardless
+  of object type).
+\end{enumerate}
+
+\subsubsection{Implementation: vtable}
+One implementation of dynamic dispatch is by using a vtable. A vtable
+is associated with the object's type and contains a table of function
+implementations for an object. When a function is called, the vtable
+will check for a matching function, invoking the one it points to.
+
+\subsection{Dynamic Dispatch in Statically Typed Languages}
+In statically typed languages, the language examines the class of an
+objet at the time of the method call to determine which function to
+invoke.
+
+\subsection{Dynamic Dispatch in Dynamically Typed Languages}
+Because a programmer can add/remove methods at runtime, we cannot rely
+on an object's class definition to determine which function to
+call. Rather, a unique vtable is stored for individual objects.
+
+
+\section{Object Oriented Programming}
+\begin{enumerate}[label=(\roman*)]
+\item Encapsulation: Bundling of a public interface and private dat
+  fields/code together into a cohesive unit.
+\item Classes: Blueprint for creating objects - defines a public
+  interface, code for methods, and dat fields.
+\item Interfaces: A related group of function prototypes that we want
+  one+ classes to implement.
+\item Objects: Represents a "thing" - each object has its own
+  interface, code, and field values.
+\item Inheritance: A derived class inherits either the code,
+  interface, or both, from a base class. Derived classes can override
+  the base class's code or add to its interface.
+\item Subtype Polymorphism: Code designed to operate on an object of
+  type T or any of T's subclasses.
+\item Dynamic Dispatch: The actual code that runs when a method is
+  called depends on the target object, with is determined at runtime.
+\end{enumerate}
+
+\subsection{Encapsulation}
+\begin{enumerate}[label=(\roman*)]
+\item Bundle related public interface, data, and code together into a
+  cohesive, single class/object.
+\item Hide data/implementation details of a class/object from its clients,
+  forcing them to use the public interface.
+\end{enumerate}
+Some benefits include:
+\begin{enumerate}[label=(\roman*)]
+\item Simpler programs: Prevents deep coupling between components,
+  making code less complex/buggy.
+\item Easier improvements: Improve implements without impacting other
+  components. 
+\item Better modularity: Easier code reuse.
+\end{enumerate}
+Best practices include:
+\begin{enumerate}[label=(\roman*)]
+\item Hide all implementation details from other classes.
+\item Make all member fields, constants, helper methods \texttt{private}.
+\item Reduce coupling with other classes.
+\item Make sure constructors \textbf{completely} initialize objects so
+  users don't have to call extraneous methods to complete initialization.
+\end{enumerate}
+
+\subsection{Classes}
+A class is a blueprint that specifies data fields and methods that can
+be used to create objects. A class has:
+\begin{enumerate}[label=(\roman*)]
+\item Name
+\item Public interface
+\item Fields (attributes, instance variables)
+\item Private methods
+\item Method implementations
+\item Constructor/Destructor (Finalizer)
+\end{enumerate}
+\textit{\textbf{Note:}} A class definition implicitly defines a type: When you
+define a new class, it automatically creates a new type of the same
+name. A class name and a class type are \textbf{not} the same.
+
+\subsubsection{Class Fields/Methods}
+Class fields, also knwon as singletons, are fields that are shared
+among all objects, and is "static" throughout the program's
+lifetime. Some uses include:
+\begin{enumerate}[label=(\roman*)]
+\item Defining class-level constants.
+\item Counting the number of objects created.
+\item Assigning each object a unique ID.
+\end{enumerate}
+Similarly to class fields, class methods are also methods that are
+shared among all classes, and thus can only access class-level
+variables (such as singletons). Note that we can only call these
+methods via the class, and not a particular instance of a class
+(e.g. \texttt{Foo.static\_method()} rather than
+\texttt{o.static\_method()} where \texttt{Foo o = new Foo()}). Some
+uses of class level methods include:
+\begin{enumerate}[label=(\roman*)]
+\item A method that only needs to access class-level variables
+  (singletons).
+\item Defining utility functions (e.g. a \texttt{Math} library)
+\end{enumerate}
+
+\subsubsection{This/Self}
+\texttt{this} and \texttt{self} are both keywords used to reference
+the current object. The implementation is as follows: Given the
+following class,
+\begin{verbatim}
+class Nerd {
+private:
+    std::string name;
+    int IQ;
+public:
+    Nerd(const string& name) {
+        this-> name = name;
+        IQ          = 100 // this->IQ is optional
+    }
+
+    std::string talk() { return this-> name + " likes PI."; }
+};
+...
+Nerd n("Carey");
+std::cout << n.talk();
+\end{verbatim}
+OOP languages like C++ and Java pass in a pointer/object reference as
+an implicit first parameter in each instance method\footnote{Class methods don't have a \texttt{this/self}
+parameter since they don't operate on a specified instance.}:
+\begin{verbatim}
+class Nerd {
+private:
+    std::string name;
+    int IQ;
+public:
+    Nerd(Nerd* this, const string& name) {
+        this-> name = name;
+        this->IQ    = 100 // this->IQ is optional
+    }
+
+    std::string talk(Nerd* this) { return this-> name + " likes PI."; }
+};
+...
+Nerd n;
+init(&n, "Carey");
+std::cout << talk(&n);
+\end{verbatim}
+\textit{\textbf{Note:}} Languages like Python\footnote{In Python, the
+  \texttt{self} is \textbf{not} optional since Python never explicitly defines
+  member variables (instead, using \texttt{self.variable} to create
+  new ones. Therefore, removing \texttt{self} introduces ambiguitiy as
+  to which scope a variable is in.} and Go explicitly pass
+\texttt{this/self} in as the first parameter.
+
+\subsubsection{Access Modifiers}
+Access modifiers are keywords/syntax to specifiy
+visibility/accessibility of class methods/fields to code outside of
+the class. The levels of access are as follows:
+\begin{enumerate}[label=(\roman*)]
+\item Public: Any part of the program can access to the method(s)/field(s).
+\item Protected: Only subclasses have access to the method(s)/field(s).
+\item Private: Only the class itself can access to the method(s)/field(s)
+\end{enumerate}
+\textit{\textbf{Note:}} Different languages have different visibility
+defaults.
+
+\subsubsection{Accessors/Mutators}
+Accessors/Mutators allow users to change private class attributes
+outside of the class itself. An accessor's/getter's sole purpose is to retrieve
+a certain attribute and is expected to be \texttt{const}. A
+mutator's/setter's sole purpose is to mutate a class variable. This
+allows for easier refactoring and code stability.
+
+\subsubsection*{Corollary: Properties}
+Properties are languaged-provided getters/setters and allow an outside
+class to refer to the variable as if it were public, but the language
+will implicitly call the getter/setter. Properties are used to expose
+the \textbf{state} of a class. Traditional methods are used when
+exposing behavior of a class or exposing a state that requires
+\textbf{heavy} computation. Properties may be considered bad OOP style
+since the whole point of getters/setters is to hide implementation, so
+"exposing" private members by allowing outside classes to directly
+reference them (though not \textit{actually} referencing them) can be confusing.
+
+
+\subsection{Interfaces}
+An interface is a related group of function prototypes that describes
+behaviors we want a group of classes to implement. They are meant for
+classes that are loosely related only via common functions.
+
+\subsubsection*{Example}
+A \texttt{Circle}, \texttt{Square}, and \texttt{Rectangle} all have
+different ways of computing \texttt{area}, but they share the common
+functionality of being able to compute \texttt{area}. Thus, a
+\texttt{Shape} interface can be provided:
+\begin{verbatim}
+interface Shape {
+    public double area();
+}
+
+class Square implements Shape {
+    public double area() { return w * w } // where w is a private field
+}
+
+class Rectangle implements Shape {
+    public double area() { return l * w } // where l, w are private fields
+}
+\end{verbatim}
+This way, we can still refer to both \texttt{Square} and
+\texttt{Rectangle} as a \texttt{Shape} type. \\ \\
+\textit{\textbf{Note:}} Like with classes, defining an interface
+defines a new type of the same name.
+
+\subsection{Objects}
+An object is a distinct value, often created from a class blueprint:
+each object has its own copy of fields and methods.
+
+\subsection*{Corollary: Objects without Classes}
+Not all OOP languages use classes (e.g. JavaScript). Classes enable us
+to create a consistent, \textbf{immutable}, set of objects based on the class
+specification which is useful for polymorphism in statically typed
+languages. In a lot of statically typed languages, adding to classes
+after the class has already been specified is not allowed. However,
+dynamically typed languages allow the addition of classes after they
+have been defined.
+
+\subsection{Inheritance}
+Inheritance is the technique of defining a new class based on an
+existing class/interface. This allows us to not only reuse code, but
+ensure that different classes behave in a standardized manner
+(e.g. \texttt{sets, vectors, lists} can all be iterated via an
+\texttt{iterator}). There are three main high-level concepts of inheritance:
+\begin{enumerate}[label=(\roman*)]
+\item Interface Inheritance: Creating many subclasses that share a
+  common public interface.
+\item Implementation Inheritance: Reusing a base class's method
+  implementations. i.e. A derived class inherits method
+  implementations from a base class.
+\item Subclassing Inheritance: A base class provides a public
+  interface \textit{\textbf{and}} implementations for its methods. A
+  derived class inherits both the base class's interface and its implementations.
+\end{enumerate}
+
+\subsubsection{Interface Inheritance}
+Interfaces define a public set of related methods. A derived
+class\footnote{Unrelated classes can support the same interface, as
+  long as they are able implement all of the methods.}\footnote{A
+  given class may support multiple interfaces as long as it implements
+  all of the methods of \textit{\textbf{both}} interfaces.} will then
+inherit the interface and provide implementations for
+\textit{\textbf{all}} of its methods. \\ 
+Best practices include:
+\begin{enumerate}[label=(\roman*)]
+\item Use only in "can-support" relationships between a class and a
+  group of behaviors (e.g. a \texttt{Car} can support washing).
+\item Use when you have different classes that need to support related
+  behaviors, but aren't related in any other way
+  (e.g. a \texttt{Shape} interface supports calculations for
+  \texttt{area}).
+\end{enumerate}
+\newpage
+Pros/Cons of Interface Inheritance include:
+\begin{enumerate}
+\item [\textbf{P}] You can write functions focused on an interface, and have it
+  apply to many different classes.
+\item [\textbf{P}] A single class can implement multiple interfaces and play
+  different roles.
+\item [\textbf{C}] Interface inheritance does \textbf{not} facilitate code reuse.
+\end{enumerate}
+
+\subsubsection{Subclassing Inheritance}
+A base class will define methods and (may define) virtual/abstract
+functions. Derived classes inherit both the existing method
+implementations as well as the interface. The derived class may
+override the base class's method(s). Additionally, derived classes may
+expand on the interface/class behavior. \\
+Best practices include:
+\begin{enumerate}[label=(\roman*)]
+\item Use only in a "is-a" relationship (e.g. a \texttt{Circle}
+  \textit{\textbf{is a}} \texttt{Shape})
+\item The subclass should share the entire public interface
+  \textbf{and} maintain the semantics of the super class's method(s).
+\item Factor out common implementations from subclasses into a superclass.
+\end{enumerate}
+
+\subsubsection*{Example}
+Given the following \texttt{Collection} and \texttt{Set} classes:
+\begin{verbatim}
+class Collection {
+public:
+    void insert(int x) { ... }
+    bool delete(int x) { ... }
+    void removeDuplicates(int x) { ... }
+    int  count(int x) const { ...}
+...
+private:
+...
+};
+
+class Set : public Collection {
+public:
+    void insert(int x) { ... }
+    bool delete(int x) { ... }
+    bool contains(int x) const { ... }
+...
+private:
+...
+};
+\end{verbatim}
+is not an appropriate use of subclassing for two main reasons:
+\begin{enumerate}[label=(\roman*)]
+\item The derived class (\texttt{Set}) doesn't support the full
+  interface of the base class (\texttt{removeDuplicates(), count()}
+  are missing).
+\item The derived class (\texttt{Set}) doesn't share the same
+  semantics as the base class (\texttt{Set} doesn't allow for
+  duplicates, while \texttt{Collection} does).
+\end{enumerate}
+
+\subsubsection*{Corollary: Delegation}
+Delegation/composition is when a class embeds the original object and
+uses forward calls to the original class. This technique is used when
+you want to leverage another class's implementation but don't want to
+support its interface. An example is provided below:
+
+\subsubsection*{Example}
+Consider an alternative \texttt{Set} implemenation
+(\texttt{Collection} from (\textbf{5.5.2})):
+\begin{verbatim}
+class Set {
+public:
+    void insert(int x) {
+        if (c_.count(x) == 0)
+            c_.insert(x);
+    }
+
+    bool delete(int x) { return c_delete(x); }
+
+    bool contains(int x) const { return c_count(x) == 1; }
+...
+private:
+    Collection c_;
+};
+\end{verbatim}
+Pros/Cons of sublcassing inheritance include:
+\begin{enumerate}
+\item [\textbf{P}] Eliminates code duplication/encourages code reuse.
+\item [\textbf{P}] Simpler maintenance.
+\item [\textbf{P}] If you understand the base class's interface, using
+  subclasses should be trivial.
+\item [\textbf{P}] Functionality on superclasses can also operate on
+  subclasses without any changes to implementation.
+\item [\textbf{C}] Often results in poor encapsulation.
+\item [\textbf{C}] Changes to superclass can break subclasses (fragile
+  base class).
+\end{enumerate}
+
+\subsubsection{Implemenation Inheritance}
+A derived class inherits the method implementations of a base class
+but \textbf{not} its public interface (e.g. \texttt{private
+  Collection} instead of \texttt{public Collection} in
+(\textbf{5.5.2})). Pure implementation inheritance is rarely used, but
+is rather used in conjunction with composition and delegation.
+
+\subsubsection*{Example}
+Pure Implementation Inheritance:
+\begin{verbatim}
+class Set : private Collection {
+public:
+    void add(int x) {
+        if count(x) == 0)
+            insert(x);
+    }
+
+    bool erase(int x) { return delete(x); }
+
+    bool contains(int x) const { return count(x) > 0; }
+...
+};
+\end{verbatim}
+\newpage
+\subsubsection*{Example (cont.)}
+Composition with Delegation:
+\begin{verbatim}
+class Set {
+public:
+    void add(int x) {
+        if c_.count(x) == 0)
+            c_.insert(x);
+    }
+
+    bool erase(int x) { return c_.delete(x); }
+
+    bool contains(int x) const { return c_.count(x) > 0; }
+...
+private:
+    Collection c_;
+};
+\end{verbatim}
+\textit{\textbf{Note:}} Implementation inheritance is usually only
+used if you want your derived class to have access to protected
+members of the base class. Composition doesn't allow the outer class
+to access protected members of the contained class.
+
+\subsubsection{Prototypal Inheritance}
+In JavaScript, every object has an implicit reference to a parent (a
+"prototype") object. By default, the parent is Javascript's empty
+\texttt{Object}. However, it can be explicitly assigned to implement
+inheritance.
+
+\subsection{Corollary: Additional Inheritance Topics}
+\subsubsection{Construction, Destruction, Finalization}
+\begin{enumerate}[label=(\roman*)]
+\item Construction: A derived class calls its superclass's
+  constructor, initializing the base part(s) of the
+  object\footnote{Constructors are called outside in (base $\to$
+    derived) since it may be the case that we use the base class's
+    code to initialize our derived class.}, and then
+  initializes its own parts of the object.
+\item Destruction: Destructors are called inside
+  out\footnote{Destructors are called inside out
+    (derived $\to$ base) since the converse is true: we can't access derived
+    class attributes from a base class. So we need to clean up the
+    derived class first before cleaning up its base class.} and are
+  meant to destroy the object. 
+\item Finalizers: Language-dependent.
+\end{enumerate}
+
+\subsubsection{Overriding}
+There are three main topics related to overriding methods/classes:
+\begin{enumerate}[label=(\roman*)]
+\item How a base class controls which of its methods can be overridden
+\item How a derived class ensures base methods are properly overridden
+\item How an overriding method can access the base method
+\end{enumerate}
+
+\subsubsection*{Controlling Overriding}
+Some languages explicitly state which methods/classes can/'t be
+overridden. Regardless, a base class must determine which methods/classes
+can/'t be overridden. Base methods can be invoked using the
+\texttt{super} keyword or an equivalent (specify which scope the
+function is defined in).
+
+\subsubsection*{Corollary: Overriding vs Overloading}
+Overriding is redefining a base class to alter behavior, whereas
+overloading defines an entirely new function.
+
+\subsubsection*{Corollary: Language-specific Override Semantics}
+Java only lets the programmer call an immediate superclass because
+otherwise, it would violate encapsulation and allow a subclass to
+bypass its parent's behavior. The derived class should only know about
+one level of inheritance. \\
+In some languages, \texttt{final} or \texttt{override} aren't
+enforced, but they are still useful since it alerts the reader that a
+class/method has a certain property which \textbf{should} be maintained.
+
+\subsubsection{Multiple Inheritance and its Issues}
+Multiple inheritance is when a derived class implements two+
+superclasses. It is often considered an anti-pattern and is not
+recommended. A preferred approach (if multiple inheritance is
+necessary) is to have the class implement multiple interfaces
+instead. One such example of why multiple inheritance is not
+recommended is the following (often referred to as the \textit{Diamond
+  Pattern}):
+\begin{verbatim}
+class CollegePerson {
+public:
+    CollegePerson(int income) { income_ = income; }
+    int income() const { return income_; }
+...
+private:
+    int income_;
+};
+
+class Student: public CollegePerson {
+public:
+    Student(int part_time_income) : CollegePerson(part_time_income) { ... }
+...
+};
+
+class Teacher: public CollegePerson {
+public:
+    Teacher(int salary) : CollegePerson(salary) { ... }
+...
+};
+
+class TA: public Student, public Teacher {
+public:
+    TA(int part_time_income, int salary) : Student(part_time_income), Teacher(salary) { ... } 
+...
+};
+...
+int main() { TA amy(1000, 8000); ... }
+\end{verbatim}
+The following will set \texttt{income\_ = 1000} when
+\texttt{Student(...)} is called, but will reset \texttt{income\_ =
+  8000} when \texttt{Teacher(...)} is called since they both inherit
+from \texttt{CollegePerson}.
+
+\subsubsection{Abstract Methods/Classes}
+Abstract methods are function prototypes without an implementation. An
+abstract class is a class that contains one+ abstract methods. An
+abstract method \textbf{forces} a derived class to redefine and
+implement the abstract method. \\
+\textit{\textbf{Note:}} Just like concrete classes, a new abstract
+class will implicitly create a new type with the same name. \\
+Best practices include:
+\begin{enumerate}[label=(\roman*)]
+\item Use an abstract method when a default behavior doesn't make
+  sense (e.g. \texttt{area} doesn't have a generic formula).
+\item Abstract classes over interfaces when all subclasses share a
+  common implementation for one+ methods/fields (e.g. A \texttt{Human}
+  and \texttt{Dog} can both \texttt{walk()}).
+\end{enumerate}
+\textit{\textbf{Note:}} A private method can usually be declared abstract but
+it's pretty useless since no subclass can implement it, so don't do
+it.
+
+\subsubsection{Inheritance and Typing}
+Recall the concept of sub/super typing. (e.g. \texttt{float} is a
+subtype of \texttt{double}). Inheritance implicitly defines sub/super
+types (e.g. \texttt{Student} is a subtype of \texttt{Person}).
+
+\subsubsection*{Corollary: Value/Reference Types}
+\textit{\textbf{Value Types}} are associated with a concrete class and
+are used to define referenes, object references, pointers, and
+instantiate objects\footnote{Reference Types \textbf{cannot}
+  instantiate objects since there are no concrete implementations for one+
+  function(s).}. \\
+\textit{\textbf{Reference Types}} are associated with an interface or
+an abstract class and are used to define references, object
+references, adn pointers.
+
+\subsubsection*{Corollary: Difference between a Class and a Type}
+Consider two classes: \texttt{Person} and \texttt{Student}, where
+\texttt{Student} is a subclass of \texttt{Person}. Then, we have the
+following relationships: \\
+\[
+  \begin{xy}
+    (0,15)*+{\text{Person \textbf{Class}}}="a"; 
+    (65, 15)*+{\text{Person \textbf{Type}}}="b";
+    (0, 0)*+{\text{Student \textbf{Class}}}="c";
+    (65, 0)*+{\text{Student \textbf{Type}}}="d";
+    {\ar         "a";"b"}?*!/_5pt/{\textit{implicitly defines}};
+    {\ar         "c";"a"}?*!/_27pt/{\textit{subclass of}};
+    {\ar         "d";"b"}?*!/^25pt/{\textit{subtype of}};
+    {\ar         "c";"d"}?*!/^5pt/{\textit{implicitly defines}};
+  \end{xy}
+\]
+Similarly, for inheritance subtyping, we have: \\
+\[
+  \begin{xy}
+    (0,15)*+{\text{Washable \textbf{Interface}}}="a"; 
+    (65, 15)*+{\text{Washable \textbf{Type}}}="b";
+    (0, 0)*+{\text{Car \textbf{Class}}}="c";
+    (65, 0)*+{\text{Car \textbf{Type}}}="d";
+    {\ar         "a";"b"}?*!/_5pt/{\textit{implicitly defines}};
+    {\ar         "c";"a"}?*!/_27pt/{\textit{implements}};
+    {\ar         "d";"b"}?*!/^25pt/{\textit{subtype of}};
+    {\ar         "c";"d"}?*!/^5pt/{\textit{implicitly defines}};
+  \end{xy}
+\]
+
+\subsection{OOP Design Best Practices}
+\begin{itemize}[align=right]
+\item [\textbf{S}]ingle Responsibility Principle: Each class should
+  have a single, limited responsibility - if it has more, it should be
+  split into two+ classes.
+\item [\textbf{O}]pen/Closed Principle: Design classes to minimize
+  coupling (new classes should work with existing classes without modification).
+\item [\textbf{L}]iskov's Substitution Principle: A properly written
+  subclass should be substitutable for its superclass and the code
+  should still work.
+\item [\textbf{I}]nterface Segregation Principle: No class should be
+  forced to depend on an interface that contains methods it does not use.
+\item [\textbf{D}]ependency Inversion Principle: If class \texttt{A}
+  uses class \texttt{B}, design \texttt{A} to operate on an interface \texttt{I}
+  and have \texttt{B} implement \texttt{I}. Don't have \texttt{A}
+  directly use \texttt{B}.
+\end{itemize}
+\end{document}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

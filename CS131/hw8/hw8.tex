@@ -1,0 +1,66 @@
+\documentclass[13pt]{article}
+\usepackage{amsmath, amsthm, amssymb, graphicx, enumitem, esvect}
+
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+\begin{document}
+\section*{Question 1}
+\begin{enumerate}[label=(\alph*)]
+\item
+  \begin{itemize}[label=,leftmargin=*]
+  \item interface A has no supertype
+  \item interface B has a supertype of A
+  \item interface C has a supertype of A
+  \item class D has supertypes of A, B, C
+  \item class E has supertypes of A, C
+  \item class F has supertypes of A, B, C, D
+  \item class G has supertypes of A, B
+  \end{itemize}
+\item Classes D, F, G
+\item No, because C is not a supertype of A, and it is not guaranteed
+  that \texttt{a} is going to be of type C.
+\end{enumerate}
+
+\section*{Question 3}
+Inheritance is the concept of creating derived classes from existing
+base classes to extend behavior and reuse code. Subtype polymorphism
+is the ability to substitute a subtype in for a supertype. They are
+implemented (usually) only in statically typed languages, as
+dynamically typed languages use duck typing instead. Dynamic dispatch
+is when the program determines at runtime the correct function to
+invoke.
+
+\section*{Question 4}
+We cannot use subtype polymorphism in dynamically typed languages
+since types are bound to values, not variables. Thus, there is no way
+to know if a parameter of a function takes in a subtype, supertype, or
+an unrelated type. Thus, the notion of replacing a subtype for a
+supertype is undefined. We can use dynamic dispatch in dynamically
+typed languages, and it is used for duck typing. At runtime, the
+program consults (usually) the vtable pointing to the object, and
+whichever function the vtable points to is the one that gets invoked.
+
+\section*{Question 5}
+These classes violate the Dependency Inversion Principle. Here,
+\texttt{ElectricVehicle} uses \texttt{SuperCharger}, so rather than
+directly using \texttt{SuperCharger}, we should define an interface
+\texttt{Charger} that \texttt{SuperCharger} implments. Then, have
+\texttt{ElectricVehicle} use \texttt{Charger}.
+
+\section*{Question 6}
+Yes. This is because even dynamically-typed languages should exhibit
+structure when using the OOP paradigm. Thus, having a proper class
+hierarchy is essential for good OOP practice.
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
