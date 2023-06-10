@@ -1,0 +1,191 @@
+\documentclass[13pt]{article}
+\usepackage{amsmath, amsthm, amssymb, graphicx, enumitem, esvect}
+
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+\begin{document}
+\section*{Question 1}
+The following \texttt{if} blocks are equivalent to the one given in the problem statement: \\
+\textbf{I.}
+\begin{verbatim}
+if (e())
+  do_something();
+if (f())
+  if (g())
+    do_something();
+if (h())
+  do_something();
+\end{verbatim}
+\textbf{II.}
+\begin{verbatim}
+if (e())
+  if (f())
+    do_something();
+if (g())
+  if(h())
+    do_something();
+\end{verbatim}
+\textbf{III.}
+\begin{verbatim}
+if (e())
+  if (f())
+    do_something();
+  if (g())
+    do_something();
+\end{verbatim}
+
+
+\newpage
+\section*{Question 2}
+\begin{enumerate}[label=(\alph*)]
+\item
+\begin{verbatim}
+class Node:
+  def __init__(self, val):
+    self.value = val
+    self.next = None
+
+class HashTable:
+  def __init__(self, buckets):
+    self.array = [None] * buckets
+
+  def insert(self, val):
+    bucket = hash(val) % len(self.array)
+    tmp_head = Node(val)
+    tmp_head.next = self.array[bucket]
+    self.array[bucket] = tmp_head
+
+def gen(arr):
+  for i in range(arr):
+    curr = arr[i]
+    while arr[i] is not None:
+      yield curr.value
+      curr = curr.next
+\end{verbatim}
+
+\item
+\begin{verbatim}
+def HTIterator:
+  def __init__(self, arr):
+    self.arr = arr
+    self.bucket = -1
+    self.curr = None
+
+  def __next__(self):
+    while self.curr is None:
+      self.bucket += 1
+
+      if len(self.arr) < self.bucket:
+        raise StopIteration
+
+      self.curr = self.arr[self.bucket]
+    value = self.curr.value
+    self.curr = self.curr.next
+    return value
+\end{verbatim}
+
+\item
+\begin{verbatim}
+hash_table = HashTable(10)
+...
+for item in hash_table:
+  print(item.value)
+\end{verbatim}
+
+\item
+\begin{verbatim}
+hash_table = HashTable(10)
+...
+it = hash_table.__iter__()
+while True:
+  try:
+    print(it.__next__())
+  except StopIteration:
+    pass
+\end{verbatim}
+
+\item
+\begin{verbatim}
+class HashTable:
+...
+  def forEach(f):
+    for i in range(0, len(self.array)):
+      curr = arr[i]
+      while curr is not None:
+        f(curr)
+        curr = curr.next
+\end{verbatim}
+\end{enumerate}
+
+
+\newpage
+\section*{Question 3}
+\begin{enumerate}[label=(\alph*)]
+\item \texttt{X = green}
+\item \texttt{false}
+\item \texttt{Q = tomato}, \\ \texttt{Q = beet}
+\item \texttt{Q = celery, R = green}, \\
+  \texttt{Q = tomato, R = red}, \\
+  \texttt{Q = persimmon, R = orange}, \\
+  \texttt{Q = beet, R = red}, \\
+  \texttt{Q = lettuce, R = green} \\
+\end{enumerate}
+
+
+\newpage
+\section*{Question 4}
+\begin{enumerate}[label=(\alph*)]
+\item \texttt{likes\_red(X) :- likes(X, Y), color(Y, red).}
+\item
+\begin{verbatim}
+likes_food_color(X, Z) :-
+    food(Y),
+    likes(X, Y),
+    color(Y, Z).
+likes_foods_of_colors_menachen_likes(X) :-
+    likes_food_color(X, Z),
+    likes_food_color(menachen, Z).
+\end{verbatim}
+\end{enumerate}
+
+
+\newpage
+\section*{Question 5}
+\begin{verbatim}
+reachable(X, Y) :-
+    road_between(X, Y);
+    road_between(Y, X);
+    road_between(X, Z), 
+    road_between(Z, Y).
+\end{verbatim}
+
+
+\newpage
+\section*{Question 6}
+\begin{enumerate}[label=(\alph*)]
+\item \texttt{\{X $\to$ bar\}}
+\item Does not unify since the arities do not match.
+\item \texttt{\{Z $\leftrightarrow$ X\}}
+\item \texttt{\{X $\to$ barf, Y $\to$ bletch\}}
+\item Does not unify since \texttt{bletch $\neq$ barf}
+\item \texttt{\{X $\to$ bar, Y $\to$ barf\}}
+\item \texttt{\{Y $\to$ bar(a, Z)\}}
+\item Does not unify since \texttt{Z} cannot bind to both \texttt{barf} and \texttt{bletch}.
+\item \texttt{\{Q $\to$ [A|B|C]\}}
+\item Does not unify since \texttt{X} cannot bind to \texttt{[a]}.
+\end{enumerate}
+
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
