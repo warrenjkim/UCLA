@@ -20,6 +20,127 @@
 \tableofcontents
 
 \newpage
+\section{Garbage Collection}
+Garbage collection or automatic memory management ensures the
+following:
+\begin{enumerate}[label=(\roman*)]
+\item Eliminate Memory Leaks: Ensures all allocated memory is properly
+  deallocated/freed.
+\item Eliminates Dangling Pointers and Use of Dead Objects: Prevents
+  access to deallocated/freed objects.
+\item Eliminates Double-free Bugs: Prevents the need to manually
+  de/allocate memory (for the most part).
+\item Eliminates Manual Memory Management: See (iii).
+\end{enumerate}
+Note that bulk garbage collection occurs when free memory runs low
+(on-demand). The program will freeze execution when GC is taking place.
+
+
+\subsection{Mark and Sweep}
+Mark and Sweep traverses through the program, marking all active
+objects. Once a full traversal is complete, any unmarked objects are
+deallocated/freed. The two phases are as follows:
+\begin{enumerate}[label=(\roman*)]
+\item Mark: The garbage collector starts from the global scope (out $\to$ in) and
+recursively traverses the object graph, marking all reachable
+objects.
+\item The garbage collector scans the entire memory, deallocating objects
+that were not marked in the Mark phase of the algorithm.
+\end{enumerate}
+
+
+
+\subsubsection{Issues: Memory Fragmentation}
+One of the consequences of Mark and Sweep is potential Memory
+Fragmentation. The heap how has random-sized blocks of free memory
+interlaced with in-use memory. This is not ideal since finding free
+blocks of appropriately sized memory becomes difficult. 
+
+\subsection{Mark and Compact}
+Mark and Compact is an alternative to Mark and Sweep: Instead of
+deallocating memory in place, all active objects are moved to a new
+block of memory. The old block of memory is then deallocated. This
+prevents Memory Fragmentation$^{1.1.1}$ as all of the active objects
+are stored in a contiguous block.
+
+\subsection{Reference Counting}
+Each object has a count of the number of active references that point
+at it. When the count reaches 0, the object is deallocated and all
+references that the object used to point to are subsequently
+reevaluated.
+
+\subsubsection{Issues: Cascading Objects}
+Removing references as they are deleted may lead to slow programs as
+the (now deleted) reference may lead to a cascade of objects being
+deallocated at once. Thus, a common way to improve efficiency is to
+store objects that need to be deallocated into a list, then
+deallocating at regular intervals throughout the program execution.
+
+\subsubsection{Issues: Circular References}
+Reference counting cannot handle circular references, as each object
+in the circular reference will always maintain a count of \textit{at
+  least} 1. Thus, circularly referenced objects may never be deleted.
+
+\subsection{Corollary: Garbage Collection Unpredictability}
+It is impossible to predict when/if a given object will be deallocated
+via garbage collection because garbage collection only occurs when
+there is memory pressure. One consequence of this is that anything an
+object allocates that is usually deallocated by a destructor
+(e.g. temp files) should be properly dealt with manually, since there
+is no guarantee that the destructor/finalizer will ever run since the
+object may never be garbage collected. (e.g. Given a program that
+creates (sufficiently many) temp files, there may be enough RAM such
+that there is never any memory pressure. Then, hard drive space may
+run out before RAM does.) 
+
+
+\section{Memory Safety (Object Lifetime)}
+Objects may hold resources (e.g. dynamic objects, temp files) that
+need to be deallocated/destroyed concurrently with the deallocation of
+the object itself. There are three main ways this is handled:
+\begin{enumerate}[label=(\roman*)]
+\item (Non-GC\footnote{GC: Garbage Collected}): Destructors:
+  Destructors are automatically called when objects are deallocated,
+  and is guaranteed to run immediately when it is called.
+\item (GC): Finalizers: A finalizer method is called by a garbage
+  collector before deallocating the object itself. Finalizers are
+  \textbf{not} guaranteed to run and therefore should be called
+  explicitly when necessary.
+\item (GC) Manual Destruction: A disposal function (defined
+  suggestively) should be defined and called when necessary, forcing
+  the destruction of resources.
+\end{enumerate}
+
+\subsection{Destructors}
+Destructors are only used in languages without garbage
+collection. They are implicitly called at the end of an object's
+lifetime and are used to deallocate not only the object itself, but any side
+effects (e.g. other (dynamic) objects, closign network connections,
+temp files) that the object may have created as well.
+
+\subsection{Finalizers}
+Finalizers are similar to destructors, but with the caveat that they
+may never be called. They serve the same purpose as a destructor, but
+since Finalizers are used in garbage-collected languages, they should
+be called explicitly called (when necessary) whenever they are
+implemented.
+
+\subsection{Manual Destruction}
+Manual distruction methods are user-defined functions (often named
+suggestively (e.g. \texttt{dispose()})) that implement the
+deallocation of any side effects. These functions must be explicitly
+called (when necessary) in order to have any effect.
+
+
+
+
+
+
+
+
+
+
+\newpage
 \section{Parameter Passing}
 \subsection{Semantics}
 \begin{enumerate}[label=(\roman*)]
@@ -935,6 +1056,48 @@ Similarly, for inheritance subtyping, we have: \\
   and have \texttt{B} implement \texttt{I}. Don't have \texttt{A}
   directly use \texttt{B}.
 \end{itemize}
+
+
+
+
+\section{Control Flow}
+
+\subsection{Expression Evaluation}
+Languages like C++ do not have an associativity/expression evaluation
+order specified in the language spec. This makes expression
+(potentiallly) ambiguous and can be different between
+implementations.
+
+\subsection{Associativity}
+Most languages are left-associative when evaluating mathematical
+expressions (with few exceptions (e.g. sponentiation, assignment,
+unary). (e.g. \texttt{c - d + f()} $\iff$ \texttt{(c - d) + f()})
+
+\subsection{Short Circuiting}
+Short circuiting is when a (most often boolean) condition is
+satisfied/invalidated before all of the sub-expressions are
+evaluated.
+
+\subsubsection*{Example (||)}
+\begin{verbatim}
+if(a() || b() || c()) { do_something(); }
+<==>
+if(a()) { do_something(); }
+else if(b()) { do_something(); }
+else if(c()) { do_something(); }
+\end{verbatim}
+
+\subsubsection*{Example (\&\&)}
+\begin{verbatim}
+if(a() && b() && c()) { do_something(); }
+<==>
+if(a()) 
+    if(b()) 
+         if(c()) { do_something(); }
+\end{verbatim}
+\textit{\textbf{Note:}} Not all languages implement short circuiting.
+
+
 \end{document}
 
 
