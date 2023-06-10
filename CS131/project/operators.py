@@ -101,7 +101,7 @@ class Operators:
     def __same_types(self, lhs, rhs):
         if isinstance(lhs, Variable) and isinstance(rhs, Variable):
             return self.compare_objects(lhs, rhs)
-            
+
         return typeof(lhs) == typeof(rhs)
 
 
@@ -116,6 +116,10 @@ class Operators:
         # reduce expression to primitives
         if isinstance(expression, list):
             expression = self.__curr_object.run_statement(expression)
+
+        if isinstance(expression, Variable):
+            if expression.name == "THROW":
+                return expression
 
         expression = evaluate(expression) # reduce to primitive values (if possible)
         
@@ -144,6 +148,14 @@ class Operators:
             rhs = self.__curr_object.run_statement(rhs)
 
         self.validate_classes(lhs, rhs)
+
+        if isinstance(lhs, Variable):
+            if lhs.name == "THROW":
+                return lhs
+            
+        if isinstance(rhs, Variable):
+            if rhs.name == "THROW":
+                return rhs
 
         # reduce to primitive values (if possible)
         lhs = evaluate(lhs)
@@ -190,6 +202,7 @@ class Operators:
 
     # figure this out
     def __validate_operands(self, operator, lhs, rhs):
+#        print(operator, lhs, rhs)
         match operator:
             # addition
             case '+':
@@ -222,7 +235,11 @@ class Operators:
                     if isinstance(rhs, Variable):
                         if rhs.value == Type.NULL:
                             return True
-                    if lhs == Type.NULL or rhs == Type.NULL:
+                    if isinstance(lhs, type(self.__curr_object)) and isinstance(rhs, type(self.__curr_object)):
+                        return True
+                    if lhs == Type.NULL and isinstance(rhs, type(self.__curr_object)):
+                        return True
+                    if rhs == Type.NULL and isinstance(lhs, type(self.__curr_object)):
                         return True
                     else:
                         return self.__curr_object.console.error(errno.TYPE_ERROR)
@@ -286,9 +303,14 @@ class Operators:
     
 
     def same_classes(self, lhs_type, rhs_type):
+#        print(lhs_type, rhs_type)
+        if self.__curr_object.console.TYPE_CONCAT_CHAR in lhs_type or self.__curr_object.console.TYPE_CONCAT_CHAR in rhs_type:
+            return lhs_type == rhs_type
+        
         lhs_class = self.__curr_object.console.classes.get(lhs_type)
         rhs_class = self.__curr_object.console.classes.get(rhs_type)
-        
+
+
         if lhs_class.super_class is None and rhs_class.super_class is None:
             return lhs_class.name == rhs_class.name
         else:

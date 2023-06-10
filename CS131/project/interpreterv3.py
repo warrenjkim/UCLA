@@ -10,7 +10,7 @@ from brewintypes import Type, typeof, type_to_enum
 
 
 class Interpreter(base):
-    PRIMITIVES = [base.INT_DEF, base.BOOL_DEF, base.STRING_DEF, base.VOID_DEF]
+    PRIMITIVES = [base.INT_DEF, base.BOOL_DEF, base.STRING_DEF, base.VOID_DEF, Type.INT, Type.BOOL, Type.STRING]
     DEFINED_TYPES = set()
     classes = { }
     templates = { }
@@ -85,19 +85,22 @@ class Interpreter(base):
 
             
     def parse_template_field(self, class_name, tokens):
+        if len(tokens) == 0:
+            return
+        
         split = tokens[0].split(self.TYPE_CONCAT_CHAR)
         if len(split) < 2:
             template_name = class_name
             vtype = split[0]
         else:
             template_name = split[0]
-            vtype = split[1]
+            vtype = tokens[0]
         name = tokens[1]
 
         if len(tokens) == 3:
             value = tokens[2]
         else:
-            value = self.__default_value(vtype)
+            value = self.default_value(vtype)
 
         if value == self.NULL_DEF:
             value = Type.NULL
@@ -105,19 +108,21 @@ class Interpreter(base):
             if vtype == self.BOOL_DEF:
                 value = True if value == self.TRUE_DEF else False
             value = stringify(value)
-        
+
         self.templates[class_name].set_field(name, type_to_enum(vtype), value)
 
 
         
     def parse_template_method(self, class_name, tokens):
+        if len(tokens) == 0:
+            return
         split = tokens[0].split(self.TYPE_CONCAT_CHAR)
         if len(split) < 2:
             template_name = class_name
             vtype = split[0]
         else:
             template_name = split[0]
-            vtype = split[1]
+            vtype = tokens[0]
 
         name = tokens[1]
         args = self.__format_method_args(tokens[2], templated = True)
@@ -135,13 +140,16 @@ class Interpreter(base):
     def parse_field(self, class_name, tokens):
         if self.templates.get(class_name) is not None:
             return self.parse_template_field(class_name, tokens)
-        
+
         vtype = tokens[0]
+        if self.TYPE_CONCAT_CHAR in vtype:
+            if self.templates.get(vtype.split(self.TYPE_CONCAT_CHAR)[0]) is None:
+                return self.error(errno.TYPE_ERROR)
         name = tokens[1]
         if len(tokens) == 3:
             value = tokens[2]
         else:
-            value = self.__default_value(vtype)
+            value = self.default_value(vtype)
 
         self.__validate_type(vtype, value)
 
@@ -151,7 +159,7 @@ class Interpreter(base):
             if vtype == self.BOOL_DEF:
                 value = True if value == self.TRUE_DEF else False
             value = stringify(value)
-        
+
         self.classes[class_name].set_field(name, type_to_enum(vtype), value)
 
 
@@ -179,8 +187,9 @@ class Interpreter(base):
         
     def __format_method_args(self, args = [], templated = False):
         arg_names = [arg[1] for arg in args]
-        if len(set(arg_names)) != len(arg_names):
-            return self.error(errno.NAME_ERROR)
+        if not templated:
+            if len(set(arg_names)) != len(arg_names):
+                return self.error(errno.NAME_ERROR)
         
         formatted_args = { }
         for arg in args:
@@ -210,10 +219,12 @@ class Interpreter(base):
         parsed_program = deepcopy(parsed_program)
 
         # get all class/method/field names
+        template_names = []
         class_names = []
         method_names = []
         field_names = []
         classes = []
+        templates = []
 
         # add each class/method/field name into their respective lists
         for class_body in parsed_program:
@@ -223,12 +234,19 @@ class Interpreter(base):
                     classes.append(self.flatten_list(class_body[i + 2:]))
                     self.DEFINED_TYPES.add(class_body[i + 1])
                     break
+                if token == self.TEMPLATE_CLASS_DEF:
+                    template_names.append(class_body[i + 1])
+                    templates.append(self.flatten_list(class_body[i + 2:]))
+                    break
 
 
         class_set = set(class_names)
+        template_set = set(template_names)
         
         if len(class_set) != len(class_names):
-                return self.error(errno.TYPE_ERROR)
+            return self.error(errno.TYPE_ERROR)
+        if len(template_set) != len(template_names):
+            return self.error(errno.TYPE_ERROR)
             
         for class_body in classes:
             for i, token in enumerate(class_body):
@@ -240,22 +258,42 @@ class Interpreter(base):
             method_set = set(method_names)
             field_set = set(field_names)
 
-            # print(f'fields: {field_names, field_set}')
-            # print(f'methods: {method_names, method_set}')
+            # if the lengths are different, error respectively
+            if len(method_set) != len(method_names):
+                return self.error(errno.NAME_ERROR)
+            if len(field_set) != len(field_names):
+                return self.error(errno.NAME_ERROR)
+        
+            method_names = []
+            field_names = []
+
+        for class_body in templates:
+            for i, token in enumerate(class_body):
+                if token == self.METHOD_DEF:
+                    method_names.append(class_body[i + 2])
+                elif token == self.FIELD_DEF:
+                    field_names.append(class_body[i + 2])
+
+            method_set = set(method_names)
+            field_set = set(field_names)
+
+        # print(f'fields: {field_names, field_set}')
+        # print(f'methods: {method_names, method_set}')
             
             # if the lengths are different, error respectively
             if len(method_set) != len(method_names):
                 return self.error(errno.NAME_ERROR)
             if len(field_set) != len(field_names):
                 return self.error(errno.NAME_ERROR)
-
+            
             method_names = []
             field_names = []
         
 
     def __validate_type(self, vtype, value = None, templated = False):
-        if templated:
+        if templated or self.TYPE_CONCAT_CHAR in vtype:
             return                                        # no type checking for templates
+
         if vtype not in self.PRIMITIVES:                  # not a primitive type
             if vtype not in self.DEFINED_TYPES:           # not in existing class types
                 if self.classes.get(vtype) is None:       # if invalid class type
@@ -265,7 +303,7 @@ class Interpreter(base):
 
         if value is None:
             return
-        if value == self.NULL_DEF:                        # type null is ok
+        if value == self.NULL_DEF or value == Type.NULL:                        # type null is ok
             if vtype not in self.DEFINED_TYPES:
                 return self.error(errno.TYPE_ERROR)
         elif vtype == self.INT_DEF:                       # int
@@ -283,15 +321,15 @@ class Interpreter(base):
 
 
         
-    def __default_value(self, vtype):
-        if vtype == self.INT_DEF:
+    def default_value(self, vtype):
+        if vtype == self.INT_DEF or vtype == Type.INT:
             return '0'
-        elif vtype == self.BOOL_DEF:
+        elif vtype == self.BOOL_DEF or vtype == Type.BOOL:
             return self.FALSE_DEF
-        elif vtype == self.STRING_DEF:
+        elif vtype == self.STRING_DEF or vtype == Type.STRING:
             return '""'
-        elif typeof(evaluate(vtype)) == Type.OBJECT:
-            return self.NULL_DEF
+        else:
+            return Type.NULL
 
 
     def print_class_tree(self):

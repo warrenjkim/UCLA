@@ -4,6 +4,7 @@ from method import Method
 class Template:
     def __init__(self, name, types):
         self.name = name
+        self.super_class = None
         self.types = types
         self.methods = { }
         self.fields = { }

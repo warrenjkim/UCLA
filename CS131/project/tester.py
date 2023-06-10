@@ -152,7 +152,7 @@ def generate_test_suite_v3():
                   if file.suffix == ".brewin"]
     return __generate_test_suite(3, test_names, fail_names)
 
-#    return __generate_test_suite(3, ['test_template1'], [])
+#    return __generate_test_suite(3, [], ['v_template8'])
 
 
 async def main():

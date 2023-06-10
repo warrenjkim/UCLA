@@ -5,6 +5,7 @@ from brewintypes import Type, typeof, type_to_enum
 from variable import Variable, evaluate, stringify
 from method import Method
 from brewinclass import Class
+from re import sub
 
 
 class Object:
@@ -29,6 +30,7 @@ class Object:
         self.parent         = None                                 # parent class
         self.build_hierarchy()                                     # build object hierarchy
 
+        self.exception_stack = []
 
 
     def __deepcopy__(self, memo = {}):
@@ -37,28 +39,36 @@ class Object:
 
         
     def run(self, method_name, method_args = []):
-        #print(f'here: {method_name}')
+        self.add_templates(self.fields)
+        for arg in method_args:
+            if isinstance(arg, Variable):
+                if arg.name == "THROW":
+                    return arg
+
         self.current_method = self.methods.get(method_name)               # define the current method
         self.validate_method(self, self.current_method.name, method_args) # validate current method
         self.current_method.bind_args(method_args)                        # bind the current method arguments
         statements = deepcopy(self.current_method.statements)             # deep copy statements
         self.evaluate_all_identifiers(statements)
 
-
         for statement in statements:                                      # run each statement         
             return_value = self.run_statement(statement)                  # check for a return value
             if return_value is not None:
                 if return_value.name == "RETURN":
                     return_value.name = "RUN"
+ #                   print(f'exiting {method_name}')
                     return return_value
-
+                elif return_value.name == "THROW":
+#                    print(f'exiting {method_name}')
+                    return return_value
+                
         return self.default_return()
 
 
 
     def run_statement(self, statement):
-        # print(f'name: {self.current_method.type()}')
-#        print(f'running:{statement}')
+        # print(f'name: {self.current_method.name}')
+        # print(f'running:{statement}')
         for i, token in enumerate(statement):                    # check each token
             if token == self.console.RETURN_DEF:                 # (return) return the return value
                 return self.return_statement(statement)
@@ -73,9 +83,9 @@ class Object:
             elif token == self.console.NEW_DEF:                  # (new) return object reference to new object
                 return self.new_statement(statement[i + 1])      
             elif token == self.console.PRINT_DEF:                # (print) [noreturn]
-                self.print_statement(statement[i + 1:])
+                return self.print_statement(statement[i + 1:])
             elif token == self.console.SET_DEF:                  # (set) [noreturn]
-                self.set_statement(statement[i + 1:])                
+                return self.set_statement(statement[i + 1:])                
             elif token == self.console.INPUT_INT_DEF:            # (inputi) [noreturn]
                 self.inputi_statement(statement[i + 1])  
             elif token == self.console.INPUT_STRING_DEF:         # (inputs) [noreturn]
@@ -86,13 +96,83 @@ class Object:
                 return self.operator.parse_operator(statement)
 
 
+            elif token == self.console.THROW_DEF:
+                return self.throw_statement(statement[i + 1])
+            elif token == self.console.TRY_DEF:
+                return self.try_catch_statement(statement[i + 1:])
+
+    #WIP : TRY AND THROW
+    def throw_statement(self, statement):
+        if isinstance(statement, Variable):
+            if statement.name == "THROW":
+                return statement
+        if isinstance(statement, list):                               # there are nested calls
+            return self.throw_statement(self.run_statement(statement))  # evaluate statement(s)
+        else:
+            return self.evaluate_return(statement, "THROW")                      # call return helper
+
+    def try_catch_statement(self, statement):
+#        print(f'TRY {self.current_method.name}')
+        self.evaluate_all_identifiers(statement)
+        if len(statement) < 2:
+            return self.run_statement(statement[0])
+        
+        try_statement = statement[0]
+        catch_statement = statement[1]
+
+        current_method = self.current_method
+        return_value = self.run_statement(try_statement)
+        self.current_method = current_method
+
+        if return_value is not None:
+            if return_value.name == "RETURN":
+#                print(f'RETURN {return_value, self.current_method.name}')
+                return return_value
+            if return_value.name == "THROW":
+                self.validate_type(Type.STRING, evaluate(return_value.value))
+                exception = Variable('exception', Type.STRING, return_value.value)
+                if len(self.exception_stack) > 0:
+                    self.exception_stack[0]['exception'] = exception
+                else:
+                    self.exception_stack.insert(0, { 'exception': exception })
+
+                self.reset_exceptions(catch_statement)
+                self.evaluate_exceptions(catch_statement)
+                
+ #               print(f'CATCH {self.current_method.name}')
+                return_value = self.run_statement(catch_statement)
+  #              print(f'RETURN(THROW) {return_value, self.current_method.name}')
+
+                if len(self.exception_stack) != 0:
+                    self.exception_stack.pop(0)
+        return return_value
+
+    def evaluate_exceptions(self, statement):
+        for variable in self.exception_stack:         # evaluate local stack first (in -> out)
+            self.evaluate_args(statement, variable)              # evaluate arguments
+
+    def reset_exceptions(self, tokens):
+        for i, token in enumerate(tokens):                    # for each item
+            if isinstance(token, Variable):
+                if token.name == self.console.EXCEPTION_VARIABLE_DEF:
+                    tokens[i] = self.console.EXCEPTION_VARIABLE_DEF
+            if isinstance(token, list):                       # nested calls -> recurse
+                self.reset_exceptions(token)
+
 
     # RETURN STATEMENT
     def return_statement(self, statement):
+        if isinstance(statement[1], Variable):
+            if statement[1].name == "THROW":
+                return statement[1]
         if len(statement) == 1:                                            # there is no return value
             return self.evaluate_return(Type.VOID)
         elif isinstance(statement[1], list):                               # there are nested calls
-            return self.evaluate_return(self.run_statement(statement[1]))  # evaluate statement(s)
+            return_value = self.run_statement(statement[1])
+            if isinstance(return_value, Variable):
+                if return_value.name == "THROW":
+                    return return_value
+            return self.evaluate_return(return_value)  # evaluate statement(s)
         else:
             return self.evaluate_return(statement[1])                      # call return helper
 
@@ -100,7 +180,7 @@ class Object:
 
     # CALL STATEMENT
     def call_statement(self, statement):
-#        print(f'call: {statement}')
+        #print(f'call: {statement}')
         who = statement[0]                              # caller
         method_name = statement[1]                      # method name
         if isinstance(method_name, Variable):           # potential method name shadowing
@@ -159,8 +239,10 @@ class Object:
         condition = statement[0]                             # if condition
         true_statement = statement[1]                        # statement to run if true
 
-        if not self.valid_boolean(condition):                # if the condiiton is not a valid boolean, error
-            self.console.error(errno.TYPE_ERROR)
+        throw = self.validate_boolean(condition)
+
+        if throw is not None:
+            return throw
  
         if len(statement) < 3:                               # if there is no false statement, don't try and run one
             false_statement = None                           # there is no false statement
@@ -179,14 +261,15 @@ class Object:
     def while_statement(self, statement):
         condition = statement[0]                                # boolean condition
         true_statement = statement[1]                           # statement to run if true
-    
-        if not self.valid_boolean(condition):                   # if the condition is not a valid boolean, error
-            self.console.error(errno.TYPE_ERROR)
+
+        throw = self.validate_boolean(condition)
+        if throw is not None:
+            return throw
 
         while self.evaluate_condition(condition):               # run the while loop
             return_value = self.run_statement(true_statement)   # check for a return value
             if return_value is not None:
-                if return_value.name == "RETURN":
+                if return_value.name in ["RETURN", "THROW"]:
                     return return_value
 
 
@@ -196,7 +279,7 @@ class Object:
         for nested_statement in statement:                       # run each statement in the begin block
             return_value = self.run_statement(nested_statement)  # check for a return value
             if return_value is not None:
-                if return_value.name == "RETURN":
+                if return_value.name in ["RETURN", "THROW"]:
                     return return_value
 
 
@@ -216,7 +299,7 @@ class Object:
     # NEW STATEMENT
     def new_statement(self, class_name):
         if self.console.TYPE_CONCAT_CHAR in class_name:
-            split      = class_name.split(self.console.TYPE_CONCAT_CHAR)  # split class name and type
+            split         = class_name.split(self.console.TYPE_CONCAT_CHAR)  # split class name and type
             template_name = split[0]
             vtype      = split[1:]
             if self.console.templates.get(template_name) is None:
@@ -231,16 +314,23 @@ class Object:
 
     # [noreturn]
     def print_statement(self, args):
-#        print(f'args: {args}')
         to_print = ""                                      # to_string
         for arg in args:                                   # for each argument
             if isinstance(arg, list):                      # nested call
-                value = evaluate(self.run_statement(arg))  # -> primitive
+                value = self.run_statement(arg)  # -> variable
+                if isinstance(value, Variable):
+                    if value.name == "THROW":
+                        return value
+                    
+                value = evaluate(value)
+                    
                 if isinstance(value, bool):                # -> brewin bool
                     value = self.console.TRUE_DEF if value else self.console.FALSE_DEF
                 elif value == Type.NULL:                   # -> None
                     value = 'None'
             elif isinstance(arg, Variable):                # variable
+                if arg.name == "THROW":
+                    return arg
                 if arg.vtype == Type.BOOL:                 # -> brewin bool
                     value = self.console.TRUE_DEF if evaluate(arg.value) else self.console.FALSE_DEF
                 elif arg.value == Type.NULL:               # -> None
@@ -266,15 +356,20 @@ class Object:
     def set_statement(self, statement):
         variable = statement[0]                                     # variable object (name, vtype, value)
         value    = statement[1]                                     # value to be assigned
-        
+
         if not isinstance(variable, Variable):                      # invalid identifier
             return self.console.error(errno.NAME_ERROR)
 
         if value == Type.NULL and isinstance(variable.vtype, Type): # invalid null assignment
             return self.console.error(errno.TYPE_ERROR)
 
+        if isinstance(value, list):                                 # nested call
+            value = self.run_statement(value)                       # evaluate statement(s)
+            self.validate_classes(variable, value)                  # type check
 
         if isinstance(value, Variable):                             # variable to variable assignment
+            if value.name == "THROW":
+                return value
             if isinstance(value.value, Object):                     # check object definition
                 self.validate_type(variable.type(), value.value)
             else:
@@ -282,10 +377,6 @@ class Object:
 
             variable.value = value.value                            # assign value and return
             return
-
-        if isinstance(value, list):                                 # nested call
-            value = self.run_statement(value)                       # evaluate statement(s)
-            self.validate_classes(variable, value)                  # type check
 
         if isinstance(value, Object):                               # object
             self.validate_type(variable.type(), value)              # type check
@@ -333,8 +424,6 @@ class Object:
 
     def replace_arg_with_argv(self, tokens, arg, argv):
         for i, token in enumerate(tokens):                    # for each item
-            if isinstance(token, Variable):
-                tokens[i] = token
             if isinstance(token, list):                       # nested calls -> recurse
                 self.replace_arg_with_argv(token, arg, argv)              
             else:
@@ -350,8 +439,6 @@ class Object:
             else:
                 if token == self.console.NULL_DEF:  # if item is 'null', replace with Type.NULL
                     tokens[i] = Type.NULL
-
-
 
 
     def validate_method(self, owner, method_name, method_args = []):
@@ -381,6 +468,23 @@ class Object:
 
         return True
 
+    def validate_boolean(self, statement):
+        if isinstance(statement, Variable):
+            if statement.vtype != Type.BOOL:                       # check if variable is a bool
+                return self.console.error(errno.TYPE_ERROR)
+            
+        if isinstance(statement, list):
+            condition = self.evaluate_condition(statement)
+            if isinstance(condition, Variable):
+                return condition
+            if not isinstance(condition, bool):  # check if statement is a bool
+                return self.console.error(errno.TYPE_ERROR)
+        else:
+            if not isinstance(evaluate(statement), bool):
+                return self.console.error(errno.TYPE_ERROR)
+
+
+            
     def valid_boolean(self, statement):
         if isinstance(statement, Variable):
             return statement.vtype == Type.BOOL                       # check if variable is a bool
@@ -390,14 +494,20 @@ class Object:
             else:
                 return False
         else:
-            return statement == self.console.TRUE_DEF or statement == self.console.FALSE_DEF  # check brewin bool
+            return isinstance(evaluate(statement), bool)
 
     
     def evaluate_condition(self, condition):
         if isinstance(condition, list):
-            return evaluate(self.operator.parse_operator(condition))
+            evaluated_condition = self.run_statement(condition)
+            if isinstance(evaluated_condition, Variable):
+                if evaluated_condition.name == "THROW":
+                    return evaluated_condition
+
+            else:
+                return evaluate(evaluated_condition)
         else:
-            return condition == self.console.TRUE_DEF or condition != self.console.FALSE_DEF
+            return evaluate(condition)
 
     def default_return(self):
         method_type = self.current_method.type()
@@ -417,12 +527,18 @@ class Object:
 
 
     
-    def evaluate_return(self, return_value):
+    def evaluate_return(self, return_value, return_type = "RETURN"):
+#        print(return_value, self.current_method.name)
+        if return_type == "THROW":
+            if isinstance(return_value, Variable):
+                return return_value
+            return Variable(return_type, Type.STRING, return_value)
+        
         vtype = self.current_method.type()                   # method return type
             
         if return_value == self.console.ME_DEF:              # if return me, return self
             self.validate_type(vtype, self)
-            return Variable("RETURN", vtype, self)
+            return Variable(return_type, vtype, self)
             
         if return_value == Type.VOID:                        # if return type is void, return default value
             return_value = self.default_return()
@@ -431,14 +547,23 @@ class Object:
         
         if isinstance(return_value, errno):
             return self.console.error(return_value)
-        
+
         self.validate_type(vtype, return_value)
         
-        return Variable("RETURN", vtype, stringify(return_value))  # stringify the return value
+        return Variable(return_type, vtype, stringify(return_value))  # stringify the return value
 
 
 
     def push_local_variables(self, variables):
+        types = {}
+        for variable in variables:
+            if len(variable) == 2:
+                types[variable[0]] = Variable(variable[1], variable[0], self.console.default_value(variable[0]))
+            else:
+                types[variable[0]] = Variable(variable[1], variable[0], variable[2])
+
+        self.add_templates(types)
+        
         scope = { }
 
         variable_names = [variable[1] for variable in variables]
@@ -451,11 +576,11 @@ class Object:
             if len(variable) == 3:
                 value = evaluate(variable[2])
             else:
-                value = evaluate(self.console.__default_value(vtype))
+                value = evaluate(self.console.default_value(vtype))
                 
             self.validate_type(type_to_enum(vtype), value)
             scope[name] = Variable(name, type_to_enum(vtype), stringify(value))
-
+            
         self.current_method.local_stack.insert(0, scope)
 
 
@@ -467,14 +592,14 @@ class Object:
                 if self.console.classes.get(var_type) is None:
                     if self.templates.get(template_name) is None:
                         return self.console.error(errno.TYPE_ERROR)
-                    else:
-                        self.new_statement(var_type)
                         
         if var_type == Type.VOID:
             if value is not None:
                 return self.console.error(errno.TYPE_ERROR)
             
         if value == Type.NULL:
+            if var_type == Type.NULL:
+                return
             if self.console.classes.get(var_type) is None:
                 return self.console.error(errno.TYPE_ERROR)
             
@@ -539,6 +664,11 @@ class Object:
         lhs_class = self.console.classes.get(lhs_type)
         rhs_class = self.console.classes.get(rhs_type)
         
+        if self.console.TYPE_CONCAT_CHAR in lhs_type or self.console.TYPE_CONCAT_CHAR in rhs_type:
+            return lhs_type == rhs_type
+        
+        if lhs_class is None:
+            return self.console.error(errno.TYPE_ERROR)
         if rhs_class.super_class is None:
             return lhs_class.name == rhs_class.name
         else:
@@ -562,25 +692,40 @@ class Object:
     def generate_concrete_class(self, name, types):
         template_name = name.split(self.console.TYPE_CONCAT_CHAR)[0]
         class_name = name
-            
+
+        if self.templates.get(template_name) is None:
+            return self.console.error(errno.TYPE_ERROR)
         class_obj = Class(class_name)
         template = deepcopy(self.templates[template_name])
         self.replace_template_types(template, types)
         class_obj.methods = template.methods
         class_obj.fields = template.fields
 
-        self.console.classes[class_name] = class_obj
+        for _, field in class_obj.fields.items():
+            if field.value == Type.NULL:
+                field.value = self.console.default_value(field.vtype)
 
+            if not isinstance(field.vtype, Type):
+                if self.console.classes.get(field.vtype) is None:
+                    if field.vtype != class_name:
+                        return self.console.error(errno.TYPE_ERROR)
+
+
+            if field.vtype != class_name:
+                self.validate_type(field.vtype, evaluate(field.value))
+            
+        self.console.classes[class_name] = class_obj
 
 
     # replace fields first
     # replace methods
     def replace_template_types(self, template, concrete_types):
+        if len(template.types) != len(concrete_types):
+            return self.console.error(errno.TYPE_ERROR)
         for i, vtype in enumerate(template.types):       # each type in the template
             self.replace_template_objects(template.fields, vtype, concrete_types[i])
             self.replace_template_objects(template.methods, vtype, concrete_types[i])
             self.replace_template_methods(template.methods, vtype, concrete_types[i])
-            
 
 
     def replace_template_methods(self, methods, template_type, concrete_type):
@@ -592,14 +737,15 @@ class Object:
             
     def replace_template_objects(self, objects, template_type, concrete_type):
         for _, obj in objects.items():
-            if obj.vtype == template_type:
-                obj.vtype = type_to_enum(concrete_type)
-
-            elif not isinstance(obj.vtype, Type):                           # replacing object
+            if isinstance(obj.vtype, str):
                 if self.console.TYPE_CONCAT_CHAR in obj.vtype:
-                    obj.vtype = obj.vtype.replace(template_type, concrete_type)
+                    obj.vtype = type_to_enum(sub('@' + template_type + r'$', '@' + concrete_type, obj.vtype))
+                    obj.vtype = type_to_enum(sub('@' + template_type + '@', '@' + concrete_type + '@', obj.vtype))
+                else:
+                    obj.vtype = type_to_enum(sub(r'^' + template_type + r'$', concrete_type, obj.vtype))
 
-                        
+
+
     def replace_template_tokens(self, tokens, template_type, concrete_type):
         for i, token in enumerate(tokens):
             if isinstance(token, list):
@@ -608,5 +754,30 @@ class Object:
                 self.replace_template_objects(token, template_type, concrete_type)
 
             elif isinstance(token, str):
-                if token == template_type:
-                    tokens[i] = type_to_enum(concrete_type)
+                if self.console.TYPE_CONCAT_CHAR in token:
+                    tokens[i] = type_to_enum(sub('@' + template_type + r'$', '@' + concrete_type, tokens[i]))
+                    tokens[i] = type_to_enum(sub('@' + template_type + '@', '@' + concrete_type + '@', tokens[i]))
+                else:
+                    tokens[i] = type_to_enum(sub(r'^' + template_type + r'$', concrete_type, tokens[i]))
+
+                    
+
+    def add_templates(self, variables):
+        for _, field in variables.items():
+            if isinstance(field, str):
+                continue
+            if isinstance(field.vtype, str):
+                if self.console.TYPE_CONCAT_CHAR in field.vtype:
+                    split = field.vtype.split(self.console.TYPE_CONCAT_CHAR)
+                    template_name = split[0]
+                    types = split[1:]
+
+                    if self.templates.get(template_name) is None:
+                        return self.console.error(errno.NAME_ERROR)
+
+                    for t in types:
+                        if not isinstance(type_to_enum(t), Type):
+                            if self.console.classes.get(t) is None:
+                                return self.console.error(errno.TYPE_ERROR)
+                    if self.console.classes.get(field.vtype) is None:
+                        self.new_statement(field.vtype)
