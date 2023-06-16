@@ -7,135 +7,19 @@
 
 
 \begin{document}
-\textbf{Prove $\inf{S} \leq \sup{S}$:}
-\begin{proof}
-  Since $S \neq \emptyset$, $S \subseteq
-  \mathbb{R}$, $S$ is bounded above and below, $\inf{S}, \sup{S}$
-  exist. Since $S \neq \emptyset$, $\exists s \in S$. By definiation,
-  $\inf{S} \leq s \leq \sup{S}$ for all $s \in S$. Taking the extremes of the
-  inequality, we get $\inf{S} \leq \sup{S}$.
-\end{proof}
-\textbf{What if $\inf{S} = \sup{S}$?} \\
-If $\alpha = \inf{S} = \sup{S}$, then we know $S$ contains only one
-element so $\inf{S} \leq s \leq \sup{S} \implies \alpha \leq s \leq
-\alpha \implies s = \alpha$. 
+Yes, if the sequence of partial sums converges, then the infinite series converges as well. This is known as the convergence of a series being equivalent to the convergence of its sequence of partial sums.
 
-\textbf{Let $S$ and $T$ be nonempty subsets of $\mathbb{R}$ with the
-  following property: $s \leq t$ for all $s \in S$ and $t \in
-  T$. Prove $S \subseteq T \implies \inf{T} \leq \inf{S} \leq \inf{S} \leq \sup{T}$:}
-\begin{proof}
-  Since both $S, T \neq \emptyset, \ S, T \subseteq \mathbb{R}$, and
-  bounded, $\inf{S}, \inf{T}, \sup{S}, \sup{T}$ exist. Then, since $S
-  \subseteq T$, $\forall s \in S, s \in T$. Since $\forall t \in T, t
-  \leq \sup{T}$, $\sup{T}$ is an upper bound for $S$. Since $\sup{S}$
-  is the \textit{least} upper bound by definition, we have that
-  $\sup{S} \leq \sup{T}$. Since $\forall t \in T, \inf{T} \leq t$, we
-  have that $\inf{T}$ is a lower bound for $S$. Since $\inf{S}$ is the
-  \textit{greatest} lower bound by definition, we have that $\inf{T}
-  \leq \inf{S}$. Note that since $S \neq \emptyset$, $\forall s \in
-  S$, $\inf{S} \leq s \leq \sup{S}$, so we get the following
-  inequality: $\inf{T} \leq \inf{S} \leq s \leq \sup{S} \leq \sup{T}$
-  so $\inf{T} \leq \inf{S} \leq \sup{S} \leq \sup{T}$
-\end{proof}
+To explain this in more detail:
 
-\textbf{Prove that if $a > 0$, then there exists $n \in \mathbb{N}$
-  such that $\frac{1}{n} < a < n$:}
-\begin{proof}
-  Multiplying $n$ on both sides of $\frac{1}{n} < a$, we get $1 <
-  na$. By the Archemedian property, since $a, 1 > 0$, there exists
-  an $n \in \mathbb{N}$ s.t. $na > 1$.
+Let's consider an infinite series $\sum_{n=1}^{\infty} a_n$ and its corresponding sequence of partial sums $(S_n)$, where $S_n = a_1 + a_2 + \ldots + a_n$.
 
-  Since $a, 1 > 0$ in the inequality  $a < 1 \cdot n$, by the
-  Archemedian property, there exists an $n \in \mathbb{N}$ s.t. $n >
-  a$. Therefore, $\frac{1}{n} < a < n$.
-\end{proof}
+If the sequence of partial sums $(S_n)$ converges to a limit $L$, i.e., $\lim_{n \to \infty} S_n = L$, then we say that the series $\sum_{n=1}^{\infty} a_n$ converges, and its sum is equal to $L$.
 
-\textbf{Prove $\lim \frac{(-1)^n}{n} = 0$}
+The reason behind this equivalence is that the convergence of the sequence of partial sums $(S_n)$ indicates that as we add more and more terms of the series, the sum gets closer and closer to a finite limit $L$. This implies that the series as a whole has a well-defined sum, which is equal to $L$.
 
-\textit{Scratch:}
-  \begin{align*}
-    \bigg| \frac{(-1)^n}{n} - 0 \bigg| &< \varepsilon \\
-    \bigg| \frac{(-1)^n}{n} \bigg| &< \varepsilon \\
-    \frac{1}{n} &< \varepsilon && \text{note: } \bigg|
-                                    \frac{(-1)^n}{n} - 0 \bigg| \leq
-                                  \frac{1}{n} \\
-    n &> \frac{1}{\varepsilon}
-  \end{align*}
-\begin{proof}
-  Let $\varepsilon > 0$. Let $N \geq \frac{1}{\varepsilon}$. The,
-  $\forall n > N$, we have
-  \begin{align*}
-    n &> \frac{1}{\varepsilon} \\
-    \frac{1}{n} &< \varepsilon \\
-    \bigg| \frac{(-1)^n}{n} - 0 \bigg| \leq \frac{1}{n} &< \varepsilon \\
-    \bigg| \frac{(-1)^n}{n} - 0 \bigg| &< \varepsilon && \text{taking
-                                                         the extremes
-                                                         of the inequalities}
-  \end{align*}
-  Therefore, $\lim \frac{(-1)^n}{n} = 0$.
-\end{proof}
+Conversely, if the sequence of partial sums $(S_n)$ diverges, meaning that it does not approach a finite limit, then the series $\sum_{n=1}^{\infty} a_n$ is said to diverge.
 
-\newpage
-\textbf{Prove $\lim \frac{1}{n^{1/3}} = 0$}
-
-\textit{Scratch:}
-\begin{align*}
-  \bigg| \frac{1}{n^{1/3}} - 0 \bigg| &< \varepsilon \\
-  \frac{1}{n^{1/3}} &< \varepsilon \\
-  n &> \frac{1}{\varepsilon^3}
-\end{align*}
-\begin{proof}
-  Let $\varepsilon > 0$. Let $N \geq \frac{1}{\varepsilon^3}$. Then $\forall n > N$, we have
-  \[n > \frac{1}{\varepsilon^3} \implies   \bigg| \frac{1}{n^{1/3}} -
-    0 \bigg| < \varepsilon\] by the scratch work above.
-\end{proof}
-
-\textbf{Prove $\lim \frac{2n - 1}{3n + 2} = \frac{2}{3}$}
-
-\textit{Scratch:}
-  \begin{align*}
-    \bigg| \frac{2n - 1}{3n + 2} - \frac{2}{3} \bigg| &< \varepsilon \\
-    \bigg| \frac{6n - 3 - (6n + 4)}{3(3n + 2)} \bigg| &< \varepsilon \\
-    \bigg| \frac{-7}{3(3n + 2)} \bigg| &< \varepsilon \\
-    \frac{7}{3(3n + 2)} &< \varepsilon && \text{note: } \bigg|
-                                          \frac{-7}{3(3n + 2)} \bigg|
-                                          \leq \frac{7}{3(3n + 2)} \\
-    \frac{7}{9n + 6} &< \varepsilon \\
-    n > \frac{7 - 6\varepsilon}{9\epsilon}
-  \end{align*}
-\begin{proof}
-  Let $\varepsilon > 0$. Let $N \geq \frac{7 - 6\varepsilon}{9\epsilon}$. Then
-  $\forall n > N$, we have
-  \[n > \frac{7 - 6\varepsilon}{9\epsilon} \implies \bigg|
-    \frac{2n - 1}{3n + 2} - \frac{2}{3} \bigg| < \varepsilon\] 
-  by the scratch work above.
-\end{proof}
-
-\textbf{Prove $\lim \frac{n + 6}{n^2 - 6} = 0$}
-
-\textit{Scratch:}
-\begin{align*}
-  \bigg| \frac{n + 6}{n^2 - 6} - 0 \bigg| &< \varepsilon \\
-  \bigg| \frac{n + 6}{n^2 - 6} \bigg| &< \varepsilon
-\end{align*}
-Note that when $n \geq 6$, we have that $|n + 6| \leq 2n$, $|n^2 - 6|
-\geq \frac{1}{2}n^2$.
-\begin{align*}
-  \bigg| \frac{n + 6}{n^2 - 6} \bigg| \leq \frac{2n}{\frac{1}{2}n^2}
-  &< \varepsilon \\
-  \frac{4n}{n^2} < \varepsilon \\
-  \frac{4}{n} < \varepsilon \\
-  n > \max{\{\frac{4}{\varepsilon}, 6\}}
-\end{align*}
-\begin{proof}
-  Let $\varepsilon > 0$. Let $N \geq \max{\{\frac{4}{\varepsilon}, 6\}}$. Then
-  $\forall n > N$, we have
-  \[n > \frac{4}{\varepsilon} \implies \bigg| \frac{n + 6}{n^2 - 6}
-    \bigg| \leq \frac{2n}{\frac{1}{2}n^2} < \varepsilon\]
-  from the scratch work above. Taking the extremes of both sides of
-  the inequality, we get
-  \[\bigg| \frac{n + 6}{n^2 - 6} - 0 \bigg| < \varepsilon\]
-\end{proof}
+In summary, the convergence of the sequence of partial sums guarantees the convergence of the corresponding infinite series, and the divergence of the sequence of partial sums implies the divergence of the series.
 
 \end{document}
 %%% Local Variables:
