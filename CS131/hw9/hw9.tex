@@ -82,7 +82,7 @@ def HTIterator:
     while self.curr is None:
       self.bucket += 1
 
-      if len(self.arr) < self.bucket:
+      if len(self.arr) <= self.bucket:
         raise StopIteration
 
       self.curr = self.arr[self.bucket]
@@ -96,7 +96,7 @@ def HTIterator:
 hash_table = HashTable(10)
 ...
 for item in hash_table:
-  print(item.value)
+  print(item)
 \end{verbatim}
 
 \item
@@ -115,7 +115,7 @@ while True:
 \begin{verbatim}
 class HashTable:
 ...
-  def forEach(f):
+  def forEach(self, f):
     for i in range(0, len(self.array)):
       curr = arr[i]
       while curr is not None:
@@ -142,7 +142,7 @@ class HashTable:
 \newpage
 \section*{Question 4}
 \begin{enumerate}[label=(\alph*)]
-\item \texttt{likes\_red(X) :- likes(X, Y), color(Y, red).}
+\item \texttt{likes\_red(X) :- food(Y), likes(X, Y), color(Y, red).}
 \item
 \begin{verbatim}
 likes_food_color(X, Z) :-
@@ -170,18 +170,57 @@ reachable(X, Y) :-
 \newpage
 \section*{Question 6}
 \begin{enumerate}[label=(\alph*)]
-\item \texttt{\{X $\to$ bar\}}
+\item \texttt{\{X = bar\}}
 \item Does not unify since the arities do not match.
-\item \texttt{\{Z $\leftrightarrow$ X\}}
-\item \texttt{\{X $\to$ barf, Y $\to$ bletch\}}
+\item \texttt{\{Z = X\}}
+\item \texttt{\{X = barf, Y = bletch\}}
 \item Does not unify since \texttt{bletch $\neq$ barf}
-\item \texttt{\{X $\to$ bar, Y $\to$ barf\}}
-\item \texttt{\{Y $\to$ bar(a, Z)\}}
+\item \texttt{\{X = bar, Y = barf\}}
+\item \texttt{\{Y = bar(a, Z)\}}
 \item Does not unify since \texttt{Z} cannot bind to both \texttt{barf} and \texttt{bletch}.
-\item \texttt{\{Q $\to$ [A|B|C]\}}
+\item \texttt{\{Q = [A|B|C]\}}
 \item Does not unify since \texttt{X} cannot bind to \texttt{[a]}.
 \end{enumerate}
 
+
+\newpage
+\section*{Question 7}
+\begin{verbatim}
+insert_lex(X, [], [X]).
+insert_lex(X, [Y|T], [X,Y|T]) :- X =< Y.
+insert_lex(X, [Y|T], [Y|NT]) :-
+    X > Y, insert_lex(X, T, NT).
+\end{verbatim}
+
+
+\newpage
+\section*{Question 8}
+\begin{verbatim}
+count_elem([], Total, Total).
+count_elem([Hd|Tail], Sum, Total) :-
+    Sum1 is Sum + 1,
+    count_elem(Tail, Sum1, Total).
+\end{verbatim}
+
+
+\newpage
+\section*{Question 9}
+\begin{verbatim}
+gen_list(_, 0, []).
+gen_list(Value, N, [Value|Tail]) :-
+    N > 0,
+    N1 is N - 1,
+    gen_list(Value, N1, Tail).
+\end{verbatim}
+
+
+\newpage
+\section*{Question 10}
+\begin{verbatim}
+append_item([], Item, [Item]).
+append_item([Head|TailIn], Item, [Head|TailOut]) :-
+    append_item(TailIn, Item, TailOut).
+\end{verbatim}
 
 \end{document}
 

@@ -1,0 +1,271 @@
+\documentclass[13pt]{article}
+\usepackage{amsmath, amsthm, amssymb, graphicx, enumitem, esvect}
+
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+\title{C\&EE 110}
+\author{Warren Kim}
+
+\begin{document}
+\maketitle
+
+\newpage
+\section*{Discussion 5}
+\subsection*{Question 1}
+Given:
+\begin{align*}
+  X &\leq 31 \\
+  \lambda &= \frac{1}{\mu} = \frac{1}{44} = 0.0227
+\end{align*}
+Then:
+\begin{enumerate}[label=(\alph*)]
+\item
+  \begin{align*}
+    P(X \leq 31) &= \int_{0}^{31} \lambda e^{-\lambda x}dx \\
+                 &= \int_{0}^{31} \frac{1}{44} e^{- \frac{y}{44}}dx \\
+                 &= 1 - e^{\frac{31}{44}} \\
+    P(X \leq 31) &= 0.5057
+  \end{align*}
+\item $V(X) = \frac{1}{\lambda^2} = 44^2 = 1936$
+\end{enumerate}
+
+\subsection*{Question 2}
+Given:
+\begin{align*}
+  \alpha &= 11.6 \\
+  \beta &= 2.2 \\
+  \textit{Range: } &[3.5, 25]
+\end{align*}
+\textit{\textbf{Weibull Distribution:}}
+\begin{align*}
+  E(X) &= \alpha \Gamma \left(1 + \frac{1}{\beta}\right) \\
+  V(X) &= \alpha^2 \left\{ \Gamma \left(1 + \frac{2}{\beta}\right)
+         - \left[\Gamma \left(1 + \frac{1}{\beta}\right)\right]^2\right\} \\
+  f(X, \alpha, \beta) &= \left( \frac{\beta}{\alpha} \right)
+                        \left( \frac{x}{\alpha} \right)^{\beta - 1}
+                        e^{- \left( \frac{x}{\alpha} \right)^{\beta}} \\
+  F(X, \alpha, \beta) &= 1 - e^{- \left( \frac{x}{\alpha} \right)^{\beta}}
+\end{align*}
+
+\begin{enumerate}[label=(\alph*)]
+\item $E(X) = 11.6 \cdot \Gamma \left(1 + \frac{1}{2.2}\right) = 10.27 \text{ m/s}.$
+\item $V(X) = 11.6^2 \cdot \left\{ \Gamma \left(1 + \frac{2}{2.2}\right)
+    - \left[\Gamma \left(1 + \frac{1}{2.2}\right)\right]^2\right\} = 23.91 \text{ m/s}
+  \implies \sigma = \sqrt{V(X)} = 4.89 \text{ m/s}$.
+\item $P(3.5 \leq X \leq 25) = F(X \leq 25) - F(X \leq 3.5)
+  = \left( 1 - e^{- \left( \frac{25}{11.6} \right)^{2.22}} \right)
+  - \left( 1 - e^{- \left( \frac{3.5}{11.6} \right)^{2.22}} \right) = 0.9284$
+\item $\beta = 1 \implies$ \textit{\textbf{Exponential Distribution:}}
+  \begin{enumerate}[label=(\roman*)]
+  \item $E(X) = \frac{1}{\lambda} = \alpha = 11.6 \text{ m/s}$.
+  \item $V(X) = \frac{1}{\lambda^2} = \alpha^2 = 134.56 \ (\text{m/s})^2$
+  \item 
+    \begin{align*}
+      f(X, \lambda) &= \lambda e^{-\lambda x} \\
+      F(X, \alpha, \beta) &= 1 - e^{-\lambda x} \\
+      P(3.5 \leq X \leq 25) &= \left(1 - e^{(11.6)(25)}\right) - \left(1 - e^{(11.6)(3.5)}\right) = 0.624
+    \end{align*}
+  \end{enumerate}
+\end{enumerate}
+
+\subsection*{Question 3}
+Given:
+\begin{align*}
+  \mu &= 0.35 \\
+  \sigma &= 0.2 \\
+  T &= 0.6
+\end{align*}
+\textit{\textbf{Log-Normal Distribution: $\Phi$}}
+\begin{align*}
+  \sigma_T^2 &= \ln \left( \frac{\sigma^2}{\mu^2} + 1 \right) \\
+             &= \ln \left( \frac{0.2^2}{0.35^2} + 1 \right) \\
+  \sigma_T^2 &= 0.283 \\
+  \mu_T^2 &= \ln \mu - \frac{1}{2} \sigma_T^2 \\
+             &= \ln 0.35 - \frac{1}{2} \left( 0.283 \right) \\
+  \mu_T^2 &= -1.19 \\
+\end{align*}
+\begin{enumerate}[label=(\alph*)]
+\item $P(T < 0.6) = \Phi \left( \frac{\ln 0.6 - \mu_T}{\sigma_T} \right) = \Phi(1.276) = 0.898$.
+\item
+  \begin{align*}
+    P(T > t^*) &= 0.95 \iff 1 - P(T \leq t^*) = 0.95
+                 \implies \Phi \left( \frac{\ln T^* - \mu_T}{\sigma_T} \right) = 0.05 \\
+    \implies -1.65 &= \frac{\ln T^* - \mu_T}{\sigma_T} \\
+                      &= \exp(-1.65 \cdot \sqrt{0.283} - 1.19) \\
+    P(T > t^*) &= 0.126 \text{ s}
+  \end{align*}
+\end{enumerate}
+
+\subsection*{Question 4}
+Given:
+\begin{align*}
+  \mu_X &= 100 \textit{ kips} \\
+  \sigma_X &= 10 \textit{ kips} \\
+  \mu_Y &= 40 \textit{ kips} \\
+  \sigma_Y &= 10 \textit{ kips} \\
+\end{align*}
+\textit{\textbf{Assumed Normal Distribution:}}
+\begin{enumerate}[label=(\alph*)]
+\item
+  \begin{align*}
+    \mu_Z &= \mu_X + \mu_Y = 100 + 40 = 140 \\
+    \sigma_Z &= \sqrt{\sigma_x^2 + \sigma_Y^2} = \sqrt{10^2 + 10^2} = 14.14 \textit{ kips}
+  \end{align*}
+\item
+  \begin{align*}
+    P(Z \geq z^*) &= 0.05 \iff 1 - P(Z < z^*) = 0.05 \\
+                  &\implies 1 - P(Z < z^*) = 1 - \Phi \left( \frac{z^* - \mu_Z}{\sigma_Z} \right) \\
+                  &= 0.05 \\
+                  &\implies \Phi \left( \frac{z^* - \mu_Z}{\sigma_Z} \right) = 0.95 \\
+                  &\implies z^* = (1.65)(14.14) + 140 = 163.33 \textit{ kips}
+  \end{align*}
+\item $P(Z < 170) = \Phi \left(\frac{170 - 140}{14.14} \right) = \Phi(2.12) = 0.983$.
+\end{enumerate}
+
+\newpage
+\section*{Discussion 6}
+\subsection*{Question 1}
+Given:
+\begin{align*}
+  d &= \sqrt{r^2 - 40^2}  
+\end{align*}
+We have that $P(R \leq r) = F(r) = \frac{\textit{length of the fault within distance } r}
+{\textit{total length of the fault}} = \frac{2\sqrt{r^2 - 40^2}}{60}$
+Then, we have
+\[F(r) =
+  \begin{cases}
+    \frac{2\sqrt{r^2 - 40^2}}{60} & 40 \leq r \leq 50 \\
+    1 & r > 50 \\
+    0 & r < 40
+  \end{cases}
+\]
+and
+\[f(r) =
+  \begin{cases}
+    \frac{r}{30 \sqrt{r^2 - 40^2}} & 40 \leq r \leq 50 \\
+    1 & r > 50 \\
+    0 & r < 40
+  \end{cases}
+\]
+
+\subsection*{Question 2}
+Given:
+\[f(y_1, y_2) =
+  \begin{cases}
+    k(y_1 + y_2) & 1 \leq y_1 \leq 2, \ 4 \leq y_2 \leq 5 \\
+    0 & \textit{else}
+  \end{cases}
+\]
+\textit{\textbf{PDF:}}
+\[\int_{- \infty}^{\infty} \int_{- \infty}^{\infty} f(y_1, y_2) dy_1 dy_2 = 1\]
+\begin{enumerate}[label=(\alph*)]
+\item
+  \begin{align*}
+    \int_{1}^{2} \int_{4}^{5} f(y_1, y_2) dy_1 dy_2 &= \int_{1}^{2} \int_{4}^{5} k(y_1 + y_2) dy_1 dy_2 = 6k\\
+                                                    &\implies k = \frac{1}{6}
+  \end{align*}
+\item
+  \begin{align*}
+    P(Y_1 \leq y_1, Y_2 \leq y_2) &= \int_{1}^{y_1} \int_{4}^{y_2} \frac{1}{6}(t_1 + t_2) dt_1 dt_2 \\
+                                  &= \frac{1}{6} \int_{1}^{y_1} \left[ t_1t_2
+                                    + \frac{1}{2}t_2^2 \right] \bigg|_{4}^{y_2} dy_1 \\
+                                  &= \frac{1}{6} \int_{1}^{y_1} \left[ t_1(y_2 - 4)
+                                    + \frac{1}{2}y_2^2 - \frac{16}{2} \right] dy_1 \\
+                                  &= \frac{1}{6} \left[ \frac{1}{2}t_1^2 (y_2 - 4)
+                                    + \frac{1}{2}y_2^2 - 8 \right] \bigg|_{1}^{y_1} \\
+    P(Y_1 \leq y_1, Y_2 \leq y_2) &= \frac{1}{12}(y_1 - 1)(y_2 - 4)(y_1 + y_2 + 5)
+                                  && 1 \leq y_1 \leq 2, \ 4 \leq y_2 \leq 5
+  \end{align*}
+\item $P(Y_1 \leq 1.5, Y_2 \leq 4.5) = (1.5 - 1)(4.5 - 4)(1.5 + 4.5 + 5) = 0.229$
+\item
+  \begin{align*}
+    f_1(y_1) &= \int_{4}^{5} \frac{1}{6}(y_1 + y_2)dy_2 \\
+             &= \frac{1}{6} \int_{4}^{5} (y_1 + y_2)dy_2 \\
+             &= \frac{1}{6} \left[ y_1 + \frac{25}{2} - \frac{16}{2} \right] \\
+    f_1(y_1) &=  \frac{1}{6} \left( y_2 + \frac{3}{2} \right) && 4 \leq y_2 \leq 5
+  \end{align*}
+\item
+  \begin{align*}
+    P(Y_1 \leq 1.5 | Y_2 \geq 4.5) &= \frac{P(Y_1 \leq 1.5 \cap Y_2 \geq 4.5)}{P(Y_1 \geq 4.5)} \\
+                                   &= \frac{\int_{1}^{1.5} \int_{4.5}^{5} \frac{1}{6} (y_1 + y_2) dy_2 dy_1}
+                                     {\int_{4.5}^{5} \frac{1}{6} \left( y_2 + \frac{3}{2} \right)dy_2} \\
+    P(Y_1 \leq 1.5 | Y_2 \geq 4.5) &= \frac{0.25}{0.52} = 0.48
+  \end{align*}
+\end{enumerate}
+
+\newpage
+\section*{Discussion 7}
+\subsection*{Question 1}
+Given:
+\begin{align*}
+  n &= 50 \\
+  \mu &= 12.68 \\
+  \sigma &= 6.83
+\end{align*}
+\textit{\textbf{Assumed Normal Distribution:}}
+\[P(|\overline{X} - \mu| \leq 0) = 0.95\]
+\[P\left( \mu - z_{\frac{\alpha}{2}} \cdot \sigma_{\overline{X}}
+    \leq \mu_{\overline{X}}
+    \leq \mu + z_{\frac{\alpha}{2}} \cdot \sigma_{\overline{X}} \right)
+  = 1 - \alpha\]
+where the confidence interval is $1 - \alpha = 0.95$ with significance level $0.05$.
+\begin{enumerate}[label=(\alph*)]
+\item
+  \begin{align*}
+    z_{\frac{\alpha}{2}} &= z_{\frac{0.05}{2}} = z_{0.025} = 1.96 && \text{from z-table} \\
+    \sigma_{\overline{X}} &= \frac{\sigma}{\sqrt{n}} = \frac{6.83}{\sqrt{50}} = 0.9695
+  \end{align*}
+  Then we get
+  \begin{align*}
+    P\left( \mu - z_{\frac{\alpha}{2}} \cdot \sigma_{\overline{X}}
+    \leq \mu_{\overline{X}}
+    \leq \mu + z_{\frac{\alpha}{2}} \cdot \sigma_{\overline{X}} \right)
+    &= P\left( 12.68 - (1.96)(0.9695)
+    \leq \mu_{\overline{X}}
+      \leq 12.68 - (1.96)(0.9695) \right) = 0.95 \\
+    \implies 95\% \textit{ confidence interval is } &12.68 \pm 1.89 \iff (10.79, 14.57)
+  \end{align*}
+\item
+  \begin{align*}
+    P(11.09 \leq \mu_{\overline{X}} \leq 14.27) &= 1 - \alpha \\
+    \implies 14.27 &= \mu + z_{\frac{\alpha}{2}} \cdot \frac{\sigma}{\sqrt{n}} \\
+                                                &= 12.68 + z_{\frac{\alpha}{2}} \cdot 0.9695 \\
+    z_{\frac{\alpha}{2}} &= 1.646 \\
+    \implies \frac{\alpha}{2} &= 0.05 \implies \alpha = 0.1,
+                                \textit{ confidence interval is } 100(1 - \alpha) = 90\%
+  \end{align*}
+\end{enumerate}
+
+\subsection*{Question 2-4: See Canvas}
+
+\section*{Discussion 8/9: See Canvas}
+
+\section*{MLE}
+\textit{\textbf{Note:}} $\ln \iff \log$, $\exp x = e^x$ \\
+Given
+\[L = \prod_{i = 1}^{N} p(x_i) = \Pi_{i = 1}^{N} \frac{\lambda^{x_i} \exp (-\lambda)}{x_{i}!}\]
+\begin{align*}
+  LL &= \log \left\{ \prod_{i = 1}^{N} \frac{\lambda^{x_i} \exp (-\lambda)}{x_{i}!} \right\} \\
+     &= \sum_{i = 1}^{N} \log \left( \lambda^{x_i} \exp (-\lambda) \right) - \log (x_{i}!)
+     && \log \left(\frac{x}{y}\right) = \log (x) - \log (y) \\
+     &= \sum_{i = 1}^{N} -\lambda + (x_i) \log \left( \lambda \right) - \log (x_{i}!)
+     && \log(xy) = \log(x) + \log(y), \ \log(x^a) = a\log(x), \ \log(e^x) = x \\
+  LL &= -N \lambda + \sum_{i = 1}^{N} [(x_i) \log \left( \lambda \right) - \log (x_{i}!)]
+\end{align*}
+Then $\frac{dLL}{d\lambda}$ is
+\begin{align*}
+  \frac{dLL}{d\lambda} &= -N\lambda
+\end{align*}
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

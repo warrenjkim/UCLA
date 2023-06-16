@@ -12,7 +12,7 @@
 \usepackage[arrow]{xy}
 
 \title{CS 131}
-\author{Warren Kim}
+\date{}
 
 \begin{document}
 \maketitle
@@ -52,7 +52,7 @@ that were not marked in the Mark phase of the algorithm.
 
 \subsubsection{Issues: Memory Fragmentation}
 One of the consequences of Mark and Sweep is potential Memory
-Fragmentation. The heap how has random-sized blocks of free memory
+Fragmentation. The heap now has random-sized blocks of free memory
 interlaced with in-use memory. This is not ideal since finding free
 blocks of appropriately sized memory becomes difficult. 
 
@@ -140,7 +140,7 @@ called (when necessary) in order to have any effect.
 
 
 
-\newpage
+
 \section{Parameter Passing}
 \subsection{Semantics}
 \begin{enumerate}[label=(\roman*)]
@@ -446,7 +446,7 @@ are compiled into concrete versions beforehand.
 \subsubsection{Parametric Polymorphism: Generics}
 Each generic function/class is compiled on its own, independent of any
 code that might use it later. Because of this, generics don't make any
-assumptions about types. The cokmpiler will ensure the code uses the
+assumptions about types. The compiler will ensure the code uses the
 generic's interfaces correctly on a case by case basis. Bounding is a
 process where we place restrictions on what types can be used with the
 generic. Generics are type-safe since the compiler will verify that
@@ -492,7 +492,7 @@ will check for a matching function, invoking the one it points to.
 
 \subsection{Dynamic Dispatch in Statically Typed Languages}
 In statically typed languages, the language examines the class of an
-objet at the time of the method call to determine which function to
+object at the time of the method call to determine which function to
 invoke.
 
 \subsection{Dynamic Dispatch in Dynamically Typed Languages}
@@ -560,7 +560,7 @@ define a new class, it automatically creates a new type of the same
 name. A class name and a class type are \textbf{not} the same.
 
 \subsubsection{Class Fields/Methods}
-Class fields, also knwon as singletons, are fields that are shared
+Class fields, also known as singletons, are fields that are shared
 among all objects, and is "static" throughout the program's
 lifetime. Some uses include:
 \begin{enumerate}[label=(\roman*)]
@@ -736,7 +736,7 @@ Best practices include:
   (e.g. a \texttt{Shape} interface supports calculations for
   \texttt{area}).
 \end{enumerate}
-\newpage
+
 Pros/Cons of Interface Inheritance include:
 \begin{enumerate}
 \item [\textbf{P}] You can write functions focused on an interface, and have it
@@ -856,7 +856,7 @@ public:
 ...
 };
 \end{verbatim}
-\newpage
+
 \subsubsection*{Example (cont.)}
 Composition with Delegation:
 \begin{verbatim}
@@ -1078,7 +1078,7 @@ Short circuiting is when a (most often boolean) condition is
 satisfied/invalidated before all of the sub-expressions are
 evaluated.
 
-\subsubsection*{Example (||)}
+\subsubsection*{Example ($| \ |$)}
 \begin{verbatim}
 if(a() || b() || c()) { do_something(); }
 <==>
@@ -1098,6 +1098,403 @@ if(a())
 \textit{\textbf{Note:}} Not all languages implement short circuiting.
 
 
+
+
+
+\section{Iteration}
+Loops are either:
+\begin{enumerate}[label=(\roman*)]
+\item Counter-controlled (e.g. \texttt{for (int i = 0; i < n; i++)}
+\item Condition-controlled (e.g. \texttt{while (condition)})
+\item Collection-controlled (e.g. \texttt{for (elem : const auto\& elements)})
+\end{enumerate}
+Collection and (most often) counter-controlled rely on iterators.
+
+
+\subsection{Iterable Objects}
+An iterable object is one that can be iterated over via an iterator:
+\begin{enumerate}[label=(\roman*)]
+\item Containers (e.g. array, list, tuple, vector, dictionary, etc)
+\item I/O (e.g. disk file/network stream)
+\item Generators (e.g. sequences)
+\end{enumerate}
+
+
+\subsection{Iterators}
+An iterator is an object that enumerates through an iterable object,
+creating an interface for enumerating through (potentially complex)
+data structures (e.g. hashmap). Examples are as follows:
+\begin{enumerate}[label=(\roman*)]
+\item Enmerate a container
+\item Enumerate external sources
+\item Enumerate through an abstract sequence\footnote{Abstract
+    sequences: Given an arbitrary sequence $(x_n)$, a generator will
+    only store $x_i$ via an iterator.}
+\end{enumerate}
+An iterable object returns a new instance of an iterator every time
+one is requested. Iterators have some way of calling a \texttt{next}
+method to retrieve the next element from the enumerated iterable.
+
+\subsection*{Corollary: Composition of Iterators/Iterable Objects}
+Iterators and Iterables are two distinct objects. The iterator will
+enumerate \textit{through} an iterable object. The reason for this
+is because we don't want the iterator to be coupled with the
+iterable. This allows for multiple instances of an iterator for the
+same iterable.
+
+\subsection{Implementation}
+\subsubsection{Traditional Classes}
+An iterator object is implemented via a regular class, and the
+iterable returns an instance of the class. An iterator must implement
+(at minimum) the \texttt{next} function. An example is as follows: 
+\begin{verbatim}
+class Iterator:
+  def __init__(self, arr):
+    self.arr = arr
+    self.index = 0
+
+  def __next__():
+    if self.index < len(self.arr):
+      val = self.arr[self.index]
+      return val
+    else:
+      raise StopIteration
+\end{verbatim}
+and is used in tandem as such:
+\begin{verbatim}
+class StrList:
+  def __init__(self):
+    self.arr = []
+...
+  def __iter__(self):
+    it = Iterator(self.arr)
+    return it
+\end{verbatim}
+This initializes a new instance of \texttt{Iterator} and returns it to
+the caller. This enables us to have multiple \textbf{independent}
+iterators pointing to the same iterable. \\ \\
+Iterators are used to implement different type of iterable loops, and
+implementations of those can be found on HW9 because I'm lazy and
+don't want to type it out here.
+
+\subsection{Generators}
+A generator ("true iterator") stores a finite amount of data rather
+than the entire iterable itself. This allows for infinite lists in
+many languages: Since generators only store $x_i \in (x_n)$, this is
+much more storage efficient for sufficiently large lists. An example
+of a generator that will iterate over $(x_n) := \{x : x \% 2 = 0\}$:
+\begin{verbatim}
+def n_evens(n):
+i = 0
+while i < n:
+  yield i
+  i += 2
+\end{verbatim}
+
+\subsection{First-Class Functions (For-Each)}
+A for-each loop is a type of iterator-based loop that functions
+similar to a map (basically the same thing). They are built into
+iterable objects and are \textit{usually} defined as follows:
+\begin{verbatim}
+class StrList:
+  def __init__(self):
+    self.arr = []
+...
+  def forEach(self, f):
+    for x in self.arr:
+      f(x)
+\end{verbatim}
+Note that \texttt{for x in self.arr} is implemented via an iterator
+(see HW9). This function takes in a lambda \texttt{f} and applies it
+to each element inside \texttt{self.arr}.
+
+
+
+
+
+\section{Concurrency}
+Concurrency is a form of parallelism: Independent (immutable)
+functions/tasks can be run in parallel to improve efficiency.
+
+\subsection{Multithreading}
+A task is split up into multiple \textit{threads} of
+execution that run simultaneously via a fork-join pattern:
+\begin{enumerate}[label=(\roman*)]
+\item Split a task into disjoint partitions
+\item Process all partitions in parallel
+\item Join partitions before resuming serial execution
+\end{enumerate}
+
+\subsection*{Corollary: Race Conditions}
+Suppose you are given two functions that read/write on the same piece of
+memory/data. Then, running the following
+\begin{verbatim}
+int shared_data;
+void someA() { *writes to shared_data* }
+void someB() { *deletes from shared_data* }
+...
+int main() {
+  std::thread a ( someA() );
+  std::thread b ( someB() );
+
+  a.join();
+  b.join();
+
+  return 0;
+}
+\end{verbatim}
+is undefined behavior, since \texttt{shared\_data} can potentially be
+interuppted by either thread at any time. This is known as a race
+condition. To prevent this, thread-safe functions are usually pure.
+
+\subsection{Event-Driven}
+A callback function is called when an \textit{event} (e.g. button click) occurs
+and handles the completed event. These functions are then run via an
+event-loop:
+
+\begin{verbatim}
+def event_loop(self):
+  while True:
+    self.handle_events()
+    self.next_statement()
+...
+
+def event_loop(self):
+  for obj in page_tree:
+    if obj.event_occured():
+      f = obj.handler()
+      self.run_queue.append(f)
+...
+
+def next_statement():
+  if len(self.run_queue) > 0:
+    f = self.dequeue()
+    f()
+\end{verbatim}
+
+\subsection*{Corollary: Hanging}
+Since event-loops are some form of \texttt{while (true)} loops, if a
+function in the run queue is CPU bound, the event may hang (and may
+never terminate).
+
+\subsection*{Corollary: Chaining Operations (Promises \& async/await)}
+Promises: We call a function that will start running a statement
+asynchronously. When the statement returns, something analogous to a
+\texttt{then()} and \texttt{catch()} will handle the
+fulfillment/error-handling of a Promise. An example is as follows:
+\begin{verbatim}
+const promise = new Promise((resolve, reject) => {
+  // Some asynchronous operation
+  // If the operation is successful, call resolve(value)
+  // If the operation fails, call reject(error)
+});
+...
+promise
+  .then((value) => { *Handle the fulfilled value* })
+  .catch((error) => { *Handle the error* });
+\end{verbatim}
+\texttt{async/await} is analogous to Promises and syntax is as
+follows:
+\begin{verbatim}
+async function myAsyncFunction() {
+  try {
+    const result = await promise; // Wait for the Promise to fulfill
+    // Do something with the result
+  } catch (error) { *Handle any errors* }
+}
+\end{verbatim}
+\textit{\textbf{Note:}} Async functions are built upon the ideas of
+generators and are called coroutines\footnote{Coroutines are important
+  to CS but I guess aren't covered too extensively lol.}.
+
+
+
+
+\section{Logic Programming (Prolog)}
+Logic programming is a language paradigm that relies on a knowledge
+base (set of facts) and a set of rules on which to operate on to come
+to a conclusion on a set of queries. Prolog in particular uses a
+closed-world assumption\footnote{Closed-world Assumption: Anything
+  that is not explicitly stated to be true is false.}.
+
+\subsection{Definitions}
+\begin{enumerate}[label=(\roman*)]
+\item Knowledge base: A set of facts about the world.
+\item Atom: A variable.
+\item Attribute: Indicates whether an atom is true or false
+  (e.g. \texttt{atom} \textit{is} \texttt{attribute}).
+\item Relationship: A relationship between two ore more atoms
+  (e.g. \texttt{atom$_1$} \textit{is} \texttt{attribute} \textit{of} \texttt{atom$_2$}).
+\item Fact: A predicate expression that declares either an attribute
+  or relationship.
+\item Rule: An expression that defines a new fact in relation to
+  existing facts/rules (e.g. \texttt{*head* \{rule(...)\} :- *body*}).
+\end{enumerate}
+
+\subsection{Propositional Logic Conversions}
+The following are how we write propositional logic in Prolog:
+\begin{enumerate}[label=(\roman*)]
+\item If : $A \implies B \iff$ \texttt{A :- B}
+\item And: $A \land B \iff$ \texttt{A, B}
+\item Or: $A \lor B \iff$ \texttt{A; B}
+\item Not: $\lnot A \iff$ \texttt{not(A)}
+\end{enumerate}
+
+\subsection*{Examples}
+Facts:
+\begin{verbatim}
+outgoing(ren).       ren is outgoing.
+silly(ren).          ren is silly.
+parent(alice, bob).  alice is parent of bob.
+age(ren, 80).        ren is age of 80.
+parent(bob, carol).  bob is parent of carol.
+\end{verbatim}
+Rules:
+\begin{verbatim}
+comedian(P) :- silly(P), outgoing(P).             P is comedian if:
+                                                  P is silly and P is outgoing. //
+grandparent(X, Y) :- parent(X, Q), parent(Q, Y).  X is grandparent of Y if:
+                                                  X is parent of Q and Q is parent of Y. //
+old_comedian(C) :- comedian(C), age(C, A) > 60.   C is old_comedian if:
+                                                  (C is age of A) is greater than 60. //
+ancestor(X, Z) :- parent(X, Z)                    X is ancestor of Z if:
+                                                  X is parent of Z. //
+ancestor(X, Z) :- parent(X, Z), ancestor(Y, Z).   X is ancestor of Z if:
+                                                  X is parent of Z and Y is ancestor of Z. //
+serious(X) :- not(silly(X)).                      X is serious if:
+                                                  X is (not silly). //
+\end{verbatim}
+Queries:
+\begin{verbatim}
+?- silly(ren)        --> true
+?- parent(alice, X)  --> X = bob
+?- parent(X, Y)      --> X = alice, Y = bob
+                         X = bob, Y = carol
+\end{verbatim}
+
+\subsection{Resolution}
+Resolution is the process of resolving a query against \textbf{all}
+facts/rules and obtaining either a boolean or one (or more) mappings.
+
+\subsection*{Example}
+\begin{verbatim}
+parent(nel, ted).
+parent(ann, bob).
+parent(ann, bri).
+parent(bri, cas).
+
+gparent(X, Y) :- parent(X, Q), parent(Q, Y).
+...
+?- gparent(ann, Y)
+\end{verbatim}
+The following will resolve (as a tree) to:
+\begin{flalign*}
+  \texttt{gparent(X = ann, Y) :- }
+  &\texttt{parent(ann, Q),} && (*) \\
+  &\texttt{parent(Q, Y).} && (**) \\ \\
+%
+  (*) \implies &\texttt{Q = bob,} && (1) \\
+  &\texttt{Q = bri} && (2) \\ \\
+%  
+  (1) \implies &\texttt{parent(X = ann, Q = bob),} \\
+  &\texttt{parent(Q = bob, Y).} \\
+  (**) \implies &\texttt{Y = } \O \\ \\
+%  
+  (2) \implies &\texttt{parent(X = ann, Q = bri),} \\
+  &\texttt{parent(Q = bri, Y).} \\
+  (**) \implies &\texttt{Y = cas} \\
+  \implies &\texttt{\{X = ann, Q = bri, Y = cas\}}
+\end{flalign*}
+returns \texttt{\{X = ann, Q = bri, Y = cas\}}
+
+
+\subsection{Unification}
+Resolution is the process of resolving a query against \textbf{one}
+facts/rules and obtaining either a boolean or one (or more)
+mappings. Unmapped variables will map (only once) to the first atom it
+matches with.
+
+\subsubsection*{Example: Matching}
+Assuming an initial mapping of \texttt{\{ \}}:
+\begin{align*}
+  \texttt{teach(carey, cs131)} &\textit{ matches } \texttt{teach(carey,
+  cs131)} \\
+  \texttt{teach(X, cs131)} &\textit{ matches } \texttt{teach(carey,
+  cs131)} \\
+  \texttt{teach(X, cs131)} &\textit{ no match } \texttt{teach(carey,
+  nomatch)}
+\end{align*}
+Assuming an initial mapping of \texttt{\{ X = cs131 \}}:
+\begin{align*}
+  \texttt{teach(carey, X)} &\textit{ matches } \texttt{teach(carey,
+  cs131)} \\
+  \texttt{teach(carey, X)} &\textit{ no match } \texttt{teach(carey,
+  nomatch)}
+\end{align*}
+
+\subsubsection*{Extracted Mapping}
+Assuming an initial mapping of \texttt{\{ \}} and \texttt{\{ X = carey
+  \}}:
+\begin{align*}
+  \texttt{teach(X, cs131)} &\textit{ and } \texttt{teach(carey,
+                             cs131)} \\
+  \texttt{teach(X, cs131)} &\textit{ and } \texttt{teach(carey,
+                             cs131)}
+\end{align*}
+returns \texttt{\{ X = carey \}} and \texttt{\{ \}} respectively. \\ \\
+Assuming an initial mapping of \texttt{\{  \}} and \texttt{\{ X = carey \}}:
+\begin{align*}
+  \texttt{teach(X, cs131)} &\textit{ and } \texttt{teach(Y,
+                             cs131)} \\
+  \texttt{teach(X, cs131)} &\textit{ and } \texttt{teach(X,
+                             cs131)}
+\end{align*}
+returns \texttt{\{ X = Y \}} and \texttt{\{ Y = X \}} $\implies$
+\texttt{\{ Y = carey \}} respectively. \\ \\
+
+\subsection{Matching Criterion}
+To match a goal tree with a node in the fact/rule tree, we need:
+\begin{enumerate}[label=(\roman*)]
+\item functor (name) match
+\item arity (\# of parameters) match
+\item defined atoms/variables match (unmapped variables match with
+  anything, including other unmapped variables)\footnote{Prolog
+    unifies from left to right, mapping each variable exactly once.} 
+\end{enumerate}
+
+\subsection{Lists}
+\textbf{Preface:} \texttt{fact(X, X).} is a new type of fact that has variables
+instead of atoms. Then, we get:
+\begin{verbatim}
+is_the_same(one, one)  --> true
+is_the_same(one, two)  --> false
+\end{verbatim}
+\subsubsection{List Processing (Examples)}
+\subsubsection*{First Element}
+Consider the following: \texttt{is\_head\_item(X, [X | XS]).} Then, we
+query:
+\[\texttt{?- is\_head\_item(one, [one, two, three])} \implies
+  \texttt{\{ X = one \}} \implies \texttt{true}.\]
+
+\subsubsection*{Is Member}
+Consider the following:
+\begin{verbatim}
+is_member(X, [X | Tail]).
+is_member(Y, [Head | Tail]) :- is_member(Y, Tail).
+\end{verbatim}
+Then, we query:
+\[\texttt{?- is\_member(one, [two, one, three])} \implies
+  \texttt{true}.\]
+
+\subsubsection*{Other Functions}
+\begin{verbatim}
+append(X, Y, Z)    X := Y + Z
+sort(X, Y)         Y := sorted X
+permutation(X, Y)  Y := X can be reordered to = Y
+reverse(X, Y)      X := reverse of Y
+member(X, Y)       X is in Y
+sum_list(X, Y)     Y = summation of X
+\end{verbatim}
 \end{document}
 
 
