@@ -1,0 +1,251 @@
+\documentclass{article}
+\usepackage{amsmath, amsthm, amssymb, graphicx, enumitem, esvect}
+\usepackage[english]{babel}
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+\usepackage{tcolorbox}
+
+\title{CS 111}
+\author{Warren Kim}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+\newpage
+
+\section{Preface}
+\begin{tcolorbox}[colback=black!5!white,colframe=black!75!black,title=\textit{Operating Systems: Three Easy Pieces}]
+  Text in these boxes will indicate that further details can be found in the textbook
+  (\textit{Operating Systems: Three Easy Pieces} by Arpaci-Dusseau)
+\end{tcolorbox}
+
+\begin{tcolorbox}[title=Definitions]
+  Any definitions will be appear in a grey box like this one. There may be more than one definition
+  per box if the topics are dependent on each other or are closely related.
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title=Examples]
+  Any examples will be appear in a blue box like this one. Examples will typically showcase a scenario
+  that emphasizes the importance of a particular topic. 
+\end{tcolorbox}
+
+
+
+
+\newpage
+\section{Overview}
+This section defines what an operating system is as well as gives motivating reasons as to why we
+should be studying them. 
+
+
+\subsection{What is an Operating System?}
+\begin{tcolorbox}[title=Definition: Operating System]
+  An \textbf{operating system (OS)} is system software that acts as an intermediary between hardware and
+  higher level applications (e.g. higher level system software, user processes), acting as an
+  intermediary between the two. It manages hardware and software resources and provides common
+  services for user programs. 
+\end{tcolorbox}
+The operating system plays a crucial role in managing hardware resources for programs, ensuring
+controlled sharing, privacy, and overseeing their execution. Moreover, it provides a layer of
+abstraction that enhances software portability. 
+
+
+\subsection{Why Study Them?}
+We study operating systems because we rely on the \textit{\textbf{services}} they offer.
+
+\begin{tcolorbox}[title=Definition: Services]
+  In the context of operating systems, \textbf{services} are functionality that is provided
+  for by the operating system. They can be accessed via the operating system's API in the form of
+  system calls. 
+\end{tcolorbox}
+
+Moreover, a lot of hard problems that we run into at the application layer have (probably) already
+been solved in the context of operating systems !
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title=Example: Difficult Downloads]
+  Suppose you are developing a web browser and implementing a \textit{download} feature. While
+  downloading things one by one works fine, what if you need to download multiple items from different
+  sites simultaneously? Thinking abstractly, we can see that this is a problem of coordinating
+  concurrent activities, and fortunately, this problem has already been solved in the context of
+  operating systems! Since you have already learned how to tackle this issue in operating systems, now
+  you can apply the same solution to your \textit{download} problem!
+\end{tcolorbox}
+
+
+\subsection{Key Topics (OS Wisdom)}
+When thinking of how to solve complex problems, these are some things you should take into
+consideration (to hopefully make your life a lot easier).
+
+
+\subsubsection*{Objects and Operations}
+Think of a service as an object with a set of well-defined operations. Moreover, thinking of the
+underlying data structure(s) of an object may be useful in many situations.  
+
+
+\subsubsection*{Interface v. Implementation}
+\begin{tcolorbox}[title=Definition: Interface and Implementation]
+  An \textbf{interface} defines the collection of functionalities offered by your software. It
+  specifies the method names, signatures, and the \textit{purpose} of each component. 
+  \tcblower
+  An \textbf{implementation} refers to the actual code that provides the functionality described by
+  the interface. It specifies \textit{how} the interface's operations are executed and realized in practice. 
+\end{tcolorbox}
+We separate the two components to improve modularity and create robust, well-structured code. It
+allows for different compliant implementations (as long as they adhere to the agreed-upon interface
+specifications). This provides immense flexibility at the implementation level!
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title=Example: Sort Swapping]
+  Assume you are writing a library that contains a collection of common algorithms, one of them
+  being \texttt{sort()}. Being the genius that you are, your implementation is as follows: Randomly
+  reorder the elements until they're sorted. By some miracle, your library garners a lot of
+  attention, but users are complaining that \texttt{sort()} takes too long. Not knowing what's wrong
+  with your implementation, you take DSA\footnote[1]{DSA: Data Structures and Algorithm} 
+  and learn that you've got shit for brains. You want to rewrite \texttt{sort()} but are worried
+  that it might break the interface. However, you remember that interface $\neq$ implementation, so
+  you rewrite \texttt{sort()} (using something like merge sort) pushing this new implementation
+  into production, and bragging about how \texttt{sort()} now runs in O($n \log n$) time. 
+\end{tcolorbox}
+
+\subsubsection*{Encapsulation}
+We want to abstract away complexity (when appropriate) into an interface for ease of use.
+
+\subsubsection*{Policy v. Mechanism}
+\begin{tcolorbox}[title=Definition: Policy and Mechanism]
+  A \textbf{policy} is a high-level rule or guideline that governs the \textit{behavior} of a
+  system.
+  \tcblower
+  A \textbf{mechanism} is the implementation that is used to \textit{enforce} the policy.
+\end{tcolorbox}
+It is important to note that keeping policy and mechanism independent of one another is crucial. By
+separating policies from the underlying mechanisms, it becomes easier to change or modify policies
+without affecting the core functionality or technical implementation. This approach provides the
+ability to update policies independently from the underlying mechanisms, promoting modifiability,
+maintainability, and customization when designing software.
+
+
+\subsection{Why is the OS Special?}
+\begin{tcolorbox}[title=Definition: Standard and Privileged Instruction Set]
+  The \textbf{standard instruction set} is the set of hardware instructions that can be executed by anybody.
+  \tcblower
+  The \textbf{privilaged instruction set} is the set of hardware instructions only the kernel can
+  execute. When an application wants to execute a privilaged instruction, it must ask the kernel to
+  execute it for them.
+\end{tcolorbox}
+
+The OS is special for a number of reasons. Mainly, it has \textit{complete} access to the privileged
+instruction set, \textit{all} of memory and I/O, and mediates applications' access to
+hardware. This implies that the OS is \textit{trusted} to always act in good faith. Thus, the OS
+stays up and running as long as the machine is still powered on (theoretically), and if the OS crashes,
+you're fucked lol.
+
+
+\subsection{Miscellaneous}
+Below are a list of miscellaneous topics.
+\subsubsection{Definitions}
+\begin{tcolorbox}[title=Definition: Instruction Set Architectures]
+  An \textbf{instruction set architecture (ISA)} is the set of instructions supported by a
+  computers. There are multiple (all incompatible) ISA's and they usually come in families.
+\end{tcolorbox}
+
+ISA's usually come with privilaged and standard instruction sets.
+
+\begin{tcolorbox}[title=Definition: Platform]
+  A \textbf{platform} is the combination of hardware and software that provide an environment for
+  running applications.
+\end{tcolorbox}
+
+Common platforms include: Windows, [Mac, i]OS, Linux.
+
+\begin{tcolorbox}[title=Definition: Binary Distribution Model]
+  The \textbf{binary distribution model} is the paradigm of distributing software in compiled or
+  machine code in the form of executables.
+\end{tcolorbox}
+
+The binary distribution model is good for performance and security, but lacks in flexibility and is
+dependent on the platform you compile it for.
+
+\begin{tcolorbox}[title=Definition: Binary Distribution Model]
+  \textbf{Portability} refers to the ability to be adapted to different platforms with minimal
+  modifications to the source code.
+\end{tcolorbox}
+
+Portability is important if you're an OS designer because you want to maximize the number of people
+using your product $\implies$ your OS should run on many ISA's and make minimal assumptions about
+specific hardware.
+
+
+
+
+
+\section{Abstraction}
+\begin{tcolorbox}[title=Definition: Abstraction]
+  \textbf{Abstraction} is the concept of providing a (relatively) simple interface to higher level
+  programs, hiding unnecessary complexity.
+\end{tcolorbox}
+
+The OS implements these abstract resources using physical resources, and thus is the source of one
+of the main dilemmas of OS design: What should you abstract?
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title=Example: Network Neverland]
+  Network cards consist of intricate technical details and specifications, but most users are not
+  concerned with those details. As a result, the operating system abstracts the technical aspects of a
+  specific network card, such as the process of sending a message, for higher-level programs. Instead
+  of manually performing each step to send a message using a particular network card, users can simply
+  call the OS's \texttt{send()}\footnote{The actual function name may vary.} function and let the
+  operating system handle the complex operations. 
+\end{tcolorbox}
+
+
+\subsection{Why Abstract?}
+Abstraction is utilized to simplify code development and comprehension for programmers and
+users. Furthermore, it naturally fosters a highly modular codebase as each abstraction introduces an
+additional layer of modularity. Moreover, by concealing complexity at each layer of abstraction, it
+encourages programmers to concentrate on the essential functionality of a component. 
+
+
+\subsubsection{Corollary: Generalizing Abstractions}
+Due to the variability of a machine's hardware and software, we can abstract the common
+functionality of each and make different types appear the same. This way, applications only need to
+interface with a common set of libraries. 
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title=Example: Printing Press]
+  The portable document format (PDF) for printers abstracts away the individual implementation of a
+  printer and provides a common format that all printers can recognize and print.
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=red!5!white,colframe=red!75!red]
+ \subsection{Virtualization}
+\begin{tcolorbox}[colback=black!5!white,colframe=black!75!black,title=\textit{4) The Abstraction: The Process}]
+  \begin{tcolorbox}[title=Definition: Process]
+    A \textbf{process} is an abstraction of a running program. It has an API 
+  \end{tcolorbox}
+\end{tcolorbox}
+\end{tcolorbox}
+
+
+
+\subsection{Resource Types}
+
+\subsubsection{Serially Reusable}
+\begin{tcolorbox}[title=Definition: Serially Reusable Resource]
+  \textbf{Serially reusable resources} are resources that can be used by a single process at a time
+  (sequentially) and are not designed to be shared in parallel.
+\end{tcolorbox}
+These resources require access control mechanisms to ensure that only one process can access them at
+any given time. This control ensures a graceful transition between users and prevents conflicts or
+data corruption that may arise from concurrent access.
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title=Example: Printing Process]
+  Printers are a serially reusable resource: multiple job can use it but only a single job will be
+  printed at a time. 
+\end{tcolorbox}
+
+
+\subsubsection{}
+\subsubsection{}
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
