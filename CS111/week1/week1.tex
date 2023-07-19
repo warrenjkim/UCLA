@@ -99,7 +99,7 @@ specifications). This provides immense flexibility at the implementation level!
   being \texttt{sort()}. Being the genius that you are, your implementation is as follows: Randomly
   reorder the elements until they're sorted. By some miracle, your library garners a lot of
   attention, but users are complaining that \texttt{sort()} takes too long. Not knowing what's wrong
-  with your implementation, you take DSA\footnote[1]{DSA: Data Structures and Algorithm} 
+  with your implementation, you take DSA\footnote[1]{DSA: Data Structures and Algorithms} 
   and learn that you've got shit for brains. You want to rewrite \texttt{sort()} but are worried
   that it might break the interface. However, you remember that interface $\neq$ implementation, so
   you rewrite \texttt{sort()} (using something like merge sort) pushing this new implementation
@@ -213,7 +213,7 @@ interface with a common set of libraries.
   printer and provides a common format that all printers can recognize and print.
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=red!5!white,colframe=red!75!red]
+\begin{tcolorbox}[colback=red!5!white,colframe=red!75!red,title=WIP]
  \subsection{Virtualization}
 \begin{tcolorbox}[colback=black!5!white,colframe=black!75!black,title=\textit{4) The Abstraction: The Process}]
   \begin{tcolorbox}[title=Definition: Process]
@@ -225,12 +225,25 @@ interface with a common set of libraries.
 
 
 \subsection{Resource Types}
+This subsection covers three types of OS resources: serially reusable, partitionable, and
+sharable.
+
+\begin{tcolorbox}[title=Definition: Graceful Transition]
+  A \textbf{graceful transitions} refers to the process of transferring control between two jobs
+  such that there are no resource conflicts. 
+\end{tcolorbox}
+
+A graceful transition maintains system stability, data integrity and therefore cleanly releases
+resources. They typically ensure that users leave resources in a clean state; i.e. each
+subsequent user finds the resource in a "like new" condition.
+
 
 \subsubsection{Serially Reusable}
 \begin{tcolorbox}[title=Definition: Serially Reusable Resource]
   \textbf{Serially reusable resources} are resources that can be used by a single process at a time
   (sequentially) and are not designed to be shared in parallel.
 \end{tcolorbox}
+
 These resources require access control mechanisms to ensure that only one process can access them at
 any given time. This control ensures a graceful transition between users and prevents conflicts or
 data corruption that may arise from concurrent access.
@@ -239,6 +252,31 @@ data corruption that may arise from concurrent access.
   Printers are a serially reusable resource: multiple job can use it but only a single job will be
   printed at a time. 
 \end{tcolorbox}
+
+\subsubsection{Partitionable}
+\begin{tcolorbox}[title=Definition: Partitionable Resource]
+  \textbf{Partitionable resources} can be divided up (or \textit{partitioned}) into smaller,
+  disjoint\footnote{Disjoint: Independent of one another.} segments.  
+\end{tcolorbox}
+
+These resources require access control mechanisms to ensure that each segment is
+\textit{contained}\footnote{Contained: Resources outside of a partition are not accessible.} and
+\textit{private}\footnote{Private: External users cannot access the resources in your
+  partition.}. Partitionable resources can be temporarily allocated (e.g. RAM, CPU \textit{time
+  slice}\footnote{Time slice: See book.}, etc.) or permanently allocated (e.g. Disk
+storage\footnote{Disk storage is permanently allocated until it isn't. You can use something like
+  \texttt{fdisk} (in Linux) to modify partitions.}, database tables, etc.).
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title=Example: Memory Mania and Disk Division]
+  Memory can be partitioned, allowing multiple unique processes to access their own allocated memory
+  space independently.
+  \tcblower
+  Disk storage can be partitioned into separate logical volumes! This is commonly used to dual-boot
+  different operating systems. Recently, M1(/2i\textit{ish}) Apple products can now run Linux on
+  bare metal (still in beta !) via Asahi Linux!
+\end{tcolorbox}
+
+
 
 
 \subsubsection{}
