@@ -177,7 +177,7 @@ specific hardware.
 
 
 
-\section{Abstraction}
+\section{Abstraction, Resource Types}
 \begin{tcolorbox}[title=Definition: Abstraction]
   \textbf{Abstraction} is the concept of providing a (relatively) simple interface to higher level
   programs, hiding unnecessary complexity.
@@ -263,7 +263,7 @@ These resources require access control mechanisms to ensure that each segment is
 \textit{contained}\footnote{Contained: Resources outside of a partition are not accessible.} and
 \textit{private}\footnote{Private: External users cannot access the resources in your
   partition.}. Partitionable resources can be temporarily allocated (e.g. RAM, CPU \textit{time
-  slice}\footnote{Time slice: See book.}, etc.) or permanently allocated (e.g. Disk
+  slice}, etc.) or permanently allocated (e.g. Disk
 storage\footnote{Disk storage is permanently allocated until it isn't. You can use something like
   \texttt{fdisk} (in Linux) to modify partitions.}, database tables, etc.).
 
@@ -272,15 +272,82 @@ storage\footnote{Disk storage is permanently allocated until it isn't. You can u
   space independently.
   \tcblower
   Disk storage can be partitioned into separate logical volumes! This is commonly used to dual-boot
-  different operating systems. Recently, M1(/2i\textit{ish}) Apple products can now run Linux on
+  different operating systems. Recently, M1(/2\textit{ish}) Apple products can now run Linux on
   bare metal (still in beta !) via Asahi Linux!
+\end{tcolorbox}
+
+Graceful transitions are still necessary in partitionable resources! Partitionable resources that
+aren't permanently allocated need to clean up after themselves.
+
+
+\subsubsection{Shareable}
+
+\begin{tcolorbox}[title=Definition: Shareable Resource]
+  \textbf{Shareable resources} are usable by multiple \textit{concurrent} clients. They need not
+  "wait" for access nor do they "own" a particular subset of a given shared resource. 
+\end{tcolorbox}
+
+These resources require access control mechanisms to ensure that the shareable resource is used in a
+controlled and secured manner.
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title=Example: Cloud Crazy] 
+  The cloud (e.g. Google Drive, Oracle Cloud, etc.) is a powerful shared resource! It enables
+  multiple concurrent users to access shared folders and files, facilitating simultaneous editing
+  and collaboration.
+\end{tcolorbox}
+
+Graceful transitions typically are not necessary since a shareable resource generally doesn't change
+state \textit{or} doesn't require any clean up. In the example above, while the cloud files change
+state, there is no cleaning up to do, so a graceful transition is not necessary (what's clean
+doesn't need cleaning).
+
+
+
+
+
+\section{Services}
+The OS provides services in a multitude of ways. This section will introduce and explain how
+services are provided throughout the software stack.
+
+\subsection{Libraries}
+One way the OS provides services to users is via libraries. Standard utility functions such as
+\texttt{malloc} can be found in libraries (in this case, \texttt{stdlib.h}). So what exactly is a
+library?
+
+\begin{tcolorbox}[title=Definition: Library]
+  A \textbf{library} is a collection of code modules that encapsulate common operations, algorithms,
+  and functionality. 
+\end{tcolorbox}
+
+Most systems are equipped with a wide range of standard libraries, which are designed to be
+reused. These libraries encapsulate complexity and provide an additional layer of abstraction,
+simplifying problem-solving. 
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title=Example: DSA Doozy] 
+  In DSA, you likely had to implement different types of data structures (linear, hierarchical,
+  graphical, etc.) and algorithms (search, divide/conquer, dynamic programming). Imagine your
+  surprise when you find out most of these data structures and algorithms have already been written
+  (and probably perform better than your implementation, no offense).
+\end{tcolorbox}
+
+Libraries have multiple bind-time options: static, shared, and dynamic.
+
+\subsubsection{Bind Time}
+
+\begin{tcolorbox}[title=Definition: Static]
+  \textbf{Static} libraries are precompiled code modules that link directly to the executable at
+  compile time. They allow for efficient standalone executables, but they result in larger file
+  sizes and require recompilation if the library is updated.  
+\end{tcolorbox}
+
+\begin{tcolorbox}[title=Definition: Shared]
+  \textbf{Shared/Dynamically Linked} libraries are separate files from the load modules that can
+  be loaded and shared by multiple concurrent processes. They are loaded and linked to the
+  executable during runtime. 
 \end{tcolorbox}
 
 
 
-
-\subsubsection{}
-\subsubsection{}
 \end{document}
 
 %%% Local Variables:
