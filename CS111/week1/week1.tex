@@ -29,10 +29,54 @@
   that emphasizes the importance of a particular topic. 
 \end{tcolorbox}
 
+\begin{tcolorbox}[colback=violet!5!white,colframe=violet,title=Abstractions] 
+  Layers of abstractions will appear in a violet box like this one. The key point of this box is to
+  actively reinforce the concept of abstraction (and recognize how important it is in computer science!).
+\end{tcolorbox}
 
 
 
 \newpage
+\section{Preface: Introduction to Abstraction}
+\begin{tcolorbox}[title=Definition: Abstraction]
+  \textbf{Abstraction} is the concept of providing a (relatively) simple interface to higher level
+  programs, hiding unnecessary complexity.
+\end{tcolorbox}
+
+The OS implements these abstract resources using physical resources, and thus is the source of one
+of the main dilemmas of OS design: What should you abstract?
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title=Example: Network Neverland]
+  Network cards consist of intricate technical details and specifications, but most users are not
+  concerned with those details. As a result, the operating system abstracts the technical aspects of a
+  specific network card, such as the process of sending a message, for higher-level programs. Instead
+  of manually performing each step to send a message using a particular network card, users can simply
+  call the OS's \texttt{send()}\footnote{The actual function name may vary.} function and let the
+  operating system handle the complex operations. 
+\end{tcolorbox}
+
+
+\subsection{Why Abstract?}
+Abstraction is utilized to simplify code development and comprehension for programmers and
+users. Furthermore, it naturally fosters a highly modular codebase as each abstraction introduces an
+additional layer of modularity. Moreover, by concealing complexity at each layer of abstraction, it
+encourages programmers to concentrate on the essential functionality of a component. 
+
+
+\subsubsection{Corollary: Generalizing Abstractions}
+Due to the variability of a machine's hardware and software, we can abstract the common
+functionality of each and make different types appear the same. This way, applications only need to
+interface with a common set of libraries. 
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title=Example: Printing Press]
+  The portable document format (PDF) for printers abstracts away the individual implementation of a
+  printer and provides a common format that all printers can recognize and print.
+\end{tcolorbox}
+
+
+
+
+
 \section{Overview}
 This section defines what an operating system is as well as gives motivating reasons as to why we
 should be studying them. 
@@ -45,9 +89,12 @@ should be studying them.
   intermediary between the two. It manages hardware and software resources and provides common
   services for user programs. 
 \end{tcolorbox}
-The operating system plays a crucial role in managing hardware resources for programs, ensuring
-controlled sharing, privacy, and overseeing their execution. Moreover, it provides a layer of
-abstraction that enhances software portability. 
+
+\begin{tcolorbox}[colback=violet!5!white,colframe=violet,title=Abstraction: The Operating System] 
+  The operating system plays a crucial role in managing hardware resources for programs, ensuring
+  controlled sharing, privacy, and overseeing their execution. Moreover, it provides a layer of
+  abstraction that enhances software portability. 
+\end{tcolorbox}
 
 
 \subsection{Why Study Them?}
@@ -177,55 +224,19 @@ specific hardware.
 
 
 
-\section{Abstraction, Resource Types}
-\begin{tcolorbox}[title=Definition: Abstraction]
-  \textbf{Abstraction} is the concept of providing a (relatively) simple interface to higher level
-  programs, hiding unnecessary complexity.
-\end{tcolorbox}
-
-The OS implements these abstract resources using physical resources, and thus is the source of one
-of the main dilemmas of OS design: What should you abstract?
-
-\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title=Example: Network Neverland]
-  Network cards consist of intricate technical details and specifications, but most users are not
-  concerned with those details. As a result, the operating system abstracts the technical aspects of a
-  specific network card, such as the process of sending a message, for higher-level programs. Instead
-  of manually performing each step to send a message using a particular network card, users can simply
-  call the OS's \texttt{send()}\footnote{The actual function name may vary.} function and let the
-  operating system handle the complex operations. 
-\end{tcolorbox}
-
-
-\subsection{Why Abstract?}
-Abstraction is utilized to simplify code development and comprehension for programmers and
-users. Furthermore, it naturally fosters a highly modular codebase as each abstraction introduces an
-additional layer of modularity. Moreover, by concealing complexity at each layer of abstraction, it
-encourages programmers to concentrate on the essential functionality of a component. 
-
-
-\subsubsection{Corollary: Generalizing Abstractions}
-Due to the variability of a machine's hardware and software, we can abstract the common
-functionality of each and make different types appear the same. This way, applications only need to
-interface with a common set of libraries. 
-
-\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title=Example: Printing Press]
-  The portable document format (PDF) for printers abstracts away the individual implementation of a
-  printer and provides a common format that all printers can recognize and print.
-\end{tcolorbox}
-
-\begin{tcolorbox}[colback=red!5!white,colframe=red!75!red,title=WIP]
- \subsection{Virtualization}
-\begin{tcolorbox}[colback=black!5!white,colframe=black!75!black,title=\textit{4) The Abstraction: The Process}]
-  \begin{tcolorbox}[title=Definition: Process]
-    A \textbf{process} is an abstraction of a running program. It has an API 
-  \end{tcolorbox}
-\end{tcolorbox}
-\end{tcolorbox}
+% \begin{tcolorbox}[colback=red!5!white,colframe=red!75!red,title=WIP]
+%  \subsection{Virtualization}
+% \begin{tcolorbox}[colback=black!5!white,colframe=black!75!black,title=\textit{4) The Abstraction: The Process}]
+%   \begin{tcolorbox}[title=Definition: Process]
+%     A \textbf{process} is an abstraction of a running program. It has an API 
+%   \end{tcolorbox}
+% \end{tcolorbox}
+% \end{tcolorbox}
 
 
 
-\subsection{Resource Types}
-This subsection covers three types of OS resources: serially reusable, partitionable, and
+\section{Resource Types}
+This section covers three types of OS resources: serially reusable, partitionable, and
 sharable.
 
 \begin{tcolorbox}[title=Definition: Graceful Transition]
@@ -238,7 +249,7 @@ resources. They typically ensure that users leave resources in a clean state; i.
 subsequent user finds the resource in a "like new" condition.
 
 
-\subsubsection{Serially Reusable}
+\subsection{Serially Reusable}
 \begin{tcolorbox}[title=Definition: Serially Reusable Resource]
   \textbf{Serially reusable resources} are resources that can be used by a single process at a time
   (sequentially) and are not designed to be shared in parallel.
@@ -253,7 +264,7 @@ data corruption that may arise from concurrent access.
   printed at a time. 
 \end{tcolorbox}
 
-\subsubsection{Partitionable}
+\subsection{Partitionable}
 \begin{tcolorbox}[title=Definition: Partitionable Resource]
   \textbf{Partitionable resources} can be divided up (or \textit{partitioned}) into smaller,
   disjoint\footnote{Disjoint: Independent of one another.} segments.  
@@ -280,7 +291,7 @@ Graceful transitions are still necessary in partitionable resources! Partitionab
 aren't permanently allocated need to clean up after themselves.
 
 
-\subsubsection{Shareable}
+\subsection{Shareable}
 
 \begin{tcolorbox}[title=Definition: Shareable Resource]
   \textbf{Shareable resources} are usable by multiple \textit{concurrent} clients. They need not
@@ -309,6 +320,18 @@ doesn't need cleaning).
 The OS provides services in a multitude of ways. This section will introduce and explain how
 services are provided throughout the software stack.
 
+
+\subsection{Subroutines}
+\begin{tcolorbox}[title=Definition: Subroutine]
+  A \textbf{subroutine} in the context of operating systems is a small, self-contained and reusable
+  portion of code that performs a specific function.
+\end{tcolorbox}
+
+Subroutines are usually called directly, and operate like normal code (stack manipulation), and are
+typically seen in higher layers of the OS stack. They are fast, but usually cannot use the
+privileged instruction set. Furthermore, they are usually not language agnostic. The most common way
+to implement these subroutines are libraries!
+
 \subsection{Libraries}
 One way the OS provides services to users is via libraries. Standard utility functions such as
 \texttt{malloc} can be found in libraries (in this case, \texttt{stdlib.h}). So what exactly is a
@@ -319,9 +342,11 @@ library?
   and functionality. 
 \end{tcolorbox}
 
-Most systems are equipped with a wide range of standard libraries, which are designed to be
-reused. These libraries encapsulate complexity and provide an additional layer of abstraction,
-simplifying problem-solving. 
+\begin{tcolorbox}[colback=violet!5!white,colframe=violet,title=Abstraction: Libraries] 
+  Most systems are equipped with a wide range of standard libraries, which are designed to be
+  reused. These libraries encapsulate complexity and provide an additional layer of abstraction,
+  simplifying problem-solving. 
+\end{tcolorbox}
 
 \begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title=Example: DSA Doozy] 
   In DSA, you likely had to implement different types of data structures (linear, hierarchical,
@@ -330,27 +355,296 @@ simplifying problem-solving.
   (and probably perform better than your implementation, no offense).
 \end{tcolorbox}
 
-Libraries have multiple bind-time options: static, shared, and dynamic.
-
 \subsubsection{Bind Time}
+The choice of library bind time depends on multiple factors that include (but are not limited to):
+performance requirements, deployment and distribution considerations, and dependency
+management.
 
 \begin{tcolorbox}[title=Definition: Static]
   \textbf{Static} libraries are precompiled code modules that link directly to the executable at
   compile time. They allow for efficient standalone executables, but they result in larger file
   sizes and require recompilation if the library is updated.  
 \end{tcolorbox}
+One easy example of a static library is \texttt{libc}, or the \texttt{C} standard library! It
+encapsulates a myriad of commonly used operations, algorithms, and functionality when programming in
+\texttt{C} like everyone's favorite \texttt{malloc()}. 
 
-\begin{tcolorbox}[title=Definition: Shared]
+\begin{tcolorbox}[title=Definition: Shared/Dynamic]
   \textbf{Shared/Dynamically Linked} libraries are separate files from the load modules that can
   be loaded and shared by multiple concurrent processes. They are loaded and linked to the
   executable during runtime. 
 \end{tcolorbox}
 
+One thing to note about shared libraries is that they cannot define or include global data
+storage. Moreover, called routines must be known at compile time since the fetching of the code is
+the only thing that is delayed until runtime. 
+
+
+\subsection{System Calls}
+\begin{tcolorbox}[title=Definition: System Call]
+  A \textbf{system call} is when users request functionalities from the operating system that are a
+  part of the privileged instruction set.
+\end{tcolorbox}
+
+System calls allow for the use of the privileged instruction set and interprocess communication, so
+why don't we just make everything a system call? System calls are \textit{slow}\footnote{System
+  calls are between 100 and 1,000 times slower than standard subroutine calls!}. Thus, we typically
+like to reserve system calls for operations that \textit{require} the privileged instruction set.
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title=Example: System Call Stress] 
+  System calls sound like a big deal, but you have already been introduced to them! Some include:
+  \begin{enumerate}[label=\textit{(\roman*)}]
+  \item File I/O: Reading from or writing to files on a disk require system calls since they require
+    privileged instructions.
+  \item Memory management: Though functions like \texttt{malloc()} itself isn't a system call, it is
+    implemented by calling system calls!
+  \item Process management: Only the kernel can \textit{directly} create/destroy processes and
+    ensure process privacy and containment.
+  \item Interprocess communication: Mainly for security reasons, communication between processes
+    require privileged instructions.
+  \end{enumerate}
+\end{tcolorbox}
+
+Most of the time, everything related to a given system call is dealt with in the kernel. However,
+there are instances when the kernel will outsource tasks via direct calls to
+\textit{untrusted}\footnote{Untrusted: Not guaranteed to be secure.}
+code, waiting for a response, then returning to the calling process. 
+
+
+\subsubsection{Trusted Code}
+Not all trusted code must be inside the kernel! If code doesn't \textit{need} to access kernel data
+structures or execute privileged instructions, they might sit outside of the kernel layer. 
+
+\begin{tcolorbox}[title=Definition: Trust]
+  \textbf{Trusted} code is guaranteed to be secure and will perform correctly. That is, it is safe
+  for the operating system to run it.
+\end{tcolorbox}
+
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title=Example: Lazy Login] 
+  A login manager/application is a great example of a program that is trusted but doesn't sit inside
+  the kernel. When you login, the kernel will outsource the job to the login application!
+\end{tcolorbox}
+
+
+\subsection{Messages}
+Another way of service delivery is via messages that are exchanged with a server via system
+calls.
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title=Advantages and Disadvantages, sidebyside] 
+  Messages allow users to send and receive requests from anywhere! They are also highly scalable and
+  can be implemeneted in user-mode code.
+  \tcblower
+  Messages are \textit{slow}\footnote{Messages are between 1,000 and 100,000 times slower than
+    subroutine calls!} and are limited to operate on process resources.
+\end{tcolorbox}
+
+
+
+\subsection{Middleware}
+Middleware refers to software components that are essential for a particular application or service
+platform but do not sit inside the OS. They bridge the gap between the application and underlying
+OS, providing additional functionalities and services.
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title=Example: Middleware Madness] 
+  Some examples of middleware include database systems, web servers (like Apache and Nginx),
+  distributed computing platforms (like Hadoop and Zookeeper), and cloud computing platforms like
+  OpenStack.
+\end{tcolorbox}
+
+We prefer middleware over implementing such functionalities directly in the kernel because kernel
+code is expensive and risky since kernel-level issues can impact the stability of the entire system!
+Instead, middlware is typically developed in user mode, making it easier to build, test, and
+debug\footnote{If the middleware crashes, it can be restarted independently of the entire system,
+  minimizing its impact on the overall OS stability.}. Moreover, it is more portable, meaning it can be used across different operating systems
+without modification!
+
+
+
+
+
+\section{Interfaces}
+How do processes communicate with the OS? Interfaces! There are two main types: API and ABI.
+
+\begin{tcolorbox}[colback=violet!5!white,colframe=violet,title=Abstraction: Interfaces] 
+  Interfacess introduce a layer of abstraction, allowing programmers to focus on \textit{what} they need
+  without worrying about \textit{how} it's implemented! 
+\end{tcolorbox}
+
+
+\subsection{Application Programming Interface}
+\begin{tcolorbox}[title=Definition: Application Programming Interface]
+  The \textbf{application programming interface (API)} provides a standardized set of rules and
+  policies (at the source code level) that govern how different software components can communicate
+  with each other.
+\end{tcolorbox}
+
+API's are the basis for software portability, allowing a program to be compiled for a particular
+architecture or OS. That is, programmers can recompile for different targets without changing the source
+code, provided that the API is consistent. To do this, we link our program with OS-specific
+libraries that implement the funcitonality specified by the API.
+
+Thus, when the program is compiled and linked using an API-compliant system, the binary executable
+will be compatible\footnote{An API-compliant program will compile and run on any system that
+  supports the same API.} with any other API-compliant system! Well-defined API's allow us to create
+interoperable applications and libraries that are platform/system independent, promoting software
+portability, reusability, and simplicity when building complex systems!
+
+
+\subsection{Application Binary Interface}
+\begin{tcolorbox}[title=Definition: Application Binary Interface]
+  The \textbf{application binary interface (ABI)} defines the low-level binary interface that allows
+  compiled programs to interact with the underlying system and hardware.
+\end{tcolorbox}
+
+ABI's govern how DLL's are structured and how they interact with programs at a binary level. But
+how? ABI's define how data is represented in memory and passed between functions and across
+different modules! This includes details like register usage, linkage conventions, parameter passing
+conventions, and stack layout. They also connect the API to the specific hardware, translating
+source-level instructions to actual machine level instructions.
+
+Once a program is compiled using an ABI-compliant system, it can run unmodified (i.e. without
+recompilation) on any other system with the same ABI! This ensure that a single binary can service 
+all ABI-compliant systems. Hence, they are usually intended for end-users and software deployment.
+
+
+\subsection{Corollary: Libraries}
+Libraries are accessed through API's! The API provides source-level definitions for how to access
+the library, and is readily portable between systems. While DLL's are also accessed via an API, the
+loading mechanism is specified by the ABI.
+
+
+\subsection{Best Practices for Interoperability}
+Standalone programs are useless! All useful programs use system calls, library routines, operate on
+external files, exchange messages, etc. That is, they all utilize OS services! Thus, if the
+interface changes, these programs will fail. Thus, API requirements are frozen (finalized) at
+compile time. This means:
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Execution platforms must support the interfaces.
+\item All partners/services must support the interface protocols.
+\item The API must be backwards compatible
+\end{enumerate}
+
+That is, API's need to be \textit{stable} in order to support interoperability! API's need to be
+rigorously specified and standardized\footnote{Standard body: Most big projects (like Linux) have
+  standard bodies that manage the interface definitions so as to maintain stability!}. Thus, the
+developers that use the API are encouraged to be compliant with the API specifications to ensure
+that their program will survive updates.
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title=Example: New Version New Problems] 
+  Suppose you are writing an application for an OS running on version 0.6.8, and being the genius
+  programmer you are, find an exploit that goes around the OS API to make your app run
+  faster. Everything runs fine until version 0.6.9. Confused, you find that the developers hate you
+  in particular and decided to patch the exploit you used. Having learned your lesson, you have to
+  rewrite that entire feature, being compliant with the API.
+\end{tcolorbox}
+
+Interoperability requires both parties to honor their side of the contract: Standard bodies must
+keep the interface stable, while developers must be compliant with the API if they want their
+products to survive new updates.
+
+
+\subsection{Aside: Side Effects}
+
+\begin{tcolorbox}[title=Definition: Side Effect]
+  A \textbf{side effect} is occurs when an action on one object has
+  \textit{non-trivial}\footnote{Non-trivial: Effects that are not included in the interface
+    specifications.} consequences. 
+\end{tcolorbox}
+
+Side effects are inevitable, but are not the end of the world! They usually happen due to shared
+state between independent modules and functions. Thus, developers should ignore side effects and
+continue being compliant with the interface as they \textit{should} be patched. In general, try to
+avoid exploiting side effects since they are not guaranteed to be there or maintained! 
+
+
+
+
+
+\section{Abstraction}
+Recall that we like abstractions in Computer Science. Life is easy for high level programmers if
+they work with a simple abstraction. The OS is responsible for creating managing, and exporting such
+abstractions.
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title=Example: Hardware Hiding] 
+  Hardware is fast, but complex and limited, so using it \textit{correctly} can be extremely
+  challenging. Thus, hardware is commonly seen as a building block rather than a solution. We
+  provide abstractions to encapsulate implementation details (like error handling and performance
+  optimization) and eliminate behavior that is irrelevant to the user. Thus, abstractions make
+  it more convenient to work with the hardware!
+\end{tcolorbox}
+
+The OS provides some core abstractions that our computational model relies on: memory, processor,
+and communication abstractions.
+
+
+\subsection{Memory Abstractions}
+Memory abstractions provide a consistent way to interact with various data storage resources,
+simplifying the process for users. However, there are some complicating factors that come with
+abstracting memory.
+
+
+\subsubsection{Complications}
+The operating system managing these abstractions doesn't have abstract devices having arbitrary
+properties. Instead, it handles physical devices that may have inconvenient properties. Therefore,
+the primary goal of OS abstraction is to create an abstract device with desirable properties derived
+from the physical device that lacks them. 
+
+\subsubsection*{Memory Lifetime}
+\begin{tcolorbox}[title=Definition: Persistent and Transient Memory]
+  \textbf{Persistent memory} retains data even when power is turned off (long term memory). Examples
+  of non-volatile storage include hard drives and solid state drives.
+  \tcblower
+  \textbf{Transient memory} loses its data when power is turned off (short term memory). An example of
+  volatile storage is RAM.
+\end{tcolorbox}
+
+Managing data in both types of memory presents different challenges and considerations when
+designing a complex system.
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title=Example: File Finding] 
+  When you run a program, all of the variables local to the program are stored in transient memory,
+  or RAM. However, suppose you write to a file \texttt{foo} in your program. \texttt{foo} is stored
+  in persistent memory! This means that weeks later, if another program wants to access foo
+  (e.g. \texttt{cat foo}), the contents you wrote into \texttt{foo} will still be there.
+\end{tcolorbox}
+
+\subsubsection*{Size}
+There can be a discrepancy between the size of memory operations that the user wants to work with
+and the size that the physical memory can handle. Thus, being able to manage data manipulation
+efficiently, especially when data sizes differ, is very important!
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title=Example: Caught in 4k] 
+  Hardware usually processes data at the word level\footnote{Word sizes are typically 32 or 64 bits
+    depending on the architecture}. However, when writing a block of data to flash memory, we
+  typically move data in 4k chunks. Therefore, when reading from or writing to memory, we must
+  ensure that data is moved in the appropriate word size. 
+\end{tcolorbox}
+
+
+\subsubsection*{Latency}
+\begin{tcolorbox}[title=Definition: Persistent and Transient Memory]
+  \textbf{Latency} (in the context of memory) refers to the time it takes for a process to read from
+  memory.
+\end{tcolorbox}
+
+Note that the latency reading from RAM and from disk are two very different times which lead to
+varying performance gains depending on which one you optimize for.
+
+
+\subsubsection*{Implementation Variety}
+The same memory abstraction might be implemented using various physical devices. This leads to
+varying performance depending on which device imlements the abstraction.
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title=Example: Caught in 4k] 
+  Storage devices like hard disks, solid-state drives, and optical drives can all be used to
+  implement file storage, but the performance differences vary between the three. (SSD $>$
+  HD $>$ optical).
+\end{tcolorbox}
+
+
+\subsection{Interpreters}
 
 
 \end{document}
-
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: t
-%%% End:
