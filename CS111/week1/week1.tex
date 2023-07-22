@@ -456,8 +456,8 @@ We prefer middleware over implementing such functionalities directly in the kern
 code is expensive and risky since kernel-level issues can impact the stability of the entire system!
 Instead, middlware is typically developed in user mode, making it easier to build, test, and
 debug\footnote{If the middleware crashes, it can be restarted independently of the entire system,
-  minimizing its impact on the overall OS stability.}. Moreover, it is more portable, meaning it can be used across different operating systems
-without modification!
+  minimizing its impact on the overall OS stability.}. Moreover, it is more portable, meaning it can
+be used across different operating systems without modification!
 
 
 
