@@ -246,7 +246,7 @@ sharable.
 
 A graceful transition maintains system stability, data integrity and therefore cleanly releases
 resources. They typically ensure that users leave resources in a clean state; i.e. each
-subsequent user finds the resource in a "like new" condition.
+subsequent user finds the resource in a ``like new'' condition.
 
 
 \subsection{Serially Reusable}
@@ -295,7 +295,7 @@ aren't permanently allocated need to clean up after themselves.
 
 \begin{tcolorbox}[title=Definition: Shareable Resource]
   \textbf{Shareable resources} are usable by multiple \textit{concurrent} clients. They need not
-  "wait" for access nor do they "own" a particular subset of a given shared resource. 
+  ``wait'' for access nor do they ``own'' a particular subset of a given shared resource. 
 \end{tcolorbox}
 
 These resources require access control mechanisms to ensure that the shareable resource is used in a
@@ -646,5 +646,112 @@ varying performance depending on which device imlements the abstraction.
 
 \subsection{Interpreters}
 
+\begin{tcolorbox}[title=Definition: Persistent and Transient Memory]
+  An \textbf{interpreter} is the module (abstract or physical) that executes commands and ``gets
+  things done''.
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=violet!5!white,colframe=violet,title=Abstraction: Interpreters] 
+  At the physical level, we have the CPU. Directly working with the CPU is not easy, so the OS
+  provides a higher level intepreter!
+\end{tcolorbox}
+
+An interpreter has several basic components: 
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Instruction Reference: Tells the interpreter which instruction to execute next.
+\item Repertoire: The set of features that the interpreter supports.
+\item Environment Reference: Describes the current state on which the next instruction should be
+  executed.
+\item Interrupts: Situations in which the instruction reference pointer is overridden.
+\end{enumerate}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title=Example: Processing Processes] 
+  The process that we interface with is an example of an interpreter. The OS maintains the
+  \textit{instruction reference} (a program counter for a given process). Its source code specifies
+  its \textit{repertoire}, and its stack, heap, and register contents are its
+  \textit{environment}. The OS manages all three of these components. Another thing to note is that
+  no other interpreters should be able to access the process' resources; i.e. the interpreter should
+  be private.
+\end{tcolorbox}
+
+\subsubsection*{Aside: Implementation}
+Implementing the process abstraction in the OS is relatively straightforward when dealing with only
+one process, but in reality, that is seldom the case. When dealing with multiple processes, we have
+to consider that:
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item The OS has limited physical memory to hold environment information.
+\item There are usually only one set of registers (or one per core).
+\item The process shares the CPU (or core) with other processes!
+\end{enumerate}
+To address these issues, we need:
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item A \textit{scheduler} to share the CPU among multiple processes.
+\item Better \textit{memory management} hardware and software to create the illusion that
+  each process has full access to RAM (when in reality, they don't).
+\item Access control mechanisms for other memory abstractions to keep our machine secure.
+\end{enumerate}
+
+\subsection{Communications}
+
+\begin{tcolorbox}[title=Definition: Communication Link]
+  A \textbf{communication link} allows interpreters to talk to each other (on the same or different machines).
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=violet!5!white,colframe=violet,title=Abstraction: Communication Links] 
+  A communication link at the physical level consists of memory and cables. However, at more
+  abstract levels, we have networks and interprocess communication mechanisms.
+\end{tcolorbox}
+
+Communication links are distinct from memory abstractions for a couple of reasons:
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Factors such as network congestion, distance, and hardware limits contribute to variations in
+  speed, latency, and bandwidth. On the other hand, memory access offers more predictability and
+  consistent performance.  
+
+\item Communication links are often asynchronous\footnote{Asynchronous: Data can be sent and
+    received independently of each other. Timing of communication is not guaranteed to be
+    coordinated.}, introducing additional complexity compared to synchronous memory access. 
+
+\item The receiver in communication links may be reactive, meaning they only perform an operation
+  because the sender initiated it. In contrast, data is usually immediately available when requested
+  via memory access. 
+\end{enumerate}
+
+
+\subsubsection*{Aside: Implementation}
+If both ends of the communication link are on the same machine, it's trivial: use memory for
+transferring data! Copy the message from the sender's memory into the receiver's memory \textit{or}
+transfer \textit{control}\footnote{Transferring control: Change who owns the memory segment!} of the memory
+containing the message from the sender to the receiver. To implement communication links across
+machines, we have to consider the following:
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item We need to optimize the cost of copying data.
+\item Memory management can become very tricky (especially when manipulating ownership!).
+\item We need to include complex network protocols into the OS itself. This raises new security
+  concerns that the OS might need to address.
+\item We need to be able to deal with message loss, retransmission, etc.
+\end{enumerate}
+
+
+\subsection{Generalizing Abstractions: Introduction to Federation Frameworks}
+Rather than applications dealing with varied resources, we can make many different things
+\textit{appear}\footnote{We want to \textit{abstract} away the implementation details!} the same by
+using a unifying model!
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title=Example: Computer Communism] 
+  A Portable Document Format, or PDF, is the unifying model for printed output. If we want to print
+  something to a printer, as long as the document is in the PDF format, it will know how to print it!
+  \tcblower
+  SCSI, SATA, and SAS are standard ways to interface with hard disks and other storage devices (CD,
+  SSD, etc.).
+\end{tcolorbox}
+
+Usually, these unifying models involve a federation framework.
+
+\begin{tcolorbox}[title=Definition: Federation Framework]
+  A \textbf{federation framework} is a structure that allows many similar (but different) things to
+  be treated uniformly.
+\end{tcolorbox}
 
 \end{document}
