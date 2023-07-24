@@ -737,7 +737,7 @@ machines, we have to consider the following:
 \subsection{Generalizing Abstractions: Introduction to Federation Frameworks}
 Rather than applications dealing with varied resources, we can make many different things
 \textit{appear}\footnote{We want to \textit{abstract} away the implementation details!} the same by
-using a unifying model!
+using a unifying model! Usually, these unifying models involve a federation framework.
 
 \begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title=Example: Computer Communism] 
   A Portable Document Format, or PDF, is the unifying model for printed output. If we want to print
@@ -747,11 +747,76 @@ using a unifying model!
   SSD, etc.).
 \end{tcolorbox}
 
-Usually, these unifying models involve a federation framework.
-
 \begin{tcolorbox}[title=Definition: Federation Framework]
-  A \textbf{federation framework} is a structure that allows many similar (but different) things to
-  be treated uniformly.
+  A \textbf{federation framework} is a structural design that enables similar (but different)
+  entities to be treated uniformly by creating a single \textit{interface}\footnote{The
+    \textit{implementation} that supports the interface is specified by the particular entities.}
+  that all entities must adhere to. 
 \end{tcolorbox}
 
+Note that a unifying model need not be the model with the ``lowest common
+denominator''\footnote{Lowest common denominator: The set of features \textit{all} entities have in
+  common.}. Rather, the model can include ``optional features'' which are implemented in a standard
+way. Why? Some devices may have features that others of the same class do not. Thus, these
+``optional features'' allow us to create a highly modular federation framework while maintaining a
+common unifying model.
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title=Example: Pretty Printing] 
+  Suppose you are building a federation framework for printers. Some printers can only print
+  single-sided while others can print double-sided. So, a possible federation framework 
+  could require that all devices that classify as printers \textit{must} be able to print \textit{at
+    least} single-sided, with the \textit{optional feature} of double-sided printing. Extending this
+  idea, we can add more optional features like color printing, DPI settings, etc.
+\end{tcolorbox}
+
+Unfortunately, there may be instances where a particular device may have features that cannot be
+exploited through a common model. This is the tradeoff we make for a uniform model. There have been
+arguments both for and against being able to handle such features in a federation framework.
+
+
+\subsection{Layering Abstractions}
+It is very common practice to create increasingly complex services by \textit{layering}
+abstractions.
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title=Example: Abstract Abstract Abstract!] 
+  A generic file system is an abstraction layer over a particular file system (1). A particular file
+  system layers on top of an abstract disk (2). This abstract disk layers on a real disk (3). Here,
+  a generic file system is implemented with 3 layers of abstraction! This hierarchical structure
+  simplifies development and enhances system scalability.
+\end{tcolorbox}
+
+Layering allows for modularity, easy development of multiple services on multiple layers, and
+flexibility in supporting various underlying services. Abstractions hide complex implementation
+details, promoting structured and independent design.
+
+Unfortunately, layers in a system often introduce performance penalties due to the additional
+indirection they bring. Moving between layers can be costly as it typically involves changing data
+structures and representations, and may require extra instructions. Moreover, layers may not be
+entirely independent of one another; for example, lower layers can impose limitations on what upper
+layers can achieve.
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title=Example: Packages Play Hide n Seek] 
+  An abstract network link may hide causes of packet loss, since the lower layer that this
+  abstraction is built off of may hide certain implementation details that are relevant to these issues.
+\end{tcolorbox}
+
+The OS offers numerous abstractions, catering to diverse needs and use cases. Selecting
+the most suitable abstractions is crucial for achieving optimal results. It involves
+understanding the trade-offs between higher-level and lower-level abstractions to ensure efficient
+utilization of system resources and effective application development.
+
+
+
+
+
+\section{The Process}
+
+
+
+
 \end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
