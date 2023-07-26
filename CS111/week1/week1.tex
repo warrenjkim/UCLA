@@ -4,6 +4,16 @@
 \usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
 \usepackage{tcolorbox}
 
+\newcommand{\definitionBegin}[1]{\begin{tcolorbox}[title={#1}]}
+  \newcommand{\definitionEnd}{\end{tcolorbox}}
+
+\newcommand{\exampleBegin}[1]{\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title={#1}]}
+  \newcommand{\exampleEnd}{\end{tcolorbox}}
+
+\newcommand{\abstractionBegin}[1]{\begin{tcolorbox}[colback=violet!5!white,colframe=violet,title={#1}]}
+  \newcommand{\abstractionEnd}{\end{tcolorbox}}
+
+
 \title{CS 111}
 \author{Warren Kim}
 
@@ -14,25 +24,25 @@
 \newpage
 
 \section{Preface}
-\begin{tcolorbox}[colback=black!5!white,colframe=black!75!black,title=\textit{Operating Systems: Three Easy Pieces}]
-  Text in these boxes will indicate that further details can be found in the textbook
-  (\textit{Operating Systems: Three Easy Pieces} by Arpaci-Dusseau)
-\end{tcolorbox}
+% \begin{tcolorbox}[colback=black!5!white,colframe=black!75!black,title=\textit{Operating Systems: Three Easy Pieces}]
+%   Text in these boxes will indicate that further details can be found in the textbook
+%   (\textit{Operating Systems: Three Easy Pieces} by Arpaci-Dusseau)
+% \end{tcolorbox}
 
-\begin{tcolorbox}[title=Definitions]
+\definitionBegin{Definitions}{
   Any definitions will be appear in a grey box like this one. There may be more than one definition
-  per box if the topics are dependent on each other or are closely related.
-\end{tcolorbox}
+  per box if the topics are dependent on each other or are closely related.}
+\definitionEnd
 
-\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title=Examples]
+\exampleBegin{Examples}{
   Any examples will be appear in a blue box like this one. Examples will typically showcase a scenario
-  that emphasizes the importance of a particular topic. 
-\end{tcolorbox}
+  that emphasizes the importance of a particular topic.}
+\exampleEnd
 
-\begin{tcolorbox}[colback=violet!5!white,colframe=violet,title=Abstractions] 
+\abstractionBegin{Abstractions}{
   Layers of abstractions will appear in a violet box like this one. The key point of this box is to
-  actively reinforce the concept of abstraction (and recognize how important it is in computer science!).
-\end{tcolorbox}
+  actively reinforce the concept of abstraction (and recognize how important it is in computer science!).}
+\abstractionEnd
 
 
 
@@ -225,12 +235,12 @@ specific hardware.
 
 
 % \begin{tcolorbox}[colback=red!5!white,colframe=red!75!red,title=WIP]
-%  \subsection{Virtualization}
-% \begin{tcolorbox}[colback=black!5!white,colframe=black!75!black,title=\textit{4) The Abstraction: The Process}]
-%   \begin{tcolorbox}[title=Definition: Process]
-%     A \textbf{process} is an abstraction of a running program. It has an API 
+%   \subsection{Virtualization}
+%   \begin{tcolorbox}[colback=black!5!white,colframe=black!75!black,title=\textit{4) The Abstraction: The Process}]
+%     \begin{tcolorbox}[title=Definition: Process]
+%       A \textbf{process} is an abstraction of a running program. It has an API 
+%     \end{tcolorbox}
 %   \end{tcolorbox}
-% \end{tcolorbox}
 % \end{tcolorbox}
 
 
@@ -810,13 +820,135 @@ utilization of system resources and effective application development.
 
 
 \section{The Process}
+\definitionBegin{Process and State}
+A \textbf{process} is a type of interpreter that executes an instance of a
+\textit{program}\footnote{A \textbf{program} is a set of instructions that defines a particular
+  application.}.
+\tcblower
+A \textbf{state} is a mode or condition of being, representable by a set of bits.
+\definitionEnd
 
+When you begin executing a program, it becomes a process. There may be multiple instances of the
+same program running simultaneously on the same computer. Typically in these cases, each running
+instance is a separate process. 
+
+\abstractionBegin{Abstraction: Processes}
+Processes are a type of interpreter, an abstraction we covered in the previous section. We can
+think of it as a virtual private computer.
+\abstractionEnd
+
+A process is an \textit{object}\footnote{Object: NOT the OOP object.}, characterized by its
+state and its operations. All persistent objects have state, distinguishing them from other objects
+and characterizing the object's current condition. OS's objects' state is mostly managed by the OS
+itself and not by the user code. Thus, we must ask the OS to access or alter the state of an OS object.
+
+\exampleBegin{Example: Priority Process}
+The OS maintains information about the current priority of each process in the system. This subset
+of \textit{state} determines its position in the scheduling queue.
+\exampleEnd
+
+
+\subsection{Process Address Space}
+\definitionBegin{Definition: Process Address Space}
+The \textbf{process address space} is the set of addresses visible to the process. This address
+space is \textit{private}\footnote{Private: Inaccessible by outside processes.} to the process.
+\definitionEnd
+
+The process' address space consists of all memory locations accessible by the process. Invalid
+addresses are those outside its address space, and as such, the process cannot request access to
+them. Modern operating systems give the illusion that \textit{every} process' address space can (but
+often don't) include \textit{all} of memory.
+
+
+\subsubsection{Layout}
+The process address space typically consists of different segments:
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Shared Code: Contains the executable code of the program. We do not do self-modifying code in
+  modern computer systems. Thus, this shared code is static while the process is running, meaning
+  they are read/executable only. So, subsequent instances of a program will be accessing the one
+  stored in RAM since it's a \textit{shared resource}.
+\item Shared Libraries: Like shared code, shared libraries are a \textit{shared resource} that are
+  stored somewhere in RAM. Thus, multiple processes can access these shared libraries concurrently.
+\item Private Data: Stores global and static variables used by the program. Since private data is
+  read/write, they are \textit{not} a shared resource, and thus is private to a particular instance
+  of a process.
+\item Private Stack: Like private data, the private stack is private to a particular instance of a process.
+\end{enumerate}
+All of these must sit somewhere in RAM, but different type of memory elements have different
+requirements (e.g. \textit{shared} coded is read/execute, \textit{private} stack is
+read/write). 
+
+\exampleBegin{Linux Layout}
+Each operating system puts these process memory segments in different places, but here's how Linux
+does it! Code segments are statically sized and are put at the beginning (e.g. 0x00000000). The data
+segment (and heap) is placed after the code segment and grows upward. The stack is placed at the
+very end (e.g. 0xFFFFFFFF) and grows downward. It is crucial that the data segment and stack are
+\textbf{not} allowed to meet! 
+\exampleEnd
+
+
+\subsubsection{Code Segment}
+\definitionBegin{Load Module}
+The \textbf{load module} is the output of a linkage editor, where all external references have been
+resolved and object modules have been combined into a single executable.
+\definitionEnd
+
+The process starts by creating a load module. To make instructions executable, we need to load the
+code into RAM, as we can't directly run instructions from the disk. Next, we read the code from the
+load module and copy it into a specific \textit{code segment}\footnote{Code segment: A segment we
+  establish in the process' address space to accommodate the code.} within the process's address
+space. This allows the CPU to fetch and execute instructions from the memory while the program
+runs. Since the code is static (read/execute only), we can
+share it among multiple processes, which helps reduce unnecessary duplication of code. 
+
+
+\subsubsection{Data Segment}
+Data also needs to be initialized within the address space of a process. This requires the creation
+and mapping of a process data segment into the process' address space. The initial contents of the
+data segment are copied from the load module. In particular, the BSS\footnote{BSS: Block Started by
+  Symbol} segments are initialized to all zeroes. Data segments are read/write (and thus private to
+the instance of the process). The program can grow or shrink this segment (via the \texttt{sbrk}
+syscall).
+
+
+\subsubsection{Stack Segment}
+\definitionBegin{Stack Frame}
+A \textbf{stack frame} serves as storage for procedure local variables, invocation parameters, and
+save/restore registers.
+\definitionEnd
+
+Modern programming languages are stack-based. Thus, each procedure call allocates a new stack
+frame, and once it is completed, the corresponding stack frame is popped off of the stack, freeing
+any memory that was allocated for it. Modern CPU's have built-in stack support. Thus, the stack must
+be preserved as part of the process state to ensure proper execution and continuity during a
+process' lifetime.
+
+The size of the stack in a program depends on its activities, such as the amount of local storage
+used by each routine. It grows larger as calls nest more deeply (since each procedure call allocates
+a new stack frame!), and once these calls return, their stack frames can be recycled for future use.
+
+
+\subsubsection*{Who Manages The Stack?}
+The operating system is responsible for managing the process' stack segment! It is created alongside
+the data segment when the program is loaded into memory.
+
+Different operating systems implement stack management differently Some allocate a fixed-size stack
+at the program's load time, while others dynamically extend the stack as the program needs more
+space.
+
+Across all operating systems, stack segments are usually only read/write for security reasons. This
+prevents any unintended execution of code in the stack (e.g. buffer overflows) and ensures that it
+is used exclusively for storing data and variables.
+
+Stack segments are process private, meaning each process has its own unique stack. This isolation
+ensures that processes cannot interfere with each other's stacks, which is crucial for maintaining
+system stability and security.
 
 
 
 \end{document}
 
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: t
-%%% End:
+% Local Variables:
+% mode: latex
+% TeX-master: t
+% End:
