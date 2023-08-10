@@ -3311,14 +3311,62 @@ mutual exclusion and lock sections of code, ensuring only one thread can access 
 at any given moment. 
 \definitionEnd
 
-Mutexes are designed to lock (typically) small and critical sections of code, implying that these locks
-are expected to be held \textit{briefly}\footnote{Locks are expected to be held briefly
-  \textit{relative} to the program.}. They are typically for multiple threads of the same process
-and have low overhead and are very general.
+Mutexes are designed to lock (typically) small and critical sections of code, implying that these
+locks are expected to be held \textit{briefly}\footnote{Locks are expected to be held briefly
+\textit{relative} to the program.}. They are typically used for multiple threads\footnote{Mutexes
+are \textit{assumed} to be used for threads operating on shared data; i.e. all threads are operating
+in a single address space. This implies that mutexes (protecting \textit{code}) won't work for
+multi-process programs} of the same process and have low overhead and are very general.
 
 
 \subsection{Object Locking}
-Recall that mutexes protect critical sections of \textit{code}. 
+Recall that mutexes only protect critical sections of \textit{code}. To protect persistent
+\textit{objects}, we want to lock the objects themselves. Object locks are more versatile than
+code-level locking since they can protect resources that persist beyond the lifetime of a program's
+execution (e.g. a file) and offer adjustable \textit{granularity}\footnote{Granularity: We may want
+  to either lock an entire object at a time or lock specific methods or sections \textit{within} the
+  object.}.
+
+Though object-level locking provides mutual exclusion, it can bottleneck performance and limit the
+scalability of a project (via excessive locking). Furthermore, object locks can potentially cause
+deadlocks. Thus, object-level locking is very specific, as we need to carefully work with the
+concurrency requirements and choose an appropriate granularity to ensure effective and efficient
+locking mechanisms.
+
+\exampleBegin{A \texttt{flock} of Seagulls}
+Let's take a look at Linux's file descriptor locking: \texttt{int flock(\textit{fd},
+  \textit{operation})}. Supported operations include:
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item \texttt{LOCK\_SH}(ared): Place a \textit{shared} lock on \texttt{\textit{fd}}. More than one process may hold a
+  shared lock for a given \texttt{\textit{fd}} at a given time.
+\item \texttt{LOCK\_EX}(clusive): Place an \textit{exclusive} lock. Here, only one process may hold an
+  exclusive lock for a given \texttt{\textit{fd}} at a given time.
+\item \texttt{LOCK\_UN}(nlock): Remove an existing lock held by the calling process.
+\end{enumerate}
+
+This lock applies to \textit{open} instances of the same \texttt{\textit{fd}}. Note that
+\textit{distinct} opens are \textit{not} affected. Moreover, these locks are
+\textit{advisory} and not strictly enforced.
+\exampleEnd
+
+
+\subsection*{Corollary: Advisory v. Enforced Locking}
+\addcontentsline{toc}{subsection}{Corollary: Advisory v. Enforced Lockint commit -M g}
+\definitionBegin{Advisory and Enforced Locking}
+\textbf{Advisory locking}\footnote{Also known as: user-level or application-level locking.} is a
+locking mechanism that is \textit{purely suggested} by the application. It relies on developers
+respecting the locking protocols being used and are \textit{non-blocking}\footnote{Non-blocking:
+  Advisory locks do \textit{not} automatically block threads that attempt to access a locked
+  resource. Thus, it is the application's responsibility to check and handle locks.}. Mutexes and
+\texttt{flock()}'s are examples of advisory locks.
+\tcblower
+\textbf{Enforced locking}\footnote{Also known as: mandatory or kernel-level locking.} is a locking
+mechanism that is \textit{strictly enforced} by the OS or underlying system infrastructure. It is
+typically used when data integrity is crucial. They are done within the implementation of object
+methods and are guaranteed to happen\footnote{Blocking: Enforced locks will automatically block
+  threads that attempt to access a locked resource, enforcing mutual exclusion.}.
+\definitionEnd
+
 
 
 \end{document}
