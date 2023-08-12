@@ -34,9 +34,22 @@
 \tableofcontents
 \newpage
 
-\part*{Preface}
+\begingroup
+\renewcommand\thepart{\Alph{part}.} % Change numbering system to Roman numerals
+\part{Preface}
+This is a special part with Roman numeral numbering.
+\endgroup
+
+
+
+
+
+
+
+
+
+
 \chapter*{Preface: Legend}
-\addcontentsline{toc}{chapter}{Preface: Legend}
 \begin{tcolorbox}[colback=black!5!white,colframe=black!75!black,title=\textit{Operating Systems, Three Easy Pieces}]
   Text in these boxes will indicate that further details can be found in the textbook
   (\textit{Operating Systems: Three Easy Pieces} by Arpaci-Dusseau)
@@ -61,6 +74,11 @@
 
 
 
+
+
+
+
+
 \chapter*{Preface: Introduction to Abstraction}
 \begin{tcolorbox}[title=Definition: Abstraction]
   \textbf{Abstraction} is the concept of providing a (relatively) simple interface to higher level
@@ -80,6 +98,9 @@ of the main dilemmas of OS design: What should you abstract?
 \end{tcolorbox}
 
 
+
+
+
 \section*{Why Abstract?}
 Abstraction is utilized to simplify code development and comprehension for programmers and
 users. Furthermore, it naturally fosters a highly modular codebase as each abstraction introduces an
@@ -94,9 +115,17 @@ interface with a common library.
 
 
 
+
+
+
+
+
 \chapter{Overview}
 This section defines what an operating system is as well as gives motivating reasons as to why we
 should be studying them. 
+
+
+
 
 
 \section{What is an Operating System?}
@@ -112,6 +141,9 @@ should be studying them.
   controlled sharing, privacy, and overseeing their execution. Moreover, it provides a layer of
   abstraction that enhances software portability. 
 \end{tcolorbox}
+
+
+
 
 
 \section{Why Study Them?}
@@ -134,6 +166,9 @@ been solved in the context of operating systems !
   operating systems! Since you have already learned how to tackle this issue in operating systems, now
   you can apply the same solution to your \textit{download} problem!
 \end{tcolorbox}
+
+
+
 
 
 \section{Key Topics (OS Wisdom)}
@@ -170,8 +205,10 @@ specifications). This provides immense flexibility at the implementation level!
   into production, and bragging about how \texttt{sort()} now runs in O($n \log n$) time. 
 \end{tcolorbox}
 
+
 \subsection*{Encapsulation}
 We want to abstract away complexity (when appropriate) into an interface for ease of use.
+
 
 \subsection*{Policy and Mechanism}
 \label{subsubsec:PAM}
@@ -186,6 +223,9 @@ separating policies from the underlying mechanisms, it becomes easier to change 
 without affecting the core functionality or technical implementation. This approach provides the
 ability to update policies independently from the underlying mechanisms, promoting modifiability,
 maintainability, and customization when designing software.
+
+
+
 
 
 \section{Why is the OS Special?}
@@ -204,8 +244,13 @@ stays up and running as long as the machine is still powered on (theoretically),
 you're fucked lol.
 
 
+
+
+
 \section{Miscellaneous}
 Below are a list of miscellaneous topics.
+
+
 \subsection{Definitions}
 \begin{tcolorbox}[title=Definition: Instruction Set Architectures]
   An \textbf{instruction set architecture (ISA)} is the set of instructions supported by a
@@ -242,14 +287,8 @@ specific hardware.
 
 
 
-% \begin{tcolorbox}[colback=red!5!white,colframe=red!75!red,title=WIP]
-%   \section{Virtualization}
-%   \begin{tcolorbox}[colback=black!5!white,colframe=black!75!black,title=\textit{4) The Abstraction: The Process}]
-%     \begin{tcolorbox}[title=Definition: Process]
-%       A \textbf{process} is an abstraction of a running program. It has an API 
-%     \end{tcolorbox}
-%   \end{tcolorbox}
-% \end{tcolorbox}
+
+
 
 
 
@@ -267,6 +306,9 @@ resources. They typically ensure that users leave resources in a clean state; i.
 subsequent user finds the resource in a ``like new'' condition.
 
 
+
+
+
 \section{Serially Reusable}
 \begin{tcolorbox}[title=Definition: Serially Reusable Resource]
   \textbf{Serially reusable resources} are resources that can be used by a single process at a time
@@ -281,6 +323,10 @@ data corruption that may arise from concurrent access.
   Printers are a serially reusable resource: multiple job can use it but only a single job will be
   printed at a time. 
 \end{tcolorbox}
+
+
+
+
 
 \section{Partitionable}
 \begin{tcolorbox}[title=Definition: Partitionable Resource]
@@ -309,6 +355,9 @@ Graceful transitions are still necessary in partitionable resources! Partitionab
 aren't permanently allocated need to clean up after themselves.
 
 
+
+
+
 \section{Shareable}
 
 \begin{tcolorbox}[title=Definition: Shareable Resource]
@@ -334,9 +383,17 @@ doesn't need cleaning).
 
 
 
+
+
+
+
+
 \chapter{Services}
 The OS provides services in a multitude of ways. This section will introduce and explain how
 services are provided throughout the software stack.
+
+
+
 
 
 \section{Subroutines}
@@ -349,6 +406,10 @@ Subroutines are usually called directly, and operate like normal code (stack man
 typically seen in higher layers of the OS stack. They are fast, but usually cannot use the
 privileged instruction set. Furthermore, they are usually not language agnostic. The most common way
 to implement these subroutines are libraries!
+
+
+
+
 
 \section{Libraries}
 One way the OS provides services to users is via libraries. Standard utility functions such as
@@ -373,6 +434,7 @@ library?
   (and probably perform better than your implementation, no offense).
 \end{tcolorbox}
 
+
 \subsection{Bind Time}
 The choice of library bind time depends on multiple factors that include (but are not limited to):
 performance requirements, deployment and distribution considerations, and dependency
@@ -396,6 +458,9 @@ encapsulates a myriad of commonly used operations, algorithms, and functionality
 One thing to note about shared libraries is that they cannot define or include global data
 storage. Moreover, called routines must be known at compile time since the fetching of the code is
 the only thing that is delayed until runtime. 
+
+
+
 
 
 \section{System Calls}
@@ -445,6 +510,9 @@ structures or execute privileged instructions, they might sit outside of the ker
 \end{tcolorbox}
 
 
+
+
+
 \section{Messages}
 Another way of service delivery is via messages that are exchanged with a server via system
 calls.
@@ -459,6 +527,9 @@ calls.
       subroutine calls!} and are limited to operate on process resources.
   \end{tcolorbox}
 \end{tcbraster}
+
+
+
 
 
 \section{Middleware}
@@ -483,6 +554,11 @@ be used across different operating systems without modification!
 
 
 
+
+
+
+
+
 \chapter{Interfaces}
 How do processes communicate with the OS? Interfaces! There are two main types: API and ABI.
 
@@ -490,6 +566,9 @@ How do processes communicate with the OS? Interfaces! There are two main types: 
   Interfacess introduce a layer of abstraction, allowing programmers to focus on \textit{what} they need
   without worrying about \textit{how} it's implemented! 
 \end{tcolorbox}
+
+
+
 
 
 \section{Application Programming Interface}
@@ -511,6 +590,9 @@ interoperable applications and libraries that are platform/system independent, p
 portability, reusability, and simplicity when building complex systems!
 
 
+
+
+
 \section{Application Binary Interface}
 \begin{tcolorbox}[title=Definition: Application Binary Interface]
   The \textbf{application binary interface (ABI)} defines the low-level binary interface that allows
@@ -528,10 +610,16 @@ recompilation) on any other system with the same ABI! This ensure that a single 
 all ABI-compliant systems. Hence, they are usually intended for end-users and software deployment.
 
 
+
+
+
 \section{Corollary: Libraries}
 Libraries are accessed through API's! The API provides source-level definitions for how to access
 the library, and is readily portable between systems. While DLL's are also accessed via an API, the
 loading mechanism is specified by the ABI.
+
+
+
 
 
 \section{Best Practices for Interoperability}
@@ -565,6 +653,9 @@ keep the interface stable, while developers must be compliant with the API if th
 products to survive new updates.
 
 
+
+
+
 \section{Aside: Side Effects}
 
 \begin{tcolorbox}[title=Definition: Side Effect]
@@ -577,6 +668,11 @@ Side effects are inevitable, but are not the end of the world! They usually happ
 state between independent modules and functions. Thus, developers should ignore side effects and
 continue being compliant with the interface as they \textit{should} be patched. In general, try to
 avoid exploiting side effects since they are not guaranteed to be there or maintained! 
+
+
+
+
+
 
 
 
@@ -599,6 +695,9 @@ The OS provides some core abstractions that our computational model relies on: m
 and communication abstractions.
 
 
+
+
+
 \section{Memory Abstractions}
 Memory abstractions provide a consistent way to interact with various data storage resources,
 simplifying the process for users. However, there are some complicating factors that come with
@@ -610,6 +709,7 @@ The operating system managing these abstractions doesn't have abstract devices h
 properties. Instead, it handles physical devices that may have inconvenient properties. Therefore,
 the primary goal of OS abstraction is to create an abstract device with desirable properties derived
 from the physical device that lacks them. 
+
 
 \subsection*{Memory Lifetime}
 \begin{tcolorbox}[title=Definition: Persistent and Transient Memory]
@@ -629,6 +729,7 @@ designing a complex system.
   in persistent memory! This means that weeks later, if another program wants to access foo
   (e.g. \texttt{cat foo}), the contents you wrote into \texttt{foo} will still be there.
 \end{tcolorbox}
+
 
 \subsection*{Size}
 There can be a discrepancy between the size of memory operations that the user wants to work with
@@ -664,6 +765,9 @@ varying performance depending on which device imlements the abstraction.
 \end{tcolorbox}
 
 
+
+
+
 \section{Interpreters}
 
 \begin{tcolorbox}[title=Definition: Persistent and Transient Memory]
@@ -694,6 +798,7 @@ An interpreter has several basic components:
   be private.
 \end{tcolorbox}
 
+
 \subsection*{Aside: Implementation}
 Implementing the process abstraction in the OS is relatively straightforward when dealing with only
 one process, but in reality, that is seldom the case. When dealing with multiple processes, we have
@@ -710,6 +815,10 @@ To address these issues, we need:
   each process has full access to RAM (when in reality, they don't).
 \item Access control mechanisms for other memory abstractions to keep our machine secure.
 \end{enumerate}
+
+
+
+
 
 \section{Communications}
 
@@ -755,6 +864,9 @@ machines, we have to consider the following:
 \end{enumerate}
 
 
+
+
+
 \section{Generalizing Abstractions: Introduction to Federation Frameworks}
 Rather than applications dealing with varied resources, we can make many different things
 \textit{appear}\footnote{We want to \textit{abstract} away the implementation details!} the same by
@@ -795,6 +907,9 @@ exploited through a common model. This is the tradeoff we make for a uniform mod
 arguments both for and against being able to handle such features in a federation framework.
 
 
+
+
+
 \section{Layering Abstractions}
 It is very common practice to create increasingly complex services by \textit{layering}
 abstractions.
@@ -830,6 +945,12 @@ utilization of system resources and effective application development.
 
 
 
+
+
+
+
+
+\setcounter{part}{0}
 \part{Virtualization}
 \chapter{The Process}
 \definitionBegin{Process and State}
@@ -858,6 +979,9 @@ itself and not by the user code. Thus, we must ask the OS to access or alter the
 The OS maintains information about the current priority of each process in the system. This subset
 of \textit{state} determines its position in the scheduling queue.
 \exampleEnd
+
+
+
 
 
 \section{Process Address Space}
@@ -972,6 +1096,9 @@ operating system handles loading the required libraries into memory when the pro
 executed. In contrast to static libraries, shared libraries are easier to upgrade.
 
 
+
+
+
 \section{Process Data Structures}
 \definitionBegin{Register}
 A \textbf{register} is a small, fast, storage location within the CPU used to store data temporarily
@@ -1030,6 +1157,9 @@ Let's look at what the PCB keeps track of in more detail.
 \exampleEnd
 
 
+
+
+
 \section{Other Process State}
 Not all process state is stored directly in the process descriptor! Other process state is stored in
 several other places:
@@ -1048,8 +1178,20 @@ several other places:
 \end{enumerate}
 
 
+
+
+
+
+
+
+
+
 \chapter{Process Handling}
 We will cover creating, destroying, and running processes in this section.
+
+
+
+
 
 \section{Creating a Process}
 Process can be created in two main ways: by the operating system and by the request of other
@@ -1092,6 +1234,7 @@ will typically place it into a process table. This table allows the OS to effici
 access information about all running processes (tracking state, scheduling, allocating system
 resources, etc.). 
 
+
 \subsection{Creating the Address Space}
 In addition to a PCB, we also need an address space to hold all the segments it requires for
 execution! The OS is responsible for creating and managing the address space for each process. Once
@@ -1114,11 +1257,13 @@ from a ``blank'' process and starting from a template\footnote{The ``blank'' app
   control to the user in terms of the process' initial state, whereas the template approach is
   simpler and faster with minimal overhead.}.
 
+
 \subsection*{Blank Process}
 In this approach, a new process is created with no specific state or resources. It is a blank slate
 with minimal to no  predefined attributes. The OS then provides a mechanism to fill in the
 essential details required for the process to run successfully (like the code, program counter,
 etc.). This approach is usually used in Windows-based systems (via the \texttt{CreateProcess} syscall).
+
 
 \subsection*{Template Process}
 In this approach, a new process is created by duplicating the parent/calling process. This new
@@ -1165,6 +1310,9 @@ segments. \texttt{exec} will also close all file descriptors associated with the
 stdin/out/err) to prevent data corruption and/or resource leaks. 
 
 
+
+
+
 \section{Destroying a Process}
 Processes terminate for a multitude of reasons: the machine loses power, the program reaches the end of
 execution, or the OS or another process kills it. In any case, when a process terminates, the OS
@@ -1201,11 +1349,15 @@ might continue execution.
 \exampleEnd
 
 
+
+
+
 \section{Running a Process}
 Processes must execute code to do their job, meaning they need to run on a core! However, the set of
 processes ready to run usually outnumber the number of cores we have. Thus, the processes need to
 share the core(s). Sooner or later, a process not running on a core needs to be put onto one. How do
 we do this?
+
 
 \subsection{Loading a Process}
 Before we run a process on a core, the core's hardware needs to be initialized to either an initial state
@@ -1244,7 +1396,7 @@ usually intercepted by the hardware or operating system via a trap. The OS will 
 exception appropriately. 
 
 In addition to handling asynchronous exceptions, traps are used to handle system calls\footnote{System calls
-are defined at the processor level.}. System calls will cause an exception that will trap into the
+  are defined at the processor level.}. System calls will cause an exception that will trap into the
 operating system through a ``trap gate''. Once inside the OS, the OS will recognize and perform the
 requested operation based on the syscall number. The OS may use the condition code to indicate the
 success or failure of the system call. After completing the instruction(s), the OS returns to the
@@ -1363,6 +1515,9 @@ ensures fair resource allocation, handles syscalls and traps, and maintains over
 and security.
 
 
+
+
+
 \section{Blocking and Unblocking Processes}
 Processes can be blocked when they are waiting for certain conditions to be met, and cannot continue
 execution until they are met (for various reasons). Blocking a process is a way for the scheduler to
@@ -1410,6 +1565,11 @@ ensuring fair resource allocation among processes.
 
 
 
+
+
+
+
+
 \chapter{Scheduling}
 \definitionBegin{Scheduling/Scheduler}
 \textbf{Scheduling} is the process of determining which processes should be executed next.
@@ -1429,6 +1589,9 @@ should we handle a set of blocked requests for a flash drive? In what order shou
 if they are all sent at the same time? Questions like these are all answered (for the most part)
 with scheduling!
 \exampleEnd
+
+
+
 
 
 \section*{Aside: Optimization Metrics}
@@ -1462,6 +1625,7 @@ The choice of scheduling strategy heavily depends on the system's intended use a
 requirements of its users or applications. Generally, we want to optimize for something we can
 control. Thus, choosing an appropriate scheduling algorithm is important!
 
+
 \subsection*{Scheduling Metrics}
 \addcontentsline{toc}{subsection}{Scheduling Metrics}
 \label{subsubsec:SM}
@@ -1485,9 +1649,10 @@ To begin, we make a list of assumptions about processes, relaxing them as we go.
 \item All jobs arrive at the same time.
 \item Once started, each job runs to completion.
 \item All jobs only use the CPU (i.e. no I/O)
-  \item The run-time of each job is known.
+\item The run-time of each job is known.
 \end{enumerate}
 \bookEnd
+
 
 
 
@@ -1495,7 +1660,7 @@ To begin, we make a list of assumptions about processes, relaxing them as we go.
 \section{The Process Queue}
 \definitionBegin{Process Queue}
 The \textbf{process queue}\footnote{Typically, the
-process queue is organized based on the scheduling algorithm we use.} is the list of processes that
+  process queue is organized based on the scheduling algorithm we use.} is the list of processes that
 are ready to run on the CPU. Processes that are not ready to run are either not in the queue, at the
 end of the queue, or ignored by the scheduler.
 \definitionEnd
@@ -1512,6 +1677,9 @@ Notice that the policy and mechanism are independent of each other! The policy l
 concerned with the low-level details of dispatching, context switches, etc. The mechanism, in turn,
 follows the guidelines set by the policy to ensure that the system operates as desired.
 \exampleEnd
+
+
+
 
 
 \section{Preemptive and Non-Preemptive}
@@ -1573,12 +1741,15 @@ yields the CPU.
 \end{tcbraster}
 
 
+
+
+
 \section*{Aside: Expectations v. Reality}
 \addcontentsline{toc}{section}{Aside: Expectations v. Reality}
 
 \exampleBegin{Throughput Trouble}
 \begin{center}
-\includegraphics[scale=0.4]{images/throughput.png}
+  \includegraphics[scale=0.4]{images/throughput.png}
 \end{center}
 
 This happens because scheduling isn't free! It takes time to dispatch a process (overhead). More
@@ -1589,7 +1760,7 @@ number of dispatches.
 
 \exampleBegin{Delay Doozy}
 \begin{center}
-\includegraphics[scale=0.4]{images/delay.png}
+  \includegraphics[scale=0.4]{images/delay.png}
 \end{center}
 
 This happens because real systems (unfortunately) have finite limits (like queue size). When limits
@@ -1601,6 +1772,7 @@ situation. During these periods of heavy loads, the system performance drops sev
 overheads like context switching and memory management will explode. Careful system design and resource management can help to minimize this problem, but it is not
 guaranteed to \textit{fix} the problem.
 \exampleEnd
+
 
 \subsection*{Graceful Degradation}
 \addcontentsline{toc}{subsection}{Graceful Degradation}
@@ -1614,6 +1786,9 @@ performance.
 When a system is overloaded, we want to use the graceful degradation principle to at least do
 \textit{some} work. We \textit{never} want to allow throughput to drop to zero. This will allow
 response times to grow without limit; i.e. this will lead to infinite response times!
+
+
+
 
 
 \section{Non-Preemptive Algorithms}
@@ -1733,6 +1908,7 @@ process halts, \textit{regardless} of how (I/O, interrupt, etc.). This way, the 
 \textit{always} doing something useful.
 \bookEnd
 
+
 \subsection{Choosing a Time Slice}
 The duration of the time slice is crucial for optimizing performance. Longer time slices reduce the
 frequency of context switches, but are bad for response times. Shorter time slices are better for
@@ -1747,6 +1923,9 @@ switching involves changing the stack and handling non-resident process descript
 the switch requires mapping out the old and new processes, affecting the efficiency of address space
 changes. More notably, the loss of instruction and data caches significantly impacts the speed of
 subsequent instructions, reducing overall performance.
+
+
+
 
 
 \section{Priority Algorithms}
@@ -1806,6 +1985,11 @@ providing an automatic and adaptive scheduler!
 
 
 
+
+
+
+
+
 \chapter{Memory Management}
 There are three primary goals for memory management:
 \begin{enumerate}[label=\textit{(\roman*)}]
@@ -1832,6 +2016,9 @@ The memory management problem involves several key aspects:
 \end{enumerate}
 
 
+
+
+
 \section*{Preface: Physical and Virtual Addresses}
 \addcontentsline{toc}{section}{Preface: Physical and Virtual Addresses}
 \definitionBegin{Physical and Virtual Memory Addresses}
@@ -1847,6 +2034,9 @@ Virtual memory addresses are used in processes and allow for more flexibility in
 but require a virtual to physical translation unit. 
 
 
+
+
+
 \section*{Preface: Fragmentation}
 \addcontentsline{toc}{section}{Preface: Fragmentation}
 
@@ -1859,6 +2049,10 @@ satisfy any memory allocation request since the available free memory is fragmen
 non-contiguous blocks. As a result, the total amount of free memory may satisfy the request, but
 since the memory isn't contiguous, we cannot fulfill it.
 \definitionEnd
+
+
+
+
 
 \section{Fixed Partition Allocation}
 Fixed Partition Allocation divides the available memory into fixed-size partitions (go figure), and
@@ -1876,6 +2070,7 @@ To enforce memory protection, hardware support is often used. Special registers 
 partition boundaries ensure that each process can only access memory within its allocated
 partition. However, fixed partition allocation does not use virtual addresses, meaning the processes
 use the physical addresses directly.
+
 
 \subsection{Problems}
 There are several problems with Fixed Partition Allocation:
@@ -1895,6 +2090,9 @@ There are several problems with Fixed Partition Allocation:
 Because of these reasons, this approach isn't commonly used in modern operating systems.
 
 
+
+
+
 \section{Dynamic Partition Allocation}
 Dynamic Partition Allocation allows variable-sized partitions which accommodate almost any size
 requested. Each partition has contiguous addresses, and processes are allowed to access the
@@ -1902,6 +2100,7 @@ partitions it requested. These partitions can be shared between multiple process
 process may have multiple partitions with different sizes and characteristics. However, in the basic
 scheme, memory addresses are still physical, which can lead to external fragmentation and limited
 address space. 
+
 
 \subsection{Problems}
 There are several problems with Dynamic Partition Allocation:
@@ -1923,6 +2122,9 @@ since there may not be enough contiguous free space. These limit the usefulness 
 allocation. 
 
 
+
+
+
 \section*{Managing Variable-Sized Partitions}
 \definitionBegin{Free List}
 The \textbf{free list} is a data structure (often implmented with a list or array) that keeps track
@@ -1934,6 +2136,9 @@ known as the ``heap'', and maintains a data structure called the ``free list''. 
 requests memory, the memory manager will consult the free list, carving a chunk (of the requested
 size) and putting the remainder back onto the free list. When processes deallocate memory, it is put
 back onto the free list.
+
+
+
 
 
 \section{Free-Space Management}
@@ -2028,6 +2233,9 @@ list. This reduces overhead and tries to minimize fragmentation.
 \end{tcbraster}
 
 
+
+
+
 \section{Coalescing Partitions}
 Coalescing partitions is a technique used to reduce external fragmentation in variable-sized
 partition allocation algorithms. When a process frees a chunk of memory, the memory management
@@ -2054,6 +2262,9 @@ chunks for extended periods reduce the effectiveness of coalescing. Note that co
 minimizes fragmentation since external fragmentation will \textit{always} occur over time.
 
 
+
+
+
 \section{Buffer Pools}
 Certain chunk sizes are requested more frequently than others. Key services like I/O, network
 protocols, etc. usually work with fixed-size buffers. Thus, we can reserve special pools of
@@ -2075,6 +2286,7 @@ not improve efficiency. Too large and it might lead to a lot of unused buffer sp
 It is also worth noting that buffer pools will only satisfy \textit{perfectly} matching requests,
 since otherwise we get internal fragmentation.
 
+
 \subsection{Sizing}
 We dynamically adjust the size of the buffer pool based on the system load and buffer
 availability. When the pool runs low on fixed-size buffers, we simply acquire more memory from the
@@ -2083,6 +2295,10 @@ free list\footnote{If the free list gets dangerously low, we ask each major serv
 buffers back into the free list. We can tune these thresholds (low space and high space) to
 determine when to adjust the buffer pool size. This approach makes the system highly adaptive to
 changing workloads and memory requirements.
+
+
+
+
 
 \section{Memory Leaks}
 \definitionBegin{Memory Leak}
@@ -2105,6 +2321,9 @@ never explicitly freed it, the memory you allocated is inaccessible (until the p
 Because of this, It is generally bad practice to not \textit{explicitly} free any memory you
 \textit{explicitly} allocate. 
 \exampleEnd
+
+
+
 
 
 \section{Garbage Collection}
@@ -2151,6 +2370,9 @@ There are several problems we need to address:
 \end{enumerate}
 
 
+
+
+
 \section{Memory Compaction and Relocation}
 GC is simply another method to release memory, and therefore doesn't significantly impact
 fragmentation. Ongoing memory de/allocations can prevent coalescing, leading to fragmentation over
@@ -2194,6 +2416,7 @@ the two. However, this is a small price to pay for making memory relocation \tex
 easier!
 \abstractionEnd
 
+
 \subsection{Segment Relocation}
 Memory segment relocation is a technique that involves organizing a process' address space into
 multiple segments, each representing a contiguous block of memory with a specific purpose (see
@@ -2202,7 +2425,7 @@ multiple segments, each representing a contiguous block of memory with a specifi
 
 \subsection{Base and Bounds Registers}
 Computer architecture may include special relocation registers known as segment \textit{base
-registers}. These registers hold the starting address of each segment in physical memory. When the
+  registers}. These registers hold the starting address of each segment in physical memory. When the
 CPU accesses a memory location, it will add the address to the address of the base register,
 translating the virtual address to the physical address!
 
@@ -2222,6 +2445,9 @@ process.
 When processes attempt to access an illegal address, the CPU triggers a segmentation exception or
 trap. This exception traps into the OS allowing it to take appropriate action (e.g. terminating the
 process or controlling the violation).
+
+
+
 
 
 \section{Swapping}
@@ -2244,6 +2470,9 @@ However, swapping incurs overhead since copying is expensive! The cost of a cont
 \end{enumerate}
 \textit{before} the new process can do anything. Moreover, we still cannot exceed the amount of
 physical RAM, which can limit memory-intensive processes or overall system performance.
+
+
+
 
 
 \section{Paging}
@@ -2340,12 +2569,18 @@ the time it takes to fetch from disk can add up. Efficient page replacement algo
   period of time is booted from RAM.} are used to minimize the number of page faults triggered to
 ensure that relevant pages are kept in RAM.
 
+
 \subsection{Locality of Reference}
 Locality of reference suggests that the next address a program will access is most likely to be
 close to the one it just accessed. This is usually present in programs since they often execute
 sequences of consecutive (or nearby) instructions, have short branches, access data in the
 current/previous stack frame, and (tend to) access recently allocated heap structures. While there
 are no guarantees, identifying these trends help reduce the number of page faults.
+
+
+
+
+
 
 
 
@@ -2366,6 +2601,10 @@ mapping of virtual to physical addresses via page tables. VM allows processes to
 entire address space doesn't fit into physical memory. Instead, only actively referenced portions
 are loaded into RAM, while the rest sits on disk.
 
+
+
+
+
 \section{Replacement Algorithms}
 Replacement algorithms are the key technology to making virtual memory work. We want to have the
 relevant pages loaded into RAM when a process needs to access them.
@@ -2376,6 +2615,7 @@ choices about which pages to keep in memory and which ones to kick to disk.
 Page replacement happens when we need to free up space in memory for new pages. Whenever a page
 fault occurs, we select an appropriate page to replace via an algorithm (like LRU).
 
+
 \subsection{The Optimal Algorithm (Belady's Algorithm)}
 The optimal replacement algorithm replaces the page that will be accessed furthest into the future,
 minimizing the number of page faults. However, this requires an oracle, and as such, it is
@@ -2385,9 +2625,11 @@ impossible to implement. This algorithm is also known as ``Belady's Algorithm''.
 \subsection{FIFO and Random}
 According to Reiher (and common sense), these are dogshit so I'm not going to cover them.
 
+
 \subsection{Least Frequently Used}
 The Least Frequently Used (LFU) policy kicks the least frequently used page back to disk. It isn't
 the best in the world.
+
 
 \subsection{Least Recently Used and Clock Algorithm}
 Least Recently Used (LRU) policy kicks the page with the oldest timestamp back to disk. This is done
@@ -2403,6 +2645,9 @@ page with reference bit 0.
 
 This algorithm, while not a perfect one-to-one with LRU, offers performance on par with LRU for a
 fraction of the cost. Therefore, it is usually implemented in favor of a ``true'' LRU.
+
+
+
 
 
 \section{Page Replacement}
@@ -2462,6 +2707,7 @@ replacement.
 Working sets dynamically adjust the allocation of page frames for each process based on its current
 behavior, optimizing memory usage and responding to changes in workload and access patterns.
 
+
 \subsection*{Optimal Working Sets}
 The optimal working set for a process is the set of pages it needs during its next time slice (or a
 specific period of time). Allocating less than the optimal amount leads to a lot of page faults.
@@ -2470,9 +2716,13 @@ We determine the size of the working set by observing the process' behavior over
 frequency of page faults and memory references, the system can identify which pages the process
 frequently accesses, including them in the working set.
 
+
 \subsection*{Page Stealing: Working Set-Clock Algorithm}
 The Working Set-Clock algorithm tracks the last use time for each page for its owning process,
 replacing the page that was least recently used.
+
+
+
 
 
 \section{Thrashing}
@@ -2501,6 +2751,9 @@ ensuring that all processes get a fair share of CPU time while minimizing thrash
 \exampleEnd
 
 
+
+
+
 \section{Clean and Dirty Pages}
 \definitionBegin{Clean and Dirty Pages}
 A \textbf{clean page} refers to a page in memory that hasn't been modified since it was brought from
@@ -2517,11 +2770,20 @@ it from memory.
 When given a choice, the OS will prioritize kicking clean pages since they can be safely removed
 without the need for I/O. Dirty pages however, need to be written back to disk to preserve data integrity.
 
+
+
+
+
 \section{Preemptive Page Laundering}
 Preemptive page laundering is a technique used to increase the flexibility of the memory manager by
 converting dirty pages to clean ones. Rather than waiting to write when pages gets kicked, we
 initiate a background write-out of dirty pages that are not actively in use. This way, we reduce
 the risk of thrashing and increase the number of clean pages we have.
+
+
+
+
+
 
 
 
@@ -2547,10 +2809,17 @@ itself and rely on voluntary yielding. Scheduled system threads are managed by t
 preemptively scheduled, meaning the OS can interrupt it to give other threads CPU time.
 
 
-\section{Why Not Processes?}
+
+
+
+\section*{Corollary: Why Not Processes?}
 Processes are expensive! Since each one has private resources and a private address space, it makes
 interprocess communication difficult. Additionally, certain programs may not require such strong
 separation. So, we can use threads to remedy such limitations of processes.
+
+
+
+
 
 \section{Process v. Thread}
 When should you use a process? A thread?
@@ -2580,7 +2849,8 @@ When should you use a process? A thread?
 
 \subsection{Tradeoffs}
 
-\subsection*{Processes}
+
+\subsubsection*{Processes}
 \begin{tcbraster}[raster columns=2, raster equal height, raster force size=false]
   \begin{tcolorbox}[colback=green!5!white,colframe=black!75!green,title=Advantages]
     \begin{enumerate}[label=\textit{(\roman*)}]
@@ -2599,7 +2869,7 @@ When should you use a process? A thread?
 \end{tcbraster}
 
 
-\subsection*{Threads}
+\subsubsection*{Threads}
 \begin{tcbraster}[raster columns=2, raster equal height, raster force size=false]
   \begin{tcolorbox}[colback=green!5!white,colframe=black!75!green,title=Advantages]
     \begin{enumerate}[label=\textit{(\roman*)}]
@@ -2619,12 +2889,18 @@ When should you use a process? A thread?
 \end{tcbraster}
 
 
+
+
+
 \section{Thread Stacks and State}
 Each thread has its own stack, registers, program counter, and process status. The maximum stack size for
 each thread is specified at creation, and needs to be managed carefully to avoid stack overflow or
 memory waste. Since a process can contain many threads, they cannot all grow towards a single
 hole. Thus, the thread creator needs to know the maximum required stack size. Moreover, stack space
 must be reclaimed whenever threads exit.
+
+
+
 
 
 \section{User v. Kernel Threads}
@@ -2644,6 +2920,11 @@ must be reclaimed whenever threads exit.
     \end{enumerate}
   \end{tcolorbox}
 \end{tcbraster}
+
+
+
+
+
 
 
 
@@ -2671,6 +2952,9 @@ The OS supports IPC by providing system calls. They typically require activity f
 communicating processes and are mediated by the OS for protection and to ensure correct behavior.
 
 
+
+
+
 \section{Goals}
 IPC aims to achieve:
 
@@ -2690,7 +2974,12 @@ Some of these goals are contradictory, and thus multiple different IPC mechanism
 optimize for different goals.
 
 
+
+
+
 \section{Synchronous and Asynchronous}
+
+
 \subsection{Synchronous}
 Both read/write operations block until the data is sent, delivered, or received, respectively. This
 means that the processes involved have to wait until the data exchange is complete before continuing
@@ -2718,6 +3007,8 @@ efficiently wait for any of the asynchronous operations to complete.
 
 
 
+
+
 \section{Mechanics}
 Typical IPC operations include the following:
 
@@ -2741,8 +3032,12 @@ Typical IPC operations include the following:
 \end{enumerate}
 
 
+
+
+
 \section{Messages and Streams}
 Each style of data exchange are suited for particular kinds of interactions.
+
 
 \subsection{Streams}
 Stream-based IPC is when data flows in a continuous stream of bytes. Processes can read/write in
@@ -2756,6 +3051,9 @@ Messages (or datagrams) transmit distinct messages, each having its own length (
 limitations). They are typically read/written as a whole unit; i.e. each message is treated as a
 separate entity. Messages are more suitable for discrete data exchanges, where separate units of
 data needs to be transmitted and processed independently.
+
+
+
 
 
 \section{Flow Control}
@@ -2775,6 +3073,9 @@ the required buffer space and ensure effective flow control, we can:
 \item Implement feedback mechanisms: Network protocols or the OS can provide feedback to the sender
   so that it can adjust its data transmission appropriately.
 \end{enumerate}
+
+
+
 
 
 \section{Reliability and Robustness}
@@ -2797,7 +3098,10 @@ some systems may allow persistence for seamless data continuation, while others 
 resending messages after restarts. The choice of reliability options depends on the application's
 requirements and the trade-off between reliability and overhead. 
 
-    
+
+
+
+
 \section{Pipelines}
 Pipelines allow for data to flow through a series of programs, passing a simple byte stream buffered
 in the OS\footnote{We don't need temporary files!}. It is a straightforward and efficient way to
@@ -2813,6 +3117,9 @@ They are secure and \textit{trusted}\footnote{They are trusted since all program
 programs that are part of the pipeline.
 
 
+
+
+
 \section{Sockets}
 Sockets allow IPC between addresses and ports (communication between processes on different
 machines). They offer various data options (e.g. reliable or best-effort), streams, messages, remote
@@ -2822,6 +3129,9 @@ retransmissions, timeouts, and handling node failures.
 They allow for reconnection and fail-over in case of disruptions. However, this generality adds
 complexity such as trust, security, privacy, and integrity concerns. They are usually used for
 network communication due to their flexibility.
+
+
+
 
 
 \section{Shared Memory}
@@ -2856,6 +3166,11 @@ interaction of multiple processes or entities, and we can use parallelism to mod
 
 
 
+
+
+
+
+
 \chapter{Synchronization}
 Synchronization refers to the process of coordinating the execution of multiple concurrent
 threads/processes to ensure orderly and predictable behavior in a parallel system. It involves two
@@ -2868,6 +3183,9 @@ rather than attempting a truly parallel execution. Synchronization mechanisms of
 problems simultaneously, as solving one implicitly addresses the other. However,
 understanding and solving critical section serialization and notification of asynchronous completion
 can be solved separately to manage the complexities of parallel systems effectively. 
+
+
+
 
 
 \section{Race Conditions}
@@ -2896,6 +3214,10 @@ makes I/O inherently nondeterministic.
 
 Addressing these issues requires careful synchronization and coordination mechanisms.
 
+
+
+
+
 \section{The Critical Section}
 \definitionBegin{Critical Section}
 A \textit{critical section} is a code segment where shared resources are accessed and
@@ -2913,6 +3235,9 @@ impact the behavior of critical sections and therefore the overall system. Manag
 sections involves coordinating the access to the shared resource to prevent undesirable interleavings
 
 
+
+
+
 \section{Interrupt Disables}
 One solution to the critical section problem is to use interrupt disables, which temporarily block
 some or all interrupts! By temporarily blocking some or all interrupts, we can ensure that there
@@ -2925,6 +3250,9 @@ important operations (like preemptive scheduling) or being permanently disabled 
 bug. Additionally, disabling interrupts isn't an option in user mode, and requires the use of
 privileged instructions (for safety purposes). It is worth noting that they don't solve \textit{all}
 synchronization problems, especially on multi-core machines. 
+
+
+
 
 
 \section{Mutual Exclusion}
@@ -2963,6 +3291,7 @@ preventing multiple threads from simultaneously accessing a critical section. Pr
 avoid race conditions and maintain correctness of parallel programs. However, they have their
 separate issues like deadlocks and lock contention.
 
+
 \subsection*{Implementing Locks}
 Unfortunately, ISA's usually don't include instructions for building locks, so we need to build
 locks in software. However, this raises other issues of enforcing \textit{their} mutual
@@ -2994,6 +3323,7 @@ one else ran it, so we can acquire the lock! If \texttt{rc} was true, then someo
 it, so they have the lock.
 \exampleEnd
 
+
 \subsection*{Corollary: Spin Waiting}
 \addcontentsline{toc}{subsection}{Corollary: Spin Waiting}
 When you don't get the lock, you can do something known as \textit{spin waiting}! Essentially, you
@@ -3017,6 +3347,9 @@ put the lock request in a while loop until you get the lock.
 \end{tcbraster}
 
 
+
+
+
 \section{Asynchronous Completion}
 The asynchronous completion problem occurs when parallel activities run at different speeds, and one
 activity needs ton wait for the other to complete without hindering performance. examples include
@@ -3038,10 +3371,12 @@ Spinning sometimes makes sense:
   same resource could substantially increase overhead and inefficiencies.
 \end{enumerate}
 
+
 \subsection{Yield and Spin}
 Yield and Spin is a technique where a thread repeatedly checks if a particular event has
 occurred, yielding the CPU if it hasn't. The thread keeps checking and yielding until the event is
 ready. This approach avoid busy-waiting, maximizing useful CPU time.
+
 
 \subsection*{Problems}
 Some problems of Yield and Spin include: 
@@ -3143,11 +3478,20 @@ help maintain equitable resource access among multiple contenders.
 
 
 
+
+
+
+
+
 \chapter{Synchronization Primitives}
 Synchronization primitives are tools to manage the concurrent execution of multi-threaded
 programs. They help prevent race conditions and ensure that shared resources are accessed in a
 controlled and safe manner. They provide mechanisms for controlling the order of execution, ensuring
 data consistency, and preventing any race conditions.
+
+
+
+
 
 \section{Semaphores}
 \definitionBegin{Semaphores}
@@ -3159,9 +3503,6 @@ While semaphores are \textit{theoretically} well-defined, they are not always th
 choice for real-world synchronization primitives, since there are gaps between theory and
 \textit{practical} implementation; i.e. some abstract concepts of semaphores may not directly
 translate to intuitive solutions in real code. 
-
-
-
 
 
 \subsection*{Corollary: Computational Semaphores}
@@ -3178,6 +3519,7 @@ granted access in the order they requested it, avoiding potential issues like
 starvation. Additionally, unlike binary flags used in simple locks, computational semaphores use a
 (modifiable) counter to manage access to allow a limited number of concurrent access to a critical section. 
 \exampleEnd
+
 
 \subsection{Structure}
 A semaphore consists of two primary components: the \textit{integer counter} and \textit{FIFO
@@ -3210,6 +3552,7 @@ section protected by a semaphore. Its steps are as follows:
   thread is added to the waiting queue.
 \end{enumerate}
 
+
 \subsubsection{V (Verhogen/Raise)}
 The V operation\footnote{Also known as ``signal''.} is used to release the semaphore and
 \textit{signal} that the shared resource is now available for use. Its steps are as follows:
@@ -3223,6 +3566,7 @@ These operations ensure that threads interact with the shared resource in a coor
 controlled manner. The P operation enforces mutual exclusion by allowing only one thread access at a
 time, while the V operation ensures that there is no resource starvation by allowing
 \textit{everyone} to \textit{eventually} access the critical section via the \textit{FIFO waiting queue}.
+
 
 \subsection{Use Cases}
 \exampleBegin{Exclusion}
@@ -3248,7 +3592,7 @@ We can do this by doing the following:
 \begin{enumerate}[label=\textit{(\roman*)}]
 \item Initialize the \textit{integer counter} to 0\footnote{The integer counter reflects the number
     of completed events that need to be signaled. Initially, there are no completed events that need
-  to be signaled. Therefore, we initialize the counter to 0!}. 
+    to be signaled. Therefore, we initialize the counter to 0!}. 
 \item When a thread wants to wait for a notification (completion event), use \textit{P/wait}. If the
   counter is positive ($0 <$), the operation will succeed immediately since a completion event has
   occurred, and the thread can proceed. If the counter is 0, there are no completed events, so \textit{wait} will block.
@@ -3313,10 +3657,10 @@ at any given moment.
 
 Mutexes are designed to lock (typically) small and critical sections of code, implying that these
 locks are expected to be held \textit{briefly}\footnote{Locks are expected to be held briefly
-\textit{relative} to the program.}. They are typically used for multiple threads\footnote{Mutexes
-are \textit{assumed} to be used for threads operating on shared data; i.e. all threads are operating
-in a single address space. This implies that mutexes (protecting \textit{code}) won't work for
-multi-process programs} of the same process and have low overhead and are very general.
+  \textit{relative} to the program.}. They are typically used for multiple threads\footnote{Mutexes
+  are \textit{assumed} to be used for threads operating on shared data; i.e. all threads are operating
+  in a single address space. This implies that mutexes (protecting \textit{code}) won't work for
+  multi-process programs} of the same process and have low overhead and are very general.
 
 
 \subsection{Object Locking}
@@ -3333,25 +3677,9 @@ deadlocks. Thus, object-level locking is very specific, as we need to carefully 
 concurrency requirements and choose an appropriate granularity to ensure effective and efficient
 locking mechanisms.
 
-\exampleBegin{A \texttt{flock} of Seagulls}
-Let's take a look at Linux's file descriptor locking: \texttt{int flock(\textit{fd},
-  \textit{operation})}. Supported operations include:
-\begin{enumerate}[label=\textit{(\roman*)}]
-\item \texttt{LOCK\_SH}(ared): Place a \textit{shared} lock on \texttt{\textit{fd}}. More than one process may hold a
-  shared lock for a given \texttt{\textit{fd}} at a given time.
-\item \texttt{LOCK\_EX}(clusive): Place an \textit{exclusive} lock. Here, only one process may hold an
-  exclusive lock for a given \texttt{\textit{fd}} at a given time.
-\item \texttt{LOCK\_UN}(nlock): Remove an existing lock held by the calling process.
-\end{enumerate}
-
-This lock applies to \textit{open} instances of the same \texttt{\textit{fd}}. Note that
-\textit{distinct} opens are \textit{not} affected. Moreover, these locks are
-\textit{advisory} and not strictly enforced.
-\exampleEnd
-
 
 \subsection*{Corollary: Advisory v. Enforced Locking}
-\addcontentsline{toc}{subsection}{Corollary: Advisory v. Enforced Lockint commit -M g}
+\addcontentsline{toc}{subsection}{Corollary: Advisory v. Enforced Locking}
 \definitionBegin{Advisory and Enforced Locking}
 \textbf{Advisory locking}\footnote{Also known as: user-level or application-level locking.} is a
 locking mechanism that is \textit{purely suggested} by the application. It relies on developers
@@ -3367,7 +3695,273 @@ methods and are guaranteed to happen\footnote{Blocking: Enforced locks will auto
   threads that attempt to access a locked resource, enforcing mutual exclusion.}.
 \definitionEnd
 
+We will take a look at an example of an \textit{advisory} lock and an
+\textit{enforced}\footnote{Whether or not \texttt{lockf} is enforced depends on the underlying file
+  system.} lock.
 
+\exampleBegin{A \texttt{flock} of Seagulls}
+Let's take a look at Linux's file descriptor locking: \texttt{int flock(\textit{fd,
+    operation})}. Supported operations include: 
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item \texttt{LOCK\_SH}(ared): Place a \textit{shared} lock on \texttt{\textit{fd}}. More than one
+  process may hold a shared lock for a given \texttt{\textit{fd}} at a given time.
+\item \texttt{LOCK\_EX}(clusive): Place an \textit{exclusive} lock. Here, only one process may hold
+  an exclusive lock for a given \texttt{\textit{fd}} at a given time.
+\item \texttt{LOCK\_UN}(nlock): Remove an existing lock held by the calling process.
+\end{enumerate}
+
+This lock applies to \textit{open} instances of the same \texttt{\textit{fd}}. Note that
+\textit{distinct} opens are \textit{not} affected. Moreover, these locks are \textit{advisory} and
+not strictly enforced.  \exampleEnd
+
+\exampleBegin{A \texttt{lockf} of eagullsS}
+Let's look at the Linux ranged file lock: \texttt{int lockf(\textit{fd, cmd, offset,
+    len})}. Supported commands include: 
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item \texttt{F\_LOCK}: Set an \textit{exclusive} lock on the specified section of the file. If
+  (part of) this section is already locked, the call \textit{blocks} until the previous lock is
+  released. If this section overlaps an earlier locked section, both are merged. File locks are
+  released as soon as the process holding the locks closes some \texttt{\textit{fd}} for the
+  file. Note that a child process does \textit{not} inherit these locks.
+\item \texttt{F\_TLOCK}: Same as \textit{(i)}, but the call \textit{never} blocks. Instead, we
+  return an error if the file is already locked.
+\item \texttt{F\_ULOCK}: Unlock the indicated section of the file. This may split a single locked
+  section into two locked sections.
+\item \texttt{F\_TEST}: Test the lock: returns 0 if the specified section is un/locked by this
+  process; returns $-1$ and sets \texttt{errno = EAGAIN/EACCES} if another process holds a lock.
+\end{enumerate}
+
+This lock applies to the \textit{file}, not its open instance. Thus, this lock is process specific
+and closing \textit{any} \texttt{\textit{fd}} for the file releases for \textit{all} of the process'
+\texttt{\textit{fd}}'s for that file. Depending on the underlying system, these locks are
+\textit{enforced}.
+\exampleEnd
+
+
+
+
+
+\section{Locking Problems}
+We will talk about two main problems related to locking: performance/overhead and contention.
+
+
+\subsection{Performance and Overhead}
+\label{subsec:PAO}
+Locking mechanisms are usually implemented as syscalls, incurring traditional syscall
+overheads\footnote{If locking operations are performed frequently, we may incur high overhead since
+  it is essentially calling syscalls frequently.}. When locking operations are called frequently
+(e.g. a \textit{heavily} threaded application, the cumulative overhead of the syscalls may become
+significant enough to notice, leading to contention and degraded performance, reducing overall
+efficiency.
+
+Enforced locks often incur more overhead than advisory locks since the OS needs to manage and
+coordinate access to the locked resource among multiple threads/processes. However, even if locking
+isn't enforced or is implemented outside of the OS, we still need to execute extra instructions to
+lock and unlock. 
+
+The granularity of locks can also impact performance. \textit{Fine-grained
+  locks}\footnote{Fine-grained: Locks that protect small sections of code.} can reduce contention but
+may incur overhead, since we un/lock more frequently. \textit{Course-grained
+  locks}\footnote{Course-grained: Locks that protect larger sections of code.} can reduce overhead but
+may result in more contention among threads/processes. 
+
+Unfortunately, locking code in operating systems have already been highly optimized, thus there is
+not much more that can be done. 
+
+
+\subsection*{Aside: Locking Costs}
+Locking is typically used when we need to protect critical sections to ensure correctness. Since
+many critical sections are very brief (e.g. in/out in nano-seconds), the overhead of the locking
+operations may be much higher than the time spent in the critical section. This is why we care about
+locking overheads!
+
+
+\subsection{Contention}
+When a thread doesn't get a lock, we block! However, blocking introduces significant overhead
+compared to simply acquiring a lock, and the cost can vary depending on the likelihood of
+contention.
+
+\definitionBegin{Contention}
+\textbf{Contention} refers to when multiple threads/processes are competing for access to a shared
+resource. 
+\definitionEnd
+
+The expected cost of acquiring a lock, taking into account the probability of contention, is defined as:
+\[C_\textit{expected} = (C_\textit{block} \cdot P_\textit{conflict}) + (C_\textit{get} \cdot (1 -
+  P_\textit{conflict}))\]
+where
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item $C_\textit{expected}$ is the expected cost of acquiring a lock.
+\item $C_\textit{block}$ is the cost associated with a thread being blocked due to contention. This
+  include the overhead of context switches, potential queuing, and any other blocking costs.
+\item $C_\textit{get}$ is the cost associated with successfully acquiring the lock without
+  contention. Typically, this cost is lower than \textit{(ii)}.
+\item $P_\textit{conflict}$ is the probability of a contention occurring.
+\end{enumerate}
+$(C_\textit{block} \cdot P_\textit{conflict})$ represents the cost when there is contention, while
+$(C_\textit{get} \cdot (1 - P_\textit{conflict}))$ represents the cost when there is no contention
+(i.e. acquires the lock without blocking). Considering both scenarios and their costs, this formula
+provides an estimation of the overall expected cost of acquiring the lock.
+
+
+\subsection{Reducing Contention}
+There are many solutions to reduce contention. Here, we will cover the following:
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Eliminate the critical section entirely.
+\item Eliminate preemption during critical sections.
+\item Reduce the time spent in critical sections.
+\item Reduce the frequency of entering critical sections.
+\item Reduce \textit{exclusive} use of serialized resources.
+\item Spread requests out over more resources.
+\end{enumerate}
+
+
+\subsubsection{Eliminating Critical Sections}
+We can solve the contention problem by simply eliminating the source of contention: critical
+sections. In this approach, we eliminate shared resources entirely, giving everyone their own
+copy. Additionally, we use atomic instructions wherever possible. This approach is great when
+feasible, but we often cannot simply avoid critical sections.
+
+
+\subsubsection{Eliminating Preemption in Critical Sections}
+In this approach, we do not allow preemption when inside of a critical section. If critical sections
+cannot be preempted, we eliminate synchronization problems! However, this usually involves disabling
+interrupts and is not always viable.
+
+
+\subsubsection{Reducing Time Spent in Critical Sections}
+Here, we move potentially blocking operations\footnote{Potentially blocking operations include (but
+  are not limited to): allocating memory, I/O, etc.} outside of critical sections and minimize the
+code inside the critical section. We want to include only code that is subject to destructive
+races. Unfortunately, while this approach is intuitive, it may complicate the code, unnaturally
+separating parts of a single operation.
+
+
+\subsubsection{Reducing the Frequency of Entering Critical Sections}
+This approach involves minimizing the number of times threads/processes need to access shared
+resources or critical sections. We achieve this by simply using high-contention resources/operations
+less often by either optimizing our algorithms to reduce the reliance on them or simply use them
+less. Additionally, we can perform batch operations rather than executing individual operations one
+by one.
+
+In some scenarios, we can employ \textit{sloppy counters}. Here, each thread maintains and updates a
+private counter as opposed to the shared global counter. This however implies that the global
+counter is not always up-to-date. Additionally, thread failure can lose updates if it hasn't written
+to the global. Alternatively we can sum single-writer private counters when we need to access the
+global counter.
+
+
+\subsubsection{Remove Exclusivity Requirements}
+We want to reduce the amount of resources that require \textit{exclusive} access. For example,
+in read/write locks, only \textit{writers} require exclusive access. Thus, we allow many
+\textit{readers} to access the shared resource, only enforcing exclusivity when
+\textit{writing}\footnote{This requires a new policy: how do we determine when writers are allowed
+  in? A bad policy can lead to potential starvation if writers must wait for readers.}.
+
+
+\subsubsection{Spread Requests Over More Resources}
+This approach changes the lock granularity (See \refto{subsec}{PAO}) to reduce
+contention. Coarse-grained locks are simpler and more idiot-proof, but increase resource
+contention. Fine-grained locks spread activity over many locks to reduce contention, but increase
+overhead. 
+
+
+\subsection{The Convoy Effect}
+\definitionBegin{Convoy Effect}
+The \textbf{convoy effect} refers to the scenario where multiple threads/processes are blocked while
+waiting for access to a single shared resource. These threads/processes form a queue or
+\textit{convoy}, with each one waiting for the resource to become available.
+\definitionEnd
+
+While the convoy is waiting for the resource, no other work can be done. This means that parallelism
+is effectively eliminated during the time the convoy is waiting, since even if there are other
+unrelated tasks that \textit{could} run in parallel, they are delayed due to the resource
+contention. Since processes are waiting in line, they are \textit{forced} to execute in a sequential
+manner. Process $i + 1$ can only proceed after process $i$ releases the resource. This causes the
+resource to be a bottleneck in the system; that is, the overall system performance is limited by the
+speed at which the resource can be accessed and released. Thus, the system's throughput and
+efficiency can be severely compromised.
+
+
+
+% \exampleBegin{Delay Doozy}
+% \begin{center}
+%   \includegraphics[scale=0.5]{images/contention.png}
+% \end{center}
+% \exampleEnd
+
+In a FIFO queue formation\footnote{FIFO formation happens when threads wait in line to access the
+  resource.}, the formula to estimate the probability of contention is defined as
+\[P_\textit{conflict} = 1 - \left(1 - \frac{T_\textit{wait} + T_\textit{critical}}{T_\textit{total}}\right)^{\textit{threads}}\]
+  where
+  
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item $P_\textit{conflict}$ is the probability of contention.
+\item $T_\textit{wait}$ is the time spent waiting for the resource.
+\item $T_\textit{critical}$ is the time spent actively using the resource in a critical section,
+  where it has exclusive access.
+\item $T_\textit{total}$ is the total time a thread takes to complete its execution, including both
+  the time spent waiting(\textit{(ii)}) and the time spent using the resource (\textit{(iii)}).
+\item $\textit{threads}$ is the number of threads.
+\end{enumerate}
+In the general case\footnote{The general case assumes there is no FIFO queue formation.}, we get
+\[P_\textit{conflict} = 1 - \left(1 - \frac{T_\textit{critical}}{T_\textit{total}}\right)^{\textit{threads}}\]
+
+In both cases, as contention increases, the probability of contention increases. If
+$T_\textit{wait}$ becomes \textit{long enough}\footnote{$T_\textit{wait}$ reaches teh mean
+  inter-arrival time.}, newcomers joining the queu can make the wait time even longer, potentially
+ceasing parallelism. 
+
+\exampleBegin{The Convoy Effect}
+\begin{center}
+  \includegraphics[scale=0.8]{images/convoy.png}
+\end{center}
+
+Here we see the graph illustrating the convoy effect. The inflection point of the convoy line
+represents the system bottlenecking due to a high $T_\textit{wait}$.
+\exampleEnd
+
+
+
+
+
+\section{Priority Inversion}
+\definitionBegin{Priority Inversion}
+\textbf{Priority inversion} refers to a situation in priority-based scheduling systems using locks
+where a higher-priority process is blocked and delayed by a lower-priority process that currently
+has a lock on the desired resource. This effectively reduces the higher-priority process to the
+lower-priority process. 
+\definitionEnd
+
+Priority inversion can lead to reduced performance, since the program may be bottlenecked by the
+lowest-priority process.  This leads to an inefficient utilization of resources and increases the
+risk of deadlock, especially with intermediate priorities\footnote{Intermediate priorities may lead
+  to a cyclic dependency which will cause a deadlock scenario.}. Moreover, the program becomes
+unpredictable and has the potential to cause system crashes.
+
+\exampleBegin{Get on my Level}
+Suppose we have two processes, $L$ (low-priority) and $H$ (high-priority) and a mutex $M$. Say $L$
+is holding $M$ and is preempted since $H$ has higher priority and is ready to run. However, $H$
+blocks for $M$ since $L$ is currently holding it! This reduces $H$'s priority to $L$'s priority. 
+\exampleEnd
+
+
+\subsection{Priority Inheritance}
+A common solution to the priority inversion problem is \textit{priority inheritance}. It involves
+temporarily raising the priority of the lower-priority task, $L$, (holding the lock) to that of the
+highest-priority task waiting for the locked resource, $H$. This prevents $L$ from being preempted
+by a higher priority task waiting on the locked resource. Once the resource is released, the
+priority of $L$ is reduced to its original value.
+
+
+
+
+
+
+\section{Deadlocks}
 
 \end{document}
 
