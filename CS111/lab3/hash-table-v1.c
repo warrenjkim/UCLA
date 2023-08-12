@@ -21,7 +21,7 @@ struct hash_table_entry {
 
 struct hash_table_v1 {
   struct hash_table_entry entries[HASH_TABLE_CAPACITY];
-  pthread_mutex_t mutex; // mutex
+  pthread_mutex_t mutex; // mutex on entire hash table
 };
 
 struct hash_table_v1 *hash_table_v1_create()
@@ -93,10 +93,11 @@ void hash_table_v1_add_entry(struct hash_table_v1 *hash_table,
 
   /* Update the value if it already exists */
   if (list_entry != NULL) {
+    list_entry->value = value;
+
     unlockno = pthread_mutex_unlock(&hash_table->mutex);
     if (unlockno)
       exit(unlockno);
-    list_entry->value = value;
     return;
   }
 

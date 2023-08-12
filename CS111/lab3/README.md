@@ -1,19 +1,19 @@
-## UID: 123456789
+## UID: 305600694
 (IMPORTANT: Only replace the above numbers with your true UID, do not modify spacing and newlines, otherwise your tarfile might not be created correctly)
 
 # Hash Hash Hash
 
-One line description of this code.
+This lab implements two thread-safe hash table implementations using mutex locks.
 
 ## Building
 
-Explain briefly how to build your program.
+To build, in the lab3 directory, do
+
+``make``
 
 ## Running
 
-Show an example run of your (completed) program on using the `-t` and `-s` flags
-of a run where the base hash table completes in between 1-2 seconds.
-
+Below are two examples of the completed program using `-t 8 -s 50000`. Here, the base completes in just over 
 ## First Implementation
 
 Describe your first implementation strategy here (the one with a single mutex).
