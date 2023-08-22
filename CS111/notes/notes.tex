@@ -3960,8 +3960,160 @@ priority of $L$ is reduced to its original value.
 
 
 
-
 \section{Deadlocks}
+\definitionBegin{Deadlock}
+A \textbf{deadlock} is a situation where two entities are unable to proceed with execution because
+they are each waiting for the resource that the other entity holds.
+\definitionEnd
+
+Understanding deadlocks are important for a myriad of reasons. They pose a major risk in complex
+applications since they can lead to system failures. Moreover, they are usually hard to detect and
+their occurrence is usually nondeterministic. Hence, it is usually commonplace to prevent the
+possibility of deadlocks at design time.
+
+\exampleBegin{The Dining Philosophers Problem}
+Suppose there are 5 philosophers at a table along with 5 plates of pasta and 5 forks. Each
+philosopher needs two forks to eat pasta, but must pick them up one at a time. Assume that the
+philosophers will not negotiate with one another and they may try to eat at any given moment. Given
+these constraints, we see a potential deadlock.
+
+If all 5 philosophers attempt to eat at the same time, each grabs one fork. Since the philosophers
+do not negotiate with each other, they wait on another philosopher to 
+relinquish a fork. However, since all 5 philosophers are waiting, we see that none of the
+philosophers will eat, leading to deadlock!
+\exampleEnd
+
+Deadlocks are usually hard to detect since process' resource needs are constantly changing, as they
+depend on what data they are operating on, where in computation they are, and what errors have
+occurred. Additionally, modern software usually relies on many
+\textit{independent}\footnote{Independent: Services need not be aware of others' existence.}
+\textit{services}\footnote{Services encapsulate a \textit{lot} of complexity, and as such, we don't
+  know what resources they require nor do we know when/how they are serialized.} that each requires
+a variety of resources.  
+
+
+\subsection{Resource Types}
+\definitionBegin{Commodity and General Resources}
+\textbf{Commodity resources} are ones that are given to processes in \textit{quantities}. They are
+usually shareable among processes and can be divided/allocated as needed.
+\tcblower
+\textbf{General (serially reusable) resources} are ones where processes require exclusive access to
+a particular instance.
+\definitionEnd
+
+
+\exampleBegin{Commitment Issues (Over-commitment)}
+Suppose you have a system with 8 GB of physical memory and a Virtual Machine that allocates a total
+of 16 GB of virtual memory to 4 \textit{VM's}\footnote{In this example, VM will refer to Virtual
+  Machines.}. So, each VM thinks it has 4 GB of memory. Now assume that all VM's start using their
+allocated memory extensively. As they begin to exceed the amount of physical memory available,
+potential deadlocks can arise if the resource manager is not careful.
+\exampleEnd
+
+\exampleBegin{Cyclic Dependencies}
+Suppose there are two processes A and B and two semaphores X and Y. Now, assume A acquires X and B
+acquires Y. A deadlock happens when:
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item A tries to acquire Y but is blocked since it's being held by B.
+\item B tries to acquire X but is blocked since it's being held by A.
+\end{enumerate}
+So, we have that A and B are both waiting on each other, forming a cyclic dependence. These types of
+deadlocks are usually prevented at design time.
+\exampleEnd
+
+
+\subsection{Deadlock Conditions}
+For a deadlock to occur, \textit{all} four conditions \textit{must} be met:
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Mutual exclusion
+\item Incremental allocation
+\item No preemption
+\item Circular waiting
+\end{enumerate}
+
+
+\subsubsection{Condition I: Mutual Exclusion}
+The resource in question \textit{must} be one that requires exclusive access; i.e. once a resource
+has been given to a process, \textit{all} other requesting processes \textit{must} wait. Otherwise,
+we wouldn't have deadlock since we can just give an instance of the resource to all the requesting
+processes. 
+
+
+\subsubsection{Condition II: Incremental Allocation}
+Entities are allowed to ask for resources at any time rather than requesting them before
+execution. Otherwise, they either get everything they need and run to completion or don't get
+everything they need and abort execution. In either case, we don't get deadlock.
+
+
+\subsubsection{Condition III: No Preemption}
+When an entity has access to a resource, we cannot preempt it; i.e. once an entity has access to a
+resource, we must wait for it to free the resource. Otherwise, we can resolve all deadlocks by preempting the
+offending process(es). 
+
+
+\subsubsection{Condition IV: Circular Waiting}
+We \textit{must} have a situation that causes a circular wait; i.e. we have a cycle in a graph of
+resource requests. Otherwise, there is no cycle, so \textit{someone} can complete without anyone
+releasing a resource. This allows even a long chain of dependencies to
+\textit{eventually}\footnote{We promise that it eventually unwinds, not that it unwinds quickly.} unwind.
+
+
+\subsection{Avoiding Deadlock: The Reservation System}
+Note how we said in the previous section that \textit{all} four conditions must be met for a
+deadlock to arise. However, that is much easier said than done. We can, however, use methods that
+guarantee that no deadlock can occur by nature. We introduce the notion of \textit{reservations}.
+
+In the reservation system, the resource manager tracks outstanding reservations requested by
+processes. Rather than fulfilling any and all requests, we only honor reservations if and only if
+the resources are truly available. This prevents situations where too many tasks expect resources
+that aren't there (over-commitment), detecting over-subscriptions early.
+
+In the reservation system, we may run into resource starvation. Because reservations are only
+honored if the resource is available, some processes may never receive the resources they
+reserved. While this leads to resource scarcity, it does \textit{not} lead to a deadlock! This
+allows us to handle this scarcity in a \textit{controlled} way.
+
+We clearly face a dilemma: should the resource manager over-commit or under-utilize? Striking a
+balance is key to maintain optimal resource utilization without risking critical resource shortages.
+
+
+\subsubsection{Handling Reservations}
+Entities seldom require \textit{all} available resources at all times. As a corollary, we
+extrapolate that all clients don't need their maximum allocated resources simultaneously. This
+raises the question: Can we \textit{safely} over-book resources.
+
+\exampleBegin{Fly Fucked}
+Airplanes often over-book on every flight, banking on people not showing up. Fortunately for them,
+they are often correct! Can we apply the same concept to operating systems?
+\exampleEnd
+
+Let's define what a safe allocation is:
+
+\definitionBegin{Safe Allocation}
+A \textbf{safe allocation} is one where everyone can \textit{eventually}\footnote{Again, we only
+  promise that all entities eventually complete, not that they complete in a swift manner.} complete
+their tasks. That is, we ensure that no deadlocks!
+\definitionEnd
+
+
+\subsection*{Corollary: Commodity Resource Management in Real Systems}
+\addcontentsline{toc}{subsection}{Corollary: Commodity Resource Management in Real Systems}
+Many real-world systems use advanced reservations to manage resource efficiently. In these systems,
+one a reservation is accepted, the system is obligated to honor it. This way, we prevent resource
+starvation since allocation failures only occur at the time of reservation, usually before the start
+of execution. This makes system behavior more predictable and easier to handle. This also forces the
+client to deal with the reservation failure, meaning we don't have to!
+
+
+\subsection{Reservation Failures}
+While reservations eliminate deadlock, applications still need to deal with reservation failures. We
+should design applications to handle failures \textit{gracefully}\footnote{For example, we can
+  refuse to perform a new request, but continue running.}. Additionally, we need to be able to
+communicate to the requester that a reservation failed (e.g. error messages or return
+codes). Finally, the application \textit{must} be able to continue running. Naturally, this forces
+all critical resources to be reserved prior to execution.
+
 
 \end{document}
 
