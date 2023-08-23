@@ -4024,6 +4024,7 @@ deadlocks are usually prevented at design time.
 
 
 \subsection{Deadlock Conditions}
+\label{subsec:DC}
 For a deadlock to occur, \textit{all} four conditions \textit{must} be met:
 \begin{enumerate}[label=\textit{(\roman*)}]
 \item Mutual exclusion
@@ -4113,6 +4114,226 @@ should design applications to handle failures \textit{gracefully}\footnote{For e
 communicate to the requester that a reservation failed (e.g. error messages or return
 codes). Finally, the application \textit{must} be able to continue running. Naturally, this forces
 all critical resources to be reserved prior to execution.
+
+While rejecting requests are not ideal, they are better than system failure later down the
+road. This way, the advanced notice allows applications to adjust their services to work without the
+unavailable resource. If the application is in the process of fulfilling a request and the resource
+becomes unavailable, complications arise. At this point, if a failure occurs, we need to roll back
+the actions that have already taken. This process can be complex or even impossible depending on the
+situation.
+
+\exampleBegin{Reservation Rejected!}
+Consider a web server that relies on a database. If the database becomes temporarily inaccessible
+(e.g. maintenance or network issues), we can adjust our services to display a cached version of the
+web page or show an error message instead of crashing entirely! We can do this by implementing
+mechanisms like graceful degradation. Let's look at an example of a situation where a reservation is
+rejected in the middle of fulfilling a request. Suppose we have a shopping application is processing
+a customer's order, and the payment gateway becomes inaccessible between deducting funds and
+confirming the order. Here, we need to refund the money which would be a nontrivial task.
+\exampleEnd
+
+
+\subsection{Avoiding Deadlock: Additional Measures}
+Deadlock prevention focuses on ensuring that a specific lock doesn't lead to deadlock by addressing
+one of the four deadlock conditions (See \refto{subsec}{DC}). Remember, if \textit{any} of the four
+conditions are not met, we don't have deadlock! Let's take a look at how we can prevent deadlock by
+failing to satisfy each of the four conditions.
+
+
+\subsubsection{Condition I: Mutual Exclusion}
+We can prevent deadlock by utilizing shared and private resources. Recall that deadlocks cannot
+occur over shareable resources, which are typically managed using atomic instructions. Like
+shareable resources, deadlock cannot occur over private resources since they are owned by individual
+processes!
+
+\subsubsection{Condition II: Incremental Allocation}
+To combat deadlock, we can allocate all our resources in a single operation as well as use
+non-blocking requests. Here, if we cannot allocate everything, we return failure and don't
+lock, proceeding otherwise. Note that in this approach, we get an all or nothing
+allocation. Non-blocking requests will fail if the request cannot be satisfied immediately. Finally,
+we can disallow blocking while holding resources. That is, we must release all held locks before
+blocking, reacquiring them \textit{after} you return\footnote{It is important to note that while this
+approach may solve the deadlock problem, it can introduce new ones. Remember, CS is all about give
+and take!}.
+
+
+\subsubsection{Condition III: No Preemption}
+We can implement resource confiscation to combat deadlocks. Here, we seize and reallocate resources
+from existing processes. We achieve this via resource ``leases'', with time-outs and ``lock
+breaking''\footnote{Lock breaking: When a process' ``lease'' is up, the resource is automatically
+  taken away and returned to the resource pool.}. This approach requires us to enforce resource
+revocation. We can do this by either invalidating resource ownership \textit{(i)} or terminating the previous
+owner \textit{(ii)}. To achieve \textit{(i)}, when a resource is taken away from a process, the
+ownership of that resource is invalidated. Thus, the process loses access to the resource and
+prevents it from attempting to use a confiscated resource! To achieve \textit{(ii)}, we simply
+terminate the previous owner. This option is usually a last resort and is only used when resource
+invalidation is not possible\footnote{Like Condition II, lock breaking may fix deadlock but can
+  damage resources!}.
+
+
+\subsubsection{Aside: Seizing Resources}
+The operating system can only seize a resource if the process has to use a system service to access
+the resource. If the process has direct access to the object (e.g. the object is part of the
+process' address space), then we're fucked and usually have to resort to terminating the process to
+free the resource.
+
+
+\subsubsection{Condition IV: Circular Waiting}
+We can enforce \textit{total resource ordering}. Here, all processes requesting resources follow the
+same order when allocating them. Given two resources $R_1$ and $R_2$, \textit{all} processes are
+\textit{required} to allocate $R_1$ before attempting to allocate $R_2$. This way, we prevent
+circular dependencies by creating a DAG\footnote{DAG: Directed Acyclic Graph}! To implement total
+resource ordering, we need to order the resources! We can do this by ordering them by resource type
+(e.g. groups before members) or by relationship (e.g. parents before children).
+
+\subsubsection{Aside: The Lock Dance}
+Suppose two process ($P_1$ and $P_2$) needs to allocate resources ($R_1$ and $R_2$) out of
+order. Initially, we have $P_1: R_1$ and $P_2: R_2$, but our desired state is $P_1: R_2$ and $P_2:
+R_1$. Let's do the lock dance!
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item $P_1$ releases $R_1$ ($P_1:\O$, $P_2: R_2$)
+\item $P_2$ releases $R_2$ ($P_1:\O$, $P_2: \O$)
+\item $P_2$ acquires $R_1$ ($P_1: R_2$, $P_2: \O$)
+\item $P_1$ acquires $R_2$ ($P_1: R_2$, $P_2: R_1$)
+\end{enumerate}
+
+
+\subsubsection{Conclusion}
+There is no universal solution to all deadlocks. Determining which solution to use is on a
+case-by-case basis, and fortunately for us, we only need to implement one of the four!
+
+
+\subsection{A Deadlock ``Solution''}
+We can also elect to simply ignore the problem. In many cases, deadlocks are \textit{very}
+improbable and implementing any of the solutions provided above can be very expensive. So, we can
+just forget about them and pray to the CS gods that we don't run into a deadlock.
+
+
+\subsubsection{Deadlock Detection and Recovery}
+We can allow deadlocks to occur, but we want to be able to detect them once they occur (the sooner
+the better). Once we detect them, we need a method of breaking them to continue execution. Whether
+or not this is a good idea depends.
+
+In general, it's probably a more practical approach since the
+overhead and complexity of deadlock-proofing your system may be too expensive. However, in critical
+systems where resource availability is crucial (e.g. real time systems), we might want to invest the
+time and energy into preventing deadlocks, since they can lead to severe disruptions, data loss, or
+even safety hazards.
+
+
+\subsubsection{Implementing Detection}
+We can implement deadlock detection by using a wait-for graph or an equivalent data structure. When
+a lock request is made, the system updates the wait-for graph and checks for the presence of a
+deadlock (cycle detection).
+
+Whether or not it's better to reject a lock request (that will lead to deadlock) and not let the
+requester block depends. If we reject a lock request, there's no deadlock, but it might result in
+process disruptions and inefficiencies. If we allow the requester to block, we may get deadlock, but
+the system will be more resource-efficient overall. 
+
+Implementing detection may be challenging however, since we need to identify \textit{all} resources
+that can be locked.
+
+
+\subsubsection{Application Level Deadlocking}
+Some applications include their own internal locking mechanisms independent of the operating
+system. Since the OS doesn't know about these locks, it cannot offer any help. Here, deadlock
+detection may be appropriate since the application itself has the necessary information to identify
+and handle deadlocks.
+
+
+\section{Health Monitoring}
+Not everything is a deadlock! There are a lot of reasons systems hang and make no
+progress. Occasionally, it really is a deadlock. Other times, it's something else (e.g. live-lock,
+lock flaws, etc.). If there are no locks, it's definitely not deadlock. Even if there are, it may
+not necessarily be deadlock.
+
+We can use service/application \textit{health monitoring} in lieu of deadlock detection. Here, we
+monitor application progress and submit test transactions. If responses take \textit{too
+  long}\footnote{Too long is subjective and is dependent on the system requirements.}. Health
+monitoring is much easier to implement than deadlock detection and can detect a wider range of
+problems, including (but not limited to):
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Live-lock: A process is running but unable to proceed due to unmet dependencies.
+\item ``Sleeping Beauty'': A process waits indefinitely for an event(s) that will never happen.
+\item Priority inversions: Health monitoring can detect when priority inversions cause system
+  hangups!
+\end{enumerate}
+
+
+\subsection{Monitoring Process Health}
+We can use a variety of metrics to determine process health. We will cover:
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Obvious Failures
+\item Passive Observation
+\item External Monitoring
+\item Internal Instrumentation
+\end{enumerate}
+
+
+\subsubsection{Obvious Failures}
+We can actively check for obvious failures like abnormal process exits or core dumps. These
+indications can be monitored and analyzed to identify the cause of failure.
+
+
+\subsubsection{Passive Observation}
+We can identify processes that are unresponsive or hanging by monitoring CPU usage, blocking status,
+and network/disk I/O. If a process is not consuming CPU time or blocked for extended periods of time, it may be
+stuck. Likewise, if a process is not performing expected I/O operations or engaging in network
+activities, it may potentially be stuck.
+
+
+\subsubsection{External Monitoring}
+We can interact with processes to asses their responsiveness. Common techniques are pings, null
+requests, and standard test requests. We can ping the process to measure response time. If the
+process fails to respond within a given time frame, it may be unresponsive. Like pings, we can send
+a null/dummy request expecting acknowledgment by the process. Lack of acknowledgment can indicate
+unresponsiveness. More specifically, standardized test requests expect specific responses from the
+process. Failure to provide the expected response may trigger alerts.
+
+
+\subsubsection{Internal Instrumentation}
+We can embed monitoring and testing directly within the codebase of the process via white box
+audits, exercisers, and continuous monitoring. White box audits involve reviewing internal code adn
+data structures to identify potential vulnerabilities, inefficiencies, or errors. Exercisers are
+designed to simulate various scenarios to stress-test the process, which can help uncover unexpected
+behavior and/or vulnerabilities, particularly in complex systems. Continuous monitoring keeps track
+of key performance metrics and states within the process. Monitoring tools collect data and trigger
+alerts when the numbers deviate from the expected behavior.
+
+
+\subsection{Unhealthy Processes}
+When processes are unhealthy, killing and restarting any and all affected software is a common and
+easy recovery strategy. However, deciding which processes to kill and restart requires a balance
+between addressing the issue and minimizing disruptions.
+
+It is important to note that unresponsive processes may not necessarily be the cause of the
+problem. Thus, we need to take into consideration how kills and restarts can impact current clients
+which are dependent on service API's and protocols. Applications must be designed to handle
+different types of restarts: cold, warm, or partial. In highly available systems, restart groups are
+well-defined and specify the groups of processes to be restarted together as well as inter-group
+dependencies.
+
+
+\subsection{Failure Recovery}
+\definitionBegin{Cold, Warm, Partial Restarts}
+A \textbf{cold restart} involves terminating the entire process and restarting it from
+scratch\footnote{This ensures a clean slate but may incur longer downtime.}
+\tcblower
+A \textbf{warm restart} involves restarting the process but maintaining existing
+connections/sessions\footnote{This minimizes disruption but may not solve the problem.} 
+\tcblower
+A \textbf{partial restart} involves restarting only specific components of the process$^a$.
+\definitionEnd
+The failure recovery methodology involves retries, rollbacks, and continued functionality. First, we
+retry a request (if possible), but set limits on how many/how long we wait. If a request ultimately
+fails, we want to roll back failed operations to before the request and return an error. Finally, we
+continue with reduced capacity/functionality, accepting only requests we can handle, rejecting
+otherwise. Additionally, we implement automatic restarts (cold, warm, partial) and use escalation
+mechanisms to address failed recovery attempts.
+
 
 
 \end{document}
