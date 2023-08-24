@@ -873,6 +873,7 @@ machines, we have to consider the following:
 
 
 \section{Generalizing Abstractions: Introduction to Federation Frameworks}
+\label{sec:FF}
 Rather than applications dealing with varied resources, we can make many different things
 \textit{appear}\footnote{We want to \textit{abstract} away the implementation details!} the same by
 using a unifying model! Usually, these unifying models involve a federation framework.
@@ -2077,6 +2078,7 @@ use the physical addresses directly.
 
 
 \subsection{Problems}
+\label{subsec:PROB}
 There are several problems with Fixed Partition Allocation:
 \begin{enumerate}[label=\textit{(\roman*)}]
 \item Static Allocation: Fixed Partition Allocation requires knowing the exact memory requirements
@@ -2107,6 +2109,7 @@ address space.
 
 
 \subsection{Problems}
+\label{subsec:PROB2}
 There are several problems with Dynamic Partition Allocation:
 \begin{enumerate}[label=\textit{(\roman*)}]
 \item Not Relocatable: Once a partition is allocated, it is very hard to relocate its contents to
@@ -2637,6 +2640,7 @@ the best in the world.
 
 
 \subsection{Least Recently Used and Clock Algorithm}
+\label{subsec:LRU}
 Least Recently Used (LRU) policy kicks the page with the oldest timestamp back to disk. This is done
 (naïvely) by timestamping each time a page is accessed. When a page needs to be replaced, we search
 through all pages to kick the one with the oldest timestamp. This incurs a lot of overhead and
@@ -4941,6 +4945,7 @@ caching and buffering, leading to suboptimal performance. Lastly, we want to mak
 
 
 \section{File System API}
+\label{sec:FSA}
 Ideally, we would provide a single API to programmers and users for \textit{all} files regardless of
 how the file system is actually implemented\footnote{This is a requirement for portable
   programs!}. The File System API can be categorized into three groups:
@@ -4959,6 +4964,7 @@ with the API without worrying about low-level details.
 
 
 \subsection{File Container Operations}
+\label{subsec:FCO}
 These operations involve standard file management system calls that manipulate files as
 \textit{objects}\footnote{These operations focus on managing the files themselves rather than the
   content of them.}. These operations are implemented using standard file system methods, which
@@ -5014,9 +5020,277 @@ management, data copying, and interaction with the file system's buffer manageme
 
 
 
+\section{Virtual File System Layer}
+The Virtual File System (VFS) layer acts as a \textit{federation layer} (See \refto{sec}{FF}) that
+generalizes different file systems, allowing the operating system to treat all file systems in a
+uniform manner. This layer enables a plug-in interface for various file system
+implementations. Different file systems (e.g. DOS FAT, Unix, EXT3, etc.) are implemented as plug-in
+modules with the same basic methods for file management (See \refto{sec}{FSA}).
+
+Higher level clients interact with the VFS layer through the standardized methods/properties without
+needing to know the specific implementation details of individual file systems.
+
+
+\subsection{The File System Layer}
+The file system layer is where the code implementation for each file system is stored. All file
+systems are built atop block I/O, which allows them to be independent of the underlying physical
+devices. This layer provides a common interface and functionality for different file system
+types. All file systems perform a set of core functionalities (See \refto{sec}{FSA}).
+
+\asideBegin{Why Multiple File Systems?}
+Certain storage devices work better with certain file systems! Not only that, they provide different
+types of services. It is to remember that this is CS, and tradeoffs are inevitable.
+
+\exampleBegin{New File System New Services}
+Suppose we have two file systems on our computer, $F_1$ and $F_2$. Despite having the same
+interface, $F_1$ may be more reliable but slower than $F_2$ and vice versa. This simple example
+illustrates the advantages of supporting multiple file systems on a single computer.
+\exampleEnd
+\asideEnd
+
+
+\section{File Systems and Block I/O}
+File systems typically sit on an abstracted block I/O layer; i.e. all block devices implement
+standard operations (e.g. read/write, map block numbers to device addresses, etc.). One of the main
+functions of the general block I/O layer is to map logical block numbers (used by the file system)
+to their corresponding device addresses (located on the storage device), allowing direct
+communication between the file system and storage device. This layer also encapsulates the specific
+details of device support, including (but not limited to) completing I/O operations, error handling,
+and handling size alignment limitations.
+
+
+\subsection{Device Independence}
+We use a device independent block I/O abstraction because it is more powerful over using generic
+drives. It allows for the implementation of a unified LRU (See \refto{subsec}{LRU}) buffer cache
+which can hold both frequently used data and prefetched read-ahead data, optimizing access patterns
+and reducing I/O latency.
+
+The device independent layer also provides buffers that facilitate data re-blocking; adapting the
+file system block size to match the device block size or user-requested sizes. Along with this comes
+automatic buffer management, which handles the de/allocation of buffers and ensures that modified
+buffers are automatically written back to the storage device.
+
+
+\subsection{Cache}
+There are many advantages for implementing a buffer cache. Mainly, file access patterns are characterized by
+high reference locality at multiple levels, leading to repeated access to data and
+metadata.
+
+Users often perform small read/write operations on parts of a single block, reusing that block in
+subsequent operations. Moreover, the OS regularly consults the same metadata blocks for various
+tasks. The cache optimizes file access by limiting the number of times we need to access the disk,
+improving performance and reducing latency.
+
+\subsubsection{Corollary: Single Cache}
+If caches are so good, why not have one per process (or user? or device?)? Well, a single cache is
+more efficient when multiple users access the same file. More importantly, a single cache provides a
+better hit ratio compared to multiple independent caches (regardless of how they are spread
+out).
 
 
 
+
+
+\section{File System Control Structures}
+Recall that a file is a named collection of data (e.g. text file, C program, etc.). The primary
+roles of a file system is to store/retrieve data as well as manage the media/space where data is
+stored.
+
+
+
+
+
+\subsection{Finding Data on Devices}
+One of the primary operations we need to implement is finding data on devices; i.e. managing the
+space on devices. Space management is very complex, as there are a lot of variable parameters.
+
+\exampleBegin{Harder Tetris}
+Space management on devices can get very complex since there are millions of blocks and thousands of
+files on the system. Furthermore, these files are continuously created and destroyed, and we have to
+manage that as well. What happens when we want to extend the file after they have been written? We
+need to deal with that as well. \\
+
+Even if we manage the above, we still need to consider how our data placement will effect
+performance. Evidently, poor space management leads to poor performance.
+\exampleEnd
+
+To start, we have a data structure (on-device) that stores information for each file on the file
+system. 
+
+
+\subsubsection{File Control Structures}
+\label{subsubsec:FCS}
+On-device file control structures provide descriptions of important attributes\footnote{Including
+  where the file is located!} of a file on the storage device itself. Virtually all file systems
+incorporate such data structures, each with their own implementation, performance characteristics,
+and capabilities\footnote{Another example of how the choice of implementation can impact what a file
+  system can do.}. On-device structures are usually paired with an in-memory representation of the
+same information, which helps facilitate efficient file system operations (reduced disk access).
+
+
+\subsubsection{Problems to Solve}
+Recall a file typically consists of multiple data blocks. As such, the control structure needs to be
+able to find \textit{any} of them quickly; i.e. we shouldn't need to scan the entire file to find a
+particular block.
+
+Moreover, blocks can and will be changed, and new/existing data can be added/deleted from/to the
+file. The control structure we implement should address these issues as well.
+
+We also have to address sparse files; (potentially large) files that have not been ``filled in'' in
+its entirety upon creation. Adding data into these blocks may not necessary be linear. That is, we
+may need to write into the middle of a file rather than appending it to the end.
+
+
+\subsection{In-Memory Representation}
+When a file is opened, we create the in-memory structure for that file (See \refto{subsubsec}{FCS}). It
+is not an \textit{exact} copy of the on-device version, since that version points to device blocks,
+whereas the in-memory version points to RAM pages (or indicates that a given block isn't in
+memory). The in-memory version also tracks which blocks have been written.
+
+
+\subsubsection{Multiple Opens}
+In-memory control structures are per-process; i.e. if multiple processes have the same file open,
+they each have an independent structure. The reason for this is because in-memory structures
+typically contain a cursor pointer indicating how far into the file data has been read/written. Most
+likely, different processes are going to have different cursor pointer values.
+
+But what if cooperating processes are working with the same file? They may want to share a file
+cursor and therefore the same in-memory structure! Moreover, how can we know when all processes are
+done with an open file (for memory reclamation)? We have a two-level solution for this! We will have
+one in-memory structure shared by \textit{everyone} that has a particular file open. We will then have a
+secondary in-memory structure that is specific to each process that has the file open.
+
+
+
+
+
+
+
+
+
+
+\chapter{File System Structure}
+\section{Overview}
+Most file systems live on block-oriented devices like SSD's or HD's. Volumes on these devices are
+partitioned into fixed blocks of varying sizes (e.g. 512, 1024, 2048, 4096, 8192 bytes). Most of the
+blocks are used for storing user data (in the form of files). Some blocks are used for storing and
+organizing metadata (e.g. description of the file system, file control blocks, list of free blocks,
+etc.). All file systems have these data structures, but implementations can vary depending on the
+goals and objectives of each system.
+
+
+\subsection{The Boot Block}
+\definitionBegin{Boot Block}
+The \textbf{boot block} contains the code that allows the machine to boot the OS!
+\definitionEnd
+
+The 0$^\text{th}$ block of a device is usually reserved for the boot block. File systems typically don't
+have control over the boot block and simply ignore it. So, file systems typically start on block 1.
+
+
+\subsection{Managing Allocated Space}
+Deciding how to allocate space is a core activity for a file system. We can:
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Allocate fixed-sizes, but that causes internal fragmentation (See \refto{subsec}{PROB}).
+\item Allocate fitted-sizes, but that causes external fragmentation (See \refto{subsec}{PROB2}).
+\item Allocate space in pages, but we need to know how many chunks (``pages'') a file can hold. This
+  is often determined by the file control structure, as it defined the maximum number of pages a
+  file can have before it's considered ``full''.
+\end{enumerate}
+
+
+\section{Linked Extents}
+Simply, we can create a linked list structure; the file control block contains exactly one pointer
+(the first chunk of the file), and each chunk contains a pointer to the next. While this allows us to add
+arbitrarily many chunks to each file, it takes away a small portion of every chunk (for the
+pointer\footnote{Alternatively, pointers can be in auxiliary ``chunk linkage'' table.})  and
+requires a linear scan to read chunk $n$.
+
+
+\section{The DOS File System}
+In the DOS file system, space is divided into ``clusters'' (alternative name for chunks). The
+cluster size is typically a multiple of 512 bytes and is fixed for each file system. Clusters are
+sequentially numbered from 1 to $n$, where $n$ is the total number of clusters in the file
+system. The file control structure points to the first cluster of a file, initiating the file's data
+allocation.
+
+
+\subsection{File Allocation Table}
+The File Allocation Table (FAT) consists of one entry per fluster, where each entry contains the
+number of the next cluster in the file. An entry of 0 indicates that the cluster is not allocated to
+any file, while an entry of $-1$ indicates the end-of-file (EOF) marker.
+
+
+\subsection{Characteristics}
+To locate a specific block within a file, we follow a chain of pointers through the FAT, starting
+with the number of the first cluster obtained from the directory entry.
+
+The entire FAT is maintained in memory, eliminating the need for disk I/O when finding a cluster,
+speeding up the process\footnote{Larger files will still be relatively time-consuming.}.
+
+Unfortunately, DOS doesn't support sparse files; if a file has a block $n$, it \textit{must} have
+all blocks $< n$.
+
+The width of the FAT determines the max file system size. The number of bits used to describe a
+cluster address in the FAT determines the address space available for clusters. Originally, clusters
+used 8 bits to describe cluster addresses, but this was eventually expanded to accommodate larger
+file systems, using up to 32 bits.
+
+
+\exampleBegin{File Size}
+Let's take a look at how big a file we can handle! Originally, we had 4096 entries with each cluster
+being 512 bytes. So, we have $2^{12} \cdot 2^9 = 2^{21} \approx 4MB$!
+\exampleEnd
+
+
+\section{File Index Blocks}
+An alternative to FAT's, we have File Index Blocks. A file control block points to all blocks within
+the file. This method offers fast access to \textit{any} desired block within the file. However, we
+are limited by the maximum number of pointers the file control block can hold.
+
+To address this, we can use extent descriptors that point to larger sections of data than individual
+blocks. Unfortunately, we still have a limit on the number of pointers as well as possible fragmentation.
+
+
+\section{Hierarchically Structured File Index Blocks}
+To solve the issue of a file' size being limited by the entries in the file index block, we can use
+a hierarchical approach. Here, the basic file index block directly points to data blocks similar to
+traditional methods. Some of these blocks point to other blocks to create a hierarchical
+structure. While we still have a limit on the number of pointers, it is very large, and this
+approach offers the potential to adapt to a wide range of file sizes.
+
+
+\subsection{Why the Complexity?}
+While this approach may seem unnecessarily complicated, we prefer this approach since we can access
+a significant portion (40K if we use 4K blocks) of a file before we need to perform additional disk
+operations. Additionally, this approach is favored since it can efficiently manage files of varying
+sizes.
+
+\exampleBegin{File Sizes Round 2}
+The on-disk inode contains 13 block pointers. The first 10 point to the first 10 blocks of the file,
+11, 12, 13 to a single, double, triple indirect block\footnote{The indirect block points to 1024
+  blocks.}. Assuming 4K bytes per block and 4 bytes per pointer, we get:
+
+\begin{align*}
+  10 \cdot 4KB = 40KB \\
+  1K \cdot 4KB = 4MB \\
+  1K \cdot 4MB = 4GB \\
+  1K \cdot 4GB = 4TB \\
+\end{align*}
+Damn that's a lot of bytes.
+\exampleEnd
+
+\subsection{Performance}
+Inodes are cached when files are open, allowing direct access to the first 10 blocks. The remaining
+blocks require indirect blocks. These indirect blocks support sequential file processing, and block
+I/O and buffer caching help maintain data blocks in the buffer cache.
+
+Despite needing additional I/O for indirect blocks, the impact is limited to 1-3 extra I/O
+operations per thousand blocks, with most data blocks being accessible in $< 3$ reads.
+
+We can also support sparse files via index blocks, similar to how we use page tables for sparse
+address spaces.
 \end{document}
 
 % Local Variables:
