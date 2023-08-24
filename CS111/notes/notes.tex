@@ -3870,6 +3870,7 @@ overhead.
 
 
 \subsection{The Convoy Effect}
+\label{subsec:TCE}
 \definitionBegin{Convoy Effect}
 The \textbf{convoy effect} refers to the scenario where multiple threads/processes are blocked while
 waiting for access to a single shared resource. These threads/processes form a queue or
@@ -4318,21 +4319,129 @@ dependencies.
 
 
 \subsection{Failure Recovery}
-\definitionBegin{Cold, Warm, Partial Restarts}
+\definitionBegin{Cold Restart}
 A \textbf{cold restart} involves terminating the entire process and restarting it from
 scratch\footnote{This ensures a clean slate but may incur longer downtime.}
-\tcblower
+\definitionEnd
+
+\definitionBegin{Warm Restart}
 A \textbf{warm restart} involves restarting the process but maintaining existing
 connections/sessions\footnote{This minimizes disruption but may not solve the problem.} 
-\tcblower
+\definitionEnd
+
+\definitionBegin{Partial Restart}
 A \textbf{partial restart} involves restarting only specific components of the process$^a$.
 \definitionEnd
+
 The failure recovery methodology involves retries, rollbacks, and continued functionality. First, we
 retry a request (if possible), but set limits on how many/how long we wait. If a request ultimately
 fails, we want to roll back failed operations to before the request and return an error. Finally, we
 continue with reduced capacity/functionality, accepting only requests we can handle, rejecting
 otherwise. Additionally, we implement automatic restarts (cold, warm, partial) and use escalation
 mechanisms to address failed recovery attempts.
+
+
+\subsection*{Interlude: Making Synchronization Easier}
+\addcontentsline{toc}{subsection}{Making Synchronization Easier}
+Locks, semaphores, and mutexes are hard to use correctly, since they may not be used when they're
+needed, may be used incorrectly, and may lead to deadlock or other hanging situations.
+
+One way we can make synchronization easier is to automate the generation of serialization
+mechanisms. Here, shared resources (objects with methods that require serialization) are
+identified. Code is written to operate on shared resources without \textit{explicitly} adding
+synchronization. The compiler then generates the required locking and releasing mechanisms to ensure
+proper serialization.
+
+
+
+
+
+\section{Monitors}
+\definitionBegin{Monitors}
+\textbf{Monitors} are objects with built-in synchronization mechanisms.
+\definitionEnd
+
+We introduce the concept of monitors as protected classes. Here, each monitor object is associated
+with a mutex that is automatically acquired when a method is invoked on the monitor and released
+upon method return. Monitors provide encapsulation, allowing developers to manually avoid
+identifying critical sections, and clients are relieved of the responsibility of managing locks.
+
+
+\subsection{Simplicity v. Performance}
+Monitors provide simplicity in synchronization by automatically locking the \textit{entire} object
+during method invocations. Since objects are locked for the entire duration of any method
+invocation, it is a conservative approach to synchronization and can potentially lead to performance
+issues. Locking the entire object can eliminate parallelism and create the potential for thread
+contention, resulting in convoys (See \refto{subsec}{TCE}). When implementing synchronization
+primitives, we consider the trade-offs of simplicity v. performance. Fine-grained locking is
+difficult and error prone, but often performs well while coarse-grained locking may be simpler to
+implement, but can create bottlenecks.
+
+
+\subsection{Java's Synchronized Methods}
+In Java synchronized methods, each object has an associated mutex and is acquired for specified
+synchronized methods. Here, not \textit{all} methods need to be synchronized; synchronization is
+needed only for the methods with access to shared resources. The mutex is automatically released
+upon the \textit{final} return of the synchronized method.
+
+Here, nested calls by the same thread do not reacquire the mutex, avoiding unnecessary locking and
+unlocking. Static synchronized methods lock the class-level mutex, affecting all instances of the
+class. Advantages include finer lock granularity and a reduced risk of deadlocks, but the cost
+usually involves the responsibility of developers to \textit{correctly} identify which methods need
+synchronization.
+
+
+
+
+
+
+
+
+
+
+\chapter{Device Drivers}
+\section{Overview}
+This chapter covers the OS's role in properly handling devices via device drivers.
+
+\definitionBegin{Peripheral Device}
+A \textbf{peripheral device} is an external device that is attached to the computer to perform
+specific functions.
+\definitionEnd
+
+Each peripheral device has code associated with it for performing operations and integration into
+the system. In modern commodity operating systems, the amount of code dedicated to handling devices
+is substantial and can outweigh other parts of the system's codebase!
+
+Peripherals are usually connected to the computer via a bus, which facilitates communication between
+peripherals and other system components. They are designed to perform specific (usually predefined)
+functions rather than independently executing arbitrary computations. The system sends a signal on
+the bus to instruct the peripheral to perform its designated task, which is then performed asynchronously
+alongside other system activities. Once finished, the signal is sent back from the peripheral to the
+system on the bus to communicate the results of the operation.
+
+\section{Devices and Performance}
+Compared to the CPU, bus, and RAM, most peripheral devices are \textit{slow}\footnote{Sometimes
+  several orders of magnitude slower than the CPU, bus, or RAM.}. Consequently, managing devices
+\textit{efficiently} presents performance challenges. The system operates at the speed of the CPU,
+bus, and RAM, but correct behavior often requires interactions with \textit{slow}$^1$ devices. Thus,
+it is up to the system to effectively manage the discrepancy in speed to ensure accurate
+functionality and optimal performance!
+
+\subsection{Why the Operating System?}
+Peripheral devices are often managed by the operating system rather than user-level code for various
+reasons.
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item 
+\end{enumerate}
+
+
+
+
+
+
+
+
 
 
 
