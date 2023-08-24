@@ -22,6 +22,10 @@
       #1}]}
   \newcommand{\abstractionEnd}{\end{tcolorbox}}
 
+\newcommand{\asideBegin}[1]{\begin{tcolorbox}[colback=orange!5!white,colframe=black!75!orange,title={Aside:
+      #1}]}
+  \newcommand{\asideEnd}{\end{tcolorbox}}
+
 \newcommand{\refto}[2]{\textbf{\ref{#1:#2} \nameref{#1:#2}}}
 
 \title{CS 111}
@@ -37,7 +41,6 @@
 \begingroup
 \renewcommand\thepart{\Alph{part}.} % Change numbering system to Roman numerals
 \part{Preface}
-This is a special part with Roman numeral numbering.
 \endgroup
 
 
@@ -70,6 +73,10 @@ This is a special part with Roman numeral numbering.
   actively reinforce the concept of abstraction (and recognize how important it is in computer science!).
 \end{tcolorbox}
 
+\begin{tcolorbox}[colback=orange!5!white,colframe=black!75!orange,title=Asides]
+  Asides wil appear in an orange box like this one. Asides usually offer supplemental explanations
+  for more complex topics.
+\end{tcolorbox}
 
 
 
@@ -594,6 +601,7 @@ portability, reusability, and simplicity when building complex systems!
 
 
 \section{Application Binary Interface}
+\label{sec:ABIS}
 \begin{tcolorbox}[title=Definition: Application Binary Interface]
   The \textbf{application binary interface (ABI)} defines the low-level binary interface that allows
   compiled programs to interact with the underlying system and hardware.
@@ -652,12 +660,7 @@ Interoperability requires both parties to honor their side of the contract: Stan
 keep the interface stable, while developers must be compliant with the API if they want their
 products to survive new updates.
 
-
-
-
-
-\section{Aside: Side Effects}
-
+\asideBegin{Side Effects}
 \begin{tcolorbox}[title=Definition: Side Effect]
   A \textbf{side effect} is occurs when an action on one object has
   \textit{non-trivial}\footnote{Non-trivial: Effects that are not included in the interface
@@ -668,6 +671,7 @@ Side effects are inevitable, but are not the end of the world! They usually happ
 state between independent modules and functions. Thus, developers should ignore side effects and
 continue being compliant with the interface as they \textit{should} be patched. In general, try to
 avoid exploiting side effects since they are not guaranteed to be there or maintained! 
+\asideEnd
 
 
 
@@ -799,7 +803,7 @@ An interpreter has several basic components:
 \end{tcolorbox}
 
 
-\subsection*{Aside: Implementation}
+\asideBegin{Implementation}
 Implementing the process abstraction in the OS is relatively straightforward when dealing with only
 one process, but in reality, that is seldom the case. When dealing with multiple processes, we have
 to consider that:
@@ -815,6 +819,7 @@ To address these issues, we need:
   each process has full access to RAM (when in reality, they don't).
 \item Access control mechanisms for other memory abstractions to keep our machine secure.
 \end{enumerate}
+\asideEnd
 
 
 
@@ -847,8 +852,7 @@ Communication links are distinct from memory abstractions for a couple of reason
 \end{enumerate}
 
 
-\section*{Aside: Implementation}
-\addcontentsline{toc}{section}{Aside: Implementation}
+\asideBegin{Implementation}
 If both ends of the communication link are on the same machine, it's trivial: use memory for
 transferring data! Copy the message from the sender's memory into the receiver's memory \textit{or}
 transfer \textit{control}\footnote{Transferring control: Change who owns the memory segment!} of the memory
@@ -862,6 +866,7 @@ machines, we have to consider the following:
   concerns that the OS might need to address.
 \item We need to be able to deal with message loss, retransmission, etc.
 \end{enumerate}
+\asideEnd
 
 
 
@@ -1594,8 +1599,8 @@ with scheduling!
 
 
 
-\section*{Aside: Optimization Metrics}
-\addcontentsline{toc}{section}{Aside: Optimization Metrics}
+\section*{Preface: Optimization Metrics}
+\addcontentsline{toc}{section}{Preface: Optimization Metrics}
 \definitionBegin{Metric}
 A \textbf{metric} is a quantifiable measure or characteristic used to asses the performance of a
 system.
@@ -1744,9 +1749,7 @@ yields the CPU.
 
 
 
-\section*{Aside: Expectations v. Reality}
-\addcontentsline{toc}{section}{Aside: Expectations v. Reality}
-
+\section*{Examples: Expectations v. Reality}
 \exampleBegin{Throughput Trouble}
 \begin{center}
   \includegraphics[scale=0.4]{images/throughput.png}
@@ -1991,6 +1994,7 @@ providing an automatic and adaptive scheduler!
 
 
 \chapter{Memory Management}
+\label{chap:MM}
 There are three primary goals for memory management:
 \begin{enumerate}[label=\textit{(\roman*)}]
 \item Transparency: Processes should only be able to see their own address space. That is, their
@@ -2476,6 +2480,7 @@ physical RAM, which can limit memory-intensive processes or overall system perfo
 
 
 \section{Paging}
+\label{sect:PGING}
 Paging is a technique that divides both physical memory and virtual address space into fixed-size
 units\footnote{Usually 1-4K bytes or words.} called \textit{pages}. The pages in physical memory are
 referred to as \textit{page frames}, while pages in virtual memory are just called \textit{pages}.
@@ -2790,6 +2795,7 @@ the risk of thrashing and increase the number of clean pages we have.
 
 
 \part{Concurrency}
+\label{part:C}
 \chapter{Threads}
 \definitionBegin{Thread}
 A \textbf{thread} is a unit of execution and scheduling in a program. Each thread has its own stack,
@@ -3152,7 +3158,7 @@ complex. It is crucial for \textit{parallelism}\footnote{Parallelism: Multiple t
   concurrently.}, and to ensure correctness in our programs. 
 
 
-\subsection*{Aside: Parallelism}
+\asideBegin{Parallelism}
 Parallelism gives us many benefits! It lets us run multiple tasks concurrently, improving
 throughput. Parallelism also facilitates breaking down complex tasks into smaller, more manageable
 pieces, supporting modularity. When using parallelism, if one thread/process fails, it doesn't
@@ -3161,6 +3167,7 @@ affect the others, improving robustness and isolating problems.
 Aside from local benefits, parallelism also support common paradigms like client-server computing,
 which are inherently parallel in nature. Furthermore, real-world phenomena involve the cooperative
 interaction of multiple processes or entities, and we can use parallelism to model these behaviors!
+\asideEnd
 
 
 
@@ -3528,12 +3535,12 @@ access to a critical section. The FIFO waiting queue manages which order the
 threads are granted access to the critical section.
 
 
-\subsection*{Aside: Why Semaphores Don't Broadcast}
-\addcontentsline{toc}{subsection}{Aside: Why Semaphores Don't Broadcast}
+\asideBegin{Why Semaphores Don't Broadcast}
 Semaphores, in their basic form, don't provide a built-in mechanism to broadcast because they
 weren't designed to. They are designed to control access to a critical section by limiting the
 number of threads that can access the resource simultaneously rather than manage communication
 between multiple threads.  
+\asideEnd
 
 
 \subsection{Operations}
@@ -3771,11 +3778,12 @@ Unfortunately, locking code in operating systems have already been highly optimi
 not much more that can be done. 
 
 
-\subsection*{Aside: Locking Costs}
+\asideBegin{Locking Costs}
 Locking is typically used when we need to protect critical sections to ensure correctness. Since
 many critical sections are very brief (e.g. in/out in nano-seconds), the overhead of the locking
 operations may be much higher than the time spent in the critical section. This is why we care about
 locking overheads!
+\asideEnd
 
 
 \subsection{Contention}
@@ -4172,11 +4180,12 @@ invalidation is not possible\footnote{Like Condition II, lock breaking may fix d
   damage resources!}.
 
 
-\subsubsection{Aside: Seizing Resources}
+\asideBegin{Seizing Resources}
 The operating system can only seize a resource if the process has to use a system service to access
 the resource. If the process has direct access to the object (e.g. the object is part of the
 process' address space), then we're fucked and usually have to resort to terminating the process to
 free the resource.
+\asideEnd
 
 
 \subsubsection{Condition IV: Circular Waiting}
@@ -4187,7 +4196,7 @@ circular dependencies by creating a DAG\footnote{DAG: Directed Acyclic Graph}! T
 resource ordering, we need to order the resources! We can do this by ordering them by resource type
 (e.g. groups before members) or by relationship (e.g. parents before children).
 
-\subsubsection{Aside: The Lock Dance}
+\asideBegin{The Lock Dance}
 Suppose two process ($P_1$ and $P_2$) needs to allocate resources ($R_1$ and $R_2$) out of
 order. Initially, we have $P_1: R_1$ and $P_2: R_2$, but our desired state is $P_1: R_2$ and $P_2:
 R_1$. Let's do the lock dance!
@@ -4198,6 +4207,7 @@ R_1$. Let's do the lock dance!
 \item $P_2$ acquires $R_1$ ($P_1: R_2$, $P_2: \O$)
 \item $P_1$ acquires $R_2$ ($P_1: R_2$, $P_2: R_1$)
 \end{enumerate}
+\asideEnd
 
 
 \subsubsection{Conclusion}
@@ -4297,7 +4307,7 @@ process. Failure to provide the expected response may trigger alerts.
 
 \subsubsection{Internal Instrumentation}
 We can embed monitoring and testing directly within the codebase of the process via white box
-audits, exercisers, and continuous monitoring. White box audits involve reviewing internal code adn
+audits, exercisers, and continuous monitoring. White box audits involve reviewing internal code and
 data structures to identify potential vulnerabilities, inefficiencies, or errors. Exercisers are
 designed to simulate various scenarios to stress-test the process, which can help uncover unexpected
 behavior and/or vulnerabilities, particularly in complex systems. Continuous monitoring keeps track
@@ -4399,7 +4409,8 @@ synchronization.
 
 
 
-\chapter{Device Drivers}
+\part{Persistence}
+\chapter{Devices and Device Drivers}
 \section{Overview}
 This chapter covers the OS's role in properly handling devices via device drivers.
 
@@ -4431,12 +4442,573 @@ functionality and optimal performance!
 Peripheral devices are often managed by the operating system rather than user-level code for various
 reasons.
 
+
+\subsubsection{Criticality for Correctness}
+Certain devices are integral to the proper functioning and correctness of the entire system.
+
+\exampleBegin{Flash Drives}
+A flash drive that holds swap space is crucial for efficient memory management, an OS service (See
+\refto{chap}{MM})! Managing such critical resources requires coordination and control at the OS
+level to ensure reliable operation.
+\exampleEnd
+
+
+\subsubsection{Shared Access}
+Many devices must be shared among multiple processes which requires OS-level control! Managing
+shared access in a fair and efficient manner requires sophisticated synchronization mechanisms and
+resource allocation strategies.
+
+
+\subsubsection{Complexity}
+Handling shared resources involves intricate resource management (including locking, queuing, and
+prioritization). Such complexity is beyond the capabilities of user-level code and requires OS-level
+control.
+
+
+\subsubsection{Security}
+Certain devices have security implications, and as such we need a trusted system to manage them. Oh
+look, the OS \textit{is}\footnote{should*} be trusted!
+
+\exampleBegin{Network Interfaces}
+Network interfaces that handle communication between applications and external
+systems require OS-level control to ensure a secure channel for communication.
+\exampleEnd
+
+
+
+
+
+\section{Device Drivers}
+\definitionBegin{Device Driver}
+A \textbf{device driver} is specialized software that acts as a bridge between a computer's OS and
+specific hardware (peripheral) devices, enabling communication and interaction between software and
+hardware components.
+\definitionEnd
+
+Device drivers enable us to interface with the device from the application layer! When we need to
+interact with the device, we send a signal to the OS which will in turn call the appropriate device
+driver. The device driver then feeds detailed instructions to the hardware, performing the desired task.
+
+Code for hardware devices is usually specialized to their unique functionalities. The code serves as
+a \textit{driving} force behind the device, enabling it to carry out its intended operations. Thus,
+each hardware device within a system usually has its own driver (code segment).
+
+
+\subsection{Properties}
+Let's take a look at typical properties of device drivers. They are:
+
 \begin{enumerate}[label=\textit{(\roman*)}]
-\item 
+\item Device drivers are highly specific to the particular hardware device(s) they are meant to
+  support.
+\item Device drivers are inherently modular, allowing them to be developed and maintained independently.
+\item Device drivers typically interact with the rest of the system via limited and well-defined
+  (see \textit{(i)}) interfaces, promoting compatibility and predictable behavior.
+\item Correctness is paramount to a device drivers' utility since it affects both the accuracy of
+  the operation it implements as well as the system as a whole.
+\item Device drivers are often developed by programmers with an in-depth understanding of the
+  \textit{specific}\footnote{Note that these developers may not be experts in the broader system, but they
+    need not worry about that (see \textit{(ii)}).} device's functionality.
 \end{enumerate}
 
 
+\subsection{Abstractions}
+Let's abstract away device drivers!
 
+\abstractionBegin{Driver Abstractions}
+We define an idealized class of devices, an \textit{abstraction} over device drivers. These classes
+define expected behavior/interfaces that the drivers will support.
+\abstractionEnd
+
+These abstractions over device drivers provide a structured way to interact with a diverse set of
+hardware devices. Mainly, it lets device drivers to adhere to a common framework by abstracting
+device-specific complexities. Further, they regularize and simplify the interaction between software
+(applications) and hardware (devices).
+
+As with any abstraction, driver abstractions encapsulate the knowledge of how to use devices
+effectively, translating standard operations we interface with into device-specific
+actions. Consequently, they provide a consistent and intuitive interface for users and ensure proper
+coordination between devices and software. Furthermore, we have fault handling embedded in
+abstractions, guiding the handling of recoverable device-level faults and avoiding their escalation into
+system-wide faults.
+
+
+\subsection{Generalizing Abstractions}
+At first glance, it may seem that each device deserves its own unique driver. But upon closer
+inspection, we can see that there are many commonalities between them, particularly among classes
+of devices.
+
+\exampleBegin{Class of Devices}
+Let's look at the class of flash drives. Here, we see that \textit{all} flash drives utilize NAND
+flash memory to store data. We can leverage commonalities such as the NAND flash memory to build an
+abstraction layer atop the \textit{class} of flash drives.
+\exampleEnd
+
+
+\subsection{Providing Abstractions}
+The OS will define device \textit{classes} (e.g. flash, display, printer, etc.). These classes
+define the expected interfaces/behavior; i.e. \textit{all} drivers in the class supports
+\textit{all} the standard methods defined by the OS. 
+
+
+\section{Device Driver Interface}
+\definitionBegin{Device Driver Interface}
+The \textbf{device driver interface (DDI)} is a standardized set of top-end entry points that
+connect the operating system with device drivers.
+\definitionEnd
+
+The DDI serves as a basis for device-independent applications and enable the system to seamlessly
+integrate new devices. It plays a critical role in providing a contract for third-party developers
+and is composed of entry points that align with syscalls (like \texttt{open()}, \texttt{close()},
+\texttt{read()}, \texttt{write()}) and OS frameworks (like block I/O for flash drivers or network
+protocols for network drivers).
+
+
+\section{Driver/Kernel Interface}
+\definitionBegin{Device/Kernel Interface}
+The \textbf{device/kernel interface (DKI)} is the specification of bottom-end services provided by
+the operating system to device drivers.
+\definitionEnd
+
+The DKI outlines the functionalities that drivers can request the kernel to perform, similar to an
+ABI (See \refto{sec}{ABIS}). It is essential for the DKI to be well-defined and stable to facilitate
+teh development of third-party drivers and to ensure backwards compatibility. Each OS has its own
+DKI, but they are all similar.
+
+\exampleBegin{``You'll Never Find Someone Like Me''}
+All DKI's provide functionalities like memory allocation, data transfer and buffering, I/O resource
+(ports, interrupts, etc.) management, DMA, synchronization, error reporting, dynamic module support,
+configuration, plumbing, and more!
+\exampleEnd
+
+\exampleBegin{Linux Device Driver Abstractions}
+Linux takes inspiration from older Unix systems and organizes devices into several super-classes
+(e.g. block, character, (potentially) network devices). Each super-class defines a set of common
+behaviors and interfaces for device drivers. This classification allows Linux to provide a
+structured framework for various types of device drivers and enhances code reusability.
+
+Classes provide a good organization for abstraction since they provide a common framework to reduce
+the amount of code required for each new device. However, it is important to note that a
+\textit{lot} of driver functionality is specific to the device, implying that class abstractions
+don't cover \textit{everything}, but are rather used to ensure all devices in a class provide
+certain minimal functionalities.
+\exampleEnd
+
+\section{Device Drivers in Operating Systems}
+There are usually a \textit{lot}\footnote{A Linux 2.6 kernel came with over 3200 drivers!} of device
+drivers in a system, most of which are relatively independent. So, a pluggable model is commonly
+used to integrate device drivers into the OS, especially since we may need to add more device
+drivers in the future. The operating system provides mechanisms that enable users to plug in
+specific drivers in well-defined ways, simplifying the process of modifying, updating, and/or
+expanding driver support in the OS.
+
+
+\subsection{Layering Device Drivers}
+Device drivers have multiple layers reflecting different levels of interactions and
+functionality. At the lowest layer we have interactions with the bus. Here, we have standardized
+processes for addressing devices, signaling coordination, and data transfers. Interactions at this
+level are relatively independent of the specific devices that are in use. At the highest layer, we
+have relatively standardized interactions, often involving file-oriented approaches for
+communication. Between these two layers, we have device-specific interactions which accommodate the
+unique behaviors and features of individual devices. These layers allow for a modular development,
+encapsulation of device-specific complexities, and separation of concerns!
+
+
+\subsection{Device Driver Code Operating Systems}
+While device driver code \textit{can} be integrated into the operating system, we often distribute
+code based on the functionality it brings. Common functionalities like caching, file systems code
+(independent of a particular device), and network protocols (above physical/link layers) are best
+suited to be part of the operating systems. Conversely, specialized functionalities that differ
+between devices are better suited for device drivers.
+
+\exampleBegin{Graphics Drivers}
+Suppose we want to write code for a particular brand of graphics card. The intricacies of managing
+\textit{unique}\footnote{Suppose we need to implement hardware-accelerated shading using the
+  graphics card's highly parallelized architecture...} graphics card's functionalities would be
+confined to its respective driver, whereas a functionality like display resolution/screen layout
+management would be reserved to the operating system, since any graphics card worth its money
+supports that functionality.
+\exampleEnd
+
+
+
+
+
+\section{Devices and...}
+\subsection{Interrupts}
+\label{subsec:INTER}
+Devices in operating systems rely heavily on the interrupt-driven model for communication and
+coordination. It is important to note that drivers are not treated as processes and therefore not
+scheduled. Since they work at a (much) slower speed than the CPU, drivers typically perform their
+tasks independently while the CPU engages in other activities. Interrupts are then used to alert the
+CPU and gain its attention when they require processing.
+
+\subsection{Buses}
+Devices are not directly connected to the CPU. Instead, both the CPU and devices are connected to a
+bus (which can be the same or differ between the two). Devices communicate with the CPU via the bus
+for both sending and receiving interrupts as well as for transferring data and commands.
+
+Devices signal the controller when they are done/ready. When the device finishes, the controller
+puts an interrupt on the bus, which then transfers it to the CPU.
+
+
+\asideBegin{CPU's and Interrupts}
+Note that interrupts are similar to traps! Traps come \textit{from} the CPU, whereas interrupts are caused
+externally \textit{to} the CPU. Unlike traps, interrupts can be en/disabled by special CPU
+instructions. That is, devices can be told when they may generate interrupts. Furthermore,
+interrupts may be held \textit{pending}\footnote{Pending state: The interrupt is recognized
+  by the system but is not immediately serviced by the CPU.} until the software is ready for it.
+\asideEnd
+
+
+
+
+
+\section{Device Performance}
+This section explores how we can efficiently utilize the devices in our system.
+
+
+\subsection{Good Device Utilization}
+\label{subsec:GDU}
+Recall that key devices, such as those handling file I/O and network communication, are notably
+slower than the CPU. When these devices are underutilized and remain idle, their throughput drops,
+which in turn can lead to lower overall system throughput, longer service queues, and slower
+response times. The consequences of such inefficiencies are reflected in degraded system performance
+and a less responsive user experience.
+
+It is critical to strike a balance between high level of activity for these key devices and reducing
+CPU wait time. A common strategy is to start request $n + 1$ immediately after request $n$ finishes.
+
+\exampleBegin{Device Delays}
+Suppose we have a real time system that interfaces with several devices.  Delays in device
+utilization can disrupt real-time data flows, resulting in unacceptable performance numbers and
+potential data loss!
+\exampleEnd
+
+How do we achieve good device utilization? Parallelism! Since devices operate independently of the
+CPU, they can operate in parallel with the CPU. However, one key challenge is how to address a
+situation where both the device(s) and CPU need to access shared memory (RAM). It is essential to
+manage and coordinate access to RAM to prevent conflicts, ensure data consistency, and optimize
+system performance.
+
+\asideBegin{CPU Caching}
+Modern CPU's try to avoid going into RAM by utilizing registers and on-chip caches to store and
+retrieve frequently used data and instructions quickly. By minimizing the number of trips to RAM
+(sometimes referred to as a cache hit), the CPU can operate at much faster speeds and achieve better
+performance.
+\asideEnd
+
+CPU caching frees up the memory bus for devices to use, offloading some of the bus-related
+activities from the CPU and potentially improving system performance. We need to balance memory bus
+usage between devices and the CPU to avoid contention and ensure optimal parallelism.
+
+
+\subsection{Direct Memory Access}
+\definitionBegin{Direct Memory Access}
+\textbf{Direct Memory Access (DMA)} allows two \textit{devices}\footnote{These devices must be
+  attached to the memory bus.} to transfer data directly between each other without involving the
+CPU as an intermediary.
+\definitionEnd
+
+While DMA offers efficient data transfer, it also limits the memory bus; the memory bus can only be
+used for one purpose at a time, so if DMA is active, it's not servicing the CPU. Fortunately, the
+CPU usually doesn't require bus access during DMA operations. DMA enables data to e moved from a
+device to memory at the speed of the bus/device/memory, bypassing the CPU. 
+
+
+\subsection{Keeping Devices Busy}
+Recall that we want to keep key devices busy and optimize their utilization within the OS (See
+\refto{subsec}{GDU}). We can do this by utilizing several techniques.
+
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item We can allow multiple pending requests at the same time by queuing them, similar to how we put
+processes in a ready queue.
+\item We can utilize DMA for data transfers to minimize delays and overhead on the CPU.
+\item We can coordinate the process of handling completed requests via interrupt-driven mechanisms
+  (See \refto{subsec}{INTER} and \refto{subsec}{GDU}).
+\end{enumerate}
+
+
+\subsection{Transfer Size}
+Bigger data transfers are non-trivially more efficient than smaller transfers. This is because data
+transfers come with inherent overhead per operation, including factors like DMA, device-specific
+tasks, and OS involvement. Overhead activities involve setting up the transfer, initiating new
+operations, and handling completion interrupts. Thus, larger data transfers are more efficient since
+they have lower overhead per byte! These efficiency gains are not limited to software and extend to
+hardware and other contexts as well! The principle of reduced overhead per byte is a fundamental
+aspect of optimizing data movements and resource utilization.
+
+
+\section{I/O and Buffering}
+\definitionBegin{Buffer}
+A \textbf{buffer} is a temporary storage area used to hold data that is ready to be processed or
+transferred.
+\definitionEnd
+
+Recall that I/O requests involve transferring data between memory and devices. Data that is part
+of I/O operations is stored in memory locations called buffers. Buffers play a key role in
+facilitating efficient data movement and communication between devices and memory (especially in
+I/O). They usually contain data that is ready to be sent to a device or is awaiting data from a
+device.
+
+An essential aspect of buffer management is ensuring that buffers are available when devices are
+prepared to use them. The OS is responsible for coordinating the availability of buffers to ensure
+smooth data transfers.
+
+\subsection{Buffering Issues}
+While fewer and larger data transfers are more efficient for I/O operations, they may not
+necessarily align with application requirements since natural record sizes are often small. The
+operating system can address this issue by employing various buffering strategies.
+
+We can consolidate I/O requests to optimize data transfers by maintaining a cache of recently used
+disk blocks, enhancing the efficiency of subsequent operations. For small write operations, the OS
+accumulates the data and flushes it out as blocks fill up, minimizing the overhead associated with
+frequent writes.
+
+When reading data, the OS reads entire blocks and delivers the requested data from the cached
+blocks, enhancing read performance. Further, we can employ read-ahead; the OS anticipates upcoming
+read operations and proactively reads/caches blocks that have not yet been requested.
+
+
+\subsection{Deep Request Queues}
+Deep request queues refer to when we have a large number of queued I/O operations. Maintaining such
+a queue helps keep the device(s) busy, minimizing idle time. For example, deeper queues also contribute to
+reducing mean seek distance and rotational delay in disk-based devices. Furthermore, adjacent requests may be
+combined in the queue, optimizing data transfers. In some cases, certain write operations can be
+avoided or optimized via efficient queue management.
+
+We can achieve a deep request queue in a multitude of ways: we can have many entities make requests,
+individual processes make parallel requests, read-aheads, and write-back cache flushing.
+
+
+\subsection{Scatter/Gather I/O}
+Since user buffers are paged in virtual memory, buffers may be spread all over physical memory!
+Scatter/gather I/O is when we read from/write to multiple page frames, allowing data to be
+efficiently transferred between user buffers and devices. There are three basic approaches to
+address scatter/gather I/O:
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Copy all user data into a physically contiguous buffer.
+\item Split logical requests into chain-scheduled page requests.
+\item Utilize teh I/O MMU to automatically handle scatter/gather operations.
+\end{enumerate}
+
+\subsection{Memory Mapped I/O}
+Memory-mapped I/O is an alternative to DMA, and is used for certain types of devices. While DMA is
+designed for large contiguous transfers, they may not be the best fit for devices requiring
+frequent, small, sparse transfers. Memory-mapped I/O treats registers or memory in a device as part
+of the regular memory space, accessible through memory operations.
+
+\exampleBegin{Display Adapters}
+This approach is particularly relevant for devices like bit-mapped display adapters, enabling
+efficient updates to displays with low overhead and no interrupts. Here, each word of memory
+corresponds to one pixel on the display. Applications can use ordinary memory stores to update the
+display, simplifying programming and providing efficient access to device-related memory.
+\exampleEnd
+
+
+
+
+
+
+
+
+
+
+\chapter{File Systems}
+\section{Overview}
+Persistent data storage is essential for retaining data across reboots and power downs. Even the
+operating system relies on persistent storage to maintain its state! There are several options for
+persistent storage: raw storage blocks, databases, and file systems.
+
+\subsection*{Raw Storage Blocks}
+Using raw storage blocks involves storing data directly on storage devices like hard disks or flash
+drives without any \textit{structure}. While this approach is flexible when it comes to data layout,
+it's not very user-friendly and is hard to manage due to its low-level nature.
+
+
+\subsection*{Databases}
+Databases provide a \textit{structured} way to store and manage persistent data. They offer features
+like data organization, indexing, and querying, making them good for structured data
+management. However, databases often come with overhead and complexity, especially when the data
+organization is more straightforward, leading to a bloated system.
+
+
+\subsection*{File Systems}
+File systems offer an organized and \textit{user-friendly} approach to structuring
+persistent data. They provide a hierarchy of directories and files, making it intuitive for users
+and programmers to store/retrieve data. File systems also manage metadata, permissions, and access
+control. This option strikes a balance between raw storage blocks and databases, and is what we will
+be focusing on in this chapter.
+
+\definitionBegin{File}
+A \textbf{file} is a self-contained entity that can store various types of data (e.g. documents,
+spreadsheets, messages, programs, etc.).
+\definitionEnd
+
+The basic idea of a file system is to organize data into coherent units, each of which are referred
+to as a \textit{file}. The primary goal of a file system is to provide efficient access to files and
+a powerful organizing principle for managing the collection of files.
+
+
+\subsection{File Systems and Hardware}
+File systems are typically stored on hardware that provides persistent memory (e.g. flash), with the
+expectation that files stored in a particular location (on flash for example) will remain there
+between access instances.
+
+For optimal performance, file systems should also be implemented with the underlying hardware in
+mind for optimal performance while also striving for cross-hardware compatibility.
+
+\exampleBegin{Flash Drives}
+The flash drive is a solid state persistent storage device; i.e. it has no moving
+parts. Reads/writes are fairly \textit{fast}\footnote{Reads up to 100 MB/sec, writes up to
+  40MB/sec.}, but a given block can only be written once. Writing over a block requires erasing,
+which is slower and involves erasing larger sectors of the drive.
+\exampleEnd
+
+
+\subsection{Data v. Metadata}
+\definitionBegin{Data and Metadata}
+\textbf{Data} refers to the content that a file is intended to store (e.g. text, images, program
+instructions, etc.).
+\tcblower
+\textbf{Metadata} refers to information about the file (e.g. attributes like file size, creation
+date, permissions, etc.).
+\definitionEnd
+
+Both data and metadata need to be stored persistently within the file system. Typically, data and
+metadata are stored on the same storage hardware to ensure that both are accessible together.
+
+\asideBegin{Uniform Functionality}
+File systems should be designed to function uniformly across various storage media. This enables the
+same program to interact with the file system regardless of the storage medium being used
+(e.g. flash v. disk), enhancing program portability and reducing
+\textit{complexity}\footnote{Complexity of adapting programs to different storage technologies.}. By
+maintaining a consistent interface, the file system can seamlessly manage different storage media
+without requiring major changes to program code!
+\asideEnd
+
+
+\subsection{Properties}
+Properties we want in a file system include (but are not limited to):
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Persistence: The file system should ensure that data and metadata are stored persistently even
+  between power cycles.
+\item Easy Use Model: The file system should be user-friendly for both accessing individual files
+  and organizing collections of files.
+\item Flexibility: The file system should not impose limits on the number of files, file sizes,
+  types, or contents, allowing users to manage diverse data.
+\item Portability: The file system should be able to function consistently across different hardware
+  device types, ensuring program portability.
+\item Performance: The file system should be robust and dependable, minimizing the risk of data loss/corruption.
+\item Security: The file system should incorporate appropriate security measures to protect data
+  from unauthorized access or tampering.
+\end{enumerate}
+
+\asideBegin{Issues}
+There are some concerns we should bring to light before continuing the discussion on file systems:
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Performance: Ideally, we would like our file system to be as fast as things like the CPU, bus,
+  and memory. However, these devices operate at \textit{nanoseconds} today, and flash drives are
+  roughly 1000x slower. This implies that we need to do some \textit{serious} work to hide the
+  mismatch in performance speeds.
+\item Reliability: Trivially, persistence implies reliability; we want our files to be there when we
+  check, \textit{no exceptions}. This implies our file system needs to be free of errors on both the
+  hardware \textit{and} software side, the latter of which may be hard to ensure (see
+  \refto{part}{C}).
+\item Security: We want to ensure controlled and well-defined access to data; i.e. data owners
+  should have the ability to determine who has access to their data via an access control model and
+  mechanism. We need \textit{strong} guarantees that the system will enforce owners' desired
+  controls, implying we'll need to check permissions on access. But remember, we need to strike a
+  balance with \textit{(i)}. 
+\end{enumerate}
+\asideEnd
+
+File systems are built using multiple layers of abstraction. At the top, applications interface with
+and access \textit{files}. At the bottom, various block devices are reading/writing to
+\textit{blocks}.
+
+\abstractionBegin{File Systems}
+Like with any abstraction, we do this for simplicity and portability. Directly translating from
+application file operations to devices' block operations are extremely difficult and have a lot of
+variable parameters. Different devices may have varying block sizes, addressing schemas, and
+protocols. Furthermore, direct translation may not take advantage of higher-level optimizations like
+caching and buffering, leading to suboptimal performance. Lastly, we want to make our code
+\textit{flexible} and \textit{maintainable}. Direct translation goes against both.
+\abstractionEnd
+
+
+\section{File System API}
+Ideally, we would provide a single API to programmers and users for \textit{all} files regardless of
+how the file system is actually implemented\footnote{This is a requirement for portable
+  programs!}. The File System API can be categorized into three groups:
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item File Container Operations: These operations handle creating/deleting and opening/closing files. These operations manage
+  the overall file structure and relationships between files and their metadata.
+\item Directory Operations: These operations handle directories and their contents, including
+  creating/deleting, listing, and navigating directories.
+\item File I/O Operations: These operations handle read/write operations from/to files. These
+  operations manage data transfer between programs and files in the file system.
+\end{enumerate}
+
+The API abstracts away the underlying implementation, allowing the user to focus on interfacing
+with the API without worrying about low-level details.
+
+
+\subsection{File Container Operations}
+These operations involve standard file management system calls that manipulate files as
+\textit{objects}\footnote{These operations focus on managing the files themselves rather than the
+  content of them.}. These operations are implemented using standard file system methods, which
+handle tasks such as getting/setting attributes, ownership, protection, creating/destroying
+files/directories, and managing links. The actual work of performing these operations occurs within
+the file system implementation.
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Get/Set Attributes: Functions to retrieve/modify attributes associated with files
+(e.g. permissions, timestamps, ownership).
+\item Create/Destroy Files/Directories: Functions to create new files/directories or destroy
+existing ones.
+\item Create/Destroy Links: Functions to create/destroy hard/symbolic links to files.
+\end{enumerate}
+
+
+\subsection{Directory Operations}
+These operations center around translating file names into lower-level file pointers within the file
+system structure. The main focus of directory operations is to facilitate tasks related to searching
+for files by name, creating new name-to-file mappings, and listing known names within a directory.
+
+Directories can represent a complex logical hierarchy of files and subdirectories, even if the
+underlying storage medium doesn't impose a strict hierarchical structure. They also provide users
+with tools to navigate and manage the organization of files within a file system effectively.
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Searching: Function to search for a file in a file system by its name.
+\item Mappings: Function to create a new name-to-file mapping to enable \textit{(i)}.
+\item List: Function to list all known files in a given directory.
+\end{enumerate}
+
+
+\subsection{File I/O Operations}
+These operations enable applications to interact with the data contained in files within a file
+system. Operations include opening/closing files, reading/writing from/to files, seeking to
+different positions in files, and mapping files into the address space of a process (See
+\refto{subsec}{PAS}). We can implement these functions using a combination of logical block
+management, data copying, and interaction with the file system's buffer management.
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Open/Close: Functions to initialize/destroy an instance of a file using its name.
+\item Read/Write: Functions to read data from and write data to files. These operations involve
+  logical block management and data transfer between user space and file buffers. Data is fetched
+  into logical blocks, and copies are made between user space and file buffers.
+\item Seek: Function to change the logical offset associated with an open instance of a file,
+  facilitating navigation within the file's data.
+\item Mapping: Functions to map the file(s) into the address space of a process. File block buffers
+  are represented as pages of physical memory. By mapping the file, data can by directly accessed
+  from memory, and page swapping is managed by the OS (See \refto{sect}{PGING}).
+\end{enumerate}
 
 
 
