@@ -765,7 +765,7 @@ varying performance depending on which device imlements the abstraction.
 \begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title=Example: Caught in 4k] 
   Storage devices like hard disks, solid-state drives, and optical drives can all be used to
   implement file storage, but the performance differences vary between the three. (SSD $>$
-  HD $>$ optical).
+  HDD $>$ optical).
 \end{tcolorbox}
 
 
@@ -2132,7 +2132,8 @@ allocation.
 
 
 
-\section*{Managing Variable-Sized Partitions}
+\subsection{Managing Variable-Sized Partitions}
+\label{subsec:FL}
 \definitionBegin{Free List}
 The \textbf{free list} is a data structure (often implmented with a list or array) that keeps track
 of all available chunks of unallocated memory.
@@ -2579,6 +2580,7 @@ ensure that relevant pages are kept in RAM.
 
 
 \subsection{Locality of Reference}
+\label{subsec:LOR}
 Locality of reference suggests that the next address a program will access is most likely to be
 close to the one it just accessed. This is usually present in programs since they often execute
 sequences of consecutive (or nearby) instructions, have short branches, access data in the
@@ -4554,7 +4556,11 @@ define the expected interfaces/behavior; i.e. \textit{all} drivers in the class 
 \textit{all} the standard methods defined by the OS. 
 
 
-\section{Device Driver Interface}
+
+
+
+\section{Interfaces}
+\subsection{Device Driver Interface}
 \definitionBegin{Device Driver Interface}
 The \textbf{device driver interface (DDI)} is a standardized set of top-end entry points that
 connect the operating system with device drivers.
@@ -4567,7 +4573,7 @@ and is composed of entry points that align with syscalls (like \texttt{open()}, 
 protocols for network drivers).
 
 
-\section{Driver/Kernel Interface}
+\subsection{Driver/Kernel Interface}
 \definitionBegin{Device/Kernel Interface}
 The \textbf{device/kernel interface (DKI)} is the specification of bottom-end services provided by
 the operating system to device drivers.
@@ -5169,9 +5175,9 @@ secondary in-memory structure that is specific to each process that has the file
 
 
 
-\chapter{File System Structure}
+\chapter{File Systems: Structure}
 \section{Overview}
-Most file systems live on block-oriented devices like SSD's or HD's. Volumes on these devices are
+Most file systems live on block-oriented devices like SSD's or HDD's. Volumes on these devices are
 partitioned into fixed blocks of varying sizes (e.g. 512, 1024, 2048, 4096, 8192 bytes). Most of the
 blocks are used for storing user data (in the form of files). Some blocks are used for storing and
 organizing metadata (e.g. description of the file system, file control blocks, list of free blocks,
@@ -5291,6 +5297,630 @@ operations per thousand blocks, with most data blocks being accessible in $< 3$ 
 
 We can also support sparse files via index blocks, similar to how we use page tables for sparse
 address spaces.
+
+
+
+
+
+
+
+
+
+
+\chapter{File Systems: Allocation and Performance}
+File systems are generally dynamic: we create new files and modify/destroy existing ones. Such
+changes convert unused disk blocks to used ones (or vice versa). So, we need to be able to
+efficiently (and correctly) implement these operations.
+
+
+
+
+
+\section{Free Lists}
+We can manage free space in storage devices using free lists (See \refto{subsec}{FL}). In storage
+devices, free elements are usually fixed-sized blocks rather than variable-sized
+partitions. However, challenges in organizing free lists arise: in HDD's, locality matters, and for
+flash, there are erasure and load leveling challenges.
+
+
+
+
+
+\section{File Operations}
+\subsection{Creating a File}
+In Unix, we allocate a free inode by searching the super-block free inode list and taking the first
+free inode. The super-block is a data structure that contains information about the file system,
+including the number of free inodes. Once a free inode is found, we mark it as allocated and
+initialize it with the appropriate metadata (e.g. file type, permissions, ownership, timestamps,
+etc.). We then give the new file a name.
+
+In DOS, we start by searching the parent directory for an unused directory entry. We then initialize the
+FCB\footnote{FCB: File Control Block.} with the appropriate metadata and give the new file a name.
+
+
+\subsection{Extending a File}
+When an application wants to write more data to a file, it requests that the file be extended to
+accommodate the new data, which can either be explicitly requested by the application or implicitly
+requested when we write to a currently non-existent data block.
+
+We then find a free chunk of space large enough to hold the new data, which is often done by
+traversing a free list (or bitmap). Once found, the file system allocates and reserves the space for
+the file's extension, ensuring that the allocated space won't be used for other purposes until the
+file extension is complete. The file's metadata is then updated to associate the newly allocated
+space with the appropriate address within the file. We can now write to the extended portion of the
+file.
+
+
+\subsection{Deleting a File}
+When a file is deleted, we need to release all the space that is allocated to that file. In Unix, we
+return each block to the super-block free inode list by zeroing the inode and returning it to the
+free list. 
+
+In DOS, we use garbage collection to eventually reclaim the space by identifying and marking
+deallocated blocks. When a file is deleted, we zero the first byte of the name in the parent
+directory to indicate that it is available for garbage collection.
+
+
+
+
+
+\section{Free Space Maintenance}
+The file system manager is responsible for managing free space within the file system. Fast
+de/allocation of blocks are crucial operations that need to be optimized, as they are frequent and
+impact overall file system performance.
+
+Unlike memory management, choosing which blocks to de/allocate matter due to specific considerations
+related to storage devices.
+
+\exampleBegin{Different Drives Different Problems}
+When using flash storage, we need to keep in mind that we cannot overwrite fully-written
+blocks. Moreover, it would be beneficial to perform \textit{wear-leveling}\footnote{Wear-leveling:
+  Distributing write/erase cycles evenly across memory cells to extend the overall lifespan.}. \\
+
+In Hard Drives, it would be beneficial to keep data contiguous for faster lookups!
+\exampleEnd
+
+Free list organization needs to address both the speed of de/allocation as well as the ability to
+allocate blocks in preferred locations on the storage device.
+
+
+
+
+
+\section{Allocation/Transfer Size}
+Each I/O operation comes with overhead, including DMA, handling interrupts, and any device-specific
+costs. As such, minimizing these overheads will improve overall I/O performance.
+
+One way to minimize overhead and increase throughput is to use larger transfer units (or I/O block
+sizes) to amortize the fixed per-operation costs over a greater number of bytes per operation.
+
+While multi-megabyte transfers are efficient (especially with larger files or  streaming data), the
+optimal transfer unit size can vary depending on the use case, storage technology (e.g. HDD v. SSD),
+and the characteristics of the workload.
+
+
+\subsection{Choosing the Allocation Unit Size}
+As mentioned above, choosing the allocation size depends on multiple factors, but here are some
+things to consider:
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Small chunks lead to efficient space utilization by minimizing internal fragmentation, but
+  incur more overhead than larger chunks.
+\item Larger, fixed-sized chunks can lead to internal fragmentation, which can be problematic if the
+  workload involves a healthy mix of small and large files.
+\item Variable sized chunks can reduce internal fragmentation, but introduces the risk of external
+  fragmentation, making it challenging to allocate larger files contiguously.
+\end{enumerate}
+
+
+\subsection{Flash Drives}
+Flash drives put HDD's in their place (the trash can), and their unique characteristics introduce
+both opportunities and challenges for file system design. Let's take a look at some flash drive
+characteristics:
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Flash is faster than HDD's  but still slower than direct access to RAM.
+\item Unlike HDD's, flash has uniform access speed; i.e. every location on the flash is equally fast
+  to access.
+\item Flash has limited write endurance for each block. So, file systems often implement
+  wear-leveling to address this issue.
+\item Flash has the unique trait of being write-once/read-many (WORM) to address
+  \textit{(iii)}. Moreover, flash memory must be erased in large blocks (erase blocks); i.e. we
+  cannot erase smaller portions of flash memory.
+\end{enumerate}
+
+
+\section{Caching}
+We can implement read/write caching to reduce the number of trips we need to take to storage.
+
+\subsection{Read Caching}
+Read caching addresses the issue of slow persistent storage I/O. While deep queues and large
+transfers enhance efficiency, they don't drastically expedite the process. To tackle this, we can
+minimize persistent storage I/O.
+
+This is achieved by implementing an in-memory cache that capitalizes on data locality and reuses the
+same blocks. By prioritizing cached data, the system can preemptively check the cache before
+initiating I/O operations, thereby optimizing performance.
+
+Note that the cache's effectiveness is based on data locality and the reuse of the same blocks (See
+\refto{subsec}{LOR}).
+
+
+\subsection{Read-Ahead}
+Read-ahead involves proactively requesting data blocks from a storage device before they are
+actually requested by a process. This technique is employed to reduce process wait times by ensuring
+that the required data is readily available.
+
+Read-ahead is particularly beneficial when sequential access is expected, and the client either
+explicitly requests or appears to be reading data sequentially. However, this strategy comes with
+potential drawbacks, including the possibility of utilizing device access time for unnecessary data
+retrieval and consuming buffer space with unneeded blocks\footnote{If the preemptively fetched data
+turns out to be unnecessary for upcoming processes, the buffer space occupied by unneeded blocks is
+effectively wasted.}.
+
+
+\subsection{Write Caching}
+\label{subsec:WC}
+Write caching (deferred writing) is a strategy used to optimize the process of writing data to
+storage devices. In this approach, most device writes are initially directed to a write-back cache,
+where they are temporarily stored before being eventually flushed out to the actual storage
+device. This cache aggregates small writes into larger ones, which can be more efficient when
+applications perform partial block writes.
+
+Write caching eliminates redundant writes by recognizing scenarios where subsequent data changes or
+deletions make earlier writes unnecessary. Additionally, the strategy involves accumulating batches
+of writes in the cache to create larger, more efficient disk access queues, enhancing overall disk
+scheduling efficiency.
+
+
+\subsection{Disk Caching}
+Disk caching encompasses various techniques to enhance storage performance. General block caching
+involves storing frequently accessed and recently re-read files, providing buffers for read-ahead
+and deferred writes.
+
+Conversely, special purpose caches cater to specific needs; directory caches expedite directory
+searches, while inode caches accelerate reuse of the same file. Although special purpose caches are
+more intricate, they often outperform general caching by precisely aligning cache structures with
+actual usage patterns, resulting in improved efficiency.
+
+
+\subsection{Pinning File Data in Caches}
+Pinning file data in caches involves the selective retention of specific data in memory, preventing
+it from being replaced according to the typical cache replacement strategy (hence, \textit{pinning}
+it), often resembling the LRU approach (See \refto{subsec}{LRU}).
+
+This strategy ensures that certain data remains readily accessible for immediate reuse. For example,
+contents of current working directories can be pinned to expedite access during ongoing operations.
+
+\exampleBegin{Pinned Down}
+One scenario in which file data is pinned involves the inodes of files associated with processes. By
+pinning the inodes of files, the system ensures that these crucial structures are readily available
+in memory, avoiding the potential delay of fetching them from storage when they are likely to be
+used again!
+\exampleEnd
+
+While pinning data provides performance benefits, it's essential to strike a balance. Pinned data
+consumes memory resources, and excessive pinning could lead to memory exhaustion. Therefore, careful
+consideration is required to determine which data should be pinned, based on its frequency of use
+and its impact on overall system performance. 
+
+
+
+
+
+\chapter{File Systems: Naming and Reliability}
+In file systems, naming files requires a method for referencing them. While the operating system
+prefers using simple numbers as identifiers, these aren't user-friendly or usable by programs. A
+more effective naming system is needed to address this. Such a system should be user-friendly,
+facilitate organized management of numerous files, and be easily implementable within file systems. 
+
+
+
+
+\section{Naming}
+File systems manage files through internal descriptor structures, but for user convenience,
+meaningful names are assigned to files. The process of mapping these names to internal descriptors
+involves several tasks.
+
+When users create new files, the system establishes the link between the provided name and a new
+internal descriptor. Similarly, given a file name, the system must locate the corresponding
+descriptor for any operations.
+
+Renaming files while preserving their content and structure is a necessary feature. Users rely on
+names to organize files, emphasizing the need for efficient name-based organizational tools.
+
+
+\subsection{Name Space Structure}
+\definitionBegin{Name Space}
+A \textbf{name space} refers to the entire collection of names managed by a naming mechanism. It
+encompasses all possible names within the system, including those that could potentially be created
+in the future under the mechanism's rules.
+\definitionEnd
+
+Name spaces can be structured in various ways to manage the organization and retrieval of files. The
+structure of a name space influences how names are organized and related to each other.
+
+
+\subsubsection{Flat Name Space}
+In a flat name space, all names coexist on the same level without any inherent hierarchy.  This
+straightforward approach places all files on an equal footing, making them easily accessible without
+the need to navigate through complex naming structures. However, this simplicity can also lead to
+potential naming conflicts, as different files may end up with identical names, causing confusion
+and hindering efficient file management.
+
+
+\subsubsection{Graph-based Name Space}
+Alternatively, name spaces can follow a graph-based structure. This can take the form of a strict
+hierarchical tree, where names are organized in a top-down manner, creating a clear parent-child
+relationship. Conversely, a general (usually directed) graph structure allows for more complex
+relationships between names.
+
+
+\subsubsection{Corollary: Issues}
+The structure of a name space presents several issues that impact how files are managed and accessed
+within a file system.
+
+In a flat name space structure, each name can be assigned to only one file within the
+entire file system. In hierarchical name spaces, the restriction is refined to one file per
+directory sharing a name.
+
+Another aspect is the number of different names a single file can have. This introduces choices,
+ranging from having a sole ``true name'' to allowing multiple aliases for a single file. Decisions
+around the concept of a ``true name'' and its attributes can influence how files are perceived and
+managed within the system.
+
+Issues also arise concerning the consequences of deleting a specific name associated with a
+file. Are other names linked to the same file affected as well, potentially leading to the removal
+of the file itself?
+
+Furthermore, considering access permissions, it's essential to determine whether
+all names connected to a file share identical access rights or if different names can have distinct
+permissions.
+
+
+\subsection{Hierarchical Name Space}
+Hierarchical name spaces represent an organization of files that follows a graphical
+structure. Here, directories are files that contain references to other files and function as
+non-leaf nodes in the hierarchical graph. These directories also serve as contextual units for
+naming.
+
+The directory structure operates on the principle that each process has an associated current
+directory. File names are interpreted relative to this current directory. The arrangement of nested
+directories forms a tree, with files' paths described through this hierarchy.
+
+The hierarchy's expansion stems from a root node, and names originating from this root are called
+``fully qualified''. Despite the typical tree structure, it's important to acknowledge that the
+hierarchy can actually be more complex, forming a directed graph if certain configurations are
+allowed, such as files having multiple names.
+
+Understanding and managing hierarchical name spaces involve considerations of current directories,
+relative and absolute paths, as well as the potential for multiple naming contexts. This system
+design is a cornerstone for efficient file organization and navigation within a computing
+environment.
+
+
+\section{Directories}
+Directories in file systems are a special type of file that enables the operating system to link
+file names with their corresponding physical files. A directory contains a collection of directory
+entries, each of which provides crucial information about a particular file, including its
+name. This arrangement allows users to interact with and access files using human-readable names
+rather than internal file descriptors.
+
+\subsection{Reading}
+User applications are allowed to read directories, enabling them to gather information about the
+files contained within a directory. By reading directories, applications can retrieve details about
+individual files, such as their attributes and sizes.
+
+\exampleBegin{Show Me What You Got}
+\texttt{ls -options} will list the directory entries of the (current) directory! Common options are
+\texttt{-a, -l, -i, -h, -R}. RTFM\footnote{RTFM: Read The Fucking Manpages.} to find out what they do!
+\exampleEnd
+
+\subsection{Writing}
+Writing to directories is usually restricted to the OS to ensure the integrity of the directory
+structure, preventing unintended modifications that could disrupt the organization and accessibility
+of files.
+
+In special cases, users can initiate writes to directories through specific system calls
+provided by the operating system. These system calls ensure that changes to directories are
+performed in a controlled and secure manner.
+
+\exampleBegin{Make What?}
+System calls \texttt{mkdir()} and \texttt{rmdir()} allow users to create and remove directories
+respectively. 
+\exampleEnd
+
+Directories act as a bridge between user-friendly file names and the underlying file
+system's structure. Their role is vital for maintaining file organization and providing a means for
+applications and users to interact with files effectively.
+
+
+\subsection{Traversing}
+Entries within directories can serve as pointers to child directories, establishing links to lower
+levels in the hierarchical structure. These connections enable the hierarchical representation of
+files and directories within the system.
+
+To access a file within a child directory, a specific naming convention is employed. This convention
+requires the specification of the parent directory name, followed by the child directory name, and
+finally, the file name. These components are usually concatenated using a delimiter to form a
+complete path, indicating the file's location within the hierarchy.
+
+An important consideration in directory navigation is moving upwards in the hierarchy. Many file
+systems incorporate a special entry within directories to reference the parent directory, commonly
+denoted as ``..''. It provides an efficient means of moving up the hierarchy, allowing users and
+applications to traverse the directory tree in a logical and organized manner.
+
+
+\subsection{File v. Path Names}
+In certain systems, files had \textit{true names}, where each file is associated with a unique identifier
+stored in a record. This singular identifier represents the exclusive name for that file, minimizing
+naming ambiguity and ensuring precise identification.
+
+\exampleBegin{DOS}
+In systems like DOS, a file's description is contained within a directory entry. The name of the
+file within the specific directory entry serves as its local name. Conversely, the fully qualified
+name of the file is constructed by concatenating the directory path from the root to the directory
+entry in question. This hierarchical path serves as a comprehensive identifier for the file's
+location within the system!
+\exampleEnd
+
+\exampleBegin{Unix}
+Unix file systems provide a unique approach to handling file names and associations with inodes. In
+contrast to systems like DOS, Unix permits multiple file names to reference the same file, enhancing
+the user experience and organizational capabilities. \\
+
+File names within Unix are structured by slashes, resulting in paths that lead to specific
+files. For example, the format \texttt{/user\_3/dir\_a/file\_b} indicates the path to a file named
+\texttt{file\_b} located within \texttt{dir\_a}, which in turn is situated in \texttt{user\_3}. \\
+
+The contents of a Unix directory entry consist of two key elements: the name of the associated file,
+which is relative to the directory containing the entry, and a pointer to the inode representing the
+file's data and attributes.
+\exampleEnd
+
+\asideBegin{Path Names as Sole Identifiers}
+Suppose we have a system where files lack inherent names. Here, the naming of files is entirely
+determined by their directory paths. Every file's name would be a composite of its position within
+the directory hierarchy. \\
+
+This approach would remove the need for distinct file names and emphasize the importance of the
+directory structure. Each file's location within the hierarchy would serve as its sole identifier,
+with the directory path acting as a complete and unique name.
+\asideEnd
+
+
+\section{Links (in Unix)}
+Links in Unix don't store the actual file data but represent file names. All substantial file
+information, such as attributes, permissions, and ownership, resides within the file's inode. Recall
+that the inode acts as a central repository for metadata, with each file having a single inode
+regardless of the number of links associated with it.
+
+Access to files through links is \textit{uniform}\footnote{All links provide equivalent access to the
+same file data.}. If a user has read access to a file, they can create additional links to that
+file.
+
+However, it's important to recognize that directories are also files, and they have their own
+set of access control mechanisms. Not all users necessarily possess read or search access to every
+directory, thus governing their ability to navigate the file system.
+
+The concept of equal access via links underscores Unix's principle of treating all links to a file
+as equal entities. There is no special significance attached to the first link created for a file or
+to the link owned by the file's creator. This design choice reflects Unix's philosophy of simplicity
+and consistency in its file system organization.
+
+
+\subsection{Removing Links}
+When a link to a file is removed, we need to ensure that the other links still point to the
+file. More importantly, if a file is deleted entirely, we need to ensure that the remaining links
+are cleaned up and don't reference a non-existent entity.
+
+To resolve this, Unix takes the stance that a file's existence is tied to the presence of at least
+one active link. This implies that a file will continue to exist as long as there's at least one
+link that points to it.
+
+To facilitate this approach, Unix maintains a reference count associated with each file's
+inode. This reference count keeps track of how many links are currently pointing to the file. As
+long as this reference count is greater than zero, the file remains accessible.
+
+Crucially, the reference count is stored within the file's inode, not within any specific
+directory. This ensures that the reference count information is maintained consistently across all
+directories and links associated with the file.
+
+
+\subsection{Hard Links}
+\definitionBegin{Hard Link}
+A \textbf{hard link} is a reference to a file that points to the file name and its corresponding
+inode. 
+\definitionEnd
+
+Hard links will directly point to the data blocks of the original file. Creating a hard link creates
+a new directory entry that share the same data on disk. It is important to note that we cannot hard
+link directories or files on different file systems.
+
+
+\subsection{Symbolic Links}
+\definitionBegin{Symbolic Link}
+A \textbf{symbolic link} is a special type of file that holds the path name to another file,
+indirectly referencing it.
+\definitionEnd
+
+Note that symbolic links are distinct files with their own inodes. When a symbolic link is accessed,
+the file system automatically opens the file it references. If the referenced file is inaccessible
+or non-existent, the attempt to access the symbolic link fails.
+
+Unlike hard links, symbolic links do not directly reference inodes. They do not prevent the deletion
+of the linked file, nor do they influence the link count of the referenced file. Additionally,
+symbolic links do not guarantee the ability to follow the specified path indefinitely, as changes in
+the file system's structure can impact their validity.
+
+\exampleBegin{Kinda Like URL's!}
+Symbolic links share a conceptual similarity with internet URL's. Just as symbolic links serve as
+indirect references to files, URL's act as indirect references to web resources. Both symbolic links
+and URL's offer an abstraction layer that allows users and applications to access resources through a
+more human-readable or manageable name.
+\exampleEnd
+
+
+
+
+
+\section{Reliability}
+Maintaining the reliability and integrity of a file system is a critical concern, as various factors
+can lead to issues that compromise data and overall system stability.
+
+System crashes are one of the factors that can disrupt a file system's correct state. A sudden
+shutdown or failure during file operations can leave the file system in an inconsistent or partially
+updated state.
+
+Moreover, data loss can arise due to hardware failures, such as disk crashes, or software errors
+that result in the loss of file data.
+
+In the event of data loss, files can become inaccessible or unreadable. Accidental alterations to
+file data can further exacerbate the problem, affecting the correctness and usability of the stored
+information.
+
+Corruption can manifest in various ways, including the loss of free space, references to
+non-existent files, or the occurrence of over-allocated space due to issues in the free space
+management. Such corruption can result in file contents being overwritten by unrelated data, which
+poses a serious threat to data integrity!
+
+Corrupted directories within a file system can have profound implications. They can lead to files
+becoming unfindable or lost, hampering users' ability to access their data. Moreover, corruption in
+inodes can result in the loss of file information and pointers, making it difficult or impossible to
+retrieve files even if their data is intact.
+
+
+\subsection{The Core Problem}
+Unfortunately, file system writes involve more than just writing data blocks to persistent
+storage. Alongside writing data, various metadata blocks must also be updated to maintain the
+consistency and integrity of the file system.
+
+\exampleBegin{Meta Metadata}
+Inodes store vital metadata about files, the free list tracks available storage, and directory
+blocks manage the structure of directories. When we write to a file, we need to also update the
+inode to reflect the changes in the file!
+\exampleEnd
+
+Ensuring the reliability of file system writes requires that all associated operations, including
+both data and metadata block writes, are committed to disk. This commitment guarantees that the
+entire operation is successful and that the file system remains in a consistent state\footnote{Without such
+commitment, the file system could end up in a situation where data and metadata are inconsistent,
+leading to potential data corruption or loss!}.
+
+The problem arises from the nature of hardware operations. Each block write, whether for data or
+metadata, is executed as an individual hardware operation. This poses a challenge when multiple
+operations need to be synchronized to ensure the overall success of a write operation. Since data
+and metadata blocks might require separate writes, achieving the proper order and synchronization
+becomes complex. 
+
+
+\subsection{Deferred Writes: Worst Case}
+Deferred writes (See \refto{subsec}{WC}) can lead to a worst-case scenario in file system integrity
+when not managed correctly. This occurs when we allocate a new block to a file, writing out the
+updated inode immediately, but deferring the write-back of the free list. If a system crash occurs
+before the free-list updates are committed, a stale free list might exist upon reboot.
+
+The trouble arises when a new process seeks a new block for a different file after the crash. Due to
+the stale free list, it's possible for the same block to be allocated to both files, resulting in
+shared block ownership.
+
+This shared block can then lead to disastrous consequences: when one of the files is written, the
+shared block's content gets updated. Subsequently, when the other file is written, the same block's
+content changes again. This corruption cascade results in both files becoming corrupted due to the
+shared block's conflicting content updates.
+
+
+\subsection{Expectations}
+Recall that applications write to files via syscalls to the OS that encapsulate the process of
+writing data to storage media and handling associated metadata updates. After an application
+performs a write operation using a syscall, it expects that the data it wrote is
+\textit{safe}\footnote{Safe: All written data will persist even in the event of a system crash or
+unexpected shutdown.}. This expectation is rooted in the desire for data consistency and durability,
+allowing applications and users to rely on the integrity of their stored information.
+
+\exampleBegin{Blocked}
+One approach involves blocking the writing application until the data is successfully stored,
+ensuring that it is indeed durable. However, this approach comes with a trade-off: it might lead to
+substantial delays, particularly if the storage process takes a considerable amount of time.
+\exampleEnd
+
+Additionally, we need to consider the rarity of system crashes. System crashes are relatively
+infrequent events\footnote{This assumes you don't have a dogshit computer.}. Consequently, data
+persistence failures caused by crashes are also rare occurrences.
+
+Striking the right balance between performance and safety is a critical consideration. Implementing
+safety measures to ensure data persistence is crucial, but it's equally important to avoid
+unnecessary performance degradation for scenarios that are statistically unlikely. Optimizing the
+system's behavior and employing techniques like caching and buffering can help manage this balance
+effectively.
+
+
+\subsection{Buffered Writes}
+Buffered writes represent a strategy in file systems where the persistence of written data is
+deferred to a later time, optimizing system performance and application responsiveness. Instead of
+immediately writing data to persistent storage, buffered writes involve tracking data in RAM buffers
+and providing early confirmation to applications that the write operation is successful.
+
+\asideBegin{Buffered v. Deferred Writes}
+To clarify, buffered writes temporarily hold data in a buffer before writing it to the storage
+media. Conversely, deferred writes involve delaying the actual writing of data to the storage
+media. Here, the data is initially written to a cache, where it is later flushed.
+\asideEnd
+
+\subsubsection{Corollary: Benefits and Issues}
+The primary benefit of buffered writes is that they minimize application blocking: by not requiring
+applications to wait for the actual write to complete before continuing, the overall responsiveness
+of the system improves. Buffered writes also enable the creation of deeper and more optimized write
+queues, enhancing the efficiency of write operations! 
+
+Unfortunately, there is a notable downside to buffered writes: the potential risk of data loss. In the
+event of a system crash or unexpected shutdown between the time data is buffered in memory and the
+time it is actually written to persistent storage, there is a risk of losing the buffered data.
+
+
+\subsection{Ordered Writes}
+\definitionBegin{Ordered Write}
+\textbf{Ordered writes} refer to maintaining the sequence of write operations as they are issued by
+applications to ensure data consistency, preserving the expected order of updates even in the
+presence of caching and buffering mechanisms.
+\definitionEnd
+
+One key ordering principle is to write data before writing pointers to that data. Doing this
+allows the file system to identify unreferenced objects through garbage collection, which can later
+reclaim resources. Moreover, prioritizing the writing of data ensures that pointers point to
+consistent and accurate information, reducing the risk of issues caused by pointers leading to
+incorrect data. 
+
+Prioritizing the writing of deallocation information before new allocations contributes to system
+robustness. This strategy quickly releases resources associated with old files, allowing them to be
+reused. The free list can be corrected through garbage collection, which manages resource allocation
+more efficiently.
+
+We care about ordered writes because while missing data can be addressed through recovery
+mechanisms, data sharing problems or inconsistent pointers can lead to more serious consequences
+that are harder to resolve.
+
+
+\subsubsection{Corollary: Practicality}
+While ordered writes are intended to enhance data integrity and robustness in file systems, their
+practical implementation involves significant trade-offs and challenges, more specifically I/O
+performance. 
+
+The accumulation of nearby write operations, a common optimization technique, is eliminated with
+strict ordered writes. This results in diminished overall throughput as the file system lacks the
+ability to bundle similar write operations. Additionally, the consolidation of updates to the same
+block, which often improves efficiency, is hindered.
+
+Moreover, modern storage devices introduce additional complexity; they may reorder queued I/O
+requests at the hardware level, regardless of the order enforced by the file system. Consequently,
+even with strict ordering at the software level, the intended sequence of writes might be disrupted.
+
+Finally, ordered writes may not fully address the core problems they aim to solve. While they
+attempt to ensure a specific order of writes, they don't eliminate other issues that can compromise
+data integrity, such as incomplete writes. 
+
+
+
 \end{document}
 
 % Local Variables:
