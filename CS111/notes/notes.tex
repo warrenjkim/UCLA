@@ -26,6 +26,10 @@
       #1}]}
   \newcommand{\asideEnd}{\end{tcolorbox}}
 
+\newcommand{\corollaryBegin}[1]{\begin{tcolorbox}[colback=teal!5!white,colframe=black!75!teal,title={Corollary:
+      #1}]}
+  \newcommand{\corollaryEnd}{\end{tcolorbox}}
+
 \newcommand{\refto}[2]{\textbf{\ref{#1:#2} \nameref{#1:#2}}}
 
 \title{CS 111}
@@ -74,10 +78,14 @@
 \end{tcolorbox}
 
 \begin{tcolorbox}[colback=orange!5!white,colframe=black!75!orange,title=Asides]
-  Asides wil appear in an orange box like this one. Asides usually offer supplemental explanations
+  Asides will appear in an orange box like this one. Asides usually offer supplemental explanations
   for more complex topics.
 \end{tcolorbox}
 
+\begin{tcolorbox}[colback=teal!5!white,colframe=black!75!teal,title=Corollaries]
+  Corollaries will appear in a teal box like this one. Corollaries typically consist of an extension
+  of a topic that is too small for its own section.
+\end{tcolorbox}
 
 
 
@@ -617,14 +625,11 @@ Once a program is compiled using an ABI-compliant system, it can run unmodified 
 recompilation) on any other system with the same ABI! This ensure that a single binary can service 
 all ABI-compliant systems. Hence, they are usually intended for end-users and software deployment.
 
-
-
-
-
-\section{Corollary: Libraries}
+\corollaryBegin{Libraries}
 Libraries are accessed through API's! The API provides source-level definitions for how to access
 the library, and is readily portable between systems. While DLL's are also accessed via an API, the
 loading mechanism is specified by the ABI.
+\corollaryEnd
 
 
 
@@ -1070,22 +1075,22 @@ The size of the stack in a program depends on its activities, such as the amount
 used by each routine. It grows larger as calls nest more deeply (since each procedure call allocates
 a new stack frame!), and once these calls return, their stack frames can be recycled for future use.
 
-
-\subsection*{Corollary: Who Manages The Stack?}
+\corollaryBegin{Who Manages the Stack?}
 The operating system is responsible for managing the process' stack segment! It is created alongside
-the data segment when the program is loaded into memory.
+the data segment when the program is loaded into memory. \\
 
 Different operating systems implement stack management differently Some allocate a fixed-size stack
 at the program's load time, while others dynamically extend the stack as the program needs more
-space.
+space. \\
 
 Across all operating systems, stack segments are usually only read/write for security reasons. This
 prevents any unintended execution of code in the stack (e.g. buffer overflows) and ensures that it
-is used exclusively for storing data and variables.
+is used exclusively for storing data and variables. \\
 
 Stack segments are process private, meaning each process has its own unique stack. This isolation
 ensures that processes cannot interfere with each other's stacks, which is crucial for maintaining
 system stability and security.
+\corollaryEnd
 
 
 \subsection{Libraries}
@@ -1287,10 +1292,11 @@ process is a child, parent, or failure if the return value of \texttt{fork()} $=
 \exampleEnd
 
 
-\subsection{Corollary: Fork/Exec}
+\corollaryBegin{Fork/Exec}
 The forked child shares the parent's code but not its stack. While the stack is \textit{initialized}
 with the contents of the parent's stack, it is a completely separate stack! Moreover, forked
 processes do not share their data segments (mostly...).
+\corollaryEnd
 
 
 \subsection*{Copy on Write}
@@ -1409,27 +1415,28 @@ success or failure of the system call. After completing the instruction(s), the 
 instruction immediately after the syscall, allowing the program to continue executing. 
 
 
-\subsection*{Corollary: Trap Handling}
+\corollaryBegin{Trap Handling}
 Trap handling is a combination of hardware and software mechanisms to respond to exceptions and
-traps.
+traps. \\
 
 When a trap occurs, the hardware uses the trap cause as an index to access a trap vector table,
 containing the addresses of trap handlers for different types of exceptions/events. The hardware
 then loads a new processor status word and switches the CPU to supervisor mode. The current process'
 program counter and processor status are pushed onto the stack to save the state of the program that
 caused the trap. Then the program counter is loaded with the address of the first level handler (the
-starting point of the software trap handling).
+starting point of the software trap handling). \\
 
 The first level handler will then push all other registers onto the stack to preserve the full state
 of the program at the time of the trap. Then, it reviews the cause of the trap (trap type, error
 codes, etc.). Based on the cause of the trap, the first level handler will choose the appropriate
 second level handler to handle the specific exception. The second level handler is a specialized
-routine that deals with the specified exception.
+routine that deals with the specified exception. \\
 
 The second level handler will perform the necessary actions to handle the event. Once done, the
 second level handler will return control to the first level handler, which, in turn, may run more OS
 code before eventually returning control to the interrupted program (or terminating it, depending on
 the situation)
+\corollaryEnd
 
 
 \subsection*{The Kernel Stack}
@@ -2441,18 +2448,17 @@ When a program is loaded into memory, the OS sets the base registers to the star
 program. When relocating, we simply update the base register accordingly. This way, the program can
 continue to run smoothly regardless of where it is located in physical memory.
 
-
-\subsection*{Corollary: Security}
-\addcontentsline{toc}{subsection}{Corollary: Security}
+\corollaryBegin{Security}
 We still need to protect our memory! Protection refers to preventing a process from accessing memory
 outside its allocated memory. To achieve this, we utilize a length (or limit) register, often
 called the \textit{bounds register}, which specifies the maximum valid offset from the start of the
 segment. Any address greater than the limit is considered illegal and should be inaccessible to the
-process. 
+process. \\
 
 When processes attempt to access an illegal address, the CPU triggers a segmentation exception or
 trap. This exception traps into the OS allowing it to take appropriate action (e.g. terminating the
 process or controlling the violation).
+\corollaryEnd
 
 
 
@@ -2824,10 +2830,11 @@ preemptively scheduled, meaning the OS can interrupt it to give other threads CP
 
 
 
-\section*{Corollary: Why Not Processes?}
+\corollaryBegin{Why Not Processes?}
 Processes are expensive! Since each one has private resources and a private address space, it makes
 interprocess communication difficult. Additionally, certain programs may not require such strong
 separation. So, we can use threads to remedy such limitations of processes.
+\corollaryEnd
 
 
 
@@ -3214,8 +3221,7 @@ A race condition can happen when we read and write to the same piece of data fro
 We employ strategies like mutual exclusion, synchronization, and transactions to try and mitigate
 race conditions in concurrent systems.
 
-
-\section*{Corollary: Nondeterminism}
+\corollaryBegin{Nondeterminism}
 Nondeterministic execution is more general than race conditions, and refer to \textit{any} execution
 that make behavior less predictable.
 
@@ -3226,6 +3232,7 @@ makes I/O inherently nondeterministic.
 \exampleEnd
 
 Addressing these issues requires careful synchronization and coordination mechanisms.
+\corollaryEnd
 
 
 
@@ -3336,9 +3343,7 @@ one else ran it, so we can acquire the lock! If \texttt{rc} was true, then someo
 it, so they have the lock.
 \exampleEnd
 
-
-\subsection*{Corollary: Spin Waiting}
-\addcontentsline{toc}{subsection}{Corollary: Spin Waiting}
+\corollaryBegin{Spin Waiting}
 When you don't get the lock, you can do something known as \textit{spin waiting}! Essentially, you
 put the lock request in a while loop until you get the lock.
 
@@ -3358,6 +3363,7 @@ put the lock request in a while loop until you get the lock.
     \end{enumerate}
   \end{tcolorbox}
 \end{tcbraster}
+\corollaryEnd
 
 
 
@@ -3437,10 +3443,11 @@ library then monitors the variable and unblocks the waiting thread(s) when the d
 placing it back on the ready queue (or possibly preempting the current thread). 
 
 
-\subsection*{Corollary: Multiple Waits}
+\corollaryBegin{Multiple Waits}
 Threads can wait on several different things, so we want to wake threads up only when they
 \textit{should}. So, the OS or thread library should allow easy selection of the correct thread(s)
 to wake up. Usually, we use a waiting queue to handle multiple waits.
+\corollaryEnd
 
 
 \subsection{Waiting Lists}
@@ -3464,28 +3471,24 @@ The example above illustrates an example of \textit{deadlock}\footnote{Deadlock 
 \textit{critical section} that we need to handle. We need to prevent \texttt{wakeup()} and other
 people from joining the waiting list.
 
-
-
-
-
-\section*{Corollary: Fairness}
-\addcontentsline{toc}{section}{Corollary: Fairness}
+\corollaryBegin{Fairness}
 Fairness in the context of mutual exclusion refers to the guarantee that all processes, threads, or
 machines requiring access to a resource will eventually be granted access. The goal is to prevent
-starvation, where some processes are consistently denied access while others frequently obtain it.
+starvation, where some processes are consistently denied access while others frequently obtain it. \\
 
 Achieving fairness in locking mechanisms can be challenging and depends on the choice of
 approach. For instance, using First-In-First-Out (FIFO) locks ensures that access is granted based
-on the order of arrival, enforcing fairness in request sequence.
+on the order of arrival, enforcing fairness in request sequence. \\
 
 Additionally, priority inversion avoidance techniques can be employed in systems with priority
 levels assigned to processes. Implementing yielding in spinlocks can also promote fairness by
-allowing other processes to make progress while a lock is held.
+allowing other processes to make progress while a lock is held. \\
 
 Advanced locking techniques like ticket locks or MCS locks inherently provide fairness properties by
 ensuring waiting processes are granted access in a fair manner. Although achieving perfect fairness
 in all scenarios might not always be feasible, considering fairness in the design of the system can
 help maintain equitable resource access among multiple contenders. 
+\corollaryEnd
 
 
 
@@ -3518,8 +3521,7 @@ choice for real-world synchronization primitives, since there are gaps between t
 translate to intuitive solutions in real code. 
 
 
-\subsection*{Corollary: Computational Semaphores}
-\addcontentsline{toc}{subsection}{Corollary: Computational Semaphores}
+\corollaryBegin{Computational Semaphores}
 Computational semaphores are \textit{the} classic synchronization mechanism\footnote{Computational
   semaphores were introduced by Edsger Dijkstra in 1968.} as its behavior is well-defined and is
 the foundation for most synchronization studies. They are more powerful than simple locks, providing
@@ -3532,6 +3534,7 @@ granted access in the order they requested it, avoiding potential issues like
 starvation. Additionally, unlike binary flags used in simple locks, computational semaphores use a
 (modifiable) counter to manage access to allow a limited number of concurrent access to a critical section. 
 \exampleEnd
+\corollaryEnd
 
 
 \subsection{Structure}
@@ -3691,8 +3694,7 @@ concurrency requirements and choose an appropriate granularity to ensure effecti
 locking mechanisms.
 
 
-\subsection*{Corollary: Advisory v. Enforced Locking}
-\addcontentsline{toc}{subsection}{Corollary: Advisory v. Enforced Locking}
+\corollaryBegin{Advisory v. Enforced Locking}
 \definitionBegin{Advisory and Enforced Locking}
 \textbf{Advisory locking}\footnote{Also known as: user-level or application-level locking.} is a
 locking mechanism that is \textit{purely suggested} by the application. It relies on developers
@@ -3751,6 +3753,7 @@ and closing \textit{any} \texttt{\textit{fd}} for the file releases for \textit{
 \texttt{\textit{fd}}'s for that file. Depending on the underlying system, these locks are
 \textit{enforced}.
 \exampleEnd
+\corollaryEnd
 
 
 
@@ -4112,14 +4115,13 @@ A \textbf{safe allocation} is one where everyone can \textit{eventually}\footnot
 their tasks. That is, we ensure that no deadlocks!
 \definitionEnd
 
-
-\subsection*{Corollary: Commodity Resource Management in Real Systems}
-\addcontentsline{toc}{subsection}{Corollary: Commodity Resource Management in Real Systems}
+\corollaryBegin{Commodity Resource Management in Real Systems}
 Many real-world systems use advanced reservations to manage resource efficiently. In these systems,
 one a reservation is accepted, the system is obligated to honor it. This way, we prevent resource
 starvation since allocation failures only occur at the time of reservation, usually before the start
 of execution. This makes system behavior more predictable and easier to handle. This also forces the
 client to deal with the reservation failure, meaning we don't have to!
+\corollaryEnd
 
 
 \subsection{Reservation Failures}
@@ -5087,11 +5089,12 @@ subsequent operations. Moreover, the OS regularly consults the same metadata blo
 tasks. The cache optimizes file access by limiting the number of times we need to access the disk,
 improving performance and reducing latency.
 
-\subsubsection{Corollary: Single Cache}
+\corollaryBegin{Single Cache}
 If caches are so good, why not have one per process (or user? or device?)? Well, a single cache is
 more efficient when multiple users access the same file. More importantly, a single cache provides a
 better hit ratio compared to multiple independent caches (regardless of how they are spread
 out).
+\corollaryEnd
 
 
 
@@ -5556,26 +5559,27 @@ relationship. Conversely, a general (usually directed) graph structure allows fo
 relationships between names.
 
 
-\subsubsection{Corollary: Issues}
+\corollaryBegin{Issues}
 The structure of a name space presents several issues that impact how files are managed and accessed
-within a file system.
+within a file system. \\
 
 In a flat name space structure, each name can be assigned to only one file within the
 entire file system. In hierarchical name spaces, the restriction is refined to one file per
-directory sharing a name.
+directory sharing a name. \\
 
 Another aspect is the number of different names a single file can have. This introduces choices,
-ranging from having a sole ``true name'' to allowing multiple aliases for a single file. Decisions
-around the concept of a ``true name'' and its attributes can influence how files are perceived and
-managed within the system.
+ranging from having a sole \textit{true name} to allowing multiple aliases for a single file. Decisions
+around the concept of a \textit{true name} and its attributes can influence how files are perceived and
+managed within the system. \\
 
 Issues also arise concerning the consequences of deleting a specific name associated with a
 file. Are other names linked to the same file affected as well, potentially leading to the removal
-of the file itself?
+of the file itself? \\
 
 Furthermore, considering access permissions, it's essential to determine whether
 all names connected to a file share identical access rights or if different names can have distinct
 permissions.
+\corollaryEnd
 
 
 \subsection{Hierarchical Name Space}
@@ -5867,15 +5871,16 @@ media. Conversely, deferred writes involve delaying the actual writing of data t
 media. Here, the data is initially written to a cache, where it is later flushed.
 \asideEnd
 
-\subsubsection{Corollary: Benefits and Issues}
+\corollaryBegin{Benefits and Issues}
 The primary benefit of buffered writes is that they minimize application blocking: by not requiring
 applications to wait for the actual write to complete before continuing, the overall responsiveness
 of the system improves. Buffered writes also enable the creation of deeper and more optimized write
-queues, enhancing the efficiency of write operations! 
+queues, enhancing the efficiency of write operations! \\
 
 Unfortunately, there is a notable downside to buffered writes: the potential risk of data loss. In the
 event of a system crash or unexpected shutdown between the time data is buffered in memory and the
 time it is actually written to persistent storage, there is a risk of losing the buffered data.
+\corollaryEnd
 
 
 \subsection{Ordered Writes}
@@ -5900,25 +5905,246 @@ We care about ordered writes because while missing data can be addressed through
 mechanisms, data sharing problems or inconsistent pointers can lead to more serious consequences
 that are harder to resolve.
 
-
-\subsubsection{Corollary: Practicality}
+\corollaryBegin{Practicality}
 While ordered writes are intended to enhance data integrity and robustness in file systems, their
 practical implementation involves significant trade-offs and challenges, more specifically I/O
-performance. 
+performance. \\
 
 The accumulation of nearby write operations, a common optimization technique, is eliminated with
 strict ordered writes. This results in diminished overall throughput as the file system lacks the
 ability to bundle similar write operations. Additionally, the consolidation of updates to the same
-block, which often improves efficiency, is hindered.
+block, which often improves efficiency, is hindered. \\
 
 Moreover, modern storage devices introduce additional complexity; they may reorder queued I/O
 requests at the hardware level, regardless of the order enforced by the file system. Consequently,
-even with strict ordering at the software level, the intended sequence of writes might be disrupted.
+even with strict ordering at the software level, the intended sequence of writes might be
+disrupted. \\
 
 Finally, ordered writes may not fully address the core problems they aim to solve. While they
 attempt to ensure a specific order of writes, they don't eliminate other issues that can compromise
 data integrity, such as incomplete writes. 
+\corollaryEnd
 
+
+\subsection{Audit and Repair}
+Audit and repair strategies play a crucial role in enhancing file system robustness. To facilitate
+these strategies, file system structures should be designed with redundancy, storing redundant
+information in distinct locations for error detection and correction.
+
+Auditing involves assessing the correctness and integrity of a file system. During this process,
+redundant information is utilized to detect errors, and the redundant data can be leveraged to
+perform automatic repairs when issues are identified.
+
+\asideBegin{Practicality}
+In the past, designing file systems with audit and repair capabilities was a common
+practice. Redundancy and error-correcting mechanisms were incorporated to ensure data reliability
+and integrity.
+
+However, practicality concerns have arisen with the growth of modern large-scale file
+systems. Thorough audits and comprehensive repairs are no longer feasible due to the immense storage
+capacities involved. Auditing a 2TB file system at a rate of 100MB/second, for instance, would take
+approximately 5.5 hours!
+\asideEnd
+
+
+\subsection{Journaling}
+\definitionBegin{Circular Journal}
+A \textbf{circular (buffer) journal} is a data structure used for maintaining a log of events
+related to file system operations to ensure data integrity and consistency.
+\definitionEnd
+
+Journaling is a technique in file system design that enhances data integrity and system robustness
+by ensuring that journal writes occur sequentially. It involves the creation of a circular buffer
+journaling device to facilitate efficient recording and execution of file system updates.
+
+The use of a circular buffer means that once the buffer is filled, new journal writes begin
+overwriting the oldest records, creating a circular pattern. The circular nature of the buffer
+allows for the efficient use of limited space, as the oldest data is progressively replaced by new
+entries. Journal writes can also be batched together, which enhances efficiency by reducing overhead
+and optimizing the write process.
+
+To improve performance and reliability, the journal may utilize a relatively small section of
+non-volatile RAM (NVRAM), ensuring that journal data can be quickly accessed and maintained even in
+the event of power loss.
+
+The journal captures a comprehensive range of updates within the file system. This encompasses
+various changes, such as updates to inodes, block writes (data storage), and operations related to
+storage allocation and deallocation. By journaling these updates, the file system establishes a
+reliable mechanism for tracking modifications, making it possible to reconstruct the file system to
+a consistent state in case of failures, crashes, or abrupt system shutdowns.
+
+Beyond data capture, journaling enables efficient scheduling of actual file system
+updates. Techniques like write-back caching, batching, and
+\textit{motion-scheduling}\footnote{sequencing writes to minimize seek times.} are used to enhance
+performance. These strategies reduce unnecessary overhead and delays, ensuring that updates are
+executed in an optimized manner.
+
+After a write operation is successfully executed in the actual file system, the journal records a
+completion entry. This marks the point at which the intended updates are safely stored in persistent
+storage. The completion entry provides a synchronization point between the journal and the file
+system itself. In the event of a system failure or crash, the journal can be used to identify the
+most recent completed writes and apply them to the file system, ensuring that data remains
+consistent and accurate.
+
+\asideBegin{Batched Entries}
+Once a journal entry corresponding to an operation has been safely persisted, that operation is
+considered to be in a safe state. This means that the caller initiating the operation must wait
+until the journal entry has been successfully written to persistent storage. This process ensures
+that the file system maintains a consistent state even in the event of system crashes or failures. \\
+
+Even with the safety provided by journal entries, the overhead introduced by the journaling process
+can impact the performance of small, frequent write operations. \\
+
+To address the inefficiencies associated with small writes, a strategy is to accumulate journal
+entries in batches; rather than immediately persisting each individual journal entry, the system
+gathers multiple entries over a period of time. These entries are collected until either the batch
+reaches its capacity or a maximum waiting time is reached. Once the batch is considered complete, it
+is then written to persistent storage as a single operation. \\
+
+This approach significantly reduces the overhead associated with frequent small writes, as the act
+of writing multiple entries at once is more efficient than writing them individually. \\
+\asideEnd
+
+
+\subsubsection{Recovery}
+Recall that the journal is a small circular buffer, and as such, it is designed to be recyclable,
+with older operations removed once they have been confirmed as completed. Time-stamps are assigned
+to entries in the journal, differentiating new operations from older ones.
+
+The journal recovery process starts after a system restart or recovery from a failure. During this
+process, the entire journal is reviewed. Operations that are known to have been successfully
+completed are identified based on their time-stamps. Operations that lack confirmation of completion
+are re-executed\footnote{Journals are self-contained; i.e. both the data and the destination
+information for the write operation(s) are stored in the journal.} to ensure that their effects are
+properly integrated into the file system.
+
+\asideBegin{Idempotent}
+Journal recovery works because all write operations are \textit{idempotent}\footnote{Idempotent:
+re-executing the same operation multiple times does not result in unintended or undesirable
+outcomes.}. This design choice ensures that the process of recovery doesn't introduce further
+complications or inconsistencies.
+\asideEnd
+
+Once the recovery process is complete, the journal can be truncated, removing the entries that have
+already been successfully recovered. This prepares the journal for the capture of new operations,
+enabling the file system to resume normal operation while maintaining the integrity of stored data. 
+
+
+\corollaryBegin{Why Journaling Works}
+Journaling is an effective technique in file systems due to its inherent efficiency and design
+principles that enhance system reliability. Several factors contribute to the success of journaling
+in ensuring data integrity and swift recovery:
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Journal writes are notably faster than data writes because they are executed
+  sequentially. Sequential writes optimize the write process, reducing the overhead associated with
+  random access patterns.
+\item The journal is write-only; the file system doesn't need to read or process the content of the
+  journal under normal circumstances. This design choice simplifies the operation of the file system,
+  focusing on capturing changes in a streamlined manner.
+\item Scanning the journal after a restart or system failure is remarkably fast since the size of
+  the journal is small compared to the size of the entire file system.
+\item Journal pages may contain information related to multiple files; these pages often store
+  information that pertains to various processes and users. This multi-file information organization
+  is well-suited for capturing diverse changes across the file system, ensuring that updates from
+  different sources are efficiently tracked and managed within the journal.
+\end{enumerate}
+\corollaryEnd
+
+
+\subsection{Metadata Only Journaling}
+Meta-data only journaling is a strategic approach in file systems that centers on capturing and
+journaling changes to meta-data while optimizing efficiency and data integrity. This method, despite
+some trade-offs, ensures the robustness of the file system's structure and operations.
+
+Although metadata updates involve random I/O patterns, which are typically inefficient, they are
+crucial for maintaining the integrity of the file system. The small size of metadata entries makes
+it feasible to capture and store them within the journal, minimizing the impact of random I/O
+inefficiency.
+
+The key factor that drives the decision to journal metadata is the potential for significant data
+loss in the event of a failure; by journaling metadata, the file system enhances its ability to
+recover from disruptions and maintain data consistency.
+
+Conversely, journaling data itself is generally avoided due to several reasons.
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Data updates are often large and involve sequential I/O patterns, which are significantly more
+efficient than random I/O.
+\item Due to its size, data would consume a substantial portion of the journal's capacity and
+bandwidth, potentially limiting the space available for capturing meta-data changes.
+\item Data updates are less sensitive to order, allowing for more flexibility in the recovery
+process.
+\end{enumerate}
+
+When data updates are required, the system allocates new space to accommodate these changes. The
+actual data updates are written to the newly allocated space, ensuring that the updated information
+is safely stored. Subsequently, the corresponding metadata updates that describe these changes are
+journaled. This two-step process guarantees that both the actual data and its associated metadata
+are reliably captured and preserved in the journal.
+
+
+
+
+
+\section{Log-structured File Systems}
+\asideBegin{Redirect On Write}
+\definitionBegin{Redirect On Write}
+\textbf{Redirect-on-write (RoW)} is a data management technique that involves creating a
+copy of data only when modifications are made, redirecting subsequent changes to the copied version
+while keeping the original data unchanged. This minimizes resource usage and improves efficiency in
+scenarios like virtual machine snapshots and file system snapshots. 
+\definitionEnd
+
+In RoW-based file systems, the traditional paradigm of repeatedly modifying blocks and inodes is
+replaced. Once written, blocks and inodes become immutable. Instead of overwriting existing data,
+new information is appended to a log. The file system's index is then updated to reflect these
+changes. This approach ensures that the original blocks and inodes remain untouched, providing a
+stable reference point for historical data. \\
+
+One of the notable outcomes of this approach is the persistence of old versions of inodes and data
+within the log; if an older index is available, accessing these previous versions becomes
+feasible. This property also gives rise to the near-seamless creation of clones and snapshots of the
+file system. These operations become almost cost-free as they involve capturing references to
+specific points in the log. \\
+
+However, the advantages of RoW come with certain considerations, particularly in the realm of
+management and garbage collection. As old versions of blocks and inodes remain within the log,
+maintaining an inventory of these historical elements becomes necessary. This management process
+ensures that file system operations, including retrieval of old data, proceed
+smoothly. Additionally, as the log accumulates data over time, the issue of garbage collection
+emerges. Reclaiming space occupied by outdated or unused log entries becomes essential to prevent
+wastage and maintain optimal storage efficiency. 
+\asideEnd
+
+Log-structured file systems represent a paradigm shift in file system architecture, where the
+journal itself forms the core of the file system. This innovative approach offers advantages and
+introduces challenges as it redefines how data and metadata are managed.
+
+In log-structured file systems, all updates to inodes and data are directed to a sequential log
+structure. This log serves as the primary means of recording changes, and updates are typically
+implemented using the Redirect-on-Write (RoW) technique.
+
+Instead of overwriting existing data, RoW involves writing the new data to a new location, leaving
+the old data intact. An in-memory index is maintained to cache the locations of inodes, allowing for
+efficient retrieval and modification.
+
+\exampleBegin{Flashpoint}
+This architecture has found significant adoption across various storage domains, and its dominance
+is particularly evident in flash file systems and key/value stores. The log-structured approach
+aligns well with the characteristics of flash memory, which performs more efficiently with
+sequential writes. Similarly, key/value stores that deal with high volumes of small, random writes
+benefit from the RoW technique's ability to optimize write patterns.
+\exampleEnd
+
+\corollaryBegin{Issues}
+In log-structured file systems, recovery time becomes a concern, as the in-memory index/cache must
+be reconstructed during recovery processes. This can potentially impact the time required to bring
+the system back to a functional state after a failure. Additionally, log defragmentation and garbage
+collection are inherent issues in this architecture; as the log accumulates updates, it can become
+fragmented, leading to suboptimal performance. Garbage collection is needed to manage the space
+occupied by outdated or invalid data, further impacting efficiency.
+\corollaryEnd
 
 
 \end{document}
