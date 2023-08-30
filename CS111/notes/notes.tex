@@ -267,6 +267,7 @@ Below are a list of miscellaneous topics.
 
 
 \subsection{Definitions}
+\label{subsec:DEF}
 \begin{tcolorbox}[title=Definition: Instruction Set Architectures]
   An \textbf{instruction set architecture (ISA)} is the set of instructions supported by a
   computers. There are multiple (all incompatible) ISA's and they usually come in families.
@@ -1472,6 +1473,7 @@ operations and provide responsive behavior to users (like in websites!).
 
 
 \subsection{Limited Direct Execution}
+\label{subsec:LDE}
 \definitionBegin{Limited Direct Execution (LDE)}
 \textbf{Limited Direct Execution (LDE)} is an execution model used by operating systems, and consist
 of two parts. General instructions of a process are directly run on the core without OS
@@ -2504,6 +2506,7 @@ numbers.
 
 
 \subsection{Big Page Tables}
+\label{subsec:TLB}
 \definitionBegin{Translation Lookaside Buffer}
 The \textbf{Translation Lookaside Buffer (TLB)} is the MMU cache that stores a subset of recently
 accessed page table entries. This improves lookup times since we don't have to access page table
@@ -6145,6 +6148,278 @@ collection are inherent issues in this architecture; as the log accumulates upda
 fragmented, leading to suboptimal performance. Garbage collection is needed to manage the space
 occupied by outdated or invalid data, further impacting efficiency.
 \corollaryEnd
+
+
+
+
+
+
+
+
+
+
+\chapter{Virtual Machines}
+\textbf{**Note**} In this chapter, ``VM'' will refer to ``Virtual Machines'' and
+\textit{\textbf{NOT}} ``Virtual Memory''.
+\section{Overview}
+\definitionBegin{Virtual Machine}
+A \textbf{virtual machine (VM)} is a software-based simulation that is designed to closely mimic the
+behavior and characteristics of a genuine machine.
+\definitionEnd
+
+Virtual machines run an operating system, execute software applications, and perform tasks similar
+to those of a physical computer. Despite not being a tangible entity, a VM offers the appearance of
+a separate and autonomous system with its own resources and operating environment.
+
+At its core, the concept of a virtual machine revolves around creating a software-based simulation
+that emulates the behavior of one or more distinct computers, all of which operate on a single
+\textit{physical} machine. This involves leveraging the capabilities of an actual computer to
+facilitate the creation of multiple simulated environments. In essence, it's like having a computer
+within a computer!
+
+\asideBegin{What Do We Mean?}
+When we talk about virtual machines, we're referring to the practice of running multiple isolated
+instances of operating systems and applications on a single physical machine. These isolated
+instances are the virtual machines themselves. Each VM operates as if it were a separate,
+independent computer, complete with its own virtualized hardware resources, such as CPU, memory,
+storage, and network interfaces! \\
+
+From the perspective of applications and users, the virtual machine must appear and behave like a
+real, individual computer. Each virtual machine can run its own operating system and host its
+applications, just as if they were on dedicated physical hardware. \\
+
+This makes it possible to run multiple different operating systems on a single physical machine,
+which is particularly useful for scenarios like software testing, development, server consolidation,
+and cloud computing.
+\asideEnd
+
+\corollaryBegin{Implementation}
+To achieve virtualization, a hypervisor (or virtual machine monitor [VMM]) is employed. The
+hypervisor manages the allocation of physical resources, such as CPU, memory, storage, and network
+interfaces, to the various virtual machines. \\
+
+The hypervisor presents each VM with a virtualized version of hardware resources that mirror the
+characteristics of real hardware components. However, these virtual resources are mapped to and
+implemented using the underlying real hardware!
+
+\exampleBegin{Apples and Oranges}
+When a virtual machine's CPU executes instructions, it's the real physical CPU that processes those
+instructions, even though they pertain to the virtual machine's virtual CPU. Similarly, the data in
+virtual RAM is stored in the actual physical RAM, and data associated with virtual disks resides on
+real physical disks.
+\exampleEnd
+\corollaryEnd
+
+\subsection{Why Virtual Machines?}
+Besides the fact that VM's are cool (IMO), there are many reasons for them:
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Fault Isolation: If one virtual machine encounters a software or hardware issue that causes a
+  crash or malfunction, the impact is \textit{contained} within that VM. This isolation prevents the
+  problem from affecting other virtual machines on the same host or the host system itself. For
+  critical systems and services, this isolation ensures higher reliability and uptime by minimizing
+  the propagation of faults.
+\item Better Security: Each VM operates within its isolated environment, isolated from other VMs and
+  the host. This separation reduces the attack surface, making it harder for security breaches to
+  spread across VMs. Even if one virtual machine is compromised, the isolation limits the attacker's
+  ability to move laterally and access other VMs or the host. This security advantage is particularly
+  valuable in environments where multiple applications with differing security requirements coexist.
+\item Using Different OSes: The capability to run different operating systems concurrently on a
+  single physical machine is a hallmark of virtual machines. Developers can leverage this feature for
+  various purposes. It's especially useful for software development and testing\footnote{Developers
+    can create distinct VMs for testing on various platforms without needing separate hardware for each
+    OS.}. This approach is also beneficial for maintaining legacy applications that require older
+  operating systems, allowing them to run within a VM while using a modern OS on the host.
+\end{enumerate}
+
+
+\subsection{Fault Isolation}
+Fault isolation in virtual machines is a key advantage that allows operating systems to operate
+independently within their virtual environments. Unlike physical machines, where a crashing
+operating system could bring down the entire system, the isolation provided by virtual machines
+ensures that an OS crash affects only that specific virtual machine.
+
+This relaxed requirement for perfect correctness, where a virtual machine can fail without causing
+the entire host to fail, enhances stability and robustness. This isolation also extends to faults
+that could damage devices; any damage or malfunction within a virtual device is contained within the
+virtual environment and does not impact the physical hardware.
+
+
+\subsection{Better Security}
+Virtual machines contribute to enhanced security by providing isolation between different virtual
+environments. While an operating system is responsible for securing processes within its domain, it
+also manages shared resources, such as the file system and inter-process communication (IPC)
+channels.
+
+Virtual machines offer the advantage of isolating these shared resources, ensuring that processes in
+one VM cannot easily access or damage resources in another VM. This isolation reduces the potential
+for security breaches and unauthorized access across virtual machines.
+
+
+\subsection{Different Operating Systems}
+Virtual machines enable running different operating systems on a single physical machine, overcoming
+compatibility issues between applications and their required environments. When an application
+requires a specific operating system with distinct system call interfaces, virtual machines provide
+an isolated environment that allows the desired operating system to run independently, ensuring
+compatibility and enabling the execution of applications that would otherwise face compatibility
+challenges. 
+
+\exampleBegin{Looking into the Window of Linux}
+Suppose you are on a Windows host and want to run a Linux executable. Windows and Linux have
+different syscall interfaces and libraries, making it virtually impossible to run the Linux
+executable on bare metal Windows. \\
+
+However, with a Linux VM, we can create a self-contained environment that includes the Linux system
+call interface and libraries. When you run the Linux executable within the Linux virtual machine, it
+can make system calls and interact with the virtualized Linux environment as if it were running on
+dedicated hardware! \\
+
+The virtualization layer ensures that the Linux executable interacts with the Linux virtual
+machine's resources, while the Windows host remains unaffected. The virtual machine acts as a
+compatibility bridge, enabling applications to function correctly despite the differences between
+the underlying host and the required environment. 
+\exampleEnd
+
+
+\subsection{Sharing Resources}
+Virtual machines provide a practical solution for allocating and sharing resources among processes
+and applications. While an operating system can strive to control resource sharing among processes,
+it's often challenging to guarantee specific allocations. Variability in process demands, hardware
+capabilities, and changing workloads can make it difficult for an operating system to guarantee
+consistent and predictable resource sharing. 
+
+Virtual machines, on the other hand, offer a more reliable way to allocate resources. By assigning a
+predetermined allocation of resources to a virtual machine, the processes within it can be assured
+of their resource availability without impacting other virtual machines. This property is especially
+crucial in cloud computing environments, where multiple users and applications share the same
+physical hardware.
+
+
+\subsection{Running the VM}
+Running virtual machines involves executing their operations on real hardware. Ideally, virtual and
+real machines share the same ISA (See \refto{subsec}{DEF}), simplifying execution. However, if they
+differ, performance may be compromised (more levels of indirection!). Virtual machine execution
+relies on direct execution whenever possible (See \refto{subsec}{LDE}), running VM activities
+directly on the CPU. When needed, virtual machine traps are used to switch from VM execution to the
+underlying host environment.
+
+
+
+
+
+\section{The Hypervisor}
+\definitionBegin{Hypervisor}
+The \textbf{hypervisor (virtual machine monitor [VMM])} is a controller that handles all virtual
+machines running on a physical machine.
+\definitionEnd
+
+Just as an operating system manages processes, the hypervisor manages virtual machines, ensuring
+their isolation, resource allocation, and efficient operation. Virtual machines run on top of the
+hypervisor, and they perform tasks just like any other software.
+
+When a virtual machine's operations require interaction with the physical hardware or a privileged
+operation, we trap into the hypervisor. The hypervisor then performs the required action, which
+could involve tasks such as managing device access, handling I/O operations, or switching between
+virtual machines.
+
+The hypervisor operates at a level lower than the guest operating systems within the virtual
+machines. It coordinates resource allocation, enforces isolation, and ensures that each virtual
+machine operates within its allocated resources. This enables efficient sharing of the underlying
+hardware among multiple virtual machines while preventing one virtual machine from negatively
+impacting others. 
+
+
+\corollaryBegin{VMM v. VM's OS}
+The VMM handles certain instructions that require privilege instead of allowing the VM to execute
+them directly for several reasons, including preventing unauthorized actions, ensuring resource
+allocation fairness, and maintaining overall system stability. The VMM's control over instructions
+allows it to make informed decisions about VM execution and resource utilization, even if the VM's
+operating system believes it's in control. 
+\corollaryEnd
+
+
+\subsection{The Core Problem}
+The core challenge in virtualization arises from the separation of control between the VM's OS and
+the VMM. While the OS believes it has control over managing segregated virtual memories and their
+associated page tables for applications, the VMM ultimately controls critical aspects of memory
+management, including CPU registers pointing to page tables. This separation creates complexities in
+maintaining isolation, security, and resource allocation.
+
+In a virtualized setup, each guest OS believes it has full control over its resources, including the
+management of segregated virtual memories for its applications. A key technique for achieving memory
+isolation is through the use of page tables. The OS maintains and manages these page tables,
+ensuring that each application operates within its allocated memory space.
+
+However, the critical issue emerges when considering the management of CPU registers that point to
+these page tables. These registers determine how memory addresses are translated from virtual to
+physical addresses. While the guest OS \textit{thinks} it controls these registers, the reality is
+that the VMM has the ultimate control over them.
+
+This separation of control creates a complex scenario. The guest OS believes it's managing memory
+segregation and page tables for its applications, yet the VMM controls the underlying hardware
+mechanisms. When the guest OS tries to modify page tables or interact with CPU registers, it might
+be unaware that its actions are mediated or even overridden by the VMM. 
+
+This challenge becomes more apparent in scenarios involving memory protection, resource allocation,
+and security. The guest OS might attempt to segregate applications' memory spaces, enforce access
+controls, or allocate memory resources. However, the VMM could intervene, redirecting memory
+accesses or allocating resources differently to ensure fair resource sharing among multiple VMs.
+
+\subsection{Virtualizing Memory}
+\abstractionBegin{Virtualizing Memory (Round II)}
+Virtualizing memory is a fundamental aspect of creating isolated environments for VM's
+while allowing them to operate as if they have direct access to physical memory. This illusion
+is achieved by introducing a layer of abstraction that involves both the VM's OS and the VMM.
+\abstractionEnd
+
+From the perspective of the VM's OS, it believes it has access to its own contiguous address space
+of physical memory. The OS provides its processes with virtual memory addresses that map to
+locations within this contiguous address space. These virtual addresses are used by processes for
+memory operations, and the virtual OS maintains page tables to manage virtual-to-physical
+translations.
+
+However, the physical memory addresses that the VM's OS and its processes use are actually
+\textit{machine addresses}, and they are distinct from the actual physical memory addresses of the
+underlying hardware.
+
+The VMM operates using the \textit{machine addresses} that are specific to each VM. When the VMM
+receives memory access requests from a VM, it translates these machine addresses to actual physical
+memory addresses within that VM's assigned memory space.
+
+Here, virtual-to-physical translation uses page tables and the paging hardware that the VMM shares
+with the VM's OS. The OS maintains its own page tables to map virtual memory addresses to machine
+addresses, and the VMM maintains additional page tables to map machine addresses to the true
+physical memory addresses!
+
+\corollaryBegin{Outcomes}
+Virtualizing memory introduces various outcomes that impact performance. TLB misses (See
+\refto{subsec}{TLB}) become more costly due to transitions between privileged and unprivileged
+modes, resulting in increased overhead and system code execution. Additionally, the VM requires
+extra paging data structures, adding further overhead. As a result, virtual machines are likely to
+experience performance penalties due to these factors.
+\corollaryEnd
+
+
+\subsection{Better Performance}
+To improve the performance of virtual machines, various strategies can be employed. These include
+(but are not limited to):
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Special Hardware Features: Modern CPUs often include specialized hardware
+  features\footnote{e.g. Virtualization Extensions, I/O Virtualization, and MMU enhancements.}
+  designed to address challenges associated with virtualization. These features help mitigate the
+  performance overhead introduced by virtualization-related processes.
+\item Paravirtualization: Unlike full virtualization, where guest OSes are unaware of the
+  virtualization, paravirtualization requires certain modifications to the guest OSes. These
+  modifications enable the guest OSes to communicate more directly with the VMM and take advantage of
+  its services. This collaboration eliminates some of the overhead associated with virtualization.
+\end{enumerate}
+
+
+
+
+
+\section{Cloud Computing}
 
 
 \end{document}
