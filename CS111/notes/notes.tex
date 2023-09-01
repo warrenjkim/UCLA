@@ -6548,6 +6548,7 @@ operating system, we're pretty toast from the get go.
 
 
 \section{Authentication and Authorization}
+\label{sect:AUTH}
 \definitionBegin{Authentication and Authorization}
 \textbf{Authentication} is the process of verifying the identity of a party seeking access.
 \tcblower
@@ -6697,6 +6698,7 @@ an operating system.
 
 
 \subsection{Access Control List}
+\label{subsec:ACL}
 Access Control Lists (ACL's) are a mechanism used in operating systems for managing and enforcing
 access control. Each protected object (e.g. a file or resource) is associated with a single list
 maintained by the OS. This list contains entries specifying which users or groups are allowed to
@@ -6870,6 +6872,7 @@ due to its longer key lengths.
 
 
 \subsection{Asymmetric Cryptosystems}
+\label{subsec:ENCR}
 Asymmetric cryptosystems (public key cryptography [PK]), are cryptographic systems that
 utilize different keys for encryption and decryption. This allows secure communication and
 information exchange. Encryption is performed using a public key ($K_E$), and decryption is done using
@@ -7162,6 +7165,894 @@ of servers we have to manage.
 
 
 
+
+\section{Cloud Computing}
+Cloud computing represents the latest evolution of distributed computing, offering a versatile
+platform for various types of applications and services. While theoretically, anything can run in a
+cloud, the complexities of general distributed computing have led to the development of specialized
+tools and methods that facilitate specific types of parallel and distributed processing. These
+tools, such as map-reduce and horizontal scaling, enable users to leverage cloud resources without
+requiring them to be experts in distributed systems.
+
+\subsection{Map-Reduce}
+Map-reduce simplifies processing large datasets across a distributed computing environment. There
+are three key steps in a map-reduce:
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Map: The input data is divided into smaller chunks, and a specific operation/transformation
+  (the \textit{map} function) is applied to each chunk independently. The result is a set of
+  key-value pairs.
+\item Shuffle/Sort: The key-value pairs are grouped by keys and sorted.
+\item Reduce: A specific operation (the \textit{reduce} function) is applied to the grouped data
+  with the same key. The results are combined into the final output.
+\end{enumerate}
+
+\corollaryBegin{Benefits}
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Parallel processing: Map-reduce allows for parallel processing of larger datasets,
+  distributing the workload across multiple nodes.
+\item Scalability: We can efficiently handle datasets using map-reduce as they grow.
+\item Fault tolerance: If nodes fail during processing, we can just reassign the task to another
+  node.
+\item Simplicity: Map-reduce will abstract much of the complexity of distributed systems.
+\end{enumerate}
+\corollaryEnd
+
+\exampleBegin{Counting Cards}
+Assume we have 64 MB of text data, and we want to count how many times each word occurs in the
+text. We can use a map-reduce, dividing the text data into 4 chunks of 16 MB and assign each chunk
+to one processor. Each processor will then perform the map function \textit{count\_words()}. Then,
+we have one reduce node that combines all of the data, giving us our final output!
+\exampleEnd
+
+
+\corollaryBegin{Synchronization}
+In map-reduce, synchronization plays a crucial role in ensuring the proper flow of data between the
+map and reduce phases. Each map node generates output files for each reduce node, and these files
+are produced atomically.
+
+However, the reduce node cannot begin processing this data until the entire file is written,
+creating a synchronization point that forces coordination between the map and reduce phases!
+\corollaryEnd
+
+
+\subsection{Cloud Computing and Horizontal Scalability}
+Cloud computing and horizontal scaling are a perfect match, allowing organizations to efficiently
+manage their computing resources for web services. By leveraging cloud resources, businesses can
+rent nodes to serve as web servers and easily adjust their capacity based on demand. This approach
+eliminates the need to purchase new hardware, simplifies administration, and provides flexibility in
+scaling resources up and down as needed. 
+
+
+\subsection{Cloud Computing and SysAdmin}
+While cloud computing offers many advantages, it's important to note that it's not entirely without
+issues, particularly concerning sysadmin tasks. While cloud providers handle hardware management and
+infrastructure maintenance, certain aspects of internal administration, such as updating software
+and managing configurations, still remain the responsibility of the organization using the cloud
+services.
+
+
+\subsection{Cloud Storage}
+Cloud storage is a natural progression from the client/server model, where all data services are
+accessed using standard protocols. It involves an encapsulation of servers and resources, presenting
+them as abstract and logical entities.
+
+
+\exampleBegin{On a Cloud}
+A cloud service could offer a file system or object store, and these resources can be managed
+transparently for users. This often includes features like mirroring and migration that happen
+behind the scenes to ensure high availability.
+\exampleEnd
+
+Cloud storage operates with the goal of providing simplicity, scalability, high availability, and
+cost efficiency. With a unified and highly available IP address for accessing various services,
+users can interact with their data regardless of its physical location or the specifics of
+underlying servers. The protocols used in cloud storage are often optimized for wide-area networks
+(WAN's), ensuring efficient data transfer and access over the internet.
+
+Cloud storage is \textit{simple} in terms of accessing and managing resources, \textit{scalable},
+highly available, and cheaper compared to traditional data storage solutions. This approach has
+become a compelling business model for many organizations, offering them the ability to offload
+storage management while focusing on their core business functions.
+
+
+
+
+
+\section{Remote Procedure Calls}
+Remote Procedure Calls (RPC) is a method for building distributed programs in which the concept of
+procedure calls is extended across a network. It allows programs to call functions or procedures
+that reside on remote servers as if they were local, simplifying distributed programming. However,
+there are some limitations to consider, such as the absence of implicit parameters/returns and the
+potential performance overhead compared to local procedure calls. 
+
+\exampleBegin{Client-Server}
+RPC's are commonly used in client-server architectures, where the client requests services or
+functions from remote servers!
+\exampleEnd
+
+
+\subsection{Components}
+RPC concepts involve several components and processes that facilitate communication between the
+client and server in a distributed environment:
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Interface specification: The interface spec outlines the methods, parameter types, and return
+  types available for RPC's, and defines the contract between the client and server.
+\item eXternal Data Representation (XDR): XDR provides a \textit{mechanism} for representing data
+  types in a machine-independent format to ensure that data can be transferred between systems with
+  different architectures.
+\item Client Stub: A client stub acts as a proxy on the client-side for a method in the API
+  provided by the remote server. When a client invokes a method, the stub serialize the method
+  parameters into XDR format and sends a request to the server.
+\item Server Stub (Skeleton): A server stub acts as a recipient for the incoming API invocations
+  from clients. Upon receiving a request, the stub will deserialize the data, invoke the method, and
+  serialize the response into XDR format before transmitting the response back to the client.
+\end{enumerate}
+
+
+\subsection{Key Features}
+RPC provides key features that simplify distributed programming by allowing client applications to
+call remote procedures as if they were local. 
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Transparent integration: Client applications invoke remote procedures as if they were
+  local, hiding the complexities of network communication.
+\item Isolation: The details of RPC implementation are encapsulated within the local procedures;
+  i.e. clients need not be aware of the underlying RPC mechanisms.
+\item Ignorance: Clients need not know about the specifics of RPC handling.
+\item Automatic generation: Much of RPC handling is automated via RPC tools.
+\item Interface specification: The interface spec provides a contract between the client and server.
+\end{enumerate}
+
+\corollaryBegin{Issues}
+While RPC simplifies distributed programming, it has limitations that need to be addressed for more
+complex scenarios. These limitations include: 
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Client/Server Binding Model: Basic RPC assumes a client/server binding model where the
+  client expects a live connection to the server, which can limit the flexibility of dynamic
+  connections.
+\item Threading Model Implementation: Basic RPC typically uses a single thread to service
+  requests, handling one request at a time. For scalability, numerous worker threads (one per request)
+  are needed.
+\item Limited Failure Handling: Basic RPC offers limited failure handling capabilities, so clients
+  need to manage timeouts and recovery themselves.
+\item Limited Consistency Support: Basic RPC only ensures consistency between the calling client
+  and the called server. In more complex scenarios involving multiple clients and servers, this can
+  lead to challenges in maintaining overall consistency.
+\end{enumerate}
+Higher-level abstractions like Microsoft DCOM, Java RMI, DRb, and Pyro provide improved solutions
+for handling these challenges.
+\corollaryEnd
+
+
+
+
+
+\section{Distributed Synchronization}
+\definitionBegin{Spatial and Temporal Separation}
+In distributed systems, different processes or components run on separate machines or nodes,
+resulting in \textbf{spatial separation}, which prevents the use of traditional shared
+memory synchronization mechanisms, like atomic instruction locks, which rely on shared memory.
+\tcblower
+In a distributed environment, there is no globally shared clock, making it challenging to establish
+a total order of events, or \textbf{temporal separation}. Events that occur simultaneously or
+sequentially in different parts of the distributed system might not have a clear
+before/simultaneous/after relationship due to varying clock speeds and network delays.
+\definitionEnd
+
+Distributed synchronization in a distributed computing environment presents several challenges due
+to spatial separation, temporal separation, and \textit{independent modes of
+failure}\footnote{Independent modes of failure: Nodes can fail independently of each other, which
+can create issues in maintaining synchronization, as one component might fail while others continue
+to operate.}. These challenges include the lack of shared memory for locks, difficulties in
+establishing a total order of events, and the possibility of one partner failing while others
+continue to operate.
+
+
+\subsection{Leases}
+Leases are a mechanism used to implement more robust locks in distributed systems. They are obtained
+from a resource manager and provide a client with an exclusive right to update a shared
+resource. Leases are \textit{time-limited} and must be passed to the server for updates. This approach
+handles various failures, including process failures, client node failures, server node failures,
+and network failures. 
+
+
+\corollaryBegin{Lock Breaking and Recovery}
+Lock breaking and recovery involve handling expired leases, revoking access based on lease validity,
+and ensuring the consistency of shared resources. When a lease expires, operations using a ``stale
+cookie'' are rejected, and a new lease can be issued. The challenge is to restore the shared
+resource to its last consistent state, which may require rolling back to the state prior to the
+aborted lease. Implementing atomic transactions is crucial to maintaining the integrity of the
+resource.
+\corollaryEnd
+
+
+\subsection{Distributed Consensus}
+Distributed consensus involves achieving simultaneous unanimous agreement among distributed nodes,
+even in the presence of failures. The requirements for consensus include agreement, termination,
+validity, and integrity, with the desire for bounded time.
+
+While consensus is provably impossible in fully general cases, it can be achieved in useful special
+cases or when some requirements are relaxed. Consensus algorithms are often complex and
+time-consuming to converge. They are typically used sparingly, such as for electing a leader who
+then makes decisions for the group.
+
+
+
+
+
+\section{Security}
+Distributed security presents significant challenges due to the complex and interconnected nature of
+distributed systems. We provide some reasons why distributed security is harder compared to securing
+single systems:
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Network Boundaries and Trust: Network activities occur outside the boundaries of an individual
+  operating system. This poses challenges in guaranteeing privacy and integrity since we can't
+  entirely trust the environment where these activities take place.
+\item Authentication Complexity: Authentication becomes more challenging in distributed
+  systems; not all possible agents or users may be part of a local password file or authentication
+  database. Distributed environments involve multiple nodes, each with their own authentication
+  mechanisms.
+\item Insecure Communication Channels: Distributed systems often rely on networks for
+  communication. The wire connecting users to the system may be insecure, vulnerable to eavesdropping,
+  replay attacks, and man-in-the-middle attacks. Securing data transmission over such channels becomes
+  critical.
+\item Coordination Difficulties: Coordinating security measures across distributed nodes can be
+  complex; ensuring that all nodes adhere to security protocols, policies, and updates can be
+  challenging due to differing configurations and management.
+\item Honest Partners and Trust: Even with honest and well-intentioned partners, coordinating
+  security across distributed systems can be tough.
+\item Internet's Open Nature: The internet is an open network accessible to all. Many systems and
+  services on it try to serve a diverse range of users, and the core internet itself doesn't
+  make judgments on what is acceptable behavior, which can lead to increased vulnerabilities.
+\item Unpredictable Environments: Distributed systems often operate in dynamic and unpredictable
+  environments. Users and resources may be spread across different geographical locations, making it
+  difficult to ensure consistent security measures.
+\item Complex Attack Vectors: Distributed systems provide attackers with multiple points of
+  entry, increasing the potential attack surface. Coordinated attacks that exploit vulnerabilities
+  across nodes can be more difficult to prevent and detect.
+\end{enumerate}
+
+
+\subsection{Goals}
+\definitionBegin{Secure Conversations}
+\textbf{Secure conversations} ensure \textit{privacy}\footnote{Privacy: Only the intended parties
+  involved in as conversation can understand the content.} and
+\textit{integrity}\footnote{Integrity: The content of the messages remains unchanged during
+  transmission, and no unauthorized modifications occur.}.
+\definitionEnd
+
+\definitionBegin{Positive Identification}
+\textbf{Positive identification} of parties involves correctly authenticating parties, ensuring that
+forgery/replay is impossible, and preventing repudiation.
+\definitionEnd
+
+We want to protect data, communications, and interactions within a networked environment by ensuring
+secure conversations, achieving positive identification of parties involved, and maintaining
+availability of network resources.
+
+
+\corollaryBegin{Elements}
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Cryptography:
+  \begin{itemize}[label=\textit{-}]
+  \item Symmetric Cryptography: Uses a single secret key for both encryption and
+    decryption during data transport between parties.
+  \item Public Key Cryptography: Involves a pair of keys—a public key for encryption and a
+    private key for decryption. Used for authentication and secure key exchange.
+  \item Cryptographic Hashes: Generates fixed-length hashes to detect changes in data,
+    even from small alterations.
+  \end{itemize}
+\item Digital Signatures and Public Key Certificates:
+  \begin{itemize}[label=\textit{-}]
+  \item Digital Signatures: Created using the sender's private key, they authenticate the
+    sender and ensure message integrity. Verified with the sender's public key.
+  \item Public Key Certificates: Also known as digital certificates, they verify the
+    authenticity of a public key owner. Issued by trusted certificate authorities (CAs).
+  \end{itemize}
+\item Filtering Technologies:
+  \begin{itemize}[label=\textit{-}]
+  \item Firewalls: Act as barriers between trusted internal networks and untrusted
+    external networks. Enforce access control and block unauthorized access attempts.
+  \item Intrusion Detection Systems (IDS): Monitor network traffic for suspicious
+    activities and alert administrators when detected.
+  \item Intrusion Prevention Systems (IPS): Similar to IDS, IPS detects and takes action
+    to prevent unauthorized activities.
+  \end{itemize}
+\item Access Controls:
+  \begin{itemize}[label=\textit{-}]
+  \item Authentication: Ensures users' identity before granting network resource access.
+  \item Authorization: Determines permissions and privileges for authenticated
+    users/entities.
+  \item Account Management: Involves managing user accounts, enforcing strong passwords,
+    and maintaining access restrictions.
+  \end{itemize}
+\item Virtual Private Networks (VPNs): Create secure, encrypted communication channels over
+  untrusted networks, ensuring data privacy and security between remote locations.
+\item Network Segmentation: Divides a network into smaller segments to limit potential attack
+  spread, enhancing security by restricting lateral movement of threats.
+\end{enumerate}
+\corollaryEnd
+
+
+\subsection{Cryptographic Hashes}
+Cryptographic hashes ensure data integrity and detect any unauthorized changes/tampering that may
+have occurred during data transmission/storage.
+
+While basic \textit{check-sums}\footnote{A check-sum is calculated by adding up all the bytes in a
+  block of data, and the sum is sent along with the data.} (e.g. parity, CRC, and ECC) are used to
+identify data corruption during transmission, they can be weak and vulnerable to tampering.
+
+In contrast, \textit{cryptographic hashes}\footnote{Before transmitting, the sender calculates the
+  hash of the data and sends both the data and the hash to the receiver, who then recalculates the
+  hash of the received data and compares it with the received hash. If they match, it indicates that
+  the data hasn't been tampered with.} (e.g. SHA-256, SHA-3, and MD5) provide a stronger form of
+tamper detection. These hashes generate unique fixed-length values based on the content of the input
+data. We like cryptographic hashes since they are \textit{relatively} unique, one-way, and collision
+resistant.
+
+
+\subsection{Secure Hash Transport}
+Since cryptographic hashes aren't keyed, anyone, including attackers, can compute them. To ensure
+the integrity and authenticity of the data, we want to transmit hashes \textit{securely}. We can do
+this in various ways, including:
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Encryption: We can encrypt the hash using a secure encryption algorithm (See \refto{subsec}{ENCR}).
+\item Secure channels: If we have a secure channel to send it through, send it.
+\end{enumerate}
+
+
+\subsection{Secure Socket Layer}
+The Secure Socket Layer (SSL) is designed to secure network communication, addressing concerns of
+privacy, integrity, and authentication. It is built on top of existing socket-based IPC
+mechanisms. SSL achieves its goals through the following key components:
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Secure link establishment: We establish a secure connection between two parties over an
+  insecure network, ensuring \textit{privacy} and \textit{integrity}.
+\item Certificate-based Server Authentication: We use certificates to authenticate the identity of
+  servers to clients, ensuring \textit{positive identification}.
+\item Optional Client Authentication: While server authentication is standard, we can also
+  authenticate clients.
+\item Distribution of symmetric session key: We leverage PK cryptography to distribute unique
+  symmetric session keys for each connection.
+\item Symmetric Cryptography: Once the session key is established, we switch to symmetric
+  cryptography for actual data transport since it's more efficient.
+\end{enumerate}
+
+
+\subsection{Digital Signature}
+Digital signatures ensure the authenticity, integrity, and non-repudiation of a message. By
+encrypting a message using our private key, we effectively ``sign'' it, providing authentication and
+source verification, integrity, and assurance of non-repudiation.
+
+While signing the entire message would be ideal, it's not worth the overhead. Instead, we use a
+digital signature algorithm that combines the security of asymmetric encryption with the efficiency
+of a cryptographic hash, offering a balance between security and performance. Here, the recipient
+can verify the signature by decrypting the encrypted one with the public key and comparing them.
+
+
+\corollaryBegin{Signed Load Modules}
+Signed load modules are a \textit{mechanism} to establish trust and ensure the authenticity of
+software programs in the face of potential security threats. This is especially relevant in
+scenarios where users need to verify the legitimacy of software updates or installations, protecting
+against the possibility of receiving malicious code disguised as legitimate software. \\
+
+We do this by designating a certification authority (e.g. Microsoft, Apple, etc.) who will verify
+the reliability of the software with a public key to ensure that the module is certified and that it
+hasn't been tampered with!
+\corollaryEnd
+
+
+\subsection{Public Key Certificate}
+A PK certificate is a data structure used in public key cryptography to associate an entity's
+identity with its public key. Certificates serve as a way to establish trust in the authenticity of
+public keys, ensuring that we are communicating with the real deal. They contain:
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Identity information: Name, organization, etc.
+\item Public key: The actual public key of the entity.
+\item Digital signature: Contains the signature with the private key.
+\item Validity period: How long the certificate is valid for.
+\item Extensions: Any miscellaneous data.
+\end{enumerate}
+
+The certificate is signed by a trusted certificate authority, which acts as a third-party verifier
+of the certificate's contents. This signature is crucial for establishing trust in the
+certificate. When you receive a certificate, you can verify its authenticity by checking the CA's
+digital signature using the CA's public key. 
+
+
+
+
+
+
+
+
+
+
+\chapter{Remote Data Access}
+\section{Overview}
+Sometimes data we want isn't on our machines, whether it be a file, database, web page, etc. but we
+want to access it anyways. To do that, we need to set some basic goals:
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Transparency: The distributed file system should present a seamless user and application
+  experience, where remote files are indistinguishable from local ones; clients can access files
+  from anywhere on the network without needing to know their physical distribution.
+\item Performance: The system must ensure that file access performance matches or surpasses local
+  file access speeds.
+\item Scalability: The system's performance should remain consistent as more clients join; i.e. it
+should handle increased load without significant performance degradation, ensuring smooth operation
+regardless of client numbers.
+\item Cost: The distributed file system should demand lower capital investment for storage compared
+  to local disks per client.
+\item Operational Cost: Minimizing ongoing administration, maintenance, and monitoring efforts for
+  the distributed file system is crucial.
+\item Capacity: The distributed file system should create the impression of limitless storage
+  capacity; clients should be able to store data without interruptions caused by disk space
+  limitations.
+\item Availability: The distributed file system must ensure high availability, ideally achieving
+  100\% uptime.
+\end{enumerate}
+
+
+\subsection{Key Characteristics}
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item APIs and Transparency:
+  \begin{itemize}[label=\textit{-}]
+  \item API's define user and application interactions with remote data. A well-designed API
+    provides a consistent interface, making remote data access feel like working with local data.
+  \item Transparency ensures seamless integration of remote data into the local
+    environment. The goal is to present remote data so that it's indistinguishable from local data for
+    users and applications.
+  \end{itemize}
+\item Performance, Robustness, and Synchronization:
+  \begin{itemize}[label=\textit{-}]
+  \item Performance ensures efficient and responsive access to remote data, similar to
+    local data. Optimizing network communication and data retrieval minimizes latency.
+  \item Robustness focuses on reliability and resilience of remote data access. Solutions
+    should handle errors, interruptions, and failures gracefully to maintain data integrity and
+    availability.
+  \item Synchronization deals with consistency of remote data when accessed and modified
+    by multiple clients simultaneously. Mechanisms coordinate changes to prevent conflicts and data
+    corruption.
+  \end{itemize}
+\item Architecture: The architecture of a remote data access solution defines its integration
+  into client and server systems. It should offer an organized and modular approach suitable for
+  various software environments.
+\item Protocol and Work Partitioning:
+  \begin{itemize}[label=\textit{-}]
+  \item The protocol defines client-server communication. Efficient and secure protocols
+    are essential for data integrity and confidentiality during transmission.
+  \item Work partitioning involves task division between client and server. This covers
+    data processing, management, caching, and distribution decisions.
+  \end{itemize}
+\end{enumerate}
+
+
+
+
+
+\section{Remote File Access}
+
+
+\subsection{Remote File Transfer}
+Remote file transfer involves the movement of files between different systems, whether they are
+geographically distant or located on the same network. There are various methods and tools for
+performing remote file transfers, each with its own advantages and disadvantages.
+
+In explicit remote file transfer, we initiate the file transfer using specific commands or tools
+(often OS-specific [e.g. \texttt{scp}]). Conversely, implicit remote file transfer occurs without
+direct user interaction (e.g. transferring files via web browsers [using HTTP]).
+
+\begin{tcbraster}[raster columns=2, raster equal height, raster force size=false]
+  \begin{tcolorbox}[colback=green!5!white,colframe=black!75!green,title=Advantages]
+    \begin{enumerate}[label=\textit{(\roman*)}]
+    \item Efficient: Explicit transfer tools are often optimized and \textit{fast}.
+    \item Flexible: Users have control over the files to transfer and their destination.
+    \item Secure: Secure transfer options (e.g. SFTP, HTTPS) ensure data confidentiality.
+    \end{enumerate}
+  \end{tcolorbox}
+  \begin{tcolorbox}[colback=red!5!white,colframe=black!40!red,title=Disadvantages]
+    \begin{enumerate}[label=\textit{(\roman*)}]
+    \item Latency: Depending on the network/method used, there may be noticeable latency.
+    \item Lack of transparency: Some methods are not very transparent.
+    \end{enumerate}
+  \end{tcolorbox}
+\end{tcbraster}
+
+
+\subsection{Remote Disk Access}
+Remote disk access aims to provide complete transparency in accessing files located on remote
+systems as if they were local. The goal is to enable all normal file system operations and allow
+programs to work seamlessly with remote files without requiring significant changes or awareness of
+the remote nature. Here are a couple of typical architectures for achieving remote disk access: 
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Storage Area Network (SAN): Here, we use protocols like SCSI over fibre channel, a high-speed
+  network technology designed for data storage and capable of delivering fast and reliable data
+  transfer.
+\item Internet Small Computer System Interface (iSCSI): This approach allows remote disk access over
+  standard ethernet networks using the SCSI protocol and  offers a balance between performance,
+  cost, and scalability.
+\end{enumerate}
+
+
+\subsection{Remote File Access}
+The goal of remote file access is to provide a transparent experience by allowing standard file
+system operations on remote files. This architecture uses a client-side proxy file system to
+intercept local file operations and translate them into network requests. On the server side, a
+daemon processes these requests and translates them into real file system operations. This approach
+ensures that multiple clients can access and share remote files while maintaining performance,
+availability, and scalability.
+
+\begin{tcbraster}[raster columns=2, raster equal height, raster force size=false]
+  \begin{tcolorbox}[colback=green!5!white,colframe=black!75!green,title=Advantages]
+    \begin{enumerate}[label=\textit{(\roman*)}]
+    \item Application Level Transparency: Remote file access achieves high transparency by making
+      remote files seem like local ones.
+    \item Functional Encapsulation: The approach encapsulates file access functionality, enabling
+      clients to interact with remote files using familiar file system APIs, simplifying management and
+      maintenance.
+    \item Multi-Client File Sharing: Remote file access supports simultaneous file sharing among
+      multiple clients.
+    \item Potential for Good Performance and Robustness: When properly implemented, remote file
+      access can offer solid performance and robustness.
+    \end{enumerate}
+  \end{tcolorbox}
+  \begin{tcolorbox}[colback=red!5!white,colframe=black!40!red,title=Disadvantages]
+    \begin{enumerate}[label=\textit{(\roman*)}]
+    \item OS Implementation: Integrating the client-side proxy file system involves intercepting
+      and translating file operations, with a portion of the implementation integrated into the operating
+      system.
+    \item Complexity: Both the client-side proxy file system and the server-side daemon can be
+      hard to develop and maintain.
+    \item Ideal for Client/Server Storage: This approach is well-suited for client/server storage
+      scenarios, but for more diverse and distributed use cases, additional considerations might be
+      necessary.
+    \end{enumerate}
+  \end{tcolorbox}
+\end{tcbraster}
+
+
+\subsection{Remote v. Distributed File Systems}
+\begin{tcbraster}[raster columns=2, raster equal height, raster force size=false]
+  \begin{tcolorbox}[colback=teal!5!white,colframe=black!75!teal,title=Remote]
+    In remote file access systems, the client communicates primarily with a single primary server
+    for a specific file system. Secondary servers may take over if the primary server fails. This
+    approach is known for its simplicity, as the client's interactions are mainly directed to a
+    single server, making it easier to manage and maintain. 
+  \end{tcolorbox}
+  \begin{tcolorbox}[colback=yellow!5!white,colframe=black!75!yellow,title=Distributed]
+    Distributed file systems distribute data across multiple servers. Clients
+    can communicate with many or all of these servers directly. This architecture offers advantages
+    such as improved performance and scalability, as clients can access data from multiple sources
+    in parallel. However, distributed file systems tend to be more complex due to the need for
+    coordination and synchronization among distributed servers. 
+  \end{tcolorbox}
+\end{tcbraster}
+
+\subsection{Security}
+Security for remote file systems is a crucial concern, and it encompasses several major issues that
+need to be addressed effectively. One primary challenge is ensuring the privacy and integrity of
+data as it traverses the network. To counter this, we usually encrypt all data that is
+transmitted over the network to ensure that it remains unreadable and tamper-proof.
+
+Additionally, we have to deal with the issue of correctly authenticating remote users. Ensuring that
+users are who they claim to be is essential to prevent unauthorized access to sensitive
+data. Various approaches can be taken to achieve this, ranging from password-based authentication to
+more robust methods like public key cryptography and MFA (See \refto{sect}{AUTH}). The chosen method
+should align with the security requirements and risk profile of the system.
+
+Finally, evaluating the trustworthiness of remote sites is critical for maintaining a secure
+environment. Remote file systems may be accessed from various locations, and ensuring the legitimacy
+and security posture of these remote sites is vital. Different approaches can be employed, such as
+using secure connections (like VPNs), relying on trusted certificates, or establishing secure
+tunnels to access remote resources. 
+
+
+
+
+
+\section{Authentication}
+Let's take a look at more authentication models!
+
+\subsection{Peer-to-Peer}
+Peer-to-peer authentication is a model where all the nodes participating in a network are considered
+trusted peers, and authentication and authorization are primarily managed on the client side. In
+this approach, all users are known to all systems within the network, and every system is trusted to
+enforce access control for its resources. 
+
+\corollaryBegin{Dis/Advantages}
+While the peer-to-peer authentication model offers simplicity and ease of implementation, it lacks
+the flexibility to handle security challenges posed by untrusted nodes, heterogeneous environments,
+and scalability concerns.
+\corollaryEnd
+
+
+\subsection{Server}
+Server-authenticated approaches involve a client agent authenticating itself to each individual
+server it interacts with. The client's authentication is typically used to establish the entire
+session's security context. Upon successful authentication, the server produces credentials that are
+used for authorization purposes during the session. 
+
+\corollaryBegin{Dis/Advantages}
+server-authenticated approaches provide a straightforward way to establish secure sessions between
+clients and servers, but they may face limitations when it comes to diverse OS environments,
+scalability, and fail-over capabilities.
+\corollaryEnd
+
+
+\subsection{Domain}
+Domain authentication approaches involve the independent authentication of both the client and the
+server in a distributed system; each entity within the system independently authenticates itself to
+an \textit{authentication service} that it knows and trusts. This ensures that each client and server
+interacts with a central authority to validate their identity.
+
+\asideBegin{Authentication Services}
+An authentication service within this model may issue signed ``tickets'' to both clients and
+servers, which serve as proofs of authentication and authorization, providing assurance of
+the identity and rights of the parties involved. These tickets can also have attributes such as
+revocability or timed leases to enforce access control policies. 
+\asideEnd
+
+One of the primary advantages of this approach is that it enables the establishment of secure two-way
+sessions between clients and servers, ensuring privacy.
+
+
+
+
+
+\section{Distributed Authorization}
+Distributed authorization encompasses different methods to control and manage access rights to
+resources in a distributed system. Two common approaches involve the use of \textit{credentials} and
+\textit{capabilities}, each offering distinct advantages in different scenarios. 
+
+Credentials are useful when fine-grained access control is required, and authorization decisions may
+vary based on different resources. Capabilities, on the other hand, are beneficial when access
+rights can be granted all-at-once and need to be managed in a distributed environment without
+exposing user identities.
+
+\subsection{Credentials}
+In this approach, after a user is authenticated by the authentication service, the service returns
+credentials that attest to the user's identity. The server hosting the resource then checks these
+credentials against its ACL (See \refto{subsec}{ACL}) to determine if the user has the necessary
+permissions to access the requested resource.
+
+The main advantage of this approach is that the authentication service need not be aware of the
+specifics of access control for each resource; i.e. it provides a way to handle subsequent
+authorization decisions on a per-resource basis.
+
+
+\subsection{Capabilities}
+Capabilities are typically cryptographically signed to ensure their authenticity. When accessing a
+resource, the user presents the appropriate capability, which the server can verify through the
+signature.
+
+This approach has the advantage of decoupling the servers from having to know about the individual
+clients' identity, making it more scalable and secure.
+
+
+
+
+
+\section{Reliability and Availability}
+\definitionBegin{Reliability and Availability}
+\textbf{Reliability} is the degree of assurance that a service will work properly without errors or
+disruptions.
+\tcblower
+\textbf{Availability} is the degree of assurance that a service is accessible and operational
+whenever it is needed.
+\definitionEnd
+
+
+\subsection{Reliability}
+In distributed systems, achieving reliability can be challenging due to the potential for partial
+failures, which occur when some components or nodes within the system experience issues
+while others continue to function. Ensuring reliability involves designing the system to handle
+these failures gracefully and prevent data loss\footnote{Techniques such as replication, where data is
+stored on multiple nodes, can help maintain data integrity even in the presence of failures.}.
+
+
+\subsubsection{Redundancy}
+Redundancy can be implemented using techniques such as RAID (Redundant Array of Independent Disks),
+where data is spread across multiple disks with mirroring, parity, or erasure coding for fault
+tolerance. Redundancy helps ensure that even if one disk or server fails, the data remains
+accessible.
+
+\subsubsection{Data Replication}
+Copies of data can be maintained on multiple servers or locations. Replicating data across different
+nodes ensures that if one server fails, another copy of the data is still available, minimizing the
+impact of failures on users' access to files. 
+
+
+\subsubsection{Backup/Restore}
+Regularly backing up data and creating snapshots of file systems can be a reliable strategy for data
+recovery in case of catastrophic failures. Backups allow for restoring data to a previous state
+before a failure occurred. 
+
+
+\subsubsection{Automatic Recovery}
+In any case, automated mechanisms should be implemented to detect failures and trigger a recovery process.
+
+
+\subsection{Availability}
+Availability and fail-over\footnote{Fail-over: Transferring the workload and requests from a failed
+  server to another functional server to maintain service availability.} are critical aspects of
+ensuring continuous service in distributed systems, particularly in the context of remote file
+access.
+
+
+\subsubsection{Data Mirroring}
+To ensure availability, data is often mirrored between primary and secondary servers. The secondary
+server maintains a copy of the data, allowing for seamless transition in case the primary server
+fails.
+
+
+\subsubsection{Failure Detection}
+Mechanisms are required to detect when a primary server becomes unavailable. Heartbeat mechanisms,
+monitoring, and health checks can be used to promptly identify server failures.
+
+
+\subsubsection{Client Fail-Over}
+Clients must be aware of both primary and secondary servers and be able to switch to the secondary
+server seamlessly when the primary server fails. This may involve using DNS-based load balancing or
+other strategies to direct clients to the appropriate server. 
+
+
+\subsubsection{Session State}
+During fail-over, the session state must be reestablished on the secondary server. This includes
+re-authenticating the client, restoring session parameters (e.g., working directory, read/write
+offsets), and any other relevant context. 
+
+\corollaryBegin{Data Consistency}
+we also need to ensure that data remains consistent across primary and secondary servers. Techniques
+like data replication and synchronization ensure that the secondary server has the most up-to-date
+information.
+\corollaryEnd
+
+
+\subsubsection{Retransmission/Timeouts}
+In-progress operations that were initiated on the primary server but not yet completed need to be
+retransmitted on the secondary server. Clients should be prepared to handle timeouts and retransmit
+requests until the operation is successfully completed. 
+
+\corollaryBegin{Responsibility}
+Until the secondary server acknowledges the successful completion of a write operation, the client
+may need to maintain responsibility for the data. This ensures data consistency and avoids data loss
+during fail-over.
+\corollaryEnd
+
+
+
+
+
+\section{Performance}
+To characterize the performance of reliability and availability, metrics such as Mean Time Between
+Failures (MTBF) and Mean Time To Recover (MTTR) are often used. MTBF measures the average time
+between system failures, while MTTR measures the average time it takes to recover from a failure. A
+high MTBF and a low MTTR are indicative of a reliable and available system. 
+
+\subsection{Bandwidth}
+The underlying storage devices of the remote file system, whether they are traditional hard drives,
+SSD's, or distributed storage solutions, play a significant role in determining overall
+performance. The bandwidth and latency of these devices affect how quickly data can be read or
+written. 
+
+
+\subsection{Reads}
+During a network read, the client application requests data, which is then sent to the remote
+server. The server processes the request, fetches the data from storage, and sends it back to the
+client.
+
+To enhance read performance, strategies like caching, prefetching, parallelism, optimized
+protocols, data compression, and efficient server-side retrieval can be employed. These techniques
+help reduce network latency, optimize data transfer, and improve overall responsiveness of
+applications accessing remote files.
+
+\asideBegin{Caching}
+In client-side caching, frequently accessed data from the server is stored locally on the client's
+side. This eliminates the need to wait for remote read requests, reduces network traffic, and eases
+the load on the server for each client. \\
+
+Server-side caching operates similarly to caching in single-machine environments, helping reduce
+disk-related delays for data retrieval. While server-side caching can alleviate disk-related issues,
+it doesn't directly address network-related problems. \\
+
+Whole file caching, as seen in systems like AFS, involves caching entire files locally. This
+approach is suitable when network latency is higher, allowing for entire files to be pulled and
+stored in a local cache-only file system. This enables satisfying early reads from the cache before
+the complete file arrives. \\
+
+Block caching, commonly seen in NFS, involves caching smaller blocks of data. This approach is often
+integrated into a shared block cache, enabling multiple clients to access cached blocks. \\
+
+Choosing between these caching methods depends on factors such as the access patterns of the
+application, the network environment, and the available resources.
+\asideEnd
+
+
+\subsection{Writes}
+When clients perform write operations, the data must be transmitted to the server(s) responsible for
+storing the data. This raises questions about data consistency, particularly when other clients may
+have cached the same data.
+
+Avoiding write caching can be resource-intensive since writes would need to traverse the network and
+possibly be acknowledged by the server, affecting overall performance.
+
+Various caching approaches can enhance performance, but they can also introduce challenges in
+maintaining data consistency across multiple clients and servers.
+
+\asideBegin{Caching}
+Write-back caches create the appearance of rapid writes by aggregating small write requests into
+larger ones. This reduces the number of network and disk writes, enhancing efficiency. Additionally,
+it allows for local read-after-write consistency, where clients can quickly access the data they've
+written. \\
+
+In whole-file updates, write requests are not immediately transmitted to the server. Instead, writes
+are accumulated and sent during a \texttt{close} or \texttt{fsync} operation. This approach
+minimizes multiple updates to the same file and supports atomic updates, ensuring close-to-open
+consistency. However, it might introduce challenges related to data integrity and potential
+inconsistencies, particularly if files are deleted before they are written.
+\asideEnd
+
+
+\section{Cost of Consistency}
+Maintaining consistency in caching within multi-writer distributed systems introduces challenges due
+to the need to synchronize changes across various cached copies. In a single-writer system,
+enforcing caching is simpler as all writes are funneled through the cache. However, in multi-writer
+scenarios, complexities arise when dealing with updates to local cached copies. 
+
+The cost of achieving consistency in multi-writer distributed caching lies in the increased
+complexity of managing updates, synchronizing data across caches, and ensuring that all clients
+perceive a coherent and up-to-date state of the data.
+
+
+\subsection{Time To Live}
+In the TTL approach, we set a time limit for how long items are retained in the cache. However, this
+method relies on the assumption that updates will not be missed during the specified time frame. As
+such, it may not be suitable for scenarios where data changes occur frequently.
+
+
+\subsection{Validity on Use}
+Cached items are checked for validity when accessed. This requires accessing the remote source to
+verify the cached item's current state, which can undermine the benefits of caching by introducing
+additional network overhead. 
+
+
+\subsection{Single Writer Restrictions}
+We allow only one writer at a time for each file. While it ensures consistency, it may be too
+restrictive for most file systems and can impact performance by introducing contention for write
+access. 
+
+
+\subsection{Change Notifications}
+We notify cached copies when the main source receives an update. However, the
+challenge lies in determining precisely when the main source should send notifications to ensure
+that all cached copies are updated appropriately. This is usually the preferred solution.
+
+
+
+
+
+
+
+
+
+
+\begingroup
+\renewcommand\thepart{\Alph{part}.} % Change numbering system to Roman numerals
+\part{Epilogue}
+\endgroup
+\chapter{Conclusion}
+Disclaimer: Whatever your professor says goes! Don't take my word for it, I'm just a student
+lol. \\ \\
+Thanks for reading my notes!
 \end{document}
 
 % Local Variables:
