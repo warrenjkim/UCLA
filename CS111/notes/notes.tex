@@ -6023,7 +6023,7 @@ properly integrated into the file system.
 
 \asideBegin{Idempotent}
 Journal recovery works because all write operations are \textit{idempotent}\footnote{Idempotent:
-re-executing the same operation multiple times does not result in unintended or undesirable
+Re-executing the same operation multiple times does not result in unintended or undesirable
 outcomes.}. This design choice ensures that the process of recovery doesn't introduce further
 complications or inconsistencies.
 \asideEnd
@@ -6420,6 +6420,746 @@ To improve the performance of virtual machines, various strategies can be employ
 
 
 \section{Cloud Computing}
+Virtual machines play a crucial role in the context of cloud computing, where hardware resources are
+shared among multiple customers. Cloud providers offer computing power to customers, allowing them
+to run applications without dealing with the complexities of hardware management.
+
+The cloud provider handles the underlying infrastructure and provides an environment for running
+virtual machines, which helps in efficiently utilizing hardware resources to serve multiple
+customers' needs.
+
+Cloud providers act as intermediaries between hardware infrastructure and customers. They manage and
+maintain large data centers filled with servers, storage devices, and networking equipment.
+
+\abstractionBegin{The Cloud}
+The cloud provider abstracts the underlying hardware and offers customers virtualized resources,
+typically in the form of virtual machines. Each virtual machine is an isolated and encapsulated
+environment that emulates a complete computer system, including an operating system and
+applications.
+\abstractionEnd
+
+
+\subsection{VM's in the Cloud}
+Virtual machines play a crucial role in cloud computing due to their ability to maximize hardware
+utilization, enable efficient resource sharing, and provide strong isolation between customers. By
+allowing multiple customers to run VM's on the same physical hardware, cloud providers can optimize
+resource usage, cater to diverse computing needs, and maintain stringent security and isolation. 
+
+However, efficiently placing VM's within a cloud environment involves addressing the
+challenge of distributing numerous VM's across physical nodes to optimize resource utilization. This
+often requires employing bin packing algorithms, which can be computationally complex due to their
+NP-hard nature. Estimation techniques are commonly used to tackle these complexities and achieve
+practical solutions. 
+
+
+\subsection{VM Migration}
+VM migration is the process of transferring a running VM from one physical server to another within
+the cloud. The process must be \textit{invisible}\footnote{Invisible: There is no observable
+interruption of service.} and \textit{fast}, ensuring uninterrupted service for users while
+maintaining the same functionality on the new server.
+
+Moving a VM involves transferring a collection of data bits to another machine, resulting in an
+identical VM on the destination machine, provided both machines share the same architecture, memory,
+and other specifications.
+
+\asideBegin{The Issue}
+The bits within the VM keep changing due to running programs and system software updates on the
+original VM. Moving these bits across a network takes time, allowing for further changes to occur
+during the transfer process.
+\asideEnd
+
+There are several approaches to remedy this complication:
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Non-live migration: Freeze the VM during migration! Here, the bits won't change, but the VM
+  won't run.
+\item Pre-copy live migration: Move the bits starting at one time, then iterate until there are no
+  more changes. While the VM remains operational during migration (with minimal interruption), we
+  may incur additional overhead since we copy modified bits multiple times.
+\item Post-copy live migration: Initially move a minimum set of bits to the destination. The VM is
+  then started on the new server with limited data, and additional bits are pulled over as needed
+  from the source. Here, the VM is quickly started up in the destination server, but the initial
+  startup may lack complete data.
+\end{enumerate}
+
+Selecting the appropriate migration approach depends on factors such as the desired downtime, the
+nature of the VM's workload, network capabilities, and the tolerance for data inconsistencies during
+migration. 
+
+
+
+
+
+
+
+
+
+
+\chapter{Security and Privacy}
+\section{Overview}
+Operating systems serve as the foundational layer of software that users interact with. As such, if
+the operating system isn't protected, the machine isn't protected. Flaws in the OS generally
+compromise any and all security at higher levels.
+
+The importance of OS security lies in its role in controlling crucial aspects of computer
+operation, including managing application memory, scheduling the processor, and allocating
+resources to users. A secure OS is essential for preventing a wide range of potential issues. In
+fact, many other security systems build upon the foundation of a secure OS. 
+
+
+\subsection{Preface: Definitions}
+\definitionBegin{Security}
+\textbf{Security} encompasses a set of rules, guidelines, and objectives that dictate how a computer
+system or network should operate to maintain confidentiality, integrity, and availability of data
+and resources. These \textit{policies} define what is allowed and what is restricted within the
+system.
+\definitionEnd
+
+
+\definitionBegin{Protection}
+\textbf{Protection} is the \textit{mechanism} that ensures that the security policies are upheld.
+\definitionEnd
+
+Protection mechanisms are responsible for enforcing the security policies defined by an
+organization. These mechanisms include access controls, authentication processes, encryption, and
+other safeguards that prevent unauthorized users from accessing resources or data.
+
+\definitionBegin{Vulnerability}
+A \textbf{vulnerability} is a weakness that can allow an attacker to cause problems.
+\definitionEnd
+
+\definitionBegin{Exploit}
+An \textbf{exploit} is the actual process of taking advantage of a vulnerability.
+\definitionEnd
+
+
+\subsection{Trust}
+Trust is a fundamental concept in security, dictating actions and decisions based on confidence. It
+involves performing certain actions for entities or systems that are trusted and refraining from
+doing the same for untrusted ones. 
+
+A reoccuring theme throughout these notes has been that we \textit{trust} our operating system, and
+that's because we're pretty much forced to; it controls all the hardware and memory, how our
+processes are handled, handles I/O operations, and so much more. As such, if we cannot trust our
+operating system, we're pretty toast from the get go.
+
+
+
+
+
+\section{Authentication and Authorization}
+\definitionBegin{Authentication and Authorization}
+\textbf{Authentication} is the process of verifying the identity of a party seeking access.
+\tcblower
+\textbf{Authorization} is the process of checking if the authenticated party should be allowed
+access. This is typically done after \textit{authenticating} the party in question.
+\definitionEnd
+
+Authentication and authorization are important concepts in security, addressing the need to identify
+individuals or entities and grant them appropriate access privileges.
+
+Security policies often grant specific privileges to certain parties while denying them to
+others. To enforce these policies, it's essential to identify who is making the request. This
+identification is typically performed by a computer within the operating system. The process of
+how computers achieve authentication is a key aspect of security. 
+
+\exampleBegin{Real World Authentication}
+Let's look at some real world examples of authentication:
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Recognition: Seeing someone you know.
+\item Credentials: Something like a driver's license.
+\item Knowledge: What's the password to get into my tree fort?
+\item Location: I'm behind the counter at the DMV.
+\end{enumerate}
+\exampleEnd
+
+Unfortunately, computers aren't as \textit{smart}\footnote{Smart: \textit{Statistically}, computers
+are not as smart as humans.} humans as they lack the intuitive reasoning of humans. As such, they
+need a well-defined authentication process with a predetermined set of steps.
+
+Computers are your guy when it comes to complex mathematical computations and processing large
+amounts of data quickly. This makes them particularly well-suited for cryptographic processes, where
+encryption and decryption involve intricate mathematical operations\footnote{Computers are less
+  likely to make simple mistakes compared to humans.}.
+
+Authentication isn't limited to verifying human identity. Computers are often required to
+authenticate non-human entities as well, such as processes running on a system, network devices, or
+even automated software agents. Ensuring that these entities are authentic and authorized is crucial
+for maintaining the security and integrity of a computing environment.
+
+
+\subsection{Identities}
+Identities in operating systems typically revolve around user ID's, which uniquely identify
+individual users. When processes are executed, they inherit the user ID of the user initiating
+them.
+
+\exampleBegin{Forking ID's}
+A process created through forking inherits the same user ID as its parent process. This model
+implies that \textit{any} process owned by a user inherits all the privileges associated with that
+user. While this approach has drawbacks, it is the predominant method used in operating systems.
+\exampleEnd
+
+\subsection{Bootstrapping OS Authentication}
+Recall that when processes run within an operating system, they inherit the user ID of the user who
+started them. This enables processes to run with the user's privileges. However, when a new user
+logs into the system, processes need to be created for them with the appropriate privileges. This
+process happens during login and marks the start of the user's session.
+
+Unlike processes inheriting identity from parent processes, new users don't have existing processes
+to inherit from. To establish the identity of the new user, \textit{authentication} is used during
+the login process to ensure that only authorized users access the system and that their processes
+operate with the correct identity. 
+
+
+\subsection{Passwords}
+Passwords serve as a means of authenticating users based on something they know. To verify the
+correctness of the password, the system can either store the password itself or a hashed version of
+it\footnote{Storing a hash is a more secure approach.}. If the provided password matches the stored (or
+hashed) password, the system associates the user's identity with a new command shell or window
+management process.
+
+\corollaryBegin{Issues}
+Passwords, while widely used for authentication, come with several problems. They need to strike a
+balance between being difficult to guess yet easy to remember. Moreover, they are susceptible to
+\textit{password sniffing}\footnote{where attackers intercept passwords as they travel across the
+network.} on networked systems and \textit{brute force}\footnote{\texttt{while (!correct)
+  \{ try\_again(); \}}} entry on smaller passwords. Despite these challenges,
+passwords remain widely used, although they are considered outdated technology.
+\corollaryEnd
+
+
+\subsection{Challenge/Response}
+Challenge/response systems are a form of authentication based on correctly answering predefined
+questions. Like passwords, this method relies on what we \textit{knows}. The system presents
+questions to the user, and if they provide the correct answers, they are authenticated. This process
+is more secure if each challenge is unique, but might not always be practical.
+
+\corollaryBegin{Hardware-based Challenge/Response}
+Rather than what we \textit{know}, we can authenticate someone based on what we \textit{have}. We
+can send a challenge to the hardware device belonging to the appropriate user expecting a response.
+
+\exampleBegin{Duo Push}
+When you log into MyUCLA, a Duo push notification is (usually) sent to your phone or other mobile
+device to verify that it's actually you logging in\footnotetext{I still have yet to find someone
+that likes using Duo Push.}!
+\exampleEnd
+\corollaryEnd
+
+While challenge/response authentication offers improved security, it comes with its own set of
+problems. When based on what you know, there may be limited unique and secret challenge/response
+pairs, making the responses vulnerable to attackers.
+
+Even if we authenticate based on what you have, there's a risk of impersonation by someone who
+possesses the required hardware. Additionally, certain challenge/response methods are susceptible to
+network sniffing, much like passwords. However, smart card implementations typically mitigate these
+risks.
+
+
+\subsection{Biometric}
+Biometric authentication is a method of authentication that relies on unique physical attributes of
+the user. It involves measuring specific characteristics such as fingerprints, voice patterns, or
+retinal patterns. These attributes are converted into binary representations and then compared
+against stored values. If the comparison yields a close match, the user is authenticated. 
+
+Unfortunately, biometric authentication usually requires \textit{very} specific hardware. Not only
+that, many physical characteristics vary too much for practical, everyday use. Even if we solve the
+above issues, they're generally not helpful for authenticating programs or roles. Finally, we can
+have the possibility of false positives and negatives; i.e. you can impersonate someone else and we
+can't log into your own account respectively.
+
+
+\corollaryBegin{Remote Authentication}
+Remember, the biometric reading is just a bit pattern. As such, if the attacker obtains a copy, he
+can just send the pattern over the network without performing an actual biometric reading! As such,
+the path between the reader and authentication device must be secure, which may raise problems when
+they are separated by the internet.
+\corollaryEnd
+
+\subsection{Multi-Factor}
+Multi-factor authentication is an authentication method that requires users to provide two or
+more separate forms of authentication to access a system or resource. This can involve combinations
+like a password and a text message to a cell phone. When implemented effectively, each factor
+compensates for the drawbacks of the other, providing a more secure authentication process. MFA is
+currently the preferred approach to authentication due to its ability to enhance security. 
+
+
+\section{Access Control}
+\definitionBegin{Access Control}
+\textbf{Access control} refers to the operating system's ability to regulate which processes are permitted to
+access specific resources.
+\definitionEnd
+
+This capability enables the enforcement of security policies. The mechanisms employed by the
+operating system to enforce these policies, dictating who can access what, are collectively referred
+to as access control. This concept plays a crucial role in maintaining the security and integrity of
+an operating system.
+
+
+\subsection{Access Control List}
+Access Control Lists (ACL's) are a mechanism used in operating systems for managing and enforcing
+access control. Each protected object (e.g. a file or resource) is associated with a single list
+maintained by the OS. This list contains entries specifying which users or groups are allowed to
+access the object and the permitted modes of access. When a process or user requests access to an
+object, the OS checks the object's ACL to determine whether access should be granted. 
+
+\exampleBegin{ACL's in Unix}
+ACL-based method for protecting files was developed in the 1970s and remains widely used today. In
+this approach, each file has its own ACL that specifies permissions for different subjects. For each
+file, there are three subjects listed: owner, group, and other. Each subject has three associated
+modes: read, write, and execute. This method allows for fine-grained control over file access and is
+still relevant in modern systems.
+\exampleEnd
+
+\begin{tcbraster}[raster columns=2, raster equal height, raster force size=false]
+  \begin{tcolorbox}[colback=green!5!white,colframe=black!75!green,title=Advantages]
+    \begin{enumerate}[label=\textit{(\roman*)}]
+      \item Easy to figure out who has access.
+      \item Easy to revoke/change access permissions.
+    \end{enumerate}
+  \end{tcolorbox}
+  \begin{tcolorbox}[colback=red!5!white,colframe=black!40!red,title=Disadvantages]
+    \begin{enumerate}[label=\textit{(\roman*)}]
+    \item It may be hard to figure out what a subject can access.
+    \item Changing access rights requires getting to the object.
+    \end{enumerate}
+  \end{tcolorbox}
+\end{tcbraster}
+
+
+\subsection{Capabilities}
+The capabilities model involves entities maintaining a set of data items which specify their allowed
+accesses to resources. These capabilities function like tickets. To access an object, an entity
+presents the appropriate capability associated with that object. Possession of the capability
+signifies that access to the object is permitted.
+
+It's important to note that capabilities are just data structures composed of bits, and having
+possession of a capability automatically grants access to the associated resource. Ensuring that
+capabilities are not forgeable is crucial. One solution to achieve unforgeability is to prevent
+users or processes from directly having the capabilities and instead store them within the operating
+system.
+
+\begin{tcbraster}[raster columns=2, raster equal height, raster force size=false]
+  \begin{tcolorbox}[colback=green!5!white,colframe=black!75!green,title=Advantages]
+    \begin{enumerate}[label=\textit{(\roman*)}]
+    \item Easy to determine which objects subjects can access.
+    \item Potentially faster than ACL's.
+    \item Easy model when it comes to transferring privileges.
+    \end{enumerate}
+  \end{tcolorbox}
+  \begin{tcolorbox}[colback=red!5!white,colframe=black!40!red,title=Disadvantages]
+    \begin{enumerate}[label=\textit{(\roman*)}]
+    \item Hard to determine who can access an object.
+    \item Requires extra mechanisms to allow for revocation.
+    \item In a network environment, we need cryptographic methods to prevent forgery.
+    \end{enumerate}
+  \end{tcolorbox}
+\end{tcbraster}
+
+
+\corollaryBegin{OS Use}
+Operating systems commonly employ a combination of Access Control Lists and capabilities to
+manage access to resources. Sometimes, both methods are used for the same resource!
+
+\exampleBegin{Files}
+In Unix/Linux systems, \textit{ACL's} are utilized during file opens to create a file descriptor
+with specific access rights. This file descriptor effectively functions as a \textit{capability},
+providing a way to access the resource with the authorized permissions.
+\exampleEnd
+\corollaryEnd
+
+\subsection{Enforcing Access Control}
+Enforcing access control in an operating system involves ensuring that protected resources are
+inaccessible to processes unless granted access through proper mechanisms. Hardware protection
+mechanisms are used to prevent unauthorized access, ensuring that only the OS has access them.
+
+To gain access, a process must issue a request to the operating system through a syscall. The OS
+consults its access control policy data to determine whether access should be granted. Access may be
+granted directly, with the resource being mapped into the process by a resource manager, or
+indirectly, where a \textit{capability} is returned to the process by the resource manager.
+
+
+
+
+
+\section{Cryptography}
+Cryptography plays a crucial role in computer security by addressing the need to keep secrets
+confidential while allowing authorized parties to access them. It involves the use of controlled
+transformations on bit patterns to make it difficult for unauthorized individuals to read the
+secrets, while keeping it relatively simple for authorized parties to do so. Cryptography provides
+security advantages by ensuring data confidentiality, integrity, authentication, and more. 
+
+\asideBegin{Terminology}
+Some terminology:
+\begin{align*}
+  S &:= \textit{Sender} \\
+  R &:= \textit{Receiver} \\
+  K &:= \textit{The secret key for en/decryption} \\
+  \textit{Encryption} &:= \textit{The process of making a message unreadable/unalterable by
+  anyone but } R \\
+  \textit{Decryption} &:= \textit{The process of making the encrypted message readable by } R \\
+  \textit{Cipher} &:= \textit{Rules for transformations} \\
+  \textit{Plaintext/}P &:= \textit{The original message} \\
+  \textit{Ciphertext/}C &:= \textit{The encrypted message} \\ \\
+  E() &:= \textit{The encryption algorithm} \\
+  \implies C &:= E(K, P) \\
+  D() &:= \textit{The decryption algorithm} \\
+  \textit{Cryptosystem} &:= \textit{The system responsible for performing transformations on
+  messages} \\
+  \implies \textit{Cryptosystem} &:= <E, D>
+\end{align*}
+\asideEnd
+
+
+\subsection{Cryptographic Keys}
+Most cryptographic algorithms use a secret key ($K$) to perform these operations. The
+key is a confidential piece of information. Decryption without the key is difficult, while
+decryption with the key is straightforward. Keys help reduce the problem of keeping a long message
+secret to keeping a short key secret, though there remains an essential element of secrecy. 
+
+
+\subsection{Symmetric Cryptosystems}
+A cryptosystem is symmetric if and only if:
+\begin{align*}
+  C &= E(K, P) \\
+  P &= D(K, C) \\
+  P &= D(K, E(K, P)) \\
+  C &= E(K, P) \\
+\end{align*}
+Note that $E()$ and $D()$ need not be the same operations.
+
+\begin{tcbraster}[raster columns=2, raster equal height, raster force size=false]
+  \begin{tcolorbox}[colback=green!5!white,colframe=black!75!green,title=Advantages]
+    \begin{enumerate}[label=\textit{(\roman*)}]
+    \item Encryption and authentication can be performed in a single operation.
+    \item Well-known (and trusted) cryptosystems are much faster than asymmetric ones.
+    \item No centralized authority required (though key servers help).
+    \end{enumerate}
+  \end{tcolorbox}
+  \begin{tcolorbox}[colback=red!5!white,colframe=black!40!red,title=Disadvantages]
+    \begin{enumerate}[label=\textit{(\roman*)}]
+    \item Hard to separate encryption from authentication, which can complicate some signature uses.
+    \item Non-repudiation is hard without servers.
+    \item Key distribution can be a problem.
+    \item Hard to scale, especially for internet use.
+    \end{enumerate}
+  \end{tcolorbox}
+\end{tcbraster}
+
+\exampleBegin{Cipher Cipher Cipher!}
+Several popular symmetric ciphers have been developed for encryption and data protection purposes:
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item The Data Encryption Standard (DES): A historic US encryption standard that is still used for
+  legacy systems. However, it's considered weak by modern standards due to its small key size.
+\item The Advanced Encryption Standard (AES): The current US encryption standard, widely used for
+  its strong security and efficiency. AES is considered one of the most widely adopted symmetric
+  ciphers.
+\item Blowfish: A symmetric block cipher designed for increased security. While not as commonly used
+  as DES or AES, Blowfish was well-regarded for its security features. 
+\end{enumerate}
+\exampleEnd
+
+
+\subsection{Brute Force Attacks}
+Symmetric ciphers can be vulnerable to brute force attacks, where attackers try every possible key
+until they find the correct one. The security of symmetric ciphers relies on the strength of their
+keys. Brute force attacks become increasingly difficult as the key length grows. Symmetric ciphers
+like DES (56-bit keys) are susceptible to modern brute force attacks due to their relatively short
+key length. However, AES (128 or 256-bit keys) is considered much more secure against such attacks
+due to its longer key lengths. 
+
+
+\subsection{Asymmetric Cryptosystems}
+Asymmetric cryptosystems (public key cryptography [PK]), are cryptographic systems that
+utilize different keys for encryption and decryption. This allows secure communication and
+information exchange. Encryption is performed using a public key ($K_E$), and decryption is done using
+a corresponding private key ($K_D$). The process can also be reversed, where encryption is done with
+the recipient's public key and decryption with their private key. 
+
+\asideBegin{Algebraic Representation}
+\begin{align*}
+  C &= E(K_E, P) \\
+  P &= D(K_D, C) \\
+  P &= D(K_D, E(K_E, P)) \\
+  &\iff \\
+  C' &= E(K_D, P) \\
+  P &= D(K_E, C') \\
+  P &= D(K_D, E(K_E, P)) \\
+\end{align*}
+\asideEnd
+
+Public key cryptography involves the use of key pairs: a public key and a private key. These keys
+are created together and are used for encryption and decryption. One key (private key) is kept
+secret by the owner, while the other (public key) is shared with the world. This key-sharing
+mechanism enables secure communication. To send an encrypted message to someone, you use their
+public key for encryption, and only they possess the corresponding private key to decrypt the
+message. 
+
+\subsection{Public Key Authentication}
+Authentication using public keys involves signing a message by encrypting it with your private
+key. This process ensures that only you, the owner of the private key, could have created the signed
+message. Everyone knows your public key, allowing them to directly verify your claim. This
+authentication mechanism is more secure than symmetric cryptography, as it guarantees that only the
+sender (owner of the private key) could have created the signed message, while the receiver (using
+the public key) can confirm its authenticity. 
+
+\corollaryBegin{Issues}
+Public key cryptography relies on the correct use of public keys for security. If an incorrect
+public key is used, the owner of that key could read your message or authentication might
+fail. Ensuring the right public key belongs to the intended person requires high assurance. This is
+achieved through key distribution infrastructures or certificates. Both methods, however, can pose
+challenges, especially at a large scale and in real-world scenarios. \\
+
+Public key infrastructure (PKI) and certificate authorities (CA's) are used to address these issues;
+PKI provides a framework for managing public keys, while CA's issue digital certificates that bind
+public keys to entities. However, issues such as certificate revocation, trust in CAs, and the
+practicality of verifying certificates in real-world scenarios remain challenges.
+\corollaryEnd
+
+\asideBegin{PK Algorithms}
+PK algorithms are typically rooted in mathematical problems (e.g. factoring large numbers) that are
+hard to solve. The security of these algorithms relies less on brute force attacks and more on the
+inherent complexity of the underlying mathematical problems. This characteristic also results in the
+complexity and resource intensity of generating key pairs for public key cryptography. \\
+
+Algorithms, such as RSA, ECC (Elliptic Curve Cryptography), and Diffie-Hellman, play a
+crucial role in securing online transactions, digital signatures, and secure communication. The
+security provided by these algorithms relies on the mathematical problems' inherent complexity,
+which remains an active area of research and development in cryptography. 
+\asideEnd
+
+
+\subsection{Combining A/Symmetric Cryptosystems}
+The combined use of symmetric and asymmetric cryptography is a common approach to secure
+communication. Asymmetric cryptography is often used to "bootstrap" symmetric cryptography. This
+involves using asymmetric algorithms like RSA to authenticate and establish a secure session key,
+which is then used for the bulk of the data transmission.
+
+The combined approach capitalizes on the strengths of both asymmetric and symmetric
+cryptography. Asymmetric cryptography is used where its unique features are most valuable
+(authentication, key exchange), while symmetric cryptography takes over for data encryption due to
+its efficiency. This hybrid approach balances the security provided by asymmetric cryptography with
+the performance benefits of symmetric cryptography, resulting in a comprehensive and effective
+security solution. 
+
+
+
+
+
+
+
+
+
+
+\chapter{Distributed Systems}
+\section{Overview}
+Distributed systems are crucial in modern computing due to their prevalence in various
+applications. They are particularly relevant to operating systems because distributed systems are
+fundamentally a systems issue; even on a single computer, the OS needs to consider distributed
+issues. An understanding of distributed systems is essential for computer scientists to stay current
+and relevant in the field of modern computing!
+
+\subsection{Why Distributed Systems?}
+Distributed systems offer a myriad of benefits, some of which include:
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Better scalability and performance: Distributed systems allow applications to scale beyond
+  the capacity of a single computer. By distributing resources and workloads across multiple machines,
+  these systems can accommodate increasing demands for resources and bandwidth.
+\item Improved reliability and availability: Distributed systems can maintain 24/7 service
+  availability even in the face of hardware failures, disk failures, or software crashes. This
+  redundancy and fault tolerance contribute to higher reliability and continuous service availability.
+\item Ease of use, with reduced operating expenses: Centralized management of services and
+  systems in distributed environments reduces the complexity of managing resources. Additionally,
+  organizations can opt to purchase services rather than investing in physical computer equipment,
+  leading to potential cost savings.
+\item Enabling new collaboration and business models: Distributed systems enable collaborations
+  that span geographical and organizational boundaries. They facilitate partnerships and
+  collaborations on a global scale. New business models can emerge, offering a wide range of services
+  in a global free market.
+\end{enumerate}
+
+
+\subsection{Issues}
+Distributed systems present several challenges due to the lack of shared memory and peripheral
+devices across machines. Interaction between machines relies on asynchronous and potentially slow
+and error-prone networks. Furthermore, failures of one machine may not be immediately visible to
+others, leading to synchronization and reliability issues. Addressing these problems requires
+solutions for remote communication, synchronization, fault tolerance, and reliable computation in
+distributed environments.
+
+
+\subsection{Transparency}
+Ideally, a distributed system should operate like a single machine system but with added benefits
+such as increased resources, improved reliability, and enhanced speed. Transparent distributed
+systems aim to minimize the differences between single machine and distributed systems, providing
+users with a seamless experience that hides the underlying complexities of the distributed
+environment.
+
+Transparency in distributed systems can manifest in various forms:
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Access Transparency: Users access resources (like files or data) without being aware of
+  their location or distribution.
+\item Location Transparency: Users are unaware of the physical location of resources or
+  services.
+\item Migration Transparency: Resources can be moved between machines without disrupting the
+  user's experience.
+\item Replication Transparency: Users are unaware of whether resources are replicated across
+  multiple machines.
+\item Concurrency Transparency: Users can perform tasks concurrently, and the system handles
+  coordination behind the scenes.
+\end{enumerate}
+
+
+\subsection{Deutsch's Seven Fallacies of Network Computing}
+Deutsch's "Seven Fallacies of Network Computing" highlight common misconceptions about networked and
+distributed systems. These fallacies underscore the challenges and complexities inherent in
+distributed systems. As a result, achieving true transparency in distributed systems, where the
+experience matches that of single-machine systems, is not practically achievable due to these
+inherent fallacies:
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item The network is reliable: In reality, networks can experience outages, packet loss, and
+  disruptions due to various factors. Relying on the network's absolute reliability can lead to system
+  vulnerabilities.
+\item There is no latency (i.e. instant response time): Latency, or the delay in data transmission,
+  is a natural characteristic of networked systems. Achieving instant response times across
+  distributed systems is challenging due to communication delays.
+\item The available bandwidth is infinite: Bandwidth limitations are inherent in networks. While
+  technology improves, bandwidth is not limitless, and congestion or high demand can lead to
+  performance issues.
+\item The network is secure: Ensuring network security is a complex endeavor involving encryption,
+  authentication, and continuous monitoring. Networks are vulnerable to various threats, requiring
+  ongoing efforts to maintain security.
+\item The topology of the network does not change: Networks can change due to hardware failures,
+  reconfigurations, and scaling. Adapting to dynamic network changes is essential for resilient
+  distributed systems.
+\item There is one administrator for the whole network: Distributed systems often involve multiple
+  administrators with varying levels of control. Centralized administration is not always feasible or
+  practical.
+\item The cost of transporting additional data is zero: Data transmission incurs costs, including
+  infrastructure, bandwidth, and maintenance expenses. These costs can impact the efficiency and
+  economics of distributed systems.
+\end{enumerate}
+
+Understanding and accounting for these fallacies is essential for designing, developing, and
+managing effective distributed systems that deliver the intended benefits while acknowledging and
+addressing these inherent problems.
+
+
+\subsection{Paradigms}
+Distributed systems are approached through various paradigms\footnote{We won't be discussing
+  \textit{(i)} or \textit{(ii)}.} that address different aspects of their design and functionality:
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Parallel processing: This paradigm relies on tightly coupled special hardware to execute tasks
+  simultaneously, aiming to achieve high computational performance. It involves breaking tasks into
+  smaller parts that can be executed concurrently.
+\item Single system images: This approach attempts to make all nodes in a distributed system appear
+  as one large, cohesive computer from a user's perspective. Achieving a completely seamless single
+  system image is challenging/impossible due to factors like communication latency and hardware differences.
+\item Loosely coupled systems: In this paradigm, the focus is on working with the inherent
+  difficulties of distributed systems as effectively as possible. Modern distributed systems often
+  adopt this approach, acknowledging the need to address communication delays and potential hardware
+  variations.
+\item Cloud computing: A relatively recent development, cloud computing leverages distributed
+  systems to provide on-demand computing resources over the internet. Users can access and use
+  resources like processing power and storage without needing to own and maintain physical hardware.
+\end{enumerate}
+
+
+\section{Loosely Coupled Systems}
+Loosely coupled systems are characterized by a group of independent computers connected by a
+high-speed \textit{local area network (LAN)}, where each computer serves similar but independent
+requests. These systems require minimal coordination and cooperation among the computers. They are
+motivated by scalability, price performance, availability (when using stateless servers), and ease
+of management.
+
+\exampleBegin{Couple of Loosers}
+Loosely coupled systems are used in a variety of applications, including (but not limited to):
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Web server clusters: Each server can independently handle incoming requests, distributing the
+  load and improving performance.
+\item Application servers: Multiple servers can handle application processing independently,
+  contributing to better performance and responsiveness.
+\item Cloud computing: Virtual machines/containers can be provisioned as needed, allowing users to
+  dynamically scale their applications.
+\end{enumerate}
+\exampleEnd
+
+
+\subsection{Loosely Coupled Architecture Elements}
+Loosely coupled architecture consists of several key elements that enable the design of distributed
+systems that are scalable, reliable, and manageable:
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Farm of Independent Servers: A collection of individual servers, each running the
+  same software but serving different requests from clients. These servers are relatively independent
+  and can handle requests concurrently.
+\item Front-end Switch: An intermediary component that receives incoming client
+  requests and distributes them among the available servers in the farm. This switch can perform load
+  balancing to evenly distribute requests and failover to redirect traffic in case of server failures.
+\item Service Protocol: The communication protocol and design principles that guide the interaction
+  between clients and servers in the farm (\textit{stateless servers}\footnote{Stateless servers:
+    Servers treat each request as independent, without relying on the state from previous requests.},
+  \textit{idempotent operations}\footnote{Idempotent: Re-executing the same operation multiple times
+    does not result in unintended or undesirable outcomes.}, and \textit{successive
+    requests}\footnote{Successive requests to different servers: Clients may interact with different
+    servers for successive requests, allowing for load balancing and dynamic resource allocation.}).
+\end{enumerate}
+  
+
+\subsection{Horizontal Scalability}
+Horizontal scalability is a design approach in distributed systems where each node operates largely
+independently, allowing capacity to be increased by adding nodes\footnote{This is often referred to as
+scaling ``out'' by adding nodes ``on the side''.}. Horizontal scalability can be constrained by network
+limitations, rather than hardware or algorithms.
+
+Reliability is generally high, as the failure of one out of many nodes doesn't significantly impact
+the overall system's capacity or performance. As such, horizontal scalability is particularly
+well-suited for modern applications that can leverage cloud computing and containerization
+technologies. It offers the ability to handle large-scale workloads and accommodate growth while
+maintaining reliability and performance.
+
+\begin{tcbraster}[raster columns=2, raster equal height, raster force size=false]
+  \begin{tcolorbox}[colback=green!5!white,colframe=black!75!green,title=Advantages]
+    \begin{enumerate}[label=\textit{(\roman*)}]
+    \item Cost-effective: Adding commodity hardware nodes tends to be more cost-effective than
+      upgrading individual nodes with more powerful hardware.
+    \item Enhanced performance: Distributing workloads across multiple nodes can lead to improved
+      performance by reducing contention for resources.
+    \item Flexibility: New nodes can be easily added to accommodate growing workloads, making it
+      suitable for dynamic and unpredictable demand.
+    \end{enumerate}
+  \end{tcolorbox}
+  \begin{tcolorbox}[colback=red!5!white,colframe=black!40!red,title=Limitations/Considerations]
+    \begin{enumerate}[label=\textit{(\roman*)}]
+    \item Network bottlenecks: As the number of nodes increases, communication between nodes can
+      become a limiting factor, impacting overall performance.
+    \item Data consistency: Maintaining data consistency across multiple nodes can be complex,
+      especially in scenarios where data is updated frequently.
+    \item Load balancing: Effective load balancing mechanisms are crucial to ensure even
+      distribution of workloads and prevent overloading certain nodes.
+    \item Application architecture: The application's architecture must be designed to take
+      advantage of horizontal scalability, involving partitioning data and tasks appropriately.
+    \end{enumerate}
+  \end{tcolorbox}
+\end{tcbraster}
+
+\corollaryBegin{Performance}
+Horizontally scaled performance (via loosely coupled architectures) offers several advantages;
+low-cost individual servers, excellent scalability, and high service availability. Scalability and
+availability are enhanced by the ability to automatically bypass failed servers, the stateless
+nature of servers, and client retries for fail-over. \\
+
+However, the challenge lies in managing a large number of servers, which requires automation in
+installation, global configuration services, self-monitoring, and self-healing systems. The
+scalability of these systems is limited not by hardware or algorithms, but rather by the thousands
+of servers we have to manage.
+\corollaryEnd
+
+
 
 
 \end{document}
