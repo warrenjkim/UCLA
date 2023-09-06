@@ -6,6 +6,11 @@ __pycache__/
 # C extensions
 *.so
 
+# GNU GLOBAL (gtags)
+GTAGS
+GRTAGS
+GPATH
+
 # Distribution / packaging
 .Python
 build/
@@ -432,4 +437,6 @@ TSWLatexianTemp*
 
 .DS_Store
 *~
+*.*~
+.*~
 #*#
