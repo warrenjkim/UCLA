@@ -1,0 +1,90 @@
+\documentclass{report}
+\usepackage{amsmath, amsthm, amssymb, graphicx, enumitem, esvect}
+\usepackage[english]{babel}
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+\usepackage[most]{tcolorbox}
+\usepackage[hidelinks]{hyperref}
+\usepackage{graphicx}
+
+\newcommand{\refto}[2]{\textbf{\ref{#1:#2} \nameref{#1:#2}}}
+
+\title{CS 118 Book Notes}
+% \author{Warren Kim}
+\date{}
+
+\newcommand{\definition}[2]{\begin{tcolorbox}[title={Definition: #1}]{#2}\end{tcolorbox}}
+\newcommand{\example}[2]{\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title={Example:
+      #1}]{#2}\end{tcolorbox}}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+\newpage
+
+
+\chapter{}
+\section{What is the Internet?}
+
+\subsection{Three ``Simple'' Components}
+\definition{Network}{A \textbf{network} is a logical grouping of hosts which require
+  similar connectivity.}
+
+\definition{Host/End System}{A \textbf{host (or end system)} is any \textit{device} on a network
+  that is either a source or destination for data packets. Hosts run network applications, and can
+  initiate or receive communication over the network.}
+
+\definition{Communication Link}{A \textbf{communication link} is the medium or path between two or
+  more devices that data packets take. Different communication links\footnote{Communication links are
+    made up of various physical media (e.g. coaxial cable, copper, optical fiber, radio, etc.).}
+  transmit data at different rates, also known as the \textit{transmission rate}.
+
+\definition{Bandwidth}{\textbf{Bandwidth} is the maximum rate that data
+  can be transmitted over the link (usually measured in \textit{X}bits per second [\textit{X}bps]
+  where \textit{X = \textbf{M}ega, \textbf{G}iga, etc.}).}}
+
+\definition{Switch and Router}{A \textbf{switch} is a device that
+  receives packets from an incoming communication link and forwards them toward their
+  destination\footnote{The source/destination addresses are stored in the header of packets!}
+  \textit{within} a network; i.e. they facilitate communication \textit{within} a network. \\ \\
+  A \textbf{router} is a device that receives packets and forwards them toward their
+  destination$^{\textit{a}}$ between \textit{different} networks; i.e. they facilitate communication
+  between \textit{different} networks.
+
+\definition{Route/Path}{A \textbf{route or path} is the sequence of communication links and packet
+  switches traversed by a packet from the sending host to the receiving host.}}
+
+
+\definition{Data Packets}{\textbf{Data packets (or just ``packets'')} is a unit of data transmitted
+  over a network. They consist of a header that stores metadata (e.g. source/destination addresses,
+  protocol information, etc.), the actual data (or ``payload''), and (\textit{\textbf{sometimes}}) a
+  footer.}
+
+\definition{Network Protocol}{A \textbf{network protocol} defines the format and order of messages
+  exchanged between two (or more) communicating devices, as well as the actions taken on the
+  transmission and/or receipt of a message or other event.}
+
+We can define the Internet by defining its components:
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Hosts (end systems) that send and/or receive data.
+\item Communication links that determine the path \textit{packets} take.
+\item Routers and switches that facilitate this by forwarding data packets.
+\end{enumerate}
+
+
+\subsection{Network Structure}
+\definition{Network Edge}{}
+\definition{Client and Server}{\textbf{Clients} are usually desktops, laptops, etc. that typically
+  send requests and receive data. \\ \\
+  \textbf{Servers}\footnote{Most servers reside in large data
+    centers.} are usually more powerful machines that store/distribute Web pages, stream video, relay
+  e-mail, etc.}
+
+\subsubsection{Access Networks}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
