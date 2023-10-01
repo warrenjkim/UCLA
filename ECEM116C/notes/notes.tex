@@ -1,0 +1,32 @@
+\documentclass{report}
+\usepackage{amsmath, amsthm, amssymb, graphicx, enumitem, esvect}
+\usepackage[english]{babel}
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+\usepackage[most]{tcolorbox}
+\usepackage[hidelinks]{hyperref}
+\usepackage{graphicx}
+
+\newcommand{\refto}[2]{\textbf{\ref{#1:#2} \nameref{#1:#2}}}
+
+\title{ECE M116C}
+% \author{Warren Kim}
+\date{}
+
+\newcommand{\definition}[2]{\begin{tcolorbox}[title={Definition: #1}]{#2}\end{tcolorbox}}
+\newcommand{\example}[2]{\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title={Example:
+      #1}]{#2}\end{tcolorbox}}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+\newpage
+
+
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
