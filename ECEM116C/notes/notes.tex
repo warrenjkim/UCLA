@@ -22,6 +22,126 @@
 \tableofcontents
 \newpage
 
+\part{First 5 Weeks}
+\chapter{Preface}
+\section{Abstraction}
+\definition{Abstraction}{
+  \textbf{Abstraction} is the concept of providing a (relatively) simple interface to higher level
+  programs, hiding unnecessary complexity.
+}
+
+We define a computer as a black box with multiple layers of \textit{abstraction}. When focusing on a
+particular layer, we abstract away the irrelevant layers. There are three main abstraction layers:
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Application Layer: Here, we translate from algorithms to code. We usually write these in high
+  level languages (e.g. C/++, Java, etc.).
+\item Systems Layer: Here, we have the compiler that translate HLL\footnote{HLL: High Level
+    Language.} code to machine code, and the operating system, which deals with everything you
+  learned in CS111.
+\item Hardware Layer: The hardware layer is the physical hardware (who would've thought) that makes
+  all of this possible (e.g. CPU, RAM, etc.)!
+\end{enumerate}
+
+Similar to computers, program code also has three layers of abstraction!
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item High-Level Language: This layer hosts all of our favorite languages (e.g. C/++, JS,
+  etc.). This level of abstraction provides good productivity and portability\footnote{Most
+    languages are hardware/architecture agnostic.}. 
+\item Assembly Language: A textual representation of hardware instructions. Assembly is architecture
+  dependent!
+\item Hardware Representation: Here we have the actual binary (1's and 0's) that encode instructions
+  and data.  
+\end{enumerate}
+
+
+
+
+
+\section{Instruction Set Architecture}
+\definition{Instruction Set Architecture}{
+  The \textbf{Instruction Set Architecture (ISA)} is the set of instructions supported by a
+  computer. There are multiple (all incompatible) ISA's and they usually come in families. ISA's
+  usually come with privilaged and standard instruction sets. 
+}
+
+The ISA is an \textit{interface} between hardware and software, and as such, allows them to develop
+and evolve \textit{independently}.
+
+The software sees a \textit{functional} description of the hardware: \textit{(i)} Storage locations
+(e.g. memory) and \textit{(ii)} Operations (e.g. \texttt{add}).
+
+The hardware sees a list of instructions and their \textit{order}.
+
+\section{Efficiency}
+The main objective when architecting a computer is to make it \textit{efficient}. Here, we define
+``efficient'' to be:
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Performance\footnote{Performance is \textit{usually} the most important metric.}: Fast as
+  fuck.
+\item Power Consumption: Low.
+\item Cost: Low.
+\item Reliable and Secure.
+\end{enumerate}
+
+
+
+
+
+\section{History}
+Look at the slides for the full history. TLDR: we've come a long way. The main takeaway of this
+section is that we've been able to make these improvements for two major reasons: \textit{new
+  technologies} and \textit{innovative techniques}.
+
+
+
+
+
+\section{Laws}
+\section{Moore's Law}
+\definition{Moore's Law}{
+  \textbf{Moore's Law} states: ``The number of transistors in an IC\footnote{IC: Integrated
+    Circuit.} doubles every two years.''
+}
+
+This Moore guy is pretty smart since we've been roughly on track with his prediction (up until about
+2005).
+
+\definition{Dennard's Scaling Law}{
+  \textbf{Dennard's Scaling Law} states: Moore's law $\implies$ each transistor's area is
+  reduced by 50\% (or every dimension by 30\%).
+}
+
+Naturally, it follows that:
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Voltage is reduced by 30\% to keep the electric field constant (remember $V = EL$? Me
+  neither.).
+\item $L$ is reduced $\implies$ delays are reduced by 30\% ($x = Vt$).
+\item Frequency is increased by 40\% ($\textit{frequency} = \frac{1}{\textit{time}}$).
+\item Capacitance is reduced by 30\% ($C = \frac{kA}{L}$).
+\item Since $P = CV^2f$ (apparently), power consumption per transistor is reduced by 50\%. As such,
+  the power consumption of the entire chip stays the same.
+\end{enumerate}
+
+\definition{Amdahl's Law}{
+  \textbf{Amdahl's Law} states: ``The performance improvement (\textit{speed up}) is limited by the
+  part you cannot improve (\textit{sequential part}).'' That is,
+  \[\textit{speed up} = \frac{1}{(1 - p) + \frac{p}{s}}\]
+  where $p$ is the part that can be improved and $s$ is the factor of improvement.
+}
+
+\subsection{The Power Wall}
+Up until 2005, we've been able to make transistors smaller (ergo faster) while keeping power
+consumption the same. Unfortunately, since 2005, due to \textit{tiny} transistor sizes, the static
+power leakage has become so dominant that we couldn't keep the power consumption the same. 
+
+
+\subsection{Multi-Core Era}
+Guess what's better than one CPU core? Multiple! Unfortunately, Amdahl is a party pooper and his law
+suggests we're hitting peak performance.
+
 
 
 \end{document}
