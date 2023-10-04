@@ -25,7 +25,6 @@
 
 \chapter{}
 \section{What is the Internet?}
-
 \subsection{Three ``Simple'' Components}
 \definition{Network}{A \textbf{network} is a logical grouping of hosts which require
   similar connectivity.}
@@ -51,25 +50,25 @@
   destination$^{\textit{a}}$ between \textit{different} networks; i.e. they facilitate communication
   between \textit{different} networks.
 
-\definition{Route/Path}{A \textbf{route or path} is the sequence of communication links and packet
-  switches traversed by a packet from the sending host to the receiving host.}}
+\# definition{Route/Path}{A \textbf{route or path} is the sequence of communication links and packet
+ #  switches traversed by a packet from the sending host to the receiving host.}}
 
+ #
+\# definition{Data Packets}{\textbf{Data packets (or just ``packets'')} is a unit of data transmitted
+ #  over a network. They consist of a header that stores metadata (e.g. source/destination addresses,
+    protocol information, etc.), the actual data (or ``payload''), and (\textit{\textbf{sometimes}}) a
+ #  footer.}
+ #
+\# definition{Network Protocol}{A \textbf{network protocol} defines the format and order of messages
+ #  exchanged between two (or more) communicating devices, as well as the actions taken on the
+    transmission and/or receipt of a message or other event.}
 
-\definition{Data Packets}{\textbf{Data packets (or just ``packets'')} is a unit of data transmitted
-  over a network. They consist of a header that stores metadata (e.g. source/destination addresses,
-  protocol information, etc.), the actual data (or ``payload''), and (\textit{\textbf{sometimes}}) a
-  footer.}
-
-\definition{Network Protocol}{A \textbf{network protocol} defines the format and order of messages
-  exchanged between two (or more) communicating devices, as well as the actions taken on the
-  transmission and/or receipt of a message or other event.}
-
-We can define the Internet by defining its components:
-\begin{enumerate}[label=\textit{(\roman*)}]
-\item Hosts (end systems) that send and/or receive data.
-\item Communication links that determine the path \textit{packets} take.
-\item Routers and switches that facilitate this by forwarding data packets.
-\end{enumerate}
+W# e can define the Internet by defining its components:
+\# begin{enumerate}[label=\textit{(\roman*)}]
+\# item Hosts (end systems) that send and/or receive data.
+\# item Communication links that determine the path \textit{packets} take.
+\  item Routers and switches that facilitate this by forwarding data packets.
+\# end{enumerate}
 
 
 \subsection{Network Structure}
