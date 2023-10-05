@@ -15,6 +15,10 @@
 \newcommand{\definition}[2]{\begin{tcolorbox}[title={Definition: #1}]{#2}\end{tcolorbox}}
 \newcommand{\example}[2]{\begin{tcolorbox}[colback=blue!5!white,colframe=black!75!blue,title={Example:
       #1}]{#2}\end{tcolorbox}}
+\newcommand{\corollary}[2]{\begin{tcolorbox}[colback=teal!5!white,colframe=black!75!teal,title={Corollary:
+      #1}]{#2}\end{tcolorbox}}
+\newcommand{\aside}[2]{\begin{tcolorbox}[colback=orange!5!white,colframe=black!75!orange,title={Aside:
+      #1}]{#2}\end{tcolorbox}}
 
 \begin{document}
 \maketitle
@@ -33,19 +37,18 @@
 We define a computer as a black box with multiple layers of \textit{abstraction}. When focusing on a
 particular layer, we abstract away the irrelevant layers. There are three main abstraction layers:
 
-\begin{enumerate}[label=\textit{(\roman*)}]
+\begin{enumerate}[label=\textit{(\roman*)}] 
 \item Application Layer: Here, we translate from algorithms to code. We usually write these in high
   level languages (e.g. C/++, Java, etc.).
-\item Systems Layer: Here, we have the compiler that translate HLL\footnote{HLL: High Level
-    Language.} code to machine code, and the operating system, which deals with everything you
-  learned in CS111.
+\item Systems Layer: Here, we have the compiler that translate HLL\footnote{HLL: \textbf{H}igh
+    \textbf{L}evel \textbf{L}anguage.} code to machine code, and the operating system, which deals with
+  everything you learned in CS111.
 \item Hardware Layer: The hardware layer is the physical hardware (who would've thought) that makes
   all of this possible (e.g. CPU, RAM, etc.)!
 \end{enumerate}
-
 Similar to computers, program code also has three layers of abstraction!
 
-\begin{enumerate}[label=\textit{(\roman*)}]
+\begin{enumerate}[label=\textit{(\roman*)}] 
 \item High-Level Language: This layer hosts all of our favorite languages (e.g. C/++, JS,
   etc.). This level of abstraction provides good productivity and portability\footnote{Most
     languages are hardware/architecture agnostic.}. 
@@ -74,13 +77,16 @@ The software sees a \textit{functional} description of the hardware: \textit{(i)
 
 The hardware sees a list of instructions and their \textit{order}.
 
+
+
+
+
 \section{Efficiency}
 The main objective when architecting a computer is to make it \textit{efficient}. Here, we define
 ``efficient'' to be:
 
-\begin{enumerate}[label=\textit{(\roman*)}]
-\item Performance\footnote{Performance is \textit{usually} the most important metric.}: Fast as
-  fuck.
+\begin{enumerate}[label=\textit{(\roman*)}] 
+\item Performance\footnote{Performance is \textit{usually} the most important metric.}: Fast.
 \item Power Consumption: Low.
 \item Cost: Low.
 \item Reliable and Secure.
@@ -115,7 +121,7 @@ This Moore guy is pretty smart since we've been roughly on track with his predic
 }
 
 Naturally, it follows that:
-\begin{enumerate}[label=\textit{(\roman*)}]
+\begin{enumerate}[label=\textit{(\roman*)}] 
 \item Voltage is reduced by 30\% to keep the electric field constant (remember $V = EL$? Me
   neither.).
 \item $L$ is reduced $\implies$ delays are reduced by 30\% ($x = Vt$).
@@ -132,6 +138,7 @@ Naturally, it follows that:
   where $p$ is the part that can be improved and $s$ is the factor of improvement.
 }
 
+
 \subsection{The Power Wall}
 Up until 2005, we've been able to make transistors smaller (ergo faster) while keeping power
 consumption the same. Unfortunately, since 2005, due to \textit{tiny} transistor sizes, the static
@@ -141,6 +148,221 @@ power leakage has become so dominant that we couldn't keep the power consumption
 \subsection{Multi-Core Era}
 Guess what's better than one CPU core? Multiple! Unfortunately, Amdahl is a party pooper and his law
 suggests we're hitting peak performance.
+
+
+
+
+
+
+
+
+
+
+\chapter{Instruction Set Architecture}
+\definition{Instruction Set Architecture}{
+  The \textbf{Instruction Set Architecture (ISA)} is the set of instructions supported by a
+  computer. There are multiple (all incompatible) ISA's and they usually come in families. ISA's
+  usually come with privilaged and standard instruction sets. 
+}
+
+The ISA is the contract between software and hardware, and is typically defined by giving all the
+programmer-visible state (registers and memory) as well as the semantics of the instructions that
+operate on that state. \footnote{Note: The IBM 360 was the first line of machines to separate ISA
+from implementation; i.e. \textit{microarchitecture}.}
+
+As described in the definition, many implementations of a given ISA are possible. Here are a few:
+
+\begin{enumerate}[label=\textit{(\roman*)}] 
+\item AMD, Intel, VIA processors run the AMD64 ISA.
+\item (Most) cellphones use the ARM ISA with varying implementations from companies including (but not
+  limited to): Apple, Qualcomm, Samsung, Huawei
+\end{enumerate}
+
+
+
+
+
+\corollary{Design Methodology}{
+  ISA's are typically designed with particular micro-architectural style(s) in mind. Here are some
+  examples: 
+
+  \begin{enumerate}[label=\textit{(\roman*)}] 
+  \item Accumulators $\to$ hardwired, unpipelined.
+  \item CISC $\to$ microcoded.
+  \item RISC\footnote{In this class, we'll focus on this one!} $\to$ hardwired, pipelined.
+  \item VLIW $\to$ fixed-latency in-order parallel pipelines.
+  \item JVM $\to$ software interpretation.
+  \end{enumerate}
+  However, they can be implemented with any micro-architectural style. Here are some examples:
+  
+  \begin{enumerate}[label=\textit{(\roman*)}] 
+  \item Intel Ivy Bridge: Hardwired pipelined CISC (x86) machine (with some microcode support).
+  \item Spike: Software-interpreted RISC-V machine.
+  \item ARM Jazelle: A hardware JVM processor.
+  \end{enumerate}
+}
+
+
+
+  
+
+\section{RISC-V}
+RISC-V is an open-source\footnote{It is currently mostly maintained by the open-source community.}
+``RISC''-based\footnote{RISC: \textbf{R}educed \textbf{I}nstruction \textbf{S}et
+  \textbf{C}omputers.}  ISA (royalty-free) that was developed in the 2010's at Berkeley. In this
+class, we'll focus on the 32-bit ``base'' mode; i.e. ``RV32I''.
+
+It is an alternative to CISC\footnote{CISC: \textbf{C}omplex
+  \textbf{I}nstruction \textbf{S}et \textbf{C}omputers}, with the main
+differences highlighted below:
+
+\begin{tcbraster}[raster columns=2, raster equal height, raster force size=false]
+  \begin{tcolorbox}[colback=teal!5!white,colframe=black!50!violet,title=RISC]
+    \begin{enumerate}[label=\textit{(\roman*)}]
+    \item Fixed instruction size.
+    \item Simple (one-by-one) operation.
+    \item Less Complex.
+    \end{enumerate}
+  \end{tcolorbox}
+  \begin{tcolorbox}[colback=yellow!5!white,colframe=black!50!orange,title=CISC]
+    \begin{enumerate}[label=\textit{(\roman*)}]
+    \item Variable instruction size.
+    \item Packed operation.
+    \item Complex (it's in the name).
+    \end{enumerate}
+  \end{tcolorbox}
+\end{tcbraster}
+
+\corollary{Widely Used}{
+  With the exception of x86 (Intel's ISA) and a few others, all ISA's are based off of RISC, including
+  (but not limited to) MIPS, ARM, PowerPC, RISC-V.
+}
+
+
+
+
+
+\section{Running Instructions}
+
+
+\subsection{Stored Program Computer (Von Neumann)}
+\definition{Von Neumann Architecture}{
+  Computer hardware is a machine that reads instructions one-by-one and executes them
+  \textit{sequentially}. It continues this until the program terminates or finishes.
+}
+
+\subsubsection{Memory Integration}
+Memory holds \textit{both} the program (set of instructions) as well as the data it uses/manipulates
+in a linear memory array. Because of this, they can be modified during program execution, allowing
+for flexibility/more complex software design.
+
+\subsubsection{Sequential Instruction Processing}
+\definition{Program Counter}{
+  A \textbf{Program Counter (PC)} is a register that contains the address of the current instruction.
+}
+
+We do the following to execute a set of instructions:
+
+\begin{enumerate}[label=\textit{(\roman*)}] 
+\item The PC \textit{identifies} the current instruction.
+\item We \textit{fetch} the next instruction from memory.
+\item We \textit{update} the state (e.g. PC and memory) as a \textit{function} of the current state
+  according to the instruction.
+\item \textit{Repeat} until the program terminates.
+\end{enumerate}
+
+
+
+
+
+\section{Building an ISA: Operands}
+Instructions in 32-bit RISC-V take the form:
+\begin{center}
+  \texttt{COMMAND OPERANDS}
+\end{center}
+where each instruction is fixed-size and 32-bit. Possible types of \texttt{OPERANDS} are:
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Registers
+\item Immediate
+\item Memory
+\end{enumerate}
+
+
+\subsection{Registers}
+\definition{Register}{
+  A \textbf{register} is a small storage unit \textit{inside} the processor to quickly access data,
+  addresses, and instructions. It is typically smaller (and as such, faster) than memory, and can be
+  seen by software\footnote{I guess we'll clarify this later. (Source: Lec. 2 Slide 24)}. There are
+  typically between 16 and 64 registers in modern ISA's.
+}
+
+\definition{Register Width}{
+  The \textbf{width} of a register refers to the number of bits it can hold.
+}
+
+A larger register width $\implies$ more bits can be processed simultaneously, allowing for faster
+data processing and transfer rates. This comes at the cost of power consumption: wider registers
+$\implies$ more electronic circuits are activated at once $\implies$ higher power
+consumption\footnote{Low-end processors use smaller registers. High-performance processors use wider
+  and more registers.}.
+
+
+\subsubsection{RISC-V Registers}
+RISC-V supports 32 registers and 2 sizes:
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item A \textit{word} has a width of 32 bits.
+\item A \textit{double-word} has a width of 64 bits.
+\end{enumerate}
+
+\aside{Floating Point Registers}{
+  Note that all 32 registers store values in \textit{integers}. Higher-end processors may include a
+  \textit{separate} set of registers for floating point operations.
+}
+Each register is denoted by \texttt{xi}, where \texttt{i} is an integer between 0 and 31 inclusive. \\ \\
+\textbf{\textit{Note:}} $x0$ is \textit{hardwired} to 0; i.e. it will \textit{always} contain the
+value 0\footnote{This is useful for various operations when we need 0; e.g. resetting other
+  registers.}. \\ \\
+\textbf{\textit{Note:}} Registers are stored in a data structure called the \textit{register file}
+(which will be discussed ``later'' [Source: Lec. 2 Slide 28]).
+
+
+\subsection{Immediates}
+\definition{Immediate}{
+  An \textbf{immediate} is a \textit{signed} constant number used in an instruction.
+}
+
+\example{\texttt{addi}}{
+  Consider the following:
+  \begin{center}
+    \texttt{addi x2, x1, 5}
+  \end{center}
+  Here, 5 is the immediate that is being used in the \texttt{addi} instruction. We can infer that
+  this command adds two numbers, the value in \texttt{x1} and 5, and stores the result in another
+  register \texttt{x2}.
+}
+
+\corollary{IMPORTANT: Immediate Sizes}{
+  While registers are fixed at 32 bits, immediates \textbf{\textit{need not be}} 32 bits in
+  size; i.e. they are \textit{variable} size. Why? The explanation given in class was that there is
+  simply no room to store a 32-bit immediate.
+}
+
+\subsubsection{Sign}
+Since many operations in RISC-V are signed, proper sign-extension is needed when necessary. There
+are two cases:
+\begin{enumerate}[label=\textit{Case (\roman*)}]
+\item LSB: Here, padding zeroes is efficient.
+\item MSB: Here, we need proper sign extension (remember 2's complement? me neither).
+\end{enumerate}
+
+
+\subsection{Memory}
+Memory contains data that can be accessed by the processor. 
+
+
+
 
 
 
