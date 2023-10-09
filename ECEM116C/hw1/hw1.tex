@@ -1,0 +1,117 @@
+\documentclass{article}
+
+\begin{document}
+\section*{Question 1}
+What is the machine code for the following instructions:
+\begin{verbatim}
+ADD x16, x0, x0
+ADDI x2, x1, -16
+LHU, x4, x3, -4
+JALR x0, 8(x1)
+\end{verbatim}
+
+\subsection*{Response}
+The machine code for the following instructions are:
+
+\begin{verbatim}
+00000000 00000 00000 000 10000 0110011
+111111110000 00001 000 00010 0010011
+111111111100 00011 101 00100 00000011
+0000000001000 00001 000 00000 1100111
+\end{verbatim}
+
+
+
+
+
+\newpage
+\section*{Question 2}
+What is the machine code for the following JAL instruction:
+\begin{verbatim}
+X100 jal x0, Loop
+...
+X200 Loop:
+    ...
+\end{verbatim}
+
+\subsection*{Response}
+The machine code for the following JAL instruction is:
+\begin{verbatim}
+0 00000000000 0 1100100 00001 1101111
+\end{verbatim}
+
+
+
+
+
+\newpage
+\section*{Question 3}
+Translate the following machine codes into RISC-V assembly language (numbers are in hex).
+\begin{verbatim}
+fe1ff06f
+0000c133
+\end{verbatim}
+
+\subsection*{Response}
+The instruction \texttt{fe1ff06f} translates to:
+\newline
+\texttt{1111 1110 0001 1111 1111 0000 0110 1111} which, when rearranged, yields:
+\newline
+\texttt{1 11111100001 1 1111111 00000 1101111} which is a J-type, so we get:
+\newline
+\texttt{1 1111111 1 11111100001 00000 1101111} (\texttt{imm[20|10:1|11|19:12]}) or:
+\newline
+\texttt{jal -31(x0)}
+\newline
+\newline
+\newline
+The instruction \texttt{0000c133} translates to:
+\newline
+\texttt{0000 0000 0000 0000 1100 0001 0011 0011} which, when rearranged, yields:
+\newline
+\texttt{0000000 00000 00001 100 00010 0110011} which is:
+\newline
+\newline
+\texttt{xor x2 x0} in RISC-V assembly.
+
+
+
+
+
+\newpage
+\section*{Question 4}
+Write a RISC-V assembly language program for determining if a number is even or not.
+\newline
+\newline
+Use the following information in writing your assembly code.
+\begin{enumerate}
+\item The function starts at memory location \texttt{0x400}. Each instruction is 32 bits, thus the
+  second instruction should start at \texttt{0x404}, and so on. Use this information to correctly
+  compute the offset for jump and branch instructions (you are not allowed to use labels).
+\item The input is passed (stored) in register \texttt{a0}.
+\item The return value, c, should be stored in \texttt{a0}.
+\item The return address is tored in \texttt{ra}.
+\item You are free to use saved and temporary registers (don't forget to save values if you are
+  using saved registers).
+\item You are allowed to use Pseudoinstructions (e.g. \texttt{ret}, \texttt{call}, etc.)
+\end{enumerate}
+
+\begin{verbatim}
+addi t0, a0, 0
+addi t0, t0, -2
+blt zero, t0, -4
+sub a0, a0, a0
+blt zero, t0, 8
+addi t0, t0, 2
+xor a0, a0, t0
+xori a0, a0, 1
+\end{verbatim}
+
+
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
