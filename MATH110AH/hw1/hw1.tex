@@ -1,0 +1,360 @@
+\documentclass[13pt]{article}
+\usepackage{amsmath, amsthm, amssymb, graphicx, enumitem, esvect}
+
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+\title{Homework 1}
+\author{Warren Kim}
+
+\begin{document}
+\maketitle
+
+\begin{center}Please grade my HW carefully. Thank you.\end{center}
+
+\newpage
+\section*{Question 1}
+Let $f : X \to Y$ and $g : Y \to Z$ be two maps. Prove that if f and g are injective
+(resp. surjective), then so is the composition $g \circ f$.
+
+\subsection*{Response}
+
+\subsubsection*{Injective}
+\begin{proof}
+  Let $f$ and $g$ both be injective; i.e. $\forall x_1, x_2 \in X, f(x_1) = f(x_2) \implies x_1 = x_2$ and
+  $\forall y_1, y_2 \in Y, g(y_1) = g(y_2) \implies y_1 = y_2$. Take any $x_1, x_2 \in X$. Then we have
+  \begin{align*}
+    (g \circ f) (x_1) &= g(f(x_1)) \\
+                    &= g(y_1) \\
+                    &= g(y_2) & \text{Since $g$ is injective, $g(y_1) = g(y_2)$} \\
+                    &= g(f(x_2)) & \text{Since $f$ is injective, $f(x_1) = f(x_2)$} \\
+    (g \circ f) (x_1) &= (g \circ f) (x_2)
+  \end{align*}
+\end{proof}
+
+
+\subsubsection*{Surjective}
+\begin{proof}
+  Let $f$ and $g$ both be surjective; i.e. $\forall y \in Y, \exists x \in X : y = f(x)$ and
+  $\forall z \in Z, \exists y \in Y : z = g(y)$. Take any $z \in Z$. Then, we have
+  
+  \begin{align*}
+    (g \circ f) (x) &= g(f(x)) \\
+                    &= g(y) & \text{Since $f$ is surjective, $y = f(x)$} \\
+    (g \circ f)(x) &= z & \text {Since $g$ is surjective, $z = g(y)$} \\
+  \end{align*}
+\end{proof}
+
+
+
+
+
+\newpage
+\section*{Question 2}
+Prove that $(1 + 2 + \cdots + n)^2 = 1^3 + 2^3 + \cdots + n^3$.
+
+\subsection*{Response}
+\begin{proof}
+  Let $P(n)$ be the statement: ``$(1 + 2 + \cdots + n)^2 = 1^3 + 2^3 + \cdots + n^3$''. We will
+  induct on $n \in \mathbb{N}$. \\ \\
+  \textbf{\textit{(I)}} $P(1)$ reads ``$1 = 1^3 = 1$ which is true. \\
+  \textbf{\textit{(II)}} Assume $P(n)$ holds true for some $n \in \mathbb{N}$. We want to prove $P(n + 1)$:
+  \begin{align*}
+    1^3 + 2^3 + \cdots + n^3 + (n + 1)^3 &= (1 + 2 + \cdots + n)^2 + (n + 1)^3 & \text{By the
+                                                                               Inductive Hypothesis} \\
+                                         &= \left[\frac{n(n + 1)}{2}\right]^2  + (n + 1)^3 \\
+                                         &= \frac{n^2(n + 1)^2}{4} + (n + 1)(n + 1)^2 \\
+                                         &= \frac{n^2(n + 1)^2}{4} + \frac{4(n + 1)(n + 1)^2}{4} \\
+                                         &= \frac{n^2(n + 1)^2}{4} + \frac{4(n + 1)(n + 1)^2}{4} \\
+                                         &= \frac{(n^2 + 4n + 4)(n + 1)^2}{4} \\
+                                         &= \frac{(n + 2)^2(n + 1)^2}{4} \\
+                                         &= \left[\frac{(n + 2)(n + 1)}{2}\right]^2 \\
+    1^3 + 2^3 + \cdots + n^3 + (n + 1)^3 &= (1 + 2 + \cdots + n)^2
+  \end{align*}
+  So $P(n + 1)$ is true, concluding the induction.
+\end{proof}
+
+
+
+
+
+\newpage
+\section*{Question 3}
+Prove that $13$ divides $14^n - 1$ for any $n \in \mathbb{N}$.
+
+\subsection*{Response}
+\begin{proof}
+  Let $P(n)$ be the statement: ``$13$ divides $14^n - 1$ for any $n \in \mathbb{N}$''. We will
+  induct on $n \in \mathbb{N}$. \\ \\
+  \textbf{\textit{(I)}} $P(1)$ reads ``$13 \mid (14^1 - 1) = 13$'' which is true. \\
+  \textbf{\textit{(II)}} Assume $P(n)$ holds true for some $n \in \mathbb{N}$. We want to prove $P(n
+  + 1)$.  Recall that $13 \mid (14^n - 1)$ can be expressed as $14^n - 1 = 13q \iff 14^n = 13q + 1$
+  where $q \in \mathbb{Z}$.
+  \begin{align*}
+    14^{n + 1} - 1 &= (14 \cdot 14^n) - 1 \\
+                   &= (14 \cdot [13q + 1]) - 1 & \text{By the Inductive Hypothesis} \\
+                   &= 182q + 14 - 1 \\
+                   &= 182q + 13 \\
+                   &= 13 (14q + 1) \\
+    14^{n + 1} - 1 &= 13p & \text{Let $p = 14q + 1$} \\
+  \end{align*}
+  So $P(n + 1)$ is true, concluding the induction.
+\end{proof}
+
+
+
+
+
+\newpage
+\section*{Question 4}
+Show that if $a^n - 1$ is prime and $n > 1$, then $a = 2$ and $n$ is prime. If $2^n + 1$ is prime,
+what can you say about $n$?
+
+\subsection*{Response}
+\begin{proof}
+Note that $x^n - 1 = (x - 1)(x^{n - 1} + x^{n - 2} + \cdots + x + 1)$.
+\newline
+\newline
+Let $n > 1$. Then, we have
+\begin{align*}
+  a^n - 1 &= (a - 1)(a^{n - 1} + a^{n - 2} + \cdots + a + 1) \\
+          &\implies (a - 1) \mid (a^n - 1)
+\end{align*}
+But $a^n - 1$ is prime $\implies a - 1 = 1$ so $a = 2$.
+\newline
+\newline
+Now assume by contradiction that $n$ is composite; i.e. $n = pq$ for some $1 < p,q < n$. Then we get
+\begin{align*}
+  a^{pq} - 1 &= (a^p)^q - 1 \\
+             &= (a^p - 1)([a^p]^{q - 1} + [a^p]^{q - 2} + \cdots + a^p + 1)
+\end{align*}
+So $a^n - 1$ is composite, a contradiction. Therefore, $n$ must be prime.
+\end{proof}
+
+If $2^n + 1$ is prime, then $n$ must be either 0 or a power of 2.
+
+
+
+
+
+\newpage
+\section*{Question 5}
+Find all integer solutions of $93x + 39y = -6$.
+
+\subsection*{Response}
+$a = 93, b = 39$
+
+\begin{align*}
+  93 &= 2(39) + 15 \iff 15 = 93 - 2(39) \\
+  39 &= 2(15) + 9 \iff 9 = 39 - 2(15) \\
+  15 &= 1(9) + 6 \iff 6 = 15 - 1(9) \\
+  9 &= 1(6) + 3 \iff 3 = 9 - 1(6)\\
+  6 &= 2(3) + 0 \\
+  % a &= q_0 b + r_0 \\
+  % b &= q_1 r_0 + r_1 \\
+  % r_0 &= q_2 r_1 + r_2 \\
+  % r_1 &= q_3 r_2 + r_3 \\
+  % r_2 &= q_4 r_3 + r_4 \\
+\end{align*}
+So $(93, 39) = 3$.
+Then,
+\begin{align*}
+  3 &= 9 - 1(6) \\
+    &= 9 - 1[15 - 1(9)] \\
+    &= 2(9) - 15 \\
+    &= 2[39 - 2(15)] - [93 - 2(39)] \\
+    &= 4(39) - 4(15) - 93 \\
+    &= 4(39) - 4[93 - 2(39)] - 93 \\
+    &= 12(39) - 5(93) \\
+  3 &= 39(12) - 93(5) \\
+  -6 &= 93(10) + 39(-24) & \text{Multiply both sides by } -2
+\end{align*}
+
+Then we get $x = 10 - 13k, y = -24 + 31k$ where $k \in \mathbb{Z}$ (from \textbf{Question 6}) to be
+all the integer solutions of $93x + 39y = -6$.
+
+
+
+
+
+\newpage
+\section*{Question 6}
+Let $a, b, c$ be non-zero integers and let $d = \gcd(a, b)$. Prove that the equation $ax + by = c$
+has a solution $x, y$ in integers if and only if $d \mid c$. Moreover, if $d \mid c$ and $x_0, y_0$
+is a solution in integers then the general solution in integers is $x = x_0 + \frac{b}{d}k, y = y_0
+- \frac{a}{d}k$ for all integers $k$.
+
+\subsection*{Response}
+\subsubsection*{(i)}
+\begin{proof}
+  ($\implies$) Let $d = \gcd(a, b)$ and $ax + by = c$ have solutions $x, y \in \mathbb{Z}$. Since $d
+  \mid a, b$, we can write $a = dp, b = dq$ for some $p, q \in \mathbb{Z}, p \neq q$. Now, use the
+  assumption that $ax + by = c$ has integer solutions $x, y$ to get:
+  \begin{align*}
+    c &= ax + by \\
+      &= (dp)x + (dq)y & \text{Substitute } a, b \\
+      &= d(px + qy) & \text{Factor } d \\
+    c &= dr \iff d \mid c & \text{Let } r = px + qy \\
+  \end{align*}
+  Here, $r \in \mathbb{Z}$ because $x, y, p, q \in \mathbb{Z}$ and the integers are closed under
+  addition and multiplication. So $d \mid c$.
+  \newline
+  \newline
+  ($\impliedby$) Let $d \mid c$. Then by definition, $c = dq$ for some $q \in \mathbb{Z}$. Using
+  Bezout's Identity, we have
+  \begin{align*}
+    ax' + by' &= d \\
+    (ax' + by')q &= dq & \text{Multiply both sides by } q \\
+    a(x'q) + b(y'q) &= c & c = dq \\
+    ax + by &= c & \text{Let } x = x'q, y = y'q
+  \end{align*}
+  Here, $x, y \in \mathbb{Z}$ because $x', y', q \in \mathbb{Z}$ and the integers are closed under
+  multiplication. Thus, $ax + by = c$ has integer solutions.
+\end{proof}
+
+\subsubsection*{(ii)}
+\begin{proof}
+  Let $d \mid c$ and $x_0, y_0$ be integer solutions. Using Bezout's Identity, we get $a = dp, b =
+  dq$ for some $p, q \in \mathbb{Z}, p \neq q$. Then we have: $ax_0 + by_0 = c = ax + by$:
+  \begin{align*}
+    ax_0 + by_0 &= ax + by \\
+    a(x - x_0) &= b(y_0 - y) \\
+    dp(x - x_0) &= dq(y_0 - y) & \text{Substitute } a, b \\
+    p(x - x_0) &= q(y_0 - y) \\
+  \end{align*}
+  Since $\gcd(p, q) = 1$, it must be true that $p \mid (y_0 - y)$ (similarly, $q \mid (x - x_0)$). That is:
+  \begin{align*}
+    y_0 - y &= pk & k \in \mathbb{Z} \\
+    y &= pk + y_0 \\
+    y &= y_0 - \frac{a}{d}k & \text{Substitute } p
+  \end{align*}
+  and
+  \begin{align*}
+    x - x_0 &= qk & k \in \mathbb{Z} \\
+    x &= x_0 + qk \\
+    x &= x_0 + \frac{b}{d}k & \text{Substitute } q
+  \end{align*}
+  Therefore, the general solution in integers is $x = x_0 + \frac{b}{d}k$ and $y = y_0 -
+  \frac{a}{d}k$ for all integers $k$.
+
+
+\end{proof}
+
+
+
+
+\newpage
+\section*{Question 7}
+Show that if for $a, b \in \mathbb{N}, ab$ is a square of an integer and $(a, b) = 1$, then $a$ and
+$b$ are squares.
+
+\subsection*{Response}
+\begin{proof}
+  Note that $x = p_1^{k_1} p_2^{k_2} \ldots p_n^{k_n}$ is a square $\iff$ $k_1, k_2, \ldots, k_n$
+  are all even. \textbf{(i)}
+
+  Let $a, b \in \mathbb{N}$, $p \in \mathbb{Z}$ such that $p^2 = ab$ and $(a, b) = 1$. Then, we can
+  write both $a$ and $b$ in their unique prime factorizations (from the Fundamental Theorem of
+  Arithmetic) as:
+  \[a = p_1^{k_1} p_2^{k_2} \ldots p_n^{k_n}\]
+  \[b = q_1^{s_1} q_2^{s_2} \ldots q_m^{s_m}\]
+
+  Then, we have:
+  \[p^2 = ab = (p_1^{k_1} p_2^{k_2} \ldots p_n^{k_n})(q_1^{s_1} q_2^{s_2} \ldots q_m^{s_m})\]
+  Since $(a, b) = 1$ (i.e. $a$ and $b$ have no common divisor) and $ab$ is a square, by
+  \textbf{(i)}, $k_1, k_2, \ldots, k_n$ and $s_1, s_2, \ldots, s_n$ are all even $\implies$ $a$ and
+  $b$ are squares, respectively.
+\end{proof}
+
+
+
+
+
+\newpage
+\section*{Question 8}
+Prove that if $(a, n) = 1$ and $(b, n) = 1$, then $(ab, n) = 1$.
+
+\subsection*{Response}
+\begin{proof}
+  Let $a, b, n \in \mathbb{Z}$. First we use the Bezout Identity for $a$ and $b$:
+  \[ax + ny = 1\]
+  \[bx' + ny' = 1\]
+
+  where $x, x', y, y'  \in \mathbb{Z}$. Then we have:
+  \begin{align*}
+    (ax + ny)(bx' + ny') &= (ax)(bx') + (ax)(ny') + (ny)(bx) + (ny)(ny') \\
+                         &= ab(xx') + n(axy' + bxy + nyy') \\
+                         &= (ab)p + nq = 1 & \text{Let } p = xx', q = axy' + bxy + nyy' \\
+  \end{align*}
+
+  Here, $p$ is an integer because $x, x' \in \mathbb{Z}$ and integers are closed under
+  multiplication. Analogously, $q$ is an integer because $a, x, x', b, y, y', n \in \mathbb{Z}$ are
+  integers, and integers are closed under addition. Now, we reverse the Bezout Identity to get
+  \[(ab)p + nq = 1 \iff (ab, n) = 1\]
+\end{proof}
+
+
+
+
+
+\newpage
+\section*{Question 9}
+Is $2^{10} + 5^{12}$ a prime? (Hint: use the identity $4x^4 + y^4 = (2x^2 + y^2)^2 - (2xy)^2$.)
+
+\subsection*{Response}
+The number $2^{10} + 5^{12}$ is not prime.
+\begin{proof}
+  Let $x = 2^2 = 4, y = 5^3 = 125$. Then,
+  \begin{align*}
+    2^{10} + 5^{12} &= 2^2 \cdot 2^8 + 5^{12} \\
+                    &= 4(2^2)^4 + (5^3)^4 \\
+                    &= 4x^4 + y^4 \\
+                    &= (2x^2 + y^2)^2 - (2xy)^2 \\
+                    &= (2x^2 + y^2 + 2xy)(2x^2 + y^2 - 2xy) \\
+                    &= (2[4]^2 + [125]^2 + 2[4][125])(2[4]^2 + [125]^2 - 2[4][125]) \\
+                    &= (32 + 15625 + 1000)(32 + 15625 - 1000) \\
+                    &= (16657)(14657)
+  \end{align*}
+  Since $2^{10} + 5^{12}$ can be represented as the product of two integers that are both greater
+  than 1, it is composite and therefore not prime.
+\end{proof}
+
+
+
+
+\newpage
+\section*{Question 10}
+Show that there are infinitely many primes $p \equiv 2 \ (\textit{mod } 3)$. (Hint: consider
+$3p_1p_2 \ldots p_n - 1$.)
+
+\subsection*{Response}
+\begin{proof}
+  Assume by contradiction that we have an ordered finite set $S = \{p_1, p_2, \ldots, p_n\}$ of
+  primes of the form $p \equiv 2 \ (\textit{mod } 3)$ where $n \in \mathbb{N}$. Let $N = 3 p_1 p_2
+  \ldots p_n - 1$. Then there are two cases:
+  \begin{enumerate}[label=\textit{(\roman*)}]
+  \item $N$ is prime: If $N$ is prime, then we are done since $N \equiv 2 \ (\textit{mod } 3)$ and
+    is greater than any element in $S$, a contradiction.
+  \item $N$ is composite: If $N$ is composite, then by the Fundamental Theorem of Arithmetic, $N$
+    has a unique prime factorization. Clearly, $N$ cannot be congruent to $0 \ (\textit{mod } 3)$
+    since $N$ takes the form $3k - 1$. If $N$ is a product of primes all congruent to $1
+    \ (\textit{mod }) 3$, then $N$ must be congruent to $1 \ (\textit{mod } 3)$ ($[1] \cdot [1]
+    \cdot \ldots \cdot [1] \equiv [1]$). However, Since $N \equiv 2 \ (\textit{mod } 3)$, this cannot
+    be true. Therefore, there should be at least one prime congruent to $2 \ (\textit{mod } 3)$ as a
+    factor of $N$.
+  \end{enumerate}
+\end{proof}
+
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
