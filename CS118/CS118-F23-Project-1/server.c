@@ -1,3 +1,4 @@
+#include <netinet/in.h>
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -215,8 +216,6 @@ void handle_request(struct server_app *app, int client_socket) {
     DEBUG_PRINT("Filename after: %s", file_name);
 
 
-
-
     // TODO: Parse the header and extract essential fields, e.g. file name
     // Hint: if the requested path is "/" (root), default to index.html
     // char file_name[] = "index.html";
@@ -226,8 +225,18 @@ void handle_request(struct server_app *app, int client_socket) {
     // if (need_proxy(...)) {
     //    proxy_remote_file(app, client_socket, file_name);
     // } else {
-    serve_local_file(client_socket, file_name);
+    // serve_local_file(client_socket, file_name);
     //}
+
+    if (!strcmp(get_file_type(file_name), "ts")) {
+        DEBUG_PRINT("Sending %s to proxy_remote_file()", file_name);
+        proxy_remote_file(app, client_socket, file_name);
+    }
+    else {
+        DEBUG_PRINT("Sending %s to server_local_file()", file_name);
+        serve_local_file(client_socket, file_name);
+    }
+
     free(file_name);
 }
 
@@ -319,6 +328,44 @@ void proxy_remote_file(struct server_app *app, int client_socket, const char *re
     // Bonus:
     // * When connection to the remote server fail, properly generate
     // HTTP 502 "Bad Gateway" response
+    
+    // (i) create a client socket
+    // (ii) connect to the proxy server (app->remote_*)
+    // (iii) send a request to the proxy server
+    // (iv) receive the response from the proxy server
+    // (v) forward the response back to our client
+
+    // (i)
+    int proxy_client_socket = socket(AF_INET, SOCK_STREAM, 0);
+    struct sockaddr_in proxy_addr;
+
+    proxy_addr.sin_family = AF_INET;
+    inet_aton(app->remote_host, &proxy_addr.sin_addr);
+    proxy_addr.sin_port = app->remote_port;
+
+    DEBUG_PRINT("created proxy_client_socket and proxy_addr");
+    DEBUG_PRINT("proxy_addr address: %s", inet_ntoa(proxy_addr.sin_addr));
+    DEBUG_PRINT("proxy_addr port: %d", proxy_addr.sin_port);
+
+    if (proxy_client_socket < 0) {
+        perror("socket failed");
+        exit(EXIT_FAILURE);
+    }
+
+    // (ii)
+    if (connect(proxy_client_socket, (struct sockaddr *)&proxy_addr, sizeof(proxy_addr)) < 0) {
+        perror("connect failed");
+        exit(EXIT_FAILURE);
+    }
+
+    DEBUG_PRINT("Connected to: %s", inet_ntoa(proxy_addr.sin_addr));
+
+    // (iii)
+    send(proxy_client_socket, request, strlen(request), 0);
+
+    // (iv)
+    //
+
 
     char response[] = "HTTP/1.0 501 Not Implemented\r\n\r\n";
     send(client_socket, response, strlen(response), 0);
@@ -455,14 +502,15 @@ char *get_file_type(const char *file_name) {
     
     if (extension && *(extension + 1)) {
         extension++;
-        if (!strcmp(extension, "txt"))
-            return "text/plain; charset=UTF-8";
+        if (!strcmp(extension, "ts"))
+            return "ts";
         else if (!strcmp(extension, "html"))
             return "text/html; charset=UTF-8";
         else if (!strcmp(extension, "jpg"))
             return "image/jpeg";
         else if (!strcmp(extension, "m3u8"))
             return "audio/mpegurl";
+        return "text/plain; charset=UTF-8";
     }
 
     return "application/octet-stream";
