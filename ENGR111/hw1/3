@@ -1,0 +1,92 @@
+\documentclass{article}
+\usepackage{array}
+\usepackage{booktabs}
+
+\begin{document}
+\section*{Question 1}
+Stock options were introduced to incentivize principals (shareholders) to align their interests and
+goals with the agents (management). If principals have stock options, they are now incentivized to
+grow the stock price which is now in both the principals and agents' best interests: both principals
+and agents benefit from the growth in stock price because they own a portion.
+
+
+\section*{Question 2}
+\textbf{\textit{Note:}} All values in USD Millions except for \% change.
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|c|c|c|c|c|}
+    \hline
+    & Current Assets & Current Liabilities & Equity & Net Working Capital \\ \hline
+    Raytheon 2021 & 42,050 & 35,448 & 74,699 & 6,601 \\ \hline
+    Raytheon 2022 & 42,443 & 39,114 & 71,178 & 3,329 \\ \hline
+    \% Change& 0.9346 & 10.34 & 0.6493 & 49.57 \\ \hline
+    N. G. 2021 & 12,244 & 9,530 & 12,926 & 2,714 \\ \hline
+    N. G. 2022 & 12,308 & 11,587 & 15,312 & 721 \\ \hline
+    \% Change & 0.5221 & 21.58 & 18.46 & 73.43 \\ \hline
+  \end{tabular}
+\end{table}
+
+
+\section*{Question 3}
+\subsection*{Balance Sheet 2021}
+\begin{tabular}{l r l r}
+\toprule
+\multicolumn{2}{c}{\textbf{Assets}} & \multicolumn{2}{c}{\textbf{Liabilities \& Equity}} \\
+  \midrule 
+  & & \textbf{2021} & & & \textbf{2022}
+\textbf{Current Assets} & & \textbf{Current Liabilities} & \\
+Cash & \$300 & Accounts Payable & \$500 \\
+Accounts Receivable & \$250 & Short-term Loans & \$450 \\
+\textbf{Total Current Assets} & \$550 & \textbf{Total Current Liabilities} & \$950 \\
+\midrule
+\textbf{Long-term Assets} & & \textbf{Long-term Liabilities} & \\
+Fixed Assets & \$8,000 & Long-term Loans & \$1,800 \\
+\textbf{Total Long-term Assets} & \$8,000 & \textbf{Total Long-term Liabilities} & \$1,800 \\
+\midrule
+\multicolumn{2}{l}{\textbf{Total Assets}} & \multicolumn{2}{r}{\$XX,XXX} \\
+& & \textbf{Equity} & \\
+& & Common Stock & \$XX,XXX \\
+& & Retained Earnings & \$XX,XXX \\
+& & \textbf{Total Equity} & \$XX,XXX \\
+\midrule
+\multicolumn{2}{l}{\textbf{Total Assets}} & \multicolumn{2}{r}{\$XX,XXX} \\
+& & \multicolumn{2}{r}{\textbf{Total Liabilities \& Equity}} \\
+& & \multicolumn{2}{r}{\$XX,XXX} \\
+\bottomrule
+\end{tabular}
+
+
+\subsection*{Balance Sheet 2022}
+\begin{tabular}{l r l r}
+\toprule
+\multicolumn{2}{c}{\textbf{Assets}} & \multicolumn{2}{c}{\textbf{Liabilities \& Equity}} \\
+\midrule
+\textbf{Current Assets} & & \textbf{Current Liabilities} & \\
+Cash & \$XX,XXX & Accounts Payable & \$XX,XXX \\
+Accounts Receivable & \$XX,XXX & Short-term Loans & \$XX,XXX \\
+Inventory & \$XX,XXX & Other Current Liabilities & \$XX,XXX \\
+\textbf{Total Current Assets} & \$XX,XXX & \textbf{Total Current Liabilities} & \$XX,XXX \\
+\midrule
+\textbf{Long-term Assets} & & \textbf{Long-term Liabilities} & \\
+Property, Plant \& Equipment & \$XX,XXX & Long-term Loans & \$XX,XXX \\
+Intangible Assets & \$XX,XXX & Other Long-term Liabilities & \$XX,XXX \\
+\textbf{Total Long-term Assets} & \$XX,XXX & \textbf{Total Long-term Liabilities} & \$XX,XXX \\
+\midrule
+\multicolumn{2}{l}{\textbf{Total Assets}} & \multicolumn{2}{r}{\$XX,XXX} \\
+& & \textbf{Equity} & \\
+& & Common Stock & \$XX,XXX \\
+& & Retained Earnings & \$XX,XXX \\
+& & \textbf{Total Equity} & \$XX,XXX \\
+\midrule
+\multicolumn{2}{l}{\textbf{Total Assets}} & \multicolumn{2}{r}{\$XX,XXX} \\
+& & \multicolumn{2}{r}{\textbf{Total Liabilities \& Equity}} \\
+& & \multicolumn{2}{r}{\$XX,XXX} \\
+\bottomrule
+\end{tabular}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
