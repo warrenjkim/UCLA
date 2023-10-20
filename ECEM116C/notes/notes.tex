@@ -287,7 +287,7 @@ where each instruction is fixed-size and 32-bit. Possible types of \texttt{OPERA
 \item Immediate
 \item Memory
 \end{enumerate}
-
+In RISC-V, we will have \textit{at most} 2 operands.
 
 \subsection{Registers}
 \definition{Register}{
@@ -358,8 +358,227 @@ are two cases:
 \end{enumerate}
 
 
-\subsection{Memory}
+\subsection{Memory}\label{subsec:OPMEM}
 Memory contains data that can be accessed by the processor.
+\definition{Load and Store}{
+  \textbf{Loading} is the operation of \textit{reading} from memory. \\
+  \textbf{Storing} is the operation of \textit{writing} to memory.
+}
+
+There are a couple of variations for loading and storing:
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item \texttt{LW}: Load Word
+\item \texttt{LB}: Load Byte (is implemented by doing LW and only reading the \textit{highest} byte
+  of data).
+\item \texttt{LH}: Load Half-Word (is implemented by doing \texttt{LW} and reading the
+  \textit{lower} half of the data.
+\item \texttt{LBU}: Load Byte Unsigned (padding with 0's)
+\item \texttt{LHU}: Load Half-Word Unsigned (padding with 0's)
+\end{enumerate}
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item \texttt{SW}: Store Word
+\item \texttt{SB}: Store Byte
+\item \texttt{SH}: Store Half-Word
+\end{enumerate}
+
+
+\subsubsection{Format and Addressing}
+\definition{Base + Offset}{
+  Typically, we address memory using the following formula:
+  \[\textit{addr} = x_i + \textit{offset}\] where $x_i$ is the base address.
+}
+We do this because immediates cannot represent larger addresses.
+
+
+\subsubsection{Byte-addressability v. 32-bit Data (Endianness)}
+Recall that accessing memory is \textit{slow}. Therefore, rather than reading one byte at a time, we
+can read 32 bits (4 bytes) at a time.  When we read \textit{addr} $X$, what we are really doing is
+reading 4 bytes starting at \textit{addr} $X$, giving us a 32-bit value.
+
+\example{Load}{
+\texttt{load x1, x0, 4} will give us address 4, 5, 6, 7 and be stored in \texttt{x1}.
+}
+Note that we don't lose byte-addressability since we can just pull the desired 4 bytes and discard
+the 3 we won't be reading/using.
+
+This brings up the question of Endianness: where does the LSB go?
+
+\definition{Little and Big Endian}{
+  In a \textbf{Little Endian} machine, the \textit{lowest} address is at the LSB\footnote{LSB: Least
+    Significant Bit.}. \\
+  In a \textbf{Big Endian} machine, the \textit{highest} address is at the LSB$^a$.
+}
+Below is a visual of the definitions.
+\begin{verbatim}
+MSB           LSB
+ 3    2    1    0 Little Endian
+ 0    1    2    3 Big Endian
+\end{verbatim}
+Most machines run Little Endian because it's more intuitive.
+
+
+\subsubsection{Alignment}
+Consider the following scenario:
+\begin{verbatim}
+MSB           LSB
+ 3    2    1   0
+ 7    6    5   4
+\end{verbatim}
+What happens when we want to read \texttt{3, 4, 5, 6}? The common solution is to issue two
+loads. This situation is referred to as an \textit{alignment issue}.
+
+
+
+
+
+\section{Building an ISA: Commands}
+Instructions in 32-bit RISC-V take the form:
+\begin{center}
+  \texttt{COMMAND OPERANDS}
+\end{center}
+where each instruction is fixed-size and 32-bit. Possible types of \texttt{COMMANDS} are:
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Arithmetic/ALU
+\item Memory
+\item Control-Flow
+\end{enumerate}
+
+
+\subsection{Arithmetic/ALU}
+There are two types of arithmetic operations:
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Operations on two registers.
+\item Operations on one register and one immediate.
+\end{enumerate}
+and (usually) save the result in another register (commonly referred to as the \textit{destination
+  register}). 
+
+\example{Source and Destination Registers}{
+  Consider the following
+  \begin{center}
+    \texttt{SUB x3, x2, x1} \\
+    \texttt{ADDI x5, x1, 10}
+  \end{center}
+  We can rewrite this as \texttt{x3 = x2 - x1} and \texttt{x5 = x1 + 10} respectively. More
+  generally, we have:
+  \begin{center}
+    \texttt{COMMAND DEST, SRC1, SRC2}
+  \end{center}
+}
+There is a table of commands in [Lec. 2 Slide 48].
+
+\aside{Shift Right Logical/Arithmetic}{
+  SRL: Shift Right \textit{Logical} will \textbf{\textit{not}} sign extend; i.e. will pad zeros from
+  the left. \\
+  SRA: Shift Right \textit{Arithmetic} \textbf{\textit{will}} sign extend.
+}
+
+\example{}{
+  Consider the following:
+  \begin{align*}
+    &\texttt{addi x1, x0, 3} & \texttt{x1 = 0 + 3 = 3} \\
+    &\texttt{addi x2, x0, 5} & \texttt{x2 = 0 + 5 = 5} \\
+    &\texttt{add x3, x2, x1} & \texttt{x3 = x2 + x1 = 5 + 3 = 8} \\
+    &\texttt{sra x3, x3, x1} & \text{shift \texttt{x3 = 8} by \texttt{x1 = 3} bits = 1}
+  \end{align*}
+  So the final value of \texttt{x3} is 1.
+}
+There is a table of commands in [Lec. 2 Slide 57].
+
+
+\subsection{Memory}
+See \refto{subsec}{OPMEM}. \\
+There is a table of commands in [Lec. 2 Slide 63].
+
+
+\subsection{Control Flow}
+\definition{Program Counter/PC Register}{
+  A \textbf{Program Counter (PC/PC Register)} is a register that contains the address of the current
+  instruction.
+}
+Control flow requires a \textit{Program Counter} (PC) for conditional statements, function calls and
+returns, etc.
+
+\subsubsection{Jumps and Branches}
+\definition{Jump and Branch}{
+  A \textbf{jump} will \textit{unconditionally} jump to a specified address. \\
+  A \textbf{branch} will \textit{only} jump to a specified address only \textit{if} a condition is true.
+}
+
+\textbf{\textit{Note:}} We use PC-relative addressing.
+
+\subsubsection{Linking}
+\definition{Linking}{
+  \textbf{Linking} is the process of storing the next address \textit{before} jumping.
+}
+We need linking to remember where we were before jumping!
+\example{Sneaky Link}{
+  When we call a function \texttt{foo()}, we need to link the PC \textit{after}\footnote{the
+    ``next'' PC is actually \texttt{PC + 4} since we read in 4 byte chunks!} \texttt{foo()} so as to not
+  get stuck in an infinite loop.
+}
+There is a table of commands in [Lec. 2 Slide 70].
+
+\subsection{Pseudo Instructions}
+\definition{Pseudo Instruction}{
+  \textbf{Pseudo Instructions} are instructions that are not actually in the ISA, but can be
+  converted into one (and are ``for sanity'' - Professor).
+}
+\example{\texttt{jump} and \texttt{li}}{
+  \texttt{jump label} is a pseudo instruction and is equivalent to \texttt{jal x0, label}. \\
+  \texttt{li rd, imm} is a pseudo instruction and is equivalent to \texttt{addi rd, x0, imm}.
+}
+There is a table of commands in [Lec. 2 Slide 76].
+
+\subsection{Calling Convention}
+Calling conventions are a set of rules to guarantee correctness. In RISC-V, we have three major
+rules:
+
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Reserved registers should be unchanged. If needed, the callee will save the register to the
+  stack and recovers it in the end.
+\item On call, the return must be saved on the stack.
+\item Before returning, the frame pointer is to be recovered.
+\end{enumerate}
+There is a table of reserved registers in [Lec. 2 Slide 83].
+
+
+The caller will:
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Put arguments onto the stack.
+\item Invoke the callee via the \texttt{call} (pseudo) instruction.
+\end{enumerate}
+The callee will:
+\begin{enumerate}[label=\textit{(\roman*)}]
+\item Save reserved registers for the caller.
+\item Save old based pointer.
+\item Make room for local variables and execute the code.
+\item Put the return value into the register.
+\item Restore the stack frame and key registers.
+\item Return.
+\end{enumerate}
+There is a table of caller/callee responsibilities in [Lec. 2 Slide 83]. \\
+There is a table of C types to RISC-V byte count in [Lec. 2 Slide 84].
+
+\subsection{Running Instructions}
+Machines don't understand assembly, and need an \textit{assembler} to generate machine code to run!
+The \textit{assembler} uses a table to generate the machine code.
+
+
+
+
+
+\chapter{Microarchitecture}
+
+\section{Basics}
+\subsection{Reading the Table}
+RISC-V has 6 types of operations (R, I , S, B, U, J-type). Every instruction has an \textit{opcode},
+a 7-bit number to specify the operation of the instruction; i.e. determines the format/category of
+the instruction (R, I, S, B, U, J-type).
+\newline
+\newline
+There is a table of RISC-V command types in [Lec. 3 Slide 6].
 
 
 
