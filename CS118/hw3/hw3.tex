@@ -1,0 +1,247 @@
+\documentclass{report}
+\usepackage{homework}
+\usepackage{listings}
+\usepackage{enumitem}
+
+\solstrue
+
+\renewcommand{\hmwkTitle}{Homework 3}
+
+\begin{document}
+
+\mktitle
+
+\begin{problem}
+
+Suppose you have a new computer just set up. \verb|dig| is one of the most useful DNS lookup tool.
+You can check out the manual of \verb|dig| at \url{http://linux.die.net/man/1/dig}.
+A typical invocation of \verb|dig| looks like:
+\verb|dig @server name type|.
+
+Suppose that on Jan 25, 2023 at 19:00:00, you have issued ``\verb|dig google.com A|'' to get an IPv4 address for \url{google.com} domain from your caching resolver and got the following result:
+
+\begin{lstlisting}
+
+; <<>> DiG 9.10.6 <<>> google.com A
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 32000
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 4, ADDITIONAL: 4
+
+;; QUESTION SECTION:
+;google.com.			IN	A
+
+;; ANSWER SECTION:
+google.com.		273	IN	A	142.250.217.142
+
+;; AUTHORITY SECTION:
+google.com.		55416	IN	NS	ns4.google.com.
+google.com.		55416	IN	NS	ns2.google.com.
+google.com.		55416	IN	NS	ns1.google.com.
+google.com.		55416	IN	NS	ns3.google.com.
+
+;; ADDITIONAL SECTION:
+ns1.google.com.		145523	IN	A	216.239.32.10
+ns2.google.com.		215985	IN	A	216.239.34.10
+ns3.google.com.		215985	IN	A	216.239.36.10
+ns4.google.com.		215985	IN	A	216.239.38.10
+
+;; Query time: 5 msec
+;; SERVER: 128.97.128.1#53(128.97.128.1)
+;; WHEN: Wed Jan 25 19:00:00 2023
+;; MSG SIZE  rcvd: 180
+
+\end{lstlisting}
+
+\begin{enumerate}
+
+\item What is the discovered IPv4 address of \url{google.com} domain?
+
+\item If you issue the same command 2 minute later, how would ``ANSWER SECTION'' look like?
+
+\item When would be the earliest (absolute) time the caching resolver would contact one of the \url{google.com} name servers again?
+
+\item If the client keeps issuing \texttt{dig google.com A} every second, when would be the earliest (absolute) time the caching resolver would contact one of the \texttt{.com} name servers?
+
+\end{enumerate}
+
+
+\begin{answer}{50em}
+  \begin{enumerate}[label=(\alph*)]
+  \item \texttt{142.250.217.142}
+  \item \texttt{google.com.		153	IN	A	142.250.217.142}
+  \item 145523 seconds $\implies$ 1d, 16h, 25m, 23s $\implies$ \texttt{Fri Jan 27 11:25:23 2023}
+  \item 55416 seconds $\implies$ 0d, 15h, 23m, 36s $\implies$ \texttt{Thu Jan 26 10:23:36 2023}
+  \end{enumerate}
+
+\end{answer}
+
+\end{problem}
+
+
+\newpage
+
+\newpage
+
+\begin{problem}
+Suppose that you're tasked with setting up a DNS infrastructure for a large organization. Your colleague suggests using DNS servers that perform recursive queries, while you consider implementing DNS servers that perform iterative queries.
+\begin{enumerate}
+\item List 2 potential advantages of recursive queries over iterative queries.
+\item List 2 potential advantages of iterative queries over recursive queries.
+
+\end{enumerate}
+
+
+\begin{answer}{40em}
+  \begin{enumerate}[label=(\alph*)]
+    \item
+    \begin{enumerate}[label=\textit{(\roman*)}]
+    \item We can offload the work to the DNS server(s).
+    \item If the $RTT$ between DNS servers are faster than local to DNS, recursive would be faster.
+    \end{enumerate}
+
+    \item
+    \begin{enumerate}[label=\textit{(\roman*)}]
+    \item Iterative queries won't propagate malicious requests (e.g. DDoS) up. The only server that
+      is affected is the local DNS server.
+    \item Requests can be cached in the local DNS cache whereas recursive queries can only cache IP
+      addresses.
+    \end{enumerate}
+  \end{enumerate}
+
+
+\end{answer}
+\end{problem}
+
+\newpage
+
+\begin{problem}
+
+
+Suppose your computer is connected to a WiFi network, which gives you the IP address of the local DNS server; however, the DNS Server was just rebooted and its cache is completely empty.
+
+Suppose that the RTT between your computer and the local DNS server is 5ms, and the RTT between the local DNS server and \textit{any} other DNS server is 60ms.
+Assume the iterated query is used and all responses have TTL of 5 hours.
+
+\begin{enumerate}
+    \item If you try to visit cs.ucla.edu, what would be the minimum amount of time that you need to wait before the web browser is able to initiate connection to the web server of UCLA CS? (Assume the ucla.edu name server is the authoritative DNS server for cs.ucla.edu)
+    \item Using the similar assumption as in part(a), if you try to visit bruinlearn.ucla.edu one minute later, what would be the minimum waiting time?
+    \item If you try to visit gradescope.com one minute later, what would be the minimum waiting time? (Assume the gradescope.com name server is the authoritative DNS server for gradescope.com)
+    \item Using the similar assumption as in part(c), if you try to visit google.com one minute later, what would be the minimum waiting time? 
+\end{enumerate}
+
+
+\begin{answer}{40em}
+  \begin{enumerate}[label=(\alph*)]
+  \item Computer $\to$ local DNS $\to$ Root $\to$ TLD $\to$ Authoritative \\
+    5 + 60 + 60 + 60 = 185ms.
+  \item Computer $\to$ local DNS $\to$ Authoritative \\
+    5 + 60 = 65ms.
+  \item Computer $\to$ local DNS $\to$ Root $\to$ TLD $\to$ Authoritative \\
+    5 + 60 + 60 + 60 = 185ms.
+  \item Computer $\to$ local DNS $\to$ Authoritative \\
+    5 + 60 = 65ms.
+  \end{enumerate}
+
+
+
+\end{answer}
+\end{problem}
+
+
+
+\newpage
+
+\begin{problem}
+Recall BitTorrent from lecture. BitTorrent is a popular Peer-to-Peer (P2P) file-sharing application that divides files into small chunks and distributes the downloading tasks among clients. To download a file, a user first retrieves a ".torrent" file, which contains metadata about the desired file, including the addresses of "trackers." These trackers keep track of the peers participating in sharing that particular file. Once connected, the user's client downloads chunks from other peers and simultaneously offers the chunks it has already downloaded for others to retrieve.
+
+\begin{enumerate}
+\item Consider a traditional centralized file-sharing architecture where a single server hosts files for clients to download and a fixed bandwidth is used regardless of number of clients. 
+
+Compare this with a decentralized Peer-to-Peer (P2P) architecture like BitTorrent. Which architecture can offer faster average download speed when a large group of clients simultaneously need to download the same files? Please briefly explain your reasoning.
+\item Continuing on part(a). Which architecture provides greater resilience against disruptions or failures? Please briefly explain your reasoning.
+\item For BitTorrent, suppose that some clients are sharing a single tracker for a file. What problem may emerge if the tracker becomes unavailable after some of clients have already established peer-to-peer connection and started file sharing? Can the file-sharing process continue? Please briefly explain your reasoning.
+\item Can you think of some potential solutions to handle tracker failure like the scenario in part (c)?
+
+\end{enumerate}
+
+
+\medskip
+
+\begin{answer}{40em}
+  \begin{enumerate}[label=(\alph*)]
+  \item P2P would be faster than a centralized file-sharing architecture because in P2P,
+    clients connect with each other. When a large group of clients simultaneously need to download the
+    same files, the file contents will get distributed much quicker since each client also acts as a
+    server for another client. So, the average download speed will be faster.
+  \item P2P is more resilient since the single-server model has a single point of failure. If a
+    server in the P2P model disconnects, as long as there are other hosts that are connected, data
+    can still be shared among peers.
+  \item If the tracker becomes unavailable after $n$ established connections, the only thing that
+    would happen is that new peers cannot connect. File sharing will continue among the established
+    peers (before the tracker became unavailable) since each host in the group will have the list of
+    other peers. One potential issue is that if there is a file segment that nobody has, the
+    tracker cannot update the list of peers since it is unavailable.
+  \item You can implement redundancy in each file such that if one becomes unavailable, there is a
+    backup(s) that are available.
+  \end{enumerate}
+
+\end{answer}
+\end{problem}
+
+\newpage
+
+\begin{problem}
+DASH is a modern, adaptive bit-rate streaming protocol. Instead of streaming a video as a continuous flow, DASH breaks the content into a sequence of small chunks, each representing a short interval of playback time. The video is encoded at multiple bit rates, and the client selects the appropriate bit rate for streaming based on network conditions, ensuring smooth playback even with fluctuating bandwidth.
+\begin{enumerate}
+\item What are some advantages of using an adaptive streaming protocol like DASH compared to a traditional download-and-play scheme with a fixed bitrate? Please list at least two and briefly explain your answer. 
+\item Now consider the integration of DASH with Content Distribution Network (CDN). Compare the benefits of streaming DASH content through a CDN versus serving it from a centralized "mega-server". Please briefly discuss at least two points.
+\item Suppose that you are using Netflix to watch your favorite movie, Argo (assume the video url is netflix.com/argo, and the best CDN is us-west-content.netflix.com), briefly explain how to find the best CDN server using DNS step-by-step (in bulletpoints).
+
+\end{enumerate}
+
+\begin{answer}{40em}
+  \begin{enumerate}[label=(\alph*)]
+  \item
+    \begin{enumerate}[label=\textit{(\roman*)}]
+    \item dash allows for variable bitrate streaming, which reduces overall bandwidth consumption
+      because it can dynamically adjust the bitrate of the stream depending on the current
+      connection strength and speed.
+    \item dash can provide a better experience to users since it can dynamically adjust the video
+      quality in real-time. this lets the user see a continuous video (at variable qualities) rather than
+      having to wait.
+    \end{enumerate}
+
+  \item
+    \begin{enumerate}[label=\textit{(\roman*)}]
+    \item Unlike a ``mega-server'', DASH through CDN doesn't have a single point of failure; that
+      is, they scale better than a ``mega-server'' and have better load distribution.
+    \item Because CDN's have multiple locations, they may be faster than a ``mega-server'' given
+      that you are closer to a CDN than to a ``mega-server''. This results in reduced latency.
+    \end{enumerate}
+  \item
+    \begin{itemize}
+    \item Client requests to watch Argo via \texttt{netflix.com/argo}, sending a DNS query to its
+      local DNS for the IP address of \texttt{netflix.com/argo}.
+    \item Netflix's authoritative DNS will return to the local DNS a host name in the CDN's domain.
+    \item The DNS query will enter the private CDN and the local DNS will send a query with the
+      CDN's domain name to resolve its IP address.
+    \item Within the third party DNS, we determine which CDN has the requested content, as well as
+      which one is the closest to the user's ISP. 
+    \item The third party DNS returns the IP address of the best server (in this case, it's
+      \texttt{us-west-content.netflix.com}).
+    \item The client connects and starts streaming.
+    \end{itemize}
+\end{enumerate}
+
+\end{answer}
+\end{problem}
+
+
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
