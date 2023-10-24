@@ -70,7 +70,7 @@ ns4.google.com.		215985	IN	A	216.239.38.10
   \begin{enumerate}[label=(\alph*)]
   \item \texttt{142.250.217.142}
   \item \texttt{google.com.		153	IN	A	142.250.217.142}
-  \item 145523 seconds $\implies$ 1d, 16h, 25m, 23s $\implies$ \texttt{Fri Jan 27 11:25:23 2023}
+  \item 273 seconds $\implies$ 0d, 0h, 4m, 33s $\implies$ \texttt{Thu Jan 26 19:04:33 2023}
   \item 55416 seconds $\implies$ 0d, 15h, 23m, 36s $\implies$ \texttt{Thu Jan 26 10:23:36 2023}
   \end{enumerate}
 
@@ -102,8 +102,8 @@ Suppose that you're tasked with setting up a DNS infrastructure for a large orga
 
     \item
     \begin{enumerate}[label=\textit{(\roman*)}]
-    \item Iterative queries won't propagate malicious requests (e.g. DDoS) up. The only server that
-      is affected is the local DNS server.
+    \item Iterative queries won't propagate malicious requests (e.g. DDoS) up to root. The only
+      server that is affected is the local DNS server.
     \item Requests can be cached in the local DNS cache whereas recursive queries can only cache IP
       addresses.
     \end{enumerate}
@@ -139,8 +139,8 @@ Assume the iterated query is used and all responses have TTL of 5 hours.
     5 + 60 = 65ms.
   \item Computer $\to$ local DNS $\to$ Root $\to$ TLD $\to$ Authoritative \\
     5 + 60 + 60 + 60 = 185ms.
-  \item Computer $\to$ local DNS $\to$ Authoritative \\
-    5 + 60 = 65ms.
+  \item Computer $\to$ local DNS $\to$ .com $\to$ Authoritative \\
+    5 + 60 + 60= 125ms.
   \end{enumerate}
 
 
@@ -173,7 +173,8 @@ Compare this with a decentralized Peer-to-Peer (P2P) architecture like BitTorren
   \item P2P would be faster than a centralized file-sharing architecture because in P2P,
     clients connect with each other. When a large group of clients simultaneously need to download the
     same files, the file contents will get distributed much quicker since each client also acts as a
-    server for another client. So, the average download speed will be faster.
+    server for another client. That is, files would be downloaded in parallel while client-server is
+    sequential. So, the average download speed will be faster.
   \item P2P is more resilient since the single-server model has a single point of failure. If a
     server in the P2P model disconnects, as long as there are other hosts that are connected, data
     can still be shared among peers.
@@ -204,10 +205,10 @@ DASH is a modern, adaptive bit-rate streaming protocol. Instead of streaming a v
   \begin{enumerate}[label=(\alph*)]
   \item
     \begin{enumerate}[label=\textit{(\roman*)}]
-    \item dash allows for variable bitrate streaming, which reduces overall bandwidth consumption
+    \item DASH allows for variable bitrate streaming, which reduces overall bandwidth consumption
       because it can dynamically adjust the bitrate of the stream depending on the current
       connection strength and speed.
-    \item dash can provide a better experience to users since it can dynamically adjust the video
+    \item DASH can provide a better experience to users since it can dynamically adjust the video
       quality in real-time. this lets the user see a continuous video (at variable qualities) rather than
       having to wait.
     \end{enumerate}
@@ -223,12 +224,12 @@ DASH is a modern, adaptive bit-rate streaming protocol. Instead of streaming a v
     \begin{itemize}
     \item Client requests to watch Argo via \texttt{netflix.com/argo}, sending a DNS query to its
       local DNS for the IP address of \texttt{netflix.com/argo}.
-    \item Netflix's authoritative DNS will return to the local DNS a host name in the CDN's domain.
+    \item Netflix's authoritative DNS will return the hostname in the CDN's domain to the local DNS.
     \item The DNS query will enter the private CDN and the local DNS will send a query with the
       CDN's domain name to resolve its IP address.
     \item Within the third party DNS, we determine which CDN has the requested content, as well as
       which one is the closest to the user's ISP. 
-    \item The third party DNS returns the IP address of the best server (in this case, it's
+    \item The private DNS returns the IP address of the best server (in this case, it's
       \texttt{us-west-content.netflix.com}).
     \item The client connects and starts streaming.
     \end{itemize}
