@@ -1,0 +1,41 @@
+#!/bin/sh
+
+tests=($(find . -maxdepth 1 -type f | grep -E '23instMem-.*.txt'))
+expected=("(-8,23)\n" "(40,1)\n" "(46,-10)\n" "(9,17)\n")
+
+echo "Cleaning project...\n"
+make clean
+
+echo "Making project...\n"
+make
+
+echo 
+echo
+
+actual=""
+
+function check() {
+    actual=$(./cpusim $1 | tail -n 1)
+    if [ "$actual" = "$2" ]; then
+        return 1
+    else
+        return 0
+    fi
+}
+
+for i in "${!tests[@]}"; do
+  test=${tests[$i]}
+  exp=${expected[$i]}
+  echo "Testing $test..."
+  if check "$test" "$exp"; then
+      echo "Expected: $(echo $exp | tr -d ' ')"
+      echo "Actual: $actual"
+      echo "Passed\n"
+  else
+      echo "Failed"
+      echo "Expected: $(echo $exp | tr -d ' ')"
+      echo "Actual: $actual"
+      echo
+  fi
+done
+
