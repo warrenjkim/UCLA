@@ -24,6 +24,7 @@ namespace util {
         return false;
     }
 
+
     OperationType get_instruction_type(instruction *instr) {
         if (instr->opcode == R_TYPE_OPCODE)
             return RTYPE;
@@ -39,6 +40,7 @@ namespace util {
             return STORE_TYPE;
         return NONE;
     }
+
 
     Operation get_instruction(instruction *instr) {
         switch (instr->operation_type) {
@@ -72,48 +74,8 @@ namespace util {
         }
 
         return DONE;
-
-
-        // r-type
-        //     if (instr->opcode == R_TYPE_OPCODE) {
-        //         if (instr->funct3 == ADD_FUNCT3 && instr->funct7 == ADD_FUNCT7)
-        //             return ADD;
-        //         else if (instr->funct3 == SUB_FUNCT3 && instr->funct7 == SUB_FUNCT7)
-        //             return SUB;
-        //         else if (instr->funct3 == XOR_FUNCT3 && instr->funct7 == XOR_FUNCT7)
-        //             return XOR;
-        //         else if (instr->funct3 == SRA_FUNCT3 && instr->funct7 == SRA_FUNCT7)
-        //             return SRA;
-        //     }
-        // 
-        //     // i-type
-        //     else if (instr->opcode == I_TYPE_OPCODE) {
-        //         if (instr->funct3 == ADDI_FUNCT3)
-        //             return ADDI;
-        //         else if (instr->funct3 == ANDI_FUNCT3)
-        //             return ANDI;
-        //     }
-        //     // b-type
-        //     else if (instr->opcode == B_TYPE_OPCODE) {
-        //         if (instr->funct3 == BLT_FUNCT3)
-        //             return BLT;
-        //     }
-        //     // j-type
-        //     else if (instr->opcode == J_TYPE_OPCODE)
-        //         return JALR;
-        // 
-        //     else if (instr->opcode == LOAD_OPCODE) {
-        //         if (instr->funct3 == LW_FUNCT3)
-        //             return LW;
-        //     }
-        // 
-        //     else if (instr->opcode == STORE_OPCODE) {
-        //         if (instr->funct3 == SW_FUNCT3)
-        //             return SW;
-        //     }
-        // 
-        //     return DONE;
     }
+
 
     std::bitset<32> parse_immediate(instruction *instr) {
         if (
@@ -165,15 +127,6 @@ namespace util {
 
         curr->operation_type = get_instruction_type(curr);
         curr->operation      = get_instruction(curr);
-
-        // std::cout << "instruction: " << curr->instr << std::endl;
-        // std::cout << "funct7: " << curr->funct7 << std::endl;
-        // std::cout << "rs2: " << curr->rs2 << std::endl;
-        // std::cout << "rs1: " << curr->rs1 << std::endl;
-        // std::cout << "funct3: " << curr->funct3 << std::endl;
-        // std::cout << "rd: " << curr->rd << std::endl;
-        // std::cout << "instruction type: " << curr->operation << std::endl;
-        // std::cout << "opcode: " << curr->opcode << std::endl;
 
         return true;
     }

@@ -2,9 +2,7 @@
 #include "util.h"
 
 instruction::instruction(std::bitset<32> fetch) {
-    // std::cout << "fetch: " << fetch << std::endl;
     instr = fetch;
-    // std::cout << instr << std::endl;
 }
 
 
