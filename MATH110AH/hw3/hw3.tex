@@ -94,31 +94,30 @@ Show that if $G$ is a group in which $(ab)^2 = a^2b^2$ for all $a, b \in G$, the
 Find all elements of order 3 in $\mathbb{Z}/18\mathbb{Z}$
 
 \subsection*{Response}
-Note that there are solutions if $3 \mid \varphi (18)$.
-\[\varphi (18) = 6\]
-Since $3 \mid 6$, there are solutions. Then, there are 16 cases:
+There are 18 cases:
 \begin{align*}
-  2^3 &= 8 \equiv 8 \ (\textit{mod } 18) \not\equiv 1 \ (\textit{mod } 18) \\
-  3^3 &= 9 \equiv 9 \ (\textit{mod } 18) \not\equiv 1 \ (\textit{mod } 18) \\
-  4^3 &= 64 \equiv 10 \ (\textit{mod } 18) \not\equiv 1 \ (\textit{mod } 18) \\
-  5^3 &= 125 \equiv 17 \ (\textit{mod } 18) \not\equiv 1 \ (\textit{mod } 18) \\
-  6^3 &= 196 \equiv 16 \ (\textit{mod } 18) \not\equiv 1 \ (\textit{mod } 18) \\
-  7^3 &= 343 \equiv 1 \ (\textit{mod } 18) \equiv 1 \ (\textit{mod } 18) \\
-  8^3 &= 512 \equiv 8 \ (\textit{mod } 18) \not\equiv 1 \ (\textit{mod } 18) \\
-  9^3 &= 729 \equiv 9 \ (\textit{mod } 18) \not\equiv 1 \ (\textit{mod } 18) \\
-  10^3 &= 1000 \equiv 10 \ (\textit{mod } 18) \not\equiv 1 \ (\textit{mod } 18) \\
-  11^3 &= 1331 \equiv 11 \ (\textit{mod } 18) \not\equiv 1 \ (\textit{mod } 18) \\
-  12^3 &= 1728 \equiv 12 \ (\textit{mod } 18) \not\equiv 1 \ (\textit{mod } 18) \\
-  13^3 &= 2197 \equiv 7 \ (\textit{mod } 18) \not\equiv 1 \ (\textit{mod } 18) \\
-  14^3 &= 2744 \equiv 14 \ (\textit{mod } 18) \not\equiv 1 \ (\textit{mod } 18) \\
-  15^3 &= 3375 \equiv 9 \ (\textit{mod } 18) \not\equiv 1 \ (\textit{mod } 18) \\
-  16^3 &= 4096 \equiv 16 \ (\textit{mod } 18) \not\equiv 1 \ (\textit{mod } 18) \\
-  17^3 &= 4913 \equiv 5 \ (\textit{mod } 18) \not\equiv 1 \ (\textit{mod } 18) \\
+    3 \cdot 0 &= 0 \equiv 0 \ (\textit{mod } 18) \\
+    3 \cdot 1 &= 3 \equiv 3 \ (\textit{mod } 18) \\
+    3 \cdot 2 &= 6 \equiv 6 \ (\textit{mod } 18) \\
+    3 \cdot 3 &= 9 \equiv 9 \ (\textit{mod } 18) \\
+    3 \cdot 4 &= 12 \equiv 12 \ (\textit{mod } 18) \\
+    3 \cdot 5 &= 15 \equiv 15 \ (\textit{mod } 18) \\
+    3 \cdot 6 &= 18 \equiv 0 \ (\textit{mod } 18) \\
+    3 \cdot 7 &= 21 \equiv 3 \ (\textit{mod } 18) \\
+    3 \cdot 8 &= 24 \equiv 6 \ (\textit{mod } 18) \\
+    3 \cdot 9 &= 9 \equiv 9 \ (\textit{mod } 18) \\
+    3 \cdot 10 &= 12 \equiv 12 \ (\textit{mod } 18) \\
+    3 \cdot 11 &= 15 \equiv 15 \ (\textit{mod } 18) \\
+    3 \cdot 12 &= 18 \equiv 0 \ (\textit{mod } 18) \\
+    3 \cdot 13 &= 21 \equiv 3 \ (\textit{mod } 18) \\
+    3 \cdot 14 &= 24 \equiv 6 \ (\textit{mod } 18) \\
+    3 \cdot 15 &= 9 \equiv 9 \ (\textit{mod } 18) \\
+    3 \cdot 16 &= 12 \equiv 12 \ (\textit{mod } 18) \\
+    3 \cdot 17 &= 15 \equiv 15 \ (\textit{mod } 18) \\
 \end{align*}
-So a potential solution is $7$. To verify, we check $7^1$ and $7^2$.
-\[7^1 = 7 \equiv 7 \ (\textit{mod } 18) \not\equiv 1 \ (\textit{mod } 18)\]
-\[7^2 = 49 \equiv 13 \ (\textit{mod } 18) \not\equiv 1 \ (\textit{mod } 18)\]
-So the solution is $7$.
+$0$ has order $1$ since it is the identity, so it is not of order $3$. $6$ and $12$ are both order 
+$3$ since $3$ is the smallest positive integer such that $6 \cdot 3 \equiv 0 \ (\textit{mod } 18)$ and 
+$12 \cdot 3 \equiv 0 \ (\textit{mod } 18)$, and are thus the only elements of order $3$.
 
 
 
@@ -130,13 +129,12 @@ Prove that the composite of two homomorphisms (resp. isomorphisms) is also a hom
 (resp. isomorphism).
 
 \subsection*{Response}
-\subsection*{Homomorphism}
+\subsection*{Homomorphism (i)}
 \begin{proof}
     Let $f : G \to H$, $g: H \to K$ be two homomorphisms. Then,
     \[f(x_1 \cdot x_2) = f(x_1) \cdot f(x_2)\]
-    for all $x_1, x_2 \in G$ and
     \[g(y_1 \cdot y_2) = g(y_1) \cdot g(y_2)\]
-    for all $y_1, y_2 \in H$.
+    for all $x_1, x_2 \in G$ and for all $y_1, y_2 \in H$. The composition is $g \circ f : G \to K$.
     \begin{align*}
         (g \circ f)(x_1 \cdot x_2) &= g(f(x_1 \cdot x_2)) \\
                                   &= g(f(x_1) \cdot f(x_2)) & f \text{ is a homomorphism} \\
@@ -147,20 +145,36 @@ Prove that the composite of two homomorphisms (resp. isomorphisms) is also a hom
 \end{proof}
 
 
-\subsection*{Isomorphism *****INCOMPLETE*****}
+\subsection*{Isomorphism}
 \begin{proof}
-    Let $f : G \to H$, $g: H \to K$ be two isomorphisms. Then,
-    \[f(x_1 \cdot x_2) = f(x_1) \cdot f(x_2)\]
-    for all $x_1, x_2 \in G$ and
-    \[g(y_1 \cdot y_2) = g(y_1) \cdot g(y_2)\]
-    for all $y_1, y_2 \in H$.
+    It suffices to show that the composition of two homomorphisms (resp. bijections) is also a 
+    homomorphism (resp. bijection). Let $f : G \to H$, $g: H \to K$ be two bijections; i.e. they 
+    are injective and surjective. Then, $g \circ f : G \to K$ is the composition. We will show that 
+    this composition is also a bijection.
+    \newline
+    \newline
+    \textit{\textbf{Injective}}
+    \newline
+    Take any $x_1, x_2 \in G$ and any $y_1, y_2 \in H$. Then,
     \begin{align*}
-        (g \circ f)(x_1 \cdot x_2) &= g(f(x_1 \cdot x_2)) \\
-                                  &= g(f(x_1) \cdot f(x_2)) & f \text{ is an isomorphism} \\
-                                  &= g(f(x_1)) \cdot g(f(x_2)) & g \text{ is an isomorphism} \\
-        (g \circ f)(x_1 \cdot x_2) &= (g \circ f)(x_1) \cdot (g \circ f)(x_2)
+        (g \circ f) (x_1) &= g(f(x_1)) \\
+                          &= g(y_1) \\
+                          &= g(y_2) & \text{Since $g$ is injective, $g(y_1) = g(y_2)$} \\
+                          &= g(f(x_2)) & \text{Since $f$ is injective, $f(x_1) = f(x_2)$} \\
+        (g \circ f) (x_1) &= (g \circ f) (x_2)
     \end{align*}
-    so the composition $g \circ f$ is an isomorphism.
+    So $g \circ f$ is injective.
+    \newline
+    \newline
+    \textit{\textbf{Surjective}}
+    \begin{align*}
+        (g \circ f) (x) &= g(f(x)) \\
+                        &= g(y) & \text{Since $f$ is surjective, $y = f(x)$} \\
+        (g \circ f)(x) &= z & \text {Since $g$ is surjective, $z = g(y)$} \\
+    \end{align*}
+So $g \circ f$ is surjective. Therefore, $g \circ f$ is a bijection. From \textbf{(i)}, we know that 
+    the composition of two homomorphisms is also a homomorphism. Therefore, the composition of two
+    isomorphisms is an isomorphism.
 \end{proof}
 
 
@@ -172,10 +186,30 @@ Prove that the group $(\mathbb{Z}/9\mathbb{Z})^{\times}$ is isomorphic to $\math
 \subsection*{Response}
 \begin{proof}
     We have that $(\mathbb{Z}/9\mathbb{Z})^{\times} = \left\{ 1, 2, 4, 5, 7, 8 \right\}$ and
-    $\mathbb{Z}/6\mathbb{Z} = \left\{ 0, 1, 2, 3, 4, 5 \right\}$.
-    Let $f : (\mathbb{Z}/9\mathbb{Z})^{\times} \to \mathbb{Z}/6\mathbb{Z}$ be the map:
-
-    
+    $\mathbb{Z}/6\mathbb{Z} = \left\{ 0, 1, 2, 3, 4, 5 \right\}$. Note that both groups have
+    order $6$. Then, it suffices to show that both groups are cyclic, since two cyclic groups of
+    equal order are isomorphic. Then, we find that $2$ generates $(\mathbb{Z}/9\mathbb{Z})^{\times}$
+    since
+    \begin{align*}
+        2^1 &= 2 \\
+        2^2 &= 4 \\
+        2^3 &= 8 \\
+        2^4 &= 16 \equiv 7 \ (\textit{mod } 9) \\
+        2^5 &= 32 \equiv 5 \ (\textit{mod } 9) \\
+        2^6 &= 64 \equiv 1 \ (\textit{mod } 9) \\
+    \end{align*}
+    so $(\mathbb{Z}/9\mathbb{Z})^{\times}$ is cyclic. Moreover, we have that $1$ is a generator
+    for the additive group $\mathbb{Z}/6\mathbb{Z}$ since
+    \begin{align*}
+        1 \cdot 1 &= 1 \\
+        2 \cdot 1 &= 2 \\
+        3 \cdot 1 &= 3 \\
+        4 \cdot 1 &= 4 \\
+        5 \cdot 1 &= 5 \\
+        6 \cdot 1 &= 0 \\
+    \end{align*}
+    so $\mathbb{Z}/6\mathbb{Z}$ is cyclic. Since these two groups have the same order and
+    are cyclic, they are isomorphic.
 \end{proof}
 
 
@@ -216,6 +250,51 @@ respectively. Suppose that $n$ and $m$ are relatively prime. Show that $ab$ has 
 \subsection*{Response}
 \begin{enumerate}[label=(\alph*)]
     \item 
+        \begin{proof}
+            Let $G = \left\{ e^{2 \pi k i / n} : k = 0, 1, \ldots, n - 1 \right\}$.
+            \newline
+            \newline
+            \textit{\textbf{Closure}}
+            \newline
+            First, we show that $G$ is closed under complex multiplication. Take any two elements
+            $a, b \in G$. Then,
+            \[
+                ab = e^{2 \pi j i / n} \cdot e^{2 \pi k i / n}
+                = e^{2 \pi (j + k) i / n}
+            \]
+            Since $j, k$ are integers, their sum $j + k$ is an integer. 
+            If $(j + k) > n$, due to the periodicity of teh function, it is equivalent to $(j + k) - n$.
+            So, $G$ is closed under complex multiplication.
+            \newline
+            \newline
+            \textit{\textbf{Group}}
+            \newline
+            To show that $G$ is a cyclic group of order $n$, we first need to show that it is a 
+            group with respect to complex multiplication; i.e.
+            \begin{enumerate}[label=\textit{(\roman*)}]
+                \item 
+                    Since complex numbers are associative, we have that all elements in $G$ is 
+                    associative.
+                \item 
+                    Let $k = 0$. Then, $e^{2 \pi k i / n} = e^{2 \pi (0) i / n} = e^0 = 1$. Then, for
+                    any $a \in G$, $1 \cdot a = a = a \cdot 1$. So, the identity element exists in $G$.
+                \item For any $a \in G$, define $a^{-1} = e^{2 \pi (-k + n) i / n}$. So, we have that 
+                    $a \cdot a^{-1} = 1 = a^{-1} \cdot a$. Therefore, there exists an inverse element in $G$.
+            \end{enumerate}
+            So, $G$ is a group.
+            \newline
+            \newline
+            \textit{\textbf{G is cyclic and has order n}}
+            \newline
+            We find that the $e^{2 \pi i / n}$ generates $G$:
+            \begin{align*}
+                e^{2 \pi (0) i / n} &= e^{2 \pi i} = 1 \\
+                e^{2 \pi (1) i / n} &= e^{2 \pi i / n} \\
+                \vdots \\
+                e^{2 \pi (n - 1) i / n} &= e^{2 \pi (n - 1) i / n} \\
+            \end{align*}
+            so $G$ is cyclic. Since $G$ has $n$ distinct elements, $G$ has order $n$.
+        \end{proof}
     \item 
         \begin{proof}
             \textit{\textbf{Existence}}
@@ -235,12 +314,25 @@ respectively. Suppose that $n$ and $m$ are relatively prime. Show that $ab$ has 
             \newline
             \textit{\textbf{Uniqueness}}
             \newline
-            Assume by contradiction that there exist two subgroups of $G$, $H, H'$, 
-            of order $k$. 
-           % Since $G$ is cyclic, all subgroups of $G$ are also cyclic.
-           % Let $h'$ generate $H$. Then, $h'$ has order $k$ since $H'$ has order $k$.
-           % Since $h' \in G$ and $G$ is cyclic, we have that $h' = g^r$ for some
-           % integer $r$.         
+            Let $H \subset G$ be a subgroup of order $k$. We want to show that $H$ is unique. Let
+            $\tau$ be a generator for $H$, so $\text{ord}(\tau) = k$. Let $\sigma$ be a generator
+            for $G$, so $\text{ord}(\sigma) = n$. Since $H$ is a subgroup of $G$, $\tau = \sigma^j$
+            for some integer $j$. That is, $\text{ord}(\sigma^j) = \frac{n}{\gcd(n, j)} = k$. We can 
+            rewrite this as $m = \gcd(n, j) = \frac{n}{k}$. Since $\gcd(n, j) = m$, $j$ must take the 
+            form $j = ms$ for some integer $s$. Then, 
+            \[
+                \tau^k = \left(\sigma^j\right)^k
+                = \left(\sigma^{ms}\right)^k
+                = \sigma^{msk}
+                = \sigma^ns
+                = \left(\sigma^n\right)^s
+                = \left(e\right)^s
+                \tau^k = e
+            \]
+            So, $\langle \tau \rangle = \langle \sigma^{ms} \rangle$ is of order $k$. We want to 
+            show that $\langle \sigma^m \rangle = \langle \sigma^{ms} \rangle$. We notice that since 
+            $\gcd(k, s) = 1$, powers of $\sigma^{ms}$ generates $\langle \sigma^m \rangle$ and vice
+            versa; i.e. $\langle \sigma^m \rangle = \langle \sigma^{ms} \rangle$.
         \end{proof}
 \end{enumerate}
 
@@ -269,9 +361,18 @@ Consider the set of pairs $(a, a^{-1})$.)
 
 \newpage
 \section*{Question 10}
-Find the order of $GL_n(\mathbb{Z}/p\mathbb{Z}$ for a prime integer $p$.
+Find the order of $GL_n(\mathbb{Z}/p\mathbb{Z})$ for a prime integer $p$.
 
 \subsection*{Response}
+We have that $GL_n(\mathbb{Z}/p\mathbb{Z})$ represents all invertible $n \times n$ matricies in the 
+field $\mathbb{Z}/p\mathbb{Z}$. Then, the order of the group is exactly the number of invertible matricies
+in $\mathbb{Z}/p\mathbb{Z}$. The first column of the vector is any non-zero vector, which is $p^n - 1$
+choices. The second column is linearly independent from the first column, so there are $p^n - p$ choices.
+The third column must be linearly independent of the first two, giving us $p^n - p^2$ choices. We continue
+this, with the $i^{\textit{th}}$ choice being $p^n - p^{i - 1}$ for $i = 1, 2, \ldots, n$. To get,
+the total number of invertible matrices, we do
+\[\left| GL_n(\mathbb{Z}/p\mathbb{Z}) \right| = (p^n - 1)(p^n - p)(p^n - p^2) \cdots (p^n - p^{n - 1})\]
+giving us the order of the group.
 
 
 
