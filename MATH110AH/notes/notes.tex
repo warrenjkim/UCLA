@@ -1,0 +1,219 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\modclass}[1]{\Z/{#1}\Z}
+\newcommand{\congruent}[3]{{#1} \equiv {#2} \ (\textit{mod } {#3})}
+\newcommand{\textib}[1]{\textit{\textbf{{#1}}}}
+\newcommand{\Id}{\text{Id}}
+\newcommand{\proposition}[1]{\begin{tcolorbox}[title=Proposition]{#1}\end{tcolorbox}}
+\newcommand{\theorem}[1]{\begin{tcolorbox}[title=Theorem]{#1}\end{tcolorbox}}
+
+\addtocounter{section}{-1}
+\begin{document}
+\section{Notation}
+Let $X, Y$ be sets. Then, we introduce some simple notation:
+inclusion 
+\[x \in X\]
+union 
+\[X \cup Y\]
+intersection
+\[X \cap Y\]
+and the cartesian product 
+\[X \times Y = \left\{ (x, y) : x \in X, y \in Y \right\}\]
+\newline
+We call the Natural Numbers $\N$, Integers $\Z$, Rationals 
+$\mathbb{Q} \ (:= \left\{ \frac{a}{b} : a, b, \in  \Z \right\}$), Reals $\mathbb{R}$, 
+and Complex Numbers $\mathbb{C}$. Notice that 
+$\N \subset \Z \subset \mathbb{Q} \subset \mathbb{R} \subset \mathbb{C}$.
+
+
+
+\section{Maps}
+Let $X, Y$ be two sets. A \textib{map} $f$ between $X$ and $Y$ denoted as
+\[f : X \to Y\]
+is a rule that takes \textit{every} element of $x \in X$ to \textit{an} element $y = f(x) \in Y$.
+
+
+\subsection{Composition}
+Let $X, Y, Z$ be sets. Suppose $X \stackrel{f}{\to} Y \stackrel{g}{\to} Z$. Then a function
+$h : X \to Z$, $h(x) - g(f(x)) \in Z$ is called the \textib{composition} denoted as $h = g \circ f$.
+
+
+\subsection{Identity}
+The \textib{identity map} is denoted as $\Id_x : X \to X$, and is defined to be $\Id(x) = x$
+
+
+\subsection{Properties}
+Let $X, Y, Z$ be sets.
+\subsubsection{Injective}
+A map $f : X \to Y$ is \textib{injective (into/one-to-one)} if for every $x_1, x_2 \in X$, we have
+$f(x_1) \neq f(x_2)$ Taking the contrapositve, we get the statement: 
+If $f(x_1) = f(x_2)$, then $x_1 = x_2$. In shorthand, it is
+\[\forall x_1, x_2 \in X, f(x_1) \neq f(x_2) \iff f(x_1) = f(x_2) \implies x_1 = x_2 \forall x_1, x_2 \in X\]
+
+
+\subsection{Surjective}
+A map $f : X \to Y$ is \textib{surjective (onto)} if for every $y \in Y$, there exists some $x \in X$
+such that $y = f(x)$. In shorthand, it is
+\[\forall y \in Y, \exists x \in X : y = f(x)\]
+
+
+\subsection{Bijective}
+A map $f : X \to Y$ is \textib{bijective} if it is both \textit{injective} and \textit{surjective}.
+
+
+\subsection{Inverse Maps}
+Let $f : X \to Y$ be a map. A map $g : Y \to X$ is called the \textib{inverse of} $f$ if the composition
+is the Identity map; that is, $g \circ f = \Id_x$, $f \circ g = \Id_y$ and is denoted as $g = f^{-1}$.
+
+\proposition{
+    A map $f : X \to Y$ has an inverse \textit{if and only if} $f$ is bijective.
+}
+\begin{proof}
+    $(\implies)$ Let $g : Y \to X$ be an inverse of $f$. Then $g \circ f = \Id_x, f \circ g = Id_y$.
+    Let $x_1, x_2 \in X$ such that $f(x_1) = f(x_2)$. Then, 
+    \begin{align*}
+        x_1 &= \Id_x(x_1) \\
+            &= (g \circ f)(x_1) \\
+            &= g(f(x_1)) \\
+            &= g(f(x_2)) & f(x_1) = f(x_2) \text{ by assumption} \\
+            &= (g \circ f)(x_2) \\
+            &= \Id_x(x_2) \\
+        x_1 &= x_2
+    \end{align*}
+    so $f$ is injective.
+    \newline
+    \newline
+    Take any $y \in Y$. Then $x := g(y)$ for some $x \in X$. Then, 
+    \[f(x) = f(g(y)) = (f \circ g)(y) = \Id_y(y) = y\]
+    so $f$ is surjective. Because f is both injective and surjective, it is bijective.
+    \newline
+    \newline
+    ($\impliedby$) Assume $f$ be bijective. Then let $g : Y \to X$. Take any $y \in Y$. There
+    exists a unique $x \in X$ such that $y = f(x)$ because $f$ is bijective. Therefore, $g$ is an
+    inverse of $f$.
+\end{proof}
+
+
+
+
+
+\section{Integers}
+\subsection{Induction I}
+Let $n_0 \in \Z$, and P($n$) be a statement for all $n \geq n_0$. Suppose 
+\begin{enumerate}[label=\textit{(\roman*)}]
+    \item P($n_0$) is true.
+    \item P($n$) $\implies$ P($n + 1$) for every $n \geq n_0$.
+\end{enumerate}
+Then P($n$) is true for all $n \geq n_0$.
+
+\proposition{
+    \[1 + 2 + \cdots + n = \frac{n(n + 1)}{2}\]
+}
+\begin{proof}
+    Let P($n$) $:= 1 + 2 + \cdots + n = \frac{n(n + 1)}{2}$. We will induct on $n$.
+    \begin{enumerate}[label=\textit{(\roman*)}]
+        \item P(1) is true.
+        \item P($n$) $\implies$ P($n + 1$)
+            \newline
+            \begin{align*}
+                1 + 2 + \cdots + n + (n + 1) &= \frac{n(n + 1)}{2} + (n + 1) \\
+                                             &= \frac{(n + 1)(n + 2)}{2}
+            \end{align*}
+            so P($n + 1$) is true, completing the induction.
+    \end{enumerate}
+\end{proof}
+
+\subsection{Induction II (Strong Induction)}
+Let $n_0 \in \Z$, and P($n$) be a statement for all $n \geq n_0$. Suppose 
+\begin{enumerate}[label=\textit{(\roman*)}]
+    \item P($n$) is true.
+    \item For every $n > n_0$, if P($k$) is true for every $n_0 \leq k \leq n$, then P($n$) is true.
+\end{enumerate}
+Then P($n$) is true for all $n \geq n_0$.
+
+\proposition{
+    Every positive integer can be written in the form 
+    \[n = 2^{K_1} + 2^{K_2} + \cdots + 2^{K_m}\]
+    where $K_i \in \Z$ and $0 \leq K_1, < K_2, \cdots < K_m$.
+}
+\begin{proof}
+    We will induct on $n$.
+    \begin{enumerate}[label=\textit{(\roman*)}]
+        \item P(1) is true.
+        \item We know that P($k$) is true for $k = 1, 2, \ldots, n - 1$. Then for $n$, we find
+            the largest $s$ such that $2^s \leq n$. There are two cases:
+\begin{enumerate}[label=\textit{(\roman*)}]
+    \item $n = 2^s$. Then P($n$) is true.
+    \item $2^s < n$, $p := n - 2^s > 0$. 
+        \newline
+        Apply P($p$): $p = 2^{K_1} + \cdots 2^{K_m}, \ 0 \leq K_1, < K_2 < \cdots K_m$.
+        \newline
+        $\implies n = 2^{K_1} + \cdots 2^{K_m} + 2^s$ Then, $p > 2^{K_m}$, so $2^s > 2^{K_m}$
+        \newline
+        $\implies s > k_m$, completing the induction.
+\end{enumerate}
+    \end{enumerate}
+\end{proof}
+
+\subsection{Division of Integers}
+Let $n, m \in \Z, m \neq 0$. Then, $n$ is divisible by $m$ if there exists some $q \in \Z$ such that
+$n = mq (\iff \frac{n}{m} \in \Z)$ and we denote this as $m \mid n$, read as ``$m$ divides $n$''.
+
+\subsubsection{Properties}
+\begin{enumerate}[label=\textit{(\roman*)}]
+    \item $1 \mid n$ for every $n \in \Z$ and $m \mid 0$ for every $m \neq 0$.
+    \item If $m \mid n_1$ and $m \mid n_2$, then $m \mid (n_1 \pm n_2)$.
+        \begin{proof}
+            $n_1 = mq_1$ and $n_2 = mq_2$
+            \newline
+            $\implies n_1 \pm n_2 = mq_1 \pm mq_2 = m(q_1 + q_2) \implies m \mid (n_1 \pm n_2)$ since
+            $q_1 + q_2 \in \Z$.
+        \end{proof}
+    \item If $m \mid n$, then $m \mid an$ for all $a \in \Z$.
+        \begin{proof}
+            $n = m \cdot q, q \in \Z$, $an = m \cdot (aq), aq \in \Z$
+            $\implies m \mid an$.
+        \end{proof}
+    \item If $m \mid n_1$ and $m \mid n_2$, then $m \mid a_1n_1 + a2_n2$ for every $a_1, a_2 \in \Z$.
+        \begin{proof}
+            By \textit{(iii)}, $m \mid a_1n_1$ and $m \mid a_2n_2$. 
+            By \textit{(ii)}, $m \mid a_1n_1 + a_2n_2$.
+        \end{proof}
+    \item If $m \mid n, n \neq 0$, then $|m| \leq |n|$.
+        \begin{proof}
+            $n = m \cdot q, q \in \Z, q \neq 0, |n| = |m| \cdot |q| \geq |m|$.
+        \end{proof}
+    \item If $m \mid n$ and $n \mid m$, then $n = \pm m$.
+        \begin{proof}
+            By \textit{(v)}, $|m| \leq |n| \leq |m| \implies n = \pm m$.
+        \end{proof}
+\end{enumerate}
+
+\subsubsection{Division Algorithm}
+\theorem{
+    Let $n, m \in \Z, m \neq 0$. Then, there are \textit{unique} $q, r \in \Z$ such that 
+    \[n = m \cdot q + r, \ 0 < r < m\]
+    where $q$ is the partial quotient and $r$ is the remainder on dividing $n$ by $m$.
+}
+\begin{proof}
+    \textib{Existence}
+    Define an infinite set $S = \left\{ n - mx, x \in \Z \right\}$ containing nonnegative integers.
+    Take $S \cap \Z^{\geq 0} \neq \emptyset$, so $S$ is non-empty. Then by the well ordering 
+    principle, every non-empty set of $\Z^{\geq 0}$ has a least element, $n - mx \in S \cap \Z^{\geq 0}$.
+    Call $q = x$, $r := n - mx \geq 0$. Then $n = mx + r = mq + r$. To show that $r < m$, take
+    $r - m = (n - mq) - m = n - m(q + 1) \in S$. This shows that $r - m < r$, but since we chose
+    $r$ to be the \textit{least} element in $S \cap \Z^{\geq 0}$, $r - m \not\in S$. So $r - m < 0
+    \implies r < m$.
+\end{proof}
+
+
+
+\end{document}
