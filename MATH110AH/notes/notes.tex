@@ -1,9 +1,11 @@
-\documentclass{article}
+\documentclass{report}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsthm}
 \usepackage{enumitem}
 \usepackage{tcolorbox}
+\usepackage{hyperref}
+\usepackage{centernot}
 \usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
 
 \newcommand{\Z}{\mathbb{Z}}
@@ -12,11 +14,20 @@
 \newcommand{\congruent}[3]{{#1} \equiv {#2} \ (\textit{mod } {#3})}
 \newcommand{\textib}[1]{\textit{\textbf{{#1}}}}
 \newcommand{\Id}{\text{Id}}
-\newcommand{\proposition}[1]{\begin{tcolorbox}[title=Proposition]{#1}\end{tcolorbox}}
-\newcommand{\theorem}[1]{\begin{tcolorbox}[title=Theorem]{#1}\end{tcolorbox}}
+\newcommand{\proposition}[1]{\begin{tcolorbox}[title=\textit{Proposition}]{#1}\end{tcolorbox}}
+\newcommand{\corollary}[1]{\begin{tcolorbox}[title=\textit{Corollary}]{#1}\end{tcolorbox}}
+\newcommand{\theorem}[1]{\begin{tcolorbox}[title=\textit{Theorem}]{#1}\end{tcolorbox}}
+\newcommand{\lemma}[1]{\begin{tcolorbox}[title=\textit{Lemma}]{#1}\end{tcolorbox}}
+\renewcommand{\mod}[1]{\ (\textit{mod } {#1})}
 
 \addtocounter{section}{-1}
+\addtocounter{chapter}{-1}
+
 \begin{document}
+\tableofcontents
+\newpage
+
+\chapter{Week 0}
 \section{Notation}
 Let $X, Y$ be sets. Then, we introduce some simple notation:
 inclusion 
@@ -150,16 +161,16 @@ Then P($n$) is true for all $n \geq n_0$.
         \item P(1) is true.
         \item We know that P($k$) is true for $k = 1, 2, \ldots, n - 1$. Then for $n$, we find
             the largest $s$ such that $2^s \leq n$. There are two cases:
-\begin{enumerate}[label=\textit{(\roman*)}]
-    \item $n = 2^s$. Then P($n$) is true.
-    \item $2^s < n$, $p := n - 2^s > 0$. 
-        \newline
-        Apply P($p$): $p = 2^{K_1} + \cdots 2^{K_m}, \ 0 \leq K_1, < K_2 < \cdots K_m$.
-        \newline
-        $\implies n = 2^{K_1} + \cdots 2^{K_m} + 2^s$ Then, $p > 2^{K_m}$, so $2^s > 2^{K_m}$
-        \newline
-        $\implies s > k_m$, completing the induction.
-\end{enumerate}
+            \begin{enumerate}[label=\textit{(\roman*)}]
+                \item $n = 2^s$. Then P($n$) is true.
+                \item $2^s < n$, $p := n - 2^s > 0$. 
+                    \newline
+                    Apply P($p$): $p = 2^{K_1} + \cdots 2^{K_m}, \ 0 \leq K_1, < K_2 < \cdots K_m$.
+                    \newline
+                    $\implies n = 2^{K_1} + \cdots 2^{K_m} + 2^s$ Then, $p > 2^{K_m}$, so $2^s > 2^{K_m}$
+                    \newline
+                    $\implies s > k_m$, completing the induction.
+            \end{enumerate}
     \end{enumerate}
 \end{proof}
 
@@ -205,15 +216,675 @@ $n = mq (\iff \frac{n}{m} \in \Z)$ and we denote this as $m \mid n$, read as ``$
 }
 \begin{proof}
     \textib{Existence}
+    \newline
     Define an infinite set $S = \left\{ n - mx, x \in \Z \right\}$ containing nonnegative integers.
     Take $S \cap \Z^{\geq 0} \neq \emptyset$, so $S$ is non-empty. Then by the well ordering 
-    principle, every non-empty set of $\Z^{\geq 0}$ has a least element, $n - mx \in S \cap \Z^{\geq 0}$.
-    Call $q = x$, $r := n - mx \geq 0$. Then $n = mx + r = mq + r$. To show that $r < m$, take
-    $r - m = (n - mq) - m = n - m(q + 1) \in S$. This shows that $r - m < r$, but since we chose
+    principle, every non-empty set of $\Z^{\geq 0}$ has a least element, 
+    \[n - mx \in S \cap \Z^{\geq 0}\]
+    Call $q = x$, $r := n - mx \geq 0$. Then 
+    \[n = mx + r = mq + r\]
+    To show that $r < m$,
+    \[r - m = (n - mq) - m = n - m(q + 1) \in S\] 
+    This shows that $r - m < r$, but since we chose
     $r$ to be the \textit{least} element in $S \cap \Z^{\geq 0}$, $r - m \not\in S$. So $r - m < 0
     \implies r < m$.
+    \newline
+    \newline
+    \textib{Uniqueness}
+    \newline
+    Let $n = mq_1 + r_1 = mq_2 + r_2$ where $0 \leq r_1, r_2 < m$. Then,
+    \[0 = m(q_1 - q_2) + (r_1 - r_2)\]
+    so
+    \[r_1 - r_2 = m(q_2 - q_1)\]
+    but
+    \[q_1 - q_2 = 0\]
+    so 
+    \[r_1 = r_2\]
+\end{proof}
+\textib{Remark:} $r = 0 \iff m \mid n$ and $r$ contains $m - 1$ distinct integers.
+
+
+\subsubsection{Divisors}
+Let $n > 0$. A non-zero integer $d$ is called a divider of $n$ if $d \mid n$. Moreover,
+\[|d| \leq |n| = n \iff -n \leq d \leq n\]
+
+\proposition{
+    Every $n > 0$ has finitely many unique divisors.
+}
+\begin{proof}
+    Let $X := \left\{ 1, 2, \ldots, n \right\}$. Then, the set of divisors of $n$ are a subset
+    of $X$. Since $X$ is finite, any subset of $X$ is also finite. Therefore, $n$ has a finite
+    number of unique divisors.
 \end{proof}
 
+
+\subsubsection{Greatest Common Divisor}
+Take $n, m > 0$ and $d$ the largest common divisor of $m$ and $n$. Then, 
+\[d = \gcd(n, m) = (n, m) \geq 1\]
+
+
+\subsubsection{Euclidean Algorithm}
+Let $n, m > 0$. Then, 
+\begin{align*}
+    n &= mq_1 + r_1 & 0 \leq r_1 < m \\
+    m &= r_1q_2 + r_2 & 0 \leq r_2 < r_1 \\
+    r_1 &= r_2q_3 + r_3 & 0 \leq r_3 < r_2 \\
+        &\vdots \\
+    r_{k - 2} &= r_{k - 1}q_k + r_k & 0 \leq r_k < r_{k - 1} \\
+    r_{k - 1} &= r_kq_{k + 1} & r_{k + 1} = 0 \\
+\end{align*}
+
+\theorem{
+    \[r_k = \gcd(n, m)\]
+}
+\begin{proof}
+    Let $d = \gcd(n, m)$. Then,
+    \begin{align*}
+        d &\mid r_1 = n - mq_1 \\
+        d &\mid r_2 = m - r_1q_2 & r_k \mid r_{k - 1} = r_kq_{k + 1} \\
+        d &\mid r_3 = r_1 - r_2q_3 & r_k \mid r_{k - 2} = r_{k - 1}q_k + r_k \\
+          &\vdots & \vdots \\
+        d &\mid r_k = r_{k - 2} - r_{k - 1}q_k & r_k \mid n = mq_1 + r_1 \\
+    \end{align*}
+    So $d \mid r_k \implies d \leq r_k$, a common divisor of $n$ and $m$. So, $r_k \leq d$. Thus,
+    $d = r_k$.
+\end{proof}
+
+
+\subsubsection{Bezout's Identity}
+\theorem{
+    Let $n, m > 0$ and $d = \gcd(n, m)$. Then, there are $x, y \in \Z$ such that
+    \[d = nx + my\]
+    Another way of writing this is
+    \[nx + my = nx + (nm - nm) + my = n(x + m) + m(y - n)\]
+    Moreover, $n$ and $m$ are relatively prime (coprime) if $\gcd(n, m) = 1$.
+}
+\begin{proof}
+    Let $S := \left\{ nx + my, x, y \in \Z \right\}$. We claim that $s = d$. Then,
+    \[s = nx + my, \ n = sq + r, \ 0 \leq r < s\]
+    Rearranging the second equation, we get
+    \begin{align*}
+        r &= n - sq \\
+          &= n - (nx + my)q & \text{Substitute equation 1} \\
+          &= n(1 - x) - myq \in S
+    \end{align*}
+    This implies that $r = 0 \implies (s \mid n$ and $s \mid m) \implies s \leq d$. But 
+    $d \mid n$ and $d \mid m$, so $d \mid s \implies d \leq s$. Therefore,
+    \[d = s = nx + my\]
+\end{proof}
+
+\corollary{
+    Let $n, m > 0$. Then, $n$ and $m$ are relatively prime \textit{if and only if} there exists
+    some $x, y \in \Z$ such that $nx + my = 1$
+}
+\begin{proof}
+    ($\implies$) Bezout's Identity
+    \newline
+    \newline
+    ($\impliedby$) $nx + my = 1, d = \gcd(n, m)$. Then $d \mid n$ and $d \mid m$ by definition.
+    This implies that $d \mid (nx + my) \iff d \mid 1$. But $d \geq 1 \implies d = 1$.
+\end{proof}
+
+
+\chapter{Week 1}
+\section{Prime Numbers}
+An integer $p > 1$ is called \textib{prime} if the \textit{only} divisors of $p$ are $\pm 1$ and $\pm p$.
+If $n > 0$ and $p$ prime, then $\gcd(n, p) = 
+\begin{cases} 
+    1 & n \text{ and } p \text{ are coprime} \\
+    p & p \mid n \\
+\end{cases}$
+
+\proposition {
+    Every integer $n > 1$ is a product of prime integers.
+}
+
+\begin{proof}
+    We will use strong induction on $n \geq 2$.
+    \begin{enumerate}[label=\textit{(\roman*)}]
+        \item ($n_0 = 2$)
+            \newline
+            2 is prime.
+        \item ($k \implies k + 1$)
+            \newline
+            Assume P($k$) is true for all $k$ such that $2 \leq k < n$. There are two cases.
+            \newline
+            \newline
+            \textib{Case I:} $n$ is prime. Then we are done.
+            \newline
+            \textib{Case II:} $n$ is composite. Then, there are integers $p$ and $q$ such that
+            $n = p \cdot q$. By definition, $1 < p, q < n$. Then, by the Inductive Hypothesis, 
+            P($p$) and P($q$) are true; i.e. $p$ and $q$ are products of primes. Therefore, 
+            $n = p \cdot q$ is a product of primes.
+    \end{enumerate}
+\end{proof}
+\lemma {
+    Let $p$ be a prime integer and $n, m > 0$ such that $p \mid nm$. Then, either
+    \[p \mid n \text{ or } p \mid m\]
+}
+\begin{proof}
+    There are two cases.
+    \newline
+    \newline
+    \textib{Case I:} $p \mid n$. Then we are done.
+    \newline
+    \textib{Case II:} $p$ and $n$ are coprime. Then, by Bezout's Identity we get
+    \begin{align*}
+        px + ny &= 1 \\
+        m(px + ny) &= m & \text{multiply both sides by } m \\
+        mpx + mny &= m & p \mid pmx, \ p \mid nm \cdot y \\
+    \end{align*}
+    so $p \mid m$.
+\end{proof}
+
+\corollary {
+    Let $p$ be prime, $n_1, n_2, \ldots, n_s > 0$ such that $p \mid n_1 n_2 \cdots n_s$. Then
+    $p \mid n_i$ for some $i < s$.
+}
+\begin{proof}
+    We will induct on $s \in \N$.
+    \begin{enumerate}[label=\textit{(\roman*)}]
+        \item ($s = 1$)
+            \newline
+            This is true by the \textit{Lemma} above.
+        \item ($s - 1 \implies s$)
+            \newline
+            Consider $p \mid (n_1 n_2 \cdots n_s - 1) \cdot n_s$. Then either 
+            $p \mid (n_1 n_2 \cdots n_s - 1)$ by the Inductive Hypothesis or $p \mid n_s$.
+    \end{enumerate}
+\end{proof}
+
+
+\subsection{Unique Factorization}
+Let $n = p_1 p_2 \cdots p_s = q_1 q_2 \cdots q_t$ and $p_i, q_j$ be prime for all $i, j < s, t$.
+Then, their factorizations are the same if $s = t$ and $q_j = p_{\alpha(j)}$ for every 
+$j = 1, 2, \ldots, t$ where $\alpha : \{1, 2, \ldots, s \} = \{ 1, 2, \ldots t \}$
+
+
+\subsection{Fundamental Theorem of Arithmetic}
+\theorem {
+    Every integer $n > 1$ admits a unique factorization into a product of primes.
+}
+\begin{proof}
+    Let $n = p_1 p_2 \cdots p_s = q_1 q_2 \cdots q_t$ and $p_i, q_j$ be prime for all $i, j < s, t$. We
+    will induct on $s \in \N$.
+    \begin{enumerate}[label=\textit{(\roman*)}]
+        \item ($s = 1$)
+            \newline
+            $n = p_1 = q_1$ is true.
+        \item ($s - 1 \implies s$)
+            \newline
+            $p_s \mid n = q_1 q_2 \cdots q_t \stackrel{\textit{Corollary}}{\implies} p_s \mid q_j$ 
+            for some integer $j \implies p_s = q_j$. Reorder the terms to get $j = t$. Then, $p_s = q_t$. 
+            We are left with $p_1 p_2 \cdots p_{s - 1} = q_1 q_2 \cdots q_{t - 1}$. Apply P($s - 1$) 
+            to get that $s - 1 = t - 1$. Then, $q_j = p_i$ up to the permutation. That is, $p_s = q_s$.
+    \end{enumerate}
+\end{proof}
+
+
+\proposition {
+    Let $n = p_1^{a_1} p_2^{a_2} \cdots p_k^{a_k}$ and $m = p_1^{b_1} p_2^{b_2} \cdots p_k^{b_k}$, 
+    $a_k, b_k \geq 0$.
+    Then $m \mid n$ \textit{if and only if} $b_1 \leq a_1, b_2 \leq a_2, \cdots, b_k \leq a_k$.
+}
+\begin{proof}
+    ($\implies$)
+    \begin{align*}
+        n &= m \\
+        p_1^{a_1} p_2^{a_2} \cdots p_k^{a_k} &= \left(p_1^{b_1} p_2^{b_2} \cdots p_k^{b_k}\right) \cdot q \\
+    \end{align*}
+    Then, $b_1 \leq a_1 \iff a_1 = b_1 + c, \ q = p_1^{c_1} \cdots p_k^{c_k}, c_k \geq 0$.
+    \newline
+    \newline
+    ($\impliedby$) $n = mq$ where $q = p_1^{a_1 - b_1} \cdots p_k^{a_k - b_k}$. Since $a_i \geq b_i$, 
+    $a_i - b_i \geq 0 \ \forall i < k \implies m \mid n$
+\end{proof}
+
+
+\subsection{Euclid's Theorem}
+\theorem {
+    There are infinitely many primes.
+}
+\begin{proof}
+Suppose by contradiction that there are exactly $n$ primes $\left\{ p_1, p_2, \ldots, p_n \right\}$.
+Define $N := p_1 p_2 \cdots p_n + 1 > 1$. Let $p$ be a divisor of $N$ and $p = p_i$ for some $i$.
+Then, $1 = N - p_1 p_2 \cdots p_n \implies p_i \mid 1$, a contradiction.  
+\end{proof}
+
+
+\section{Congruences}
+Let $m > 0$ be an integer. We say that two integers are \textib{congruent} modulo $m$ if 
+\[m \mid (b - a)\]
+and denote it as
+\[a \equiv b \mod{m}\]
+
+\proposition {
+    $a \equiv b \mod{m}$ \textit{if and only if} $a$ and $b$ have the same remainder on dividing by $m$.
+}
+\begin{proof}
+    ($\implies$) $a \equiv b \mod{m}$ can be rewritten as $m \mid (b - a)$ or $b - a = mx$ where 
+    $a = mq + r, \ 0 \leq r < m$. Then,
+    \begin{align*}
+        b &= a + mx \\
+          &= (mq + r) + mx & \text{substitute } a \\
+          &= m(q + x) + r
+    \end{align*}
+    \newline
+    \newline
+    ($\impliedby$) Suppose $a = mq + r$ and $b = ms + r$, where $0 \leq r < m$. Then
+    \[b - a = ms - mq = m(s - q) \implies m \mid (b - a) \iff a \equiv b \mod{m}\]
+\end{proof}
+
+
+\corollary {
+    Every integer is congruent modulo m to exactly one integer in the set 
+    \[\left\{ 0, 1, \ldots, m - 1 \right\}\]
+}
+\begin{proof}
+    Let $a = mq + r$ where $0 \leq r < m$. Then, $r = m \cdot 0 + r \implies a \equiv r \mod{m}$ where
+    $r = \left\{ 0, 1, \ldots, m - 1 \right\}$
+\end{proof}
+
+
+\subsection{Properties}
+\begin{enumerate}[label=\textit{(\roman*)}]
+    \item $a \equiv b \mod{m} \implies ax \equiv b \mod{m}$ for every $x \in \Z$.
+        \begin{proof}
+            $m \mid (b - a) \implies m \mid (b - a)x = bx - ax$
+        \end{proof}
+    \item $a_1 \equiv b_1 \mod{m}$, $a_1 \equiv b_1 \mod{m} \implies a_1 + a_2 \equiv b_1 + b_2 \mod{m}$.
+        \begin{proof}
+            $m \mid (b_1 - a_1)$ and $m \mid (b_1 - a_1) \implies m \mid (b_1 - a_1) + (b_2 - a_2) 
+            = (b_1 + b_2) - (a_1 + a_2)$.
+            \newline
+            \newline
+        \end{proof}
+    \item $a_1 \equiv b_1 \mod{m}$, $a_1 \equiv b_1 \mod{m} \implies a_1 a_2 \equiv b_1 b_2 \mod{m}$.
+        \begin{proof}
+            $b_1 b_2 - a_1 a_2 = b_1 b_2 (- a_1 b_2 + a_1 b_2) + a_1 a_2 = (b_1 - a_1) b_2 + a_1 (b_2 - a_2)$.
+            Here, $m \mid (b_1 - a_1)$ and $m \mid (b_2 - a_2)$ by assumption. Then, $m \mid (b_1 b_2 - a_1 a_2)$.
+        \end{proof}
+\end{enumerate}
+
+
+\subsection{Linear Congruence}
+$ax \equiv b \mod{m}$ for $m > 0$, $a, b \in \Z$.
+
+\proposition {
+    If $\gcd(a, n) = 1$, then there is an integer solution $x$.
+}
+\begin{proof}
+    \begin{align*}
+        ay + mz &= 1 & \text{Bezout's Identity} \\
+        b(ay + mz) &= b & \text{multiply both sides by } b \\
+        aby + mbz &= b \\
+                  &\iff \\
+        b - aby &= mbz
+    \end{align*}
+    Take $x := aby$.
+\end{proof}
+
+
+
+
+
+\section{Equivalence Relations}
+Let $X$ be a set. A \textib{relation} $a \sim b$ on $X$ is a subset $\Omega \subset X \times X$. That is,
+for every $a, b \in X$, $a \sim b$ if $(a, b) \in \Omega$. A relation on $X$ is called an 
+\textib{equivalence relation} if
+\begin{enumerate}[label=\textit{(\roman*)}]
+    \item Reflexive: $a \sim a$ for every $a \in X$
+    \item Symmetric $a \sim b \implies b \sim a$ for every $a, b \in X$
+    \item Transitive $a \sim b$, $b \sim c \implies a \sim c$ for every $a, b, c \in X$
+\end{enumerate}
+
+
+\subsection{Equivalence Classes}
+Let $X$ be a set and $\sim$ an equivalence relation. Then,
+\[a \in X, \ X_a := \left\{ b \in X : b \sim a \right\} \subset X\]
+is an \textib{equivalence class} of $a$.
+
+
+\proposition {
+    Let $\sim$ be an equivalence relation on a set $X$. Then
+    \begin{enumerate}[label=\textit{(\roman*)}]
+        \item If $a \sim b$, $X_a = X_b$. If $a \not \sim b$, then $X_a \cap X_b = \emptyset$.
+        \item $a$ and $b$ belong to the same equivalence class \textit{if and only if} $a \sim b$.
+        \item $X$ is the disjoint union of all equivalence classes.
+    \end{enumerate}
+}
+\begin{proof}
+    \begin{enumerate}[label=\textit{(\roman*)}]
+        \item Suppose $a \sim b$. Take any $c \in X_a$. Then
+            \[c \sim a \implies c \sim b \implies c \in X_b \implies X_a \subset X_b\]
+            \[c \sim b \implies c \sim a \implies c \in X_a \implies X_b \subset X_a\]
+            so $X_a = X_b$.
+            \newline
+            \newline
+            Assume $a \not \sim b$ by contradiction. Take $c \in X_a \cap X_b \implies c \sim a$ and
+            $c \sim b \implies a \sim b$, a contradiction.
+        \item ($\implies$) Suppose $a, b \in X_c$. Then $a \sim c, b \sim c \implies c \sim b \implies a \sim b$.
+            \newline
+            \newline
+            ($\impliedby$) Suppose $a \sim b$. Then by \textit{(i)}, $a \in X_a = X_b \ni b$.
+        \item Suppose $a \in X_a$. Then, $\bigcup X_a = X$.
+    \end{enumerate}
+\end{proof}
+\textib{Note:} The set of all equivalence relations on $X$ is the same as the set of all partitions
+of $X$ into disjoint union of subsets. That is, $X = \bigcup X_a$.
+
+
+
+
+
+\chapter{Week 2}
+\section{Congruence and Equivalent Classes}
+\proposition {
+    $\equiv \mod{m}$ is an equivalence relation for all $m \in \N$.
+}
+\begin{proof}
+    \begin{enumerate}[label=\textit{(\roman*)}]
+        \item Reflexive: Let $a, m \in \Z$. Then $m \mid a - a = 0$. So $a \equiv a \mod{m}$.
+        \item Symmetric: Suppose $a \equiv b \mod{m}$. Then $m \mid (b - a)$. Then $a - b = - (b - a)
+            \implies b \equiv a \mod{m}$.
+        \item Transitive: Suppose $a \equiv b, \ b \equiv c$. Then, 
+            \[c - a = c (- b + b) - a = (c - b) + (b - a) \implies m \mid (c - a)\]
+    \end{enumerate}
+\end{proof}
+
+\subsection{Equivalence Classes}
+The \textib{congruence class} of $m$ is denoted as
+\[[a] := [a]_m := \left\{ b \in \Z : b \equiv a \mod{m} \right\}\]
+For example, $[2]_5 = \{ \ldots, -8, -3, 2, 7, \ldots \}$.
+
+
+\subsubsection{Properties}
+\begin{enumerate}[label=\textit{(\roman*)}]
+    \item $[a] = [b] \iff a \equiv b \mod{m}$.
+    \item $[a] \cap [b] = \emptyset \iff a \not \equiv b \mod{m}$.
+    \item Integers $a, b$ belong to the same congruence class \textit{if and only if} $a \equiv b \mod{m}$.
+    \item $\Z$ is a disjoint union of congruence classes.
+    \item There are exactly $m$ congruence classes modulo $m$ ($[0], [1], \cdots [m - 1]$).
+        \begin{proof}
+            (\textit{At least})
+            \newline
+            Suppose $0 \leq j < k \leq m - 1$. Then 
+            \[0 < k - j \leq m - 1 < m \implies m \not \mid (k - j) \implies j \not \equiv k \mod{m}\]
+            (\textit{No more})
+            \newline
+            Let $[k]$ be a congruence class. Then $k = am + r$ where $0 \leq r < m$. We can rewrite
+            this as 
+            \[k - r = am \implies m \mid (k - r) \implies [k] = [r]\] Therefore, there are
+            exactly $m$ congruence classes modulo $m$.
+        \end{proof}
+\end{enumerate}
+
+\subsection{Congruence Classes modulo $m$}
+We denote congruence clases modulo $m$ as
+\[\modclass{m} := \{ \textit{congruence classes mod } m \}\]
+
+
+\subsubsection{Addition}
+We will define addition as
+\[[a]_m + [b]_m = [a + b]_m\]
+\begin{proof}
+    We know
+    \[a' \equiv a \mod{m}\]
+    \[b' \equiv b \mod{m}\]
+    Then
+    \[m \mid a - a'\]
+    \[m \mid b - b'\]
+    or
+    \[(a + b) - (a' + b') = (a - a') + (b - b') \implies m \mid (a - a') + (b - b')\]
+    So $+$ is well-defined.
+\end{proof}
+
+
+\subsubsection{Properties}
+\begin{enumerate}[label=\textit{(\roman*)}]
+    \item Commutativity: $[a]_m + [b]_m = [b]_m + [a]_m$.
+        \begin{proof}
+            $[a]_m + [b]_m = [a + b]_m = [b + a]_m = [b]_m + [a]_m$.
+        \end{proof}
+    \item Associativity: $([a]_m + [b]_m) + [c]_m = [a]_m + ([b]_m + [c]_m)$.
+        \begin{proof}
+            \textit{Trivial.}
+        \end{proof}
+    \item Identity: $[a]_m + [0]_m = [a]_m$.
+        \begin{proof}
+            $[a]_m = [a + 0]_m = [a]_m + [0]_m = [a]_m$.
+        \end{proof}
+    \item Inverse: $[a]_m + [-a]_m = [0]_m$.
+        \begin{proof}
+            $[a]_m + [-a]_m = [a + (-a)]_m = [0]_m$.
+        \end{proof}
+\end{enumerate}
+
+
+\subsubsection{Multiplication}
+We will define multiplication as
+\[[a]_m \cdot [b]_m = [a \cdot b]_m\]
+\begin{proof}
+    We know
+    \[a' \equiv a \mod{m}\]
+    \[b' \equiv b \mod{m}\]
+    Then
+    \[m \mid a - a'\]
+    \[m \mid b - b'\]
+    or
+    \[(a \cdot b) \cdot (a' \cdot b') = ab - ab' - a'b + a'b' = a(b - b') + a'(b - b') \implies m \mid (a'b' - ab)\]
+    So $\cdot$ is well-defined.
+\end{proof}
+
+
+\subsubsection{Properties}
+\begin{enumerate}[label=\textit{(\roman*)}]
+    \item Commutativity: $[a]_m \cdot [b]_m = [b]_m \cdot [a]_m$.
+        \begin{proof}
+            $[a]_m \cdot [b]_m = [a \cdot b]_m = [b \cdot a]_m = [b]_m \cdot [a]_m$.
+        \end{proof}
+    \item Associativity: $([a]_m \cdot [b]_m) \cdot [c]_m = [a]_m \cdot ([b]_m \cdot [c]_m)$.
+        \begin{proof}
+            \textit{Trivial.}
+        \end{proof}
+    \item Identity: $[a]_m \cdot [1]_m = [a]_m$.
+        \begin{proof}
+            $[a]_m = [a \cdot 1]_m = [a]_m \cdot [1]_m = [a]_m$.
+        \end{proof}
+    \item Distributivity: $[a]_m \cdot ([b]_m + [c]_m) = [a]_m[b]_m + [a]_m[c]_m$.
+        \begin{proof}
+            $[a]_m \cdot ([b]_m + [c]_m) = [a \cdot (b + c)]_m = [ab + ac]_m = [ab]_m + [ac]_m = [a]_m[b]_m + [a]_m[c]_m$
+        \end{proof}
+\end{enumerate}
+
+
+\subsection{Invertability}
+We say that $[a]_m$ is \textib{invertible} if there exists some $[a]_m^{-1}$ such that
+\[[a]_m[b]_m = [1]_m\]
+
+\theorem {
+    A class $[a]_m$ is invertible \textit{if and only if} $\gcd(a, m) = 1$.
+}
+\begin{proof}
+    ($\implies$) Assume $[a]_m$ is invertible. Then by definition there is some $[b]_m$ such that
+    $[a]_m[b]_m = [ab]_m = 1 \implies m \mid (ab - 1) \implies ab - 1 = km \iff ab - km = 1$.
+    Suppose $d \mid a$ and $d \mid m$. Then 
+    \[d \mid (ab - km) = 1\]
+    \[d \mid 1 \implies d = 1\]
+    ($\impliedby$) Assume $\gcd(a, m) = 1$. Then, there is an integer solution to $ax \equiv 1 \mod{m}$.
+    Then, $[ax]_m = = [a]_m[x]_m = 1 \implies [a]_m$ is invertible.
+\end{proof}
+
+
+\subsection{Set of Invertible Classes}
+We denote the set of invertible classes as
+\[\left( \modclass{m} \right)^{\times} := \left\{ [a]_m : [a]_m \textit{ is invertible} \right\}\]
+\textib{Note:} $m = p$ a prime $\implies |\left( \modclass{m} \right)^{\times} = p - 1$.
+
+
+\section{Euler Totient Function}
+We denote the number of integers $1, \ldots, m - 1$ coprime to $m$ as
+\[\varphi(m)\]
+
+
+\subsection{Properties}
+\begin{enumerate}[label=\textit{(\roman*)}]
+    \item $m = p$ a prime $\implies \varphi(p) = p - 1$.
+    \item $m = p^k \implies \varphi(p^k) = p^k - p^{k - 1} = p^{k - 1}(p - 1)$.
+        \begin{proof}
+            In the set $\left\{ 1, 2, \ldots, p^k \right\}$, every $p$-th number is a multiple of
+            $p$. There are $p^{k - 1}$ such elements in this set. Therefore, the elements that are
+            coprime to $p$ are $p^k - p^{k - 1} = p^{k - 1}(p - 1)$.
+        \end{proof}
+\end{enumerate}
+
+
+\subsection{Chinese Remainder Theorem}
+
+\lemma {
+    Let $a \mid n$ and $b \mid n$. If $\gcd(a, b) = 1$, then $ab \mid n$.
+}
+\begin{proof}
+    Let $\gcd(a, b) = 1$. Then,
+    \begin{align*}
+        ax + by &= 1 & \text{Bezout's Identity} \\
+        n(ax + by) &= n & \text{multiply both sides by } n \\
+        nax + nby &= n \\
+    \end{align*}
+    By assumption, $a \mid n$ and $b \mid n$ so $ab \mid an$ and $ab \mid bn \implies ab \mid n$.
+\end{proof}
+
+\corollary {
+    Suppose $m_1 \mid n$, $m_2 \mid n$, $\ldots$, $m_k \mid n$ for $m_i \neq m_j, i \neq j$ (pairwise
+    relatively prime). Then $m_1 m_2 \cdots m_k \mid n$.
+}
+\begin{proof}
+    We will induct on $k \geq 2$.
+    \begin{enumerate}[label=\textit{(\roman*)}]
+        \item ($k = 2$) By the \textit{Lemma}, this is true.
+        \item ($k = k + 1$) Consider $m_1 (m_2 \cdots m_k)$. Then $\gcd(m_1, m_i) = 1$ for $i \leq k$.
+            Then $(m_1, m_2 \cdots m_k) = 1$. By the Inductive Hypothesis, $m_2 \cdots m_k \mid n$. By
+            the \textit{Lemma}, $m_1 m_2 \cdots m_k \mid n$.
+    \end{enumerate}
+\end{proof}
+
+
+\proposition { 
+    If $m \mid n$, then $\modclass{n} \to \modclass{m}$. That is,
+    \[[a]_n \mapsto [a]_m\]
+}
+\begin{proof}
+    Suppose $[a]_n = [a']_n$. Then $a \equiv a' \mod{n}$. So 
+    \[m \mid n \mid (a - a') \implies m \mid (a - a') \implies [a]_m = [a']_m\]
+    So $\mapsto$ is well-defined.
+    \newline
+    \newline
+    We will now consider $n := m_1 m_2 \cdots m_k$ for some integer $k$. Then
+    \[f : \modclass{n} \to \modclass{m_1} \times \modclass{m_2} \times \cdots \times \modclass{m_k}\]
+    or
+    \[[a]_n \mapsto \left( [a]_{m_1]} \mapsto [a]_{m_2} \mapsto \cdots \mapsto [a]_{m_k} \right)\]
+\end{proof}
+
+\theorem {
+    If $m_i$ are pairwise relatively prime, then $f$ (defined above) is a bijection.
+}
+\begin{proof}
+    \textib{Injective}
+    \newline
+    Assume $f([a]_n) = f([b]_n)$. Then
+    \[([a]_{n_1}, \cdots, [a]_{n_k}) = ([b]_{n_1}, \cdots, [b]_{n_k})\]
+    \[[a]_i = [b]_i \ \forall i < n \implies m_i \mid (b - a) \implies \prod m_i \mid (b - a) \iff n \mid (b - a) \implies [a]_n = [b]_n\]
+    \textib{Surjective}
+    \newline
+    Trivial. Since $f$ is both injective and surjective, $f$ is a bijection.
+\end{proof}
+
+\textib{Note:} the size of $\modclass{n}$ is $|\modclass{n}| = |\modclass{m_1} \times \cdots \times \modclass{m_k}|$
+
+
+\theorem{
+    Consider the following system of congruences:
+    \begin{align*}
+        x &\equiv b_1 \mod{m_1} \\
+        x &\equiv b_2 \mod{m_2} \\
+          &\vdots \\
+        x &\equiv b_k \mod{m_k} \\
+    \end{align*}
+    If $m_1, \ldots, m_k$ are pairwise relatively prime, then there is an integer solution to the 
+    above system of congruences.
+}
+\begin{proof}
+    Since $f : \modclass{n} \to \modclass{m_1} \times \modclass{m_2} \times \cdots \times \modclass{m_k}$
+    is a bijection, there is some $[x]_n$ such that $f([x]_n) = ([b]_{m_1}, \ldots, [b]_{m_k})$ by surjectivity,
+    so $[x]_{m_i} = [b_i]_{m_i} \implies x \equiv b_i \mod{m_i} \ \forall i < k$. \textib{(i)}  
+    \newline
+    \newline
+    Suppose $[x]_{m_i} = [y]_{m_1}$. Then, 
+    \[m_i \mid (x - y) \implies \prod m_i \mid (x - y)\]
+    so $[x]_n = [y]_n$. Let $[x]_n$ be a solution; i.e. $y \in [x]_n$. Then
+    \[m_i \mid n \mid (y - x) \implies m_i \mid (y - x) \implies [y]_m = [x]_m\]
+\end{proof}
+
+
+
+
+
+\section{Groups}
+Let $G$ be a set. A binary operation, $\cdot$, on $G$ is a map 
+\[G \times G \to G\] such that
+\[(a, b) \mapsto a \cdot b\]
+A set $G$ with a binary operation $\cdot$ is a \textib{group} if
+\begin{enumerate}[label=\textit{(\roman*)}]
+    \item Associative: $(a \cdot b) \cdot c = a \cdot (b \cdot c)$
+    \item Unique Identity: There exists an $e \in G$ such that $a \cdot e = e \cdot a = a$.
+    \item Unique Inverse: $(a \cdot b) \cdot c = a \cdot (b \cdot c)$
+\end{enumerate}
+
+\subsection{Abelian Groups}
+A group is said to be \textib{abelian} if for every $a, b \in G$, $\cdot$ is commutative; i.e.
+\[a \cdot b = b \cdot a\]
+\textib{Note:} If $G$ is abeliean, we usually denote the binary operator as $+$, inverse as $-a$, and
+identity as $0$.
+
+
+\subsection{Properties}
+\begin{enumerate}[label=\textit{(\roman*)}]
+    \item Unique Identity $e$.
+        \begin{proof}
+            Let $e_1, e_2$ be two identities. Then, since $e_1$ is an identity, we get
+            \[e_1 \cdot e_2 = e_2\]
+            but since $e_2$ is an identity, we get 
+            \[e_1 \cdot e_2 = e_1\]
+            so $e_1 = e_2$.
+        \end{proof}
+    \item Unique Inverse $e$.
+        \begin{proof}
+            Let $a_1, a_2$ be two inverses. Then
+            \[a_1 = a_1 \cdot e = a_1 \cdot (a \cdot a_2) = (a_1 \cdot a) \cdot a_2 = e \cdot a_2 = a_2\]
+        \end{proof}
+    \item Associativity: $(a \cdot b) \cdot c = a \cdot (b \cdot c)$.
+    \item $\left( a^{-1} \right)^{-1} = a$
+        \begin{proof}
+            $a^{-1} \cdot a = a \cdot a^{-1} = e \implies a = \left( a^{-1} \right)^{-1}$
+        \end{proof}
+    \item Powers.
+        \begin{align*}
+            a^0 &= e \\
+            a^n &= a \cdot a \cdots a & n \text{ times} \\
+            a^{-n} &= \left( a^{n} \right)^{-1} = \left( a^{-1} \right)^n = a^{-1} \cdot a^{-1} \cdots a^{-1} & n \text{ times}
+        \end{align*}
+    \item Inverse: $a, b \in G$. Then $\left( ab \right)^{-1} = b^{-1} a^{-1}$.
+        \begin{proof}
+            $e = (ab) \cdot (b^{-1} a^{-1}) = a (bb^{-1}) a^{-1} = aea^{-1} = aa^{-1} = e$. \\
+            $e = (b^{-1} a^{-1}) \cdot (ab) = a^{-1} (b^{-1}b) a = a^{-1}ea = a^{-1}a = e$.
+        \end{proof}
+    \item Cancellation: $ax = bx \implies a = b$.
+        \begin{proof}
+            $a = ae = a\left(xx^{-1}\right) = (ax)x^{-1} = (bx)x^{-1} = b\left(xx^{-1}\right) = be = b$.
+        \end{proof}
+        \textib{Note:} $xa = xb \implies a = b$ but $ax = xb \centernot \implies a = b$ since $G$ need not
+        be abelian!
+\end{enumerate}
 
 
 \end{document}
