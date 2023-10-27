@@ -4,7 +4,7 @@
 \usepackage{amsthm}
 \usepackage{enumitem}
 \usepackage{tcolorbox}
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
 \usepackage{centernot}
 \usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
 
@@ -14,6 +14,7 @@
 \newcommand{\congruent}[3]{{#1} \equiv {#2} \ (\textit{mod } {#3})}
 \newcommand{\textib}[1]{\textit{\textbf{{#1}}}}
 \newcommand{\Id}{\text{Id}}
+\newcommand{\ord}{\text{ord}}
 \newcommand{\proposition}[1]{\begin{tcolorbox}[title=\textit{Proposition}]{#1}\end{tcolorbox}}
 \newcommand{\corollary}[1]{\begin{tcolorbox}[title=\textit{Corollary}]{#1}\end{tcolorbox}}
 \newcommand{\theorem}[1]{\begin{tcolorbox}[title=\textit{Theorem}]{#1}\end{tcolorbox}}
@@ -885,6 +886,146 @@ identity as $0$.
         \textib{Note:} $xa = xb \implies a = b$ but $ax = xb \centernot \implies a = b$ since $G$ need not
         be abelian!
 \end{enumerate}
+
+
+
+
+
+\chapter{Week 3}
+\section{Homomorphisms of Groups}
+Let $G, H$ be two groups. A \textib{homomorphism} between $G$ and $H$ is a map 
+\[f : G \to H\]
+such that 
+\[H \ni f(x \cdot y) = f(x) \cdot f(y) \in H\]
+for every $x, y \in G$.
+
+
+\subsection{Properties}
+Let $f : G \to H$ be a homomorphism.
+\begin{enumerate}[label=\textit{(\roman*)}]
+    \item $f(e_G) = e_H$.
+        \begin{proof}
+            $f(e_G) \cdot f(e_G) = f(e_G \cdot e_G) = f(e_G) = e_H$
+        \end{proof}
+    \item $f(x^{-1} = f(x)^{-1}$ for every $x \in G$.
+        \begin{proof}
+            \[e_H = f(x^{-1}) \cdot f(x) = f(x^{-1} \cdot x) = f(e_G) = e_H\]
+            \[e_H = f(x) \cdot f(x^{-1}) = f(x \cdot x^{-1}) = f(e_G) = e_H\]
+        \end{proof}
+\end{enumerate}
+
+
+
+
+
+\section{Isomorphisms of Groups}
+A homomorphism $f : G \to H$ is an \textib{isomorphism} if $f$ is a bijection. Two groups are called
+\textib{isomorphic} if there is an isomorphism $f : G \to H$.
+
+
+\subsection{Properties}
+\begin{enumerate}[label=\textit{(\roman*)}]
+    \item $\Id_G : G \to G$ is an isomorphism.
+    \item If $f$ is an isomorphism, so is $f^{-1} : H \to G$.
+        \begin{proof}
+            Let $f^{-1}$ be a bijection. Then,
+            \[\exists x \in G : f(x) = a \implies x = f^{-1}(a)\]
+            \[\exists y \in G : f(y) = b \implies y = f^{-1}(b)\]
+            Then,
+            \[f(x \cdot y) = f(x) \cdot f(y) = ab\]
+            \[f^{-1}(ab) = xy = f^{-1}(a) \cdot f^{-1}(b)\]
+        \end{proof}
+    \item If $f : G \to H$ and $f' : H \to K$ are isomorphisms, then so is $f' \circ f : G \to K$. 
+\end{enumerate}
+
+\theorem {
+    The relation $\simeq$ is an equivalence relation.
+}
+\begin{proof}
+\begin{enumerate}[label=\textit{(\roman*)}]
+    \item $\Id_G : G \to G$ is an isomorphism.
+    \item If $f$ is an isomorphism, so is $f^{-1} : H \to G$.
+        \begin{proof}
+            Let $f^{-1}$ be a bijection. Then,
+            \[x \in G : f(x) = a \implies x = f^{-1}(a)\]
+            \[y \in G : f(y) = b \implies y = f^{-1}(b)\]
+            Then,
+            \[f(x \cdot y) = f(x) \cdot f(y) = ab\]
+            \[f^{-1}(ab) = xy = f^{-1}(a) \cdot f^{-1}(b)\]
+        \end{proof}
+    \item If $f : G \to H$ and $f' : H \to K$ are isomorphisms, then so is $f' \circ f : G \to K$. 
+\end{enumerate}
+\end{proof}
+
+
+
+
+
+\section{Cyclic Groups}
+\subsection{Generator}
+Let $G$ be a group, and $a \in G$. The element \textib{generates} $G$ if every $x \in G$ can be 
+written as 
+\[x = a^i\]
+for some $i \in \Z$. We say that $a$ is a \textib{generator} of $G$.
+
+
+\subsection{Order of a Group}
+Let $G$ be a group, and $a, \in G$. The smallest $n > 0$ such that $a^n = e$ is called the
+\textib{order} of $a$ and is denoted as
+\[\ord(a) = n\]
+Note that $\ord(a) = \infty$ if such an $n$ does not exist.
+
+
+\subsection{Cyclicity}
+A group $G$ is called \textib{cyclic} if $G$ has a generator.
+
+\theorem {
+    Every cyclic group is isomorphic to either $\Z$ or $\modclass{Z}$ for some $n \geq 0$.
+}
+
+\subsubsection{Properties}
+\proposition {
+    $[a]_n \in \modclass{n}$ a generator \textit{if and only if} $\gcd(a, n) = 1$. There are $\varphi(n)$ generators
+    of $\modclass{n}$.
+}
+\begin{proof}
+    ($\implies$) There exists some $i \in \Z$ such that $i \cdot [a]_n = [1]_n$. Then
+    \[[ia]_n = [1]_n \implies ia \equiv 1 \mod{n} \iff n \mid ia - 1 \iff ia - 1 = nm \iff \gcd(a, n) = 1\]
+    ($\impliedby$)
+    Let $\gcd(a, n) = 1$. Then for some $x, y \in \Z$,
+    \[1 = ax + ny\]
+    But $1 - ax$ is divisible by $n$, so we get
+    \[1 \equiv ax \mod{n} \iff [1]_n = [ax]_n = x \cdot [a]_n\]
+    Now, take any $[b]_n \in \modclass{n}$. We have that 
+    \[[b]_n \equiv bx [a]_n\]
+    so $[a]_n$ is a generator of $\modclass{n}$.
+\end{proof}
+
+\proposition {
+    Let $G$ be a cyclic group of order $n$. Then $\sigma \in G$ be a generator \textit{if and only if}
+    $\ord(\sigma) = n$.
+}
+\begin{proof}
+    ($\implies$)
+    Consider the powers of $\sigma$. $\sigma^0 = e$, $\sigma^1 = \sigma$, $\ldots$, $\sigma^k = e$,
+    $\sigma^{k + 1} = \sigma$, \ldots, $\sigma^{2k} = e$. Take $k$ to be the smallest integer such that
+    $\sigma^k = \sigma^i$ for $i \leq i \leq k$. We claim that $i = 0$. 
+    \newline
+    \newline
+    If $i > 0$, we have $\sigma^{k - 1} = \sigma^{i - 1}$ for $0 \leq i < k$< a contradiction. Then
+    $\sigma^k = \sigma^0 = e$. So $n = |G| = k \implies n$ is the smallest integer such that
+    $\sigma^n = e$. So $n = \ord(\sigma)$.
+    \newline
+    \newline
+    ($\impliedby$) By definition, $n$ is the smallest integer such that $\sigma^n = e$. Then,
+    \[\left\{ e, \sigma^1, \sigma^2, \ldots, \sigma^{n - 1} \right\}\]
+    are distinct elements. This shows that 
+    \[G = \left\{ e, \sigma, \sigma^2, \ldots, \sigma^{n - 1} \right\}\]
+    That is, $\sigma$ generates $G$. Thus, $|G| = n = \ord(\sigma)$.
+\end{proof}
+
+
+
 
 
 \end{document}
