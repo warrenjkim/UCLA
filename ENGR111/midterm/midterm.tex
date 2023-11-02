@@ -1,0 +1,84 @@
+\documentclass{article}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage[letterpaper,top=0.1cm,bottom=0.2cm,left=0.2cm,right=0.2cm,marginparwidth=0cm]{geometry}
+
+\begin{document}
+A: Assets, D: Debt, E: Equity, NWC: Net Working Capital, R: Revenue \\
+\textbf{Basics} \\
+Assets = Debt(Liabilities) + Equity : A = D + E \\
+Income = Revenue - Expenses \\
+Net Working Capital = (Current Assets) - (Current Liabilities) : NWC = CA - CL \\
+CashFlow(Assets) = CashFlow(Creditors) + CashFlow(Stockholders) : CF(A) = CF(B) + CF(S) \\
+Operating Cashflow = (Net Income) + Depreciation + Amortization + ($\Delta$Net Working Capital) : OCF = EBIT + Depreciation - Taxes
+\newline
+\textbf{Liquidity Ratios} \\
+Current Ratio = (Current Assets)/(Current Liabilities) : CR = CA/CL \\
+Quick Ratio = (Current Assets - Inventory)/(Current Liabilities) : CR = (CA - Inv)/CL \\
+Cash Ratio = Cash/(Current Liabilities) : Cash/CL
+\newline
+\textbf{Leverage Ratios} \\
+Total Debt Ratio = (Assets - Equity)/Assets : TDR = (A - E)/A \\
+Debt/Equity Ratio = Debt/Equity : D/E \\
+Equity Mulitplier = Assets/Equity $\iff$ 1 + Debt/Equity : EM = A/E $\iff$ 1 + D/E
+\newline
+\textbf{Coverage Ratios} \\
+Times Interest Earned = (Earnings Before Interest and Taxes)/Interst : TIE = EBIT/Interest \\
+Cash Coverage = (EBIT + Depreciation + Amortization)/Interest
+\newline
+\textbf{Ratio Analysis} \\
+Inventory Turnover = Cost of Goods Sold/Inventory : IT = COGS/Inventory \\
+Days' Sales in Inventory = 365/(Inventory Turnover) : DSI = 365/IT
+\newline
+\textbf{Receivables Ratios} \\
+Receivables Turnover = Sales/(Accounts Receivable) : RT = S/AR \\
+Days' Sales in Receivables = 365/(Receivables Turnover) : DSR = 365/RT \\
+Total Asset Turnover = Sales/(Total Assets) : TAT = S/A
+\newline
+\textbf{Profitability Ratios} \\
+Profit Margin = (Net Income)/Sales : PM = NI/S \\
+Return on Assets = (Net Income)/(Total Assets) : ROA = NI/A \\
+Return on Equity = (Net Income)/(Total Equity) : ROE = NI/E
+\newline
+\textbf{Market Value Measures} \\
+Earnings Per Share = (Net Income)/(Shares Outstanding) : EPS = NI/SO \\
+Price-to-Earnings Ratio = (Price per Share)/(Earnings per Share) : PE Ratio = PPS/EPS \\
+Market Capitalization = PPS$\cdot$(Shares Outstanding)
+\newline
+\textbf{Dividend Ratios} \\
+Dividend Payout Ratio = (Dividends Paid)/Net Income = $d$ \\
+Retention Ratio = 1 - (Dividends Paid)/Net Income : $b = 1 - d$
+\newline
+\textbf{Du-Pont Identity} \\
+ROE = $\frac{NI}{S} \cdot \frac{S}{A} \cdot \frac{A}{E}$ PM$\cdot$TAT$\cdot$EM
+\newline
+\textbf{Pro Forma Income Statement for year $n$} \\
+(Projected) Sales$_n$ = Sales$_{n - 1} \cdot$(1 + Growth Rate) \\
+(Projected) (Cost of Goods Sold)$_n$ = (Cost of Goods Sold)$_{n - 1} \cdot$(1 + Growth Rate) \\
+(Projected) (Taxable Income)$_n$ = Sales$_n$ - Costs$_n$ - Interest$_n$ \\
+(Projected) Interest$_n$ = Interest$_{n - 1}$ + (Interest Rate)$\cdot$D \\
+(Projected) Taxes$_n$ = (Tax Rate)$\cdot$(Taxable Income)$_n$ \\
+(Projected) (Net Income)$_n$ = (Taxable Income$_n$) - Taxes$_n$ \\
+(Projected) Dividends$_n$ = (Net Income)$_n \cdot$(Dividend Payout Ratio) \\
+(Projected) (Addition to Retained Earnings)$_n$ = (Net Income$_n$) - Dividends$_n$ = ($\Delta$Retained Earnings)
+\newline
+\textbf{Pro Forma Balance Sheet for year $n$} \\
+(Projected) Cash$_n$ = Cash$_{n - 1} \cdot$(1 + Growth Rate) \\
+(Projected) (Accounts Receivable)$_n$ = (Accounts Receivable)$_{n - 1} \cdot$(1 + Growth Rate) \\
+(Projected) Inventory$_n$ = Inventory$_{n - 1} \cdot$(1 + Growth Rate) \\
+(Projected) (Net Fixed Assets)$_n$ = (Net Fixed Assets)$_{n - 1} \cdot$(1 + Growth Rate) \\
+(Projected) (Accounts Payable)$_n$ = (Accounts Payable)$_{n - 1} \cdot$(1 + Growth Rate) \\
+(Projected) (Notes Payable)$_n$ = (Notes Payable)$_{n - 1}$ + D \\
+(Projected) (Long Term Debt)$_n$ = (Long Term Debt)$_{n - 1}$ + D \\
+(Projected) (Stock)$_n$ = (Stock)$_{n - 1}$ - (Buy Backs) \\
+(Projected) (Retained Earnings)$_n$ = (Retained Earnings)$_{n - 1}$ + $\Delta$Retained Earnings \\
+\textit{Solve for} D \textit{by setting Total Assets = Total Liabilities}
+\newline
+\textbf{External Financing Needed (EFN)} \\
+EFN = (Projected Total Assets) - (Spontaneous $\Delta$Liabilities) - ($\Delta$Retained Earnings) \\
+EFN $> 0$ ? ``External financing needed'' : ``Company has excess funds''
+\newline
+\textbf{Growth Rate} \\
+Internal Groth Rate = (ROA$\cdot b$)/(1 - ROA$\cdot b$) = IGR \\
+Sustainable Groth Rate = (ROE$\cdot b$)/(1 - ROE$\cdot b$) = SGR \\
+\end{document}
