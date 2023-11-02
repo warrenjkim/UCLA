@@ -2,58 +2,61 @@
 \usepackage{enumitem}
 \usepackage{amsmath}
 \usepackage{booktabs}
+\usepackage{graphicx}
 \usepackage[letterpaper,top=0.1cm,bottom=0.2cm,left=0.2cm,right=0.2cm,marginparwidth=0cm]{geometry}
+
+\newcommand{\textib}[1]{\textit{\textbf{{#1}}}}
 
 \begin{document}
 A: Assets, D: Debt, E: Equity, NWC: Net Working Capital, R: Revenue \\
-\textbf{Basics} \\
-Assets = Debt(Liabilities) + Equity $\iff$ A = D + E \\
+\textib{Basics} \\
+Assets = Debt(Liabilities) + Equity \leaders\hbox{$\cdot$}\hfill $\iff$ A = D + E \\
 Income = Revenue - Expenses \\
-Net Working Capital = (Current Assets) - (Current Liabilities) $\iff$ NWC = CA - CL \\
-CashFlow(Assets) = CashFlow(Creditors) + CashFlow(Stockholders) $\iff$ CF(A) = CF(B) + CF(S) \\
-Operating Cashflow = (Net Income) + Depreciation + ($\Delta$NWC) $\iff$ OCF = EBIT + Depreciation - Taxes
+Net Working Capital = (Current Assets) - (Current Liabilities) \leaders\hbox{$\cdot$}\hfill $\iff$ NWC = CA - CL \\
+CashFlow(Assets) = CashFlow(Creditors) + CashFlow(Stockholders) \leaders\hbox{$\cdot$}\hfill $\iff$ CF(A) = CF(B) + CF(S) \\
+Operating Cashflow = (Net Income) + Depreciation + ($\Delta$NWC) \leaders\hbox{$\cdot$}\hfill $\iff$ OCF = EBIT + Depreciation - Taxes
 \newline
-\textbf{Liquidity Ratios} \\
-Current Ratio = (Current Assets)/(Current Liabilities) $\iff$ CR = CA/CL \\
-Quick Ratio = (Current Assets - Inventory)/(Current Liabilities) $\iff$ CR = (CA - Inv)/CL \\
-Cash Ratio = Cash/(Current Liabilities) $\iff$ Cash/CL
+\textib{Liquidity Ratios} \\
+Current Ratio = (Current Assets)/(Current Liabilities) \leaders\hbox{$\cdot$}\hfill $\iff$ CR = CA/CL \\
+Quick Ratio = (Current Assets - Inventory)/(Current Liabilities) \leaders\hbox{$\cdot$}\hfill $\iff$ CR = (CA - Inv)/CL \\
+Cash Ratio = Cash/(Current Liabilities) \leaders\hbox{$\cdot$}\hfill $\iff$ Cash/CL
 \newline
-\textbf{Leverage Ratios} \\
-Total Debt Ratio = (Assets - Equity)/Assets $\iff$ TDR = (A - E)/A \\
-Debt/Equity Ratio = Debt/Equity $\iff$ D/E \\
-Equity Mulitplier = Assets/Equity $\iff$ 1 + Debt/Equity $\iff$ EM = A/E $\iff$ 1 + D/E
+\textib{Leverage Ratios} \\
+Total Debt Ratio = (Assets - Equity)/Assets \leaders\hbox{$\cdot$}\hfill $\iff$ TDR = (A - E)/A \\
+Debt/Equity Ratio = Debt/Equity \leaders\hbox{$\cdot$}\hfill $\iff$ D/E \\
+Equity Mulitplier = Assets/Equity $\iff$ 1 + Debt/Equity \leaders\hbox{$\cdot$}\hfill $\iff$ EM = A/E $\iff$ 1 + D/E
 \newline
-\textbf{Coverage Ratios} \\
-Times Interest Earned = (Earnings Before Interest and Taxes)/Interst $\iff$ TIE = EBIT/Interest \\
+\textib{Coverage Ratios} \\
+Times Interest Earned = (Earnings Before Interest and Taxes)/Interst \leaders\hbox{$\cdot$}\hfill $\iff$ TIE = EBIT/Interest \\
 Cash Coverage = (EBIT + Depreciation + Amortization)/Interest
 \newline
-\textbf{Ratio Analysis} \\
-Inventory Turnover = Cost of Goods Sold/Inventory $\iff$ IT = COGS/Inventory \\
-Days' Sales in Inventory = 365/(Inventory Turnover) $\iff$ DSI = 365/IT
+\textib{Ratio Analysis} \\
+Inventory Turnover = Cost of Goods Sold/Inventory \leaders\hbox{$\cdot$}\hfill $\iff$ IT = COGS/Inventory \\
+Days' Sales in Inventory = 365/(Inventory Turnover) \leaders\hbox{$\cdot$}\hfill $\iff$ DSI = 365/IT
 \newline
-\textbf{Receivables Ratios} \\
-Receivables Turnover = Sales/(Accounts Receivable) $\iff$ RT = S/AR \\
-Days' Sales in Receivables = 365/(Receivables Turnover) $\iff$ DSR = 365/RT \\
-Total Asset Turnover = Sales/(Total Assets) $\iff$ TAT = S/A
+\textib{Receivables Ratios} \\
+Receivables Turnover = Sales/(Accounts Receivable) \leaders\hbox{$\cdot$}\hfill $\iff$ RT = S/AR \\
+Days' Sales in Receivables = 365/(Receivables Turnover) \leaders\hbox{$\cdot$}\hfill $\iff$ DSR = 365/RT \\
+Total Asset Turnover = Sales/(Total Assets) \leaders\hbox{$\cdot$}\hfill $\iff$ TAT = S/A
 \newline
-\textbf{Profitability Ratios} \\
-Profit Margin = (Net Income)/Sales $\iff$ PM = NI/S \\
-Return on Assets = (Net Income)/(Total Assets) $\iff$ ROA = NI/A \\
-Return on Equity = (Net Income)/(Total Equity) $\iff$ ROE = NI/E
+\textib{Profitability Ratios} \\
+Profit Margin = (Net Income)/Sales \leaders\hbox{$\cdot$}\hfill $\iff$ PM = NI/S \\
+Return on Assets = (Net Income)/(Total Assets) \leaders\hbox{$\cdot$}\hfill $\iff$ ROA = NI/A \\
+Return on Equity = (Net Income)/(Total Equity) \leaders\hbox{$\cdot$}\hfill $\iff$ ROE = NI/E
 \newline
-\textbf{Market Value Measures} \\
-Earnings Per Share = (Net Income)/(Shares Outstanding) $\iff$ EPS = NI/SO \\
-Price-to-Earnings Ratio = (Price per Share)/(Earnings per Share) $\iff$ PE Ratio = PPS/EPS \\
+\textib{Market Value Measures} \\
+Earnings Per Share = (Net Income)/(Shares Outstanding) \leaders\hbox{$\cdot$}\hfill $\iff$ EPS = NI/SO \\
+Price-to-Earnings Ratio = (Price per Share)/(Earnings per Share) \leaders\hbox{$\cdot$}\hfill $\iff$ PE Ratio = PPS/EPS \\
 Market Capitalization = (PPS)$\cdot$(Shares Outstanding)
 \newline
-\textbf{Dividend Ratios} \\
+\textib{Dividend Ratios} \\
 Dividend Payout Ratio = (Dividends Paid)/Net Income = $d$ \\
-Retention Ratio = 1 - (Dividends Paid)/Net Income $\iff$ $b = 1 - d$
+Retention Ratio = 1 - (Dividends Paid)/Net Income \leaders\hbox{$\cdot$}\hfill $\iff$ $b = 1 - d$
 \newline
-\textbf{Du-Pont Identity} \\
+\textib{Du-Pont Identity} \\
 ROE = $\frac{NI}{S} \cdot \frac{S}{A} \cdot \frac{A}{E}$ PM$\cdot$TAT$\cdot$EM
 \newline
-\textbf{Pro Forma Income Statement for year $n$} \\
+\textib{Pro Forma Income Statement for year $n$} \\
 (Projected) Sales$_n$ = Sales$_{n - 1} \cdot$(1 + Growth Rate) \\
 (Projected) (Cost of Goods Sold)$_n$ = (Cost of Goods Sold)$_{n - 1} \cdot$(1 + Growth Rate) \\
 (Projected) (Taxable Income)$_n$ = Sales$_n$ - Costs$_n$ - Interest$_n$ \\
@@ -63,7 +66,7 @@ ROE = $\frac{NI}{S} \cdot \frac{S}{A} \cdot \frac{A}{E}$ PM$\cdot$TAT$\cdot$EM
 (Projected) Dividends$_n$ = (Net Income)$_n \cdot$(Dividend Payout Ratio) \\
 (Projected) (Addition to Retained Earnings)$_n$ = (Net Income$_n$) - Dividends$_n$ = ($\Delta$Retained Earnings)
 \newline
-\textbf{Pro Forma Balance Sheet for year $n$} \\
+\textib{Pro Forma Balance Sheet for year $n$} \\
 (Projected) Cash$_n$ = Cash$_{n - 1} \cdot$(1 + Growth Rate) \\
 (Projected) (Accounts Receivable)$_n$ = (Accounts Receivable)$_{n - 1} \cdot$(1 + Growth Rate) \\
 (Projected) Inventory$_n$ = Inventory$_{n - 1} \cdot$(1 + Growth Rate) \\
@@ -76,11 +79,11 @@ ROE = $\frac{NI}{S} \cdot \frac{S}{A} \cdot \frac{A}{E}$ PM$\cdot$TAT$\cdot$EM
 \textit{Solve for} D \textit{by setting Total Assets = Total Liabilities} \\
 \textit{The example in the pro forma worksheet said to assume that} NWC \textit{stays the same}
 \newline
-\textbf{External Financing Needed (EFN)} \\
+\textib{External Financing Needed (EFN)} \\
 EFN = (Projected Total Assets) - (Spontaneous $\Delta$Liabilities) - ($\Delta$Retained Earnings) \\
 EFN $> 0$ ? ``External financing needed'' : ``Company has excess funds''
 \newline
-\textbf{Growth Rate} \\
+\textib{Growth Rate} \\
 Internal Groth Rate = (ROA$\cdot b$)/(1 - ROA$\cdot b$) = IGR \\
 Sustainable Groth Rate = (ROE$\cdot b$)/(1 - ROE$\cdot b$) = SGR
 \newline
@@ -132,7 +135,7 @@ and a constant NWC \textit{(ii)}, we get:
     Stock & 800 & n/a & 800 & 800$^{\gamma}$ \\
     Retained Earnings & 1000 & n/a & $1000 + 110 = 1110$ & $1000 + 110 = 1110^{\gamma}$ \\
     \midrule
-    \textbf{Total Liabilities and O.E.} & 3000 & n/a & 3185 & 3750 \\
+    \textbf{Total Liabilities and O.E.} & 3000 & n/a & 3185$^{\delta}$ & 3750 \\
     \bottomrule
 \end{tabular}
 \newline
@@ -144,5 +147,22 @@ $\alpha$: By \textit{(ii)}, we get $1200 - 400 = 800 \implies 1500 - CL_{2014} =
 $\beta$: We have that (Total Assets)$_{2014} = 3750 \implies 3750 = CL_{2014} + LTD_{2014} + OE_{2014} 
 \implies LTD_{2014} = 3750 - 700 - 1910 = 1140$.
 \newline
-$\gamma$: The rest of the entries in the table are filled out using the equations from \textbf{Pro Forma * for year $n$}.
+$\gamma$: The rest of the entries in the table are filled out using the equations from \textib{Pro Forma * for year $n$}.
+\newline
+$\gamma$: 3185 $\implies$ EFN = 3750 - 3185 = 565..
+\newline
+\textib{Definitions and Et Cetera} \\
+Capital Budgeting: Evaluating and selecting long-term investments. \\
+Capital Structure Mix of debt and equity to finance operations. \\
+Net Working Capital: Reflects short-term financial health. NWC $>$ 0 ? Usually good : Usually bad. \\
+Internal Growth Rate: Maximum growth rate \textit{without} EFN. \\
+Sustainable Growth Rate: Maximum growth rate \textit{without} EFN \textit{and} maintaining a constant debt/equity ratio. \\
+SGR $<$ IGR $\implies$ The company has some shit internal growth management. Change dividend policy, $\uparrow$ efficiency, $\uparrow$ profitability. No EFN. \\
+SGR $=$ IGR $\implies$ The company is able to finance its growth solely through retained earnings and doesn't need EFN. \\
+SGR $>$ IGR $\implies$ The company can grow faster than internal financing alone. We can use EFN. \\
+EFN (again) = $\frac{\text{Assets} - \text{(Spontaneous Liabilities)}}{\text{Sales}} \cdot \Delta \text{Sales} - (\text{[Profit Margin]} \cdot \text{[Projected Sales]}) \cdot (1 - d)$
+\newline
+\includegraphics[width=0.35\textwidth]{./planning.png}
+\hfill
+\includegraphics[width=0.35\textwidth]{./efn.png}
 \end{document}
