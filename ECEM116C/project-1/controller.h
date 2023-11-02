@@ -4,9 +4,16 @@
 #include "CPU.h"
 
 
-// no need to write a controller for branch, jalr, s/lw since there is only one
-// option
 namespace CTRL {
+    // gets the ALU control
+    OpType::Operation alu_control(OpType::OperationType alu_op, instruction *instr);
+
+    // gets the ALUOp
+    OpType::OperationType alu_op(instruction *instr);
+
+    // sets the controller
+    void set_controller(struct Controller *controller);
+
     // r-type
     bool RTYPE(CPU *cpu, instruction *instr);
 

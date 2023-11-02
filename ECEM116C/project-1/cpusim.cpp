@@ -47,12 +47,13 @@ int main(int argc, char *argv[]) {
         instr = instruction(curr);
 
         // decode
-        done = util::decode(&instr);
+        done = myCPU.decode(&instr);
         if (done == false) // break from loop so stats are not mistakenly updated
             break;
 
-        // execute
-        util::execute_instruction(&myCPU, &instr);
+        // execute, breaking if an instruction fails.
+        if (!util::execute_instruction(&myCPU, &instr))
+            break;
 
         // sanity check
         if (myCPU.readPC() > maxPC)
