@@ -1,0 +1,109 @@
+\documentclass{article}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+\begin{document}
+
+\begin{enumerate}[label=(\alph*)]
+    \item If our processor has no forwarding and/or branch prediction (i.e., branches are resolved 
+        at the MEM stage, and we should stall the processor until it is resolved), fill in the 
+        following table. Write (f,d,e,m,w) for each column. If the processor has been stalled, show 
+        it by ``-''(the first two instructions are filled already). 
+
+        \begin{table}[ht]
+            \centering
+            \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+                \hline
+                & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15 & 16 & 17 & 18 & 19 & 20 \\
+                \hline
+                addi & f & d & e & m & w & & & & & & & & & & & & & & & \\
+                \hline
+                ori & & f & d & e & m & w & & & & & & & & & & & & & & \\
+                \hline
+                sub & & & f & d & e & m & w & & & & & & & & & & & & & \\
+                \hline
+                add & & & & f & d & - & e & m & w & & & & & & & & & & & \\
+                \hline
+                or & & & & & f & - & d & - & - & e & m & w & & & & & & & & \\
+                \hline
+                lw & & & & & & & f & - & - & d & - & - & e & m & w & & & & & \\
+                \hline
+                beq & & & & & & & & &  & f & - & - & d & e & m & w & & & & \\
+                \hline
+                and & & & & & & & & & & & & & - & - & - & f & d & e & m & w \\
+                \hline
+            \end{tabular}
+        \end{table}
+
+
+    \item \textit{Now assume that we have forwarding but the branch is still resolved at the MEM stage. 
+            Complete the table again. Show stalls with ``-''. If there is a forwarding, show it with  
+        $*$ (for BOTH the forwarding stage and EX).}
+
+        \begin{table}[ht]
+            \centering
+            \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+                \hline
+                & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15 \\
+                \hline
+                addi & f & d & e & m & w & & & & & & & & & & \\
+                \hline
+                ori & & f & d & e & m & w$*$ & & & & & & & & & \\
+                \hline
+                sub & & & f & d & e & m & w$*$ & & & & & & & & \\
+                \hline
+                add & & & & f & d & e$*$ & m & w & & & & & & & \\
+                \hline
+                or & & & & & f & d & e$*$ & m$*$ & w$*$ & & & & & & \\
+                \hline
+                lw & & & & & & f & d & e$*$ & m & w & & & & & \\
+                \hline
+                beq & & & & & & & f & d & e$*$ & m & w & & & & \\
+                \hline
+                and & & & & & & & & - & - & - & f & d & e & m & w \\
+                \hline
+            \end{tabular}
+        \end{table}
+
+
+    \item \textit{Now assume that we have forwarding and the branch is resolved at the DE stage. 
+        Complete the table again. Use ``-'' for stalls and $*$ for forwarding.}
+
+        \begin{table}[ht]
+            \centering
+            \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+                \hline
+                & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 \\
+                \hline
+                addi & f & d & e & m & w & & & & & & & & \\
+                \hline
+                ori & & f & d & e & m & w$*$ & & & & & & & \\
+                \hline
+                sub & & & f & d & e & m & w$*$ & & & & & & \\
+                \hline
+                add & & & & f & d & e$*$ & m & w & & & & & \\
+                \hline
+                or & & & & & f & d & e$*$ & m$*$ & w$*$ & & & & \\
+                \hline
+                lw & & & & & & f & d & e$*$ & m & w & & & \\
+                \hline
+                beq & & & & & & & f & d & e$*$ & m & w & & \\
+                \hline
+                and & & & & & & & & - & f & d & e & m & w \\
+                \hline
+            \end{tabular}
+        \end{table}
+
+
+    \item \textit{What is the speed up in case b compared to a?}
+        \newline
+        \newline
+        There is a 5 cycle speed up in case b comared to case a.
+    \item \textit{What is the speed up in case c compared to a?}
+        \newline
+        \newline
+        There is a 7 cycle speed up in case c comared to case a.
+\end{enumerate}
+\end{document}
+
