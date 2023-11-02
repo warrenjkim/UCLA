@@ -980,7 +980,7 @@ Note that $\ord(a) = \infty$ if such an $n$ does not exist.
 A group $G$ is called \textib{cyclic} if $G$ has a generator.
 
 \theorem {
-    Every cyclic group is isomorphic to either $\Z$ or $\modclass{Z}$ for some $n \geq 0$.
+    Every cyclic group is isomorphic to either $\Z$ or $\modclass{n}$ for some $n \geq 0$.
 }
 
 \subsubsection{Properties}
@@ -1024,6 +1024,19 @@ A group $G$ is called \textib{cyclic} if $G$ has a generator.
     That is, $\sigma$ generates $G$. Thus, $|G| = n = \ord(\sigma)$.
 \end{proof}
 
+
+\newpage
+\chapter{Appendix}
+\section*{Binomial Expansion}
+\[(a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k\]
+where
+\[\binom{n}{k} = \frac{n!}{k!(n-k)!}\]
+
+
+\section*{Geometric Series}
+Finite:
+\[S = \frac{a(1-r^n)}{1-r}\]
+\[S = \frac{a}{1-r}\]
 
 
 
