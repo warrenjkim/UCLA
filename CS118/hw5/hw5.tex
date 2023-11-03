@@ -1,0 +1,226 @@
+\documentclass{report}
+\usepackage{homework}
+\usepackage{enumitem}
+
+\solstrue
+
+\renewcommand{\hmwkTitle}{Homework 5}
+
+\begin{document}
+\mktitle
+
+
+\begin{problem}
+Host A and B are communicating over an already established TCP connection.
+For simplicity, we assume that this TCP connection does not use delayed ACK and Host B sends an acknowledgment whenever it receives a segment from Host A. Following TCP's convention, ACK is cumulative and ACK number is the next expected byte from the sender.
+
+Suppose at the beginning, Host A has sent data up through byte 233, and Host B has successfully received all the data. Host A then sends two segments to Host B back-to-back.
+The first and second segments contain 60 and 40 bytes of data respectively.
+In the first segment, the sequence number is 234, the source port number is 45213, and the destination port number is 8081.
+Fill in the blanks for questions (a)--(c) directly; work out the diagram in the box for question (d).
+
+\begin{enumerate}
+  \item In the second segment sent from Host A to B, the sequence number is \underline{\quad\quad\quad}, the source port number is \underline{\quad\quad\quad}, and the destination port number is \underline{\quad\quad\quad}.
+  \item If the first segment arrives before the second segment on Host B, in the acknowledgment of the first arriving segment, the ACK number is \underline{\quad\quad\quad}, the source port number is \underline{\quad\quad\quad}, and the destination port number is \underline{\quad\quad\quad}.
+  \item If the second segment arrives before the first segment on Host B, in the acknowledgment of the first arriving segment, the ACK number is \underline{\quad\quad\quad}.
+  \item Suppose the two segments sent by A arrive in order at B.
+  The first acknowledgment is lost and the second acknowledgment arrives after A's timeout intervals for both the first and the second packets.
+ 
+  
+  Draw a timing diagram in the box below, showing these segments and acknowledgments until A receives all the acknowledgments of re-transmitted packets.
+  Assume no additional packet loss.
+  For each segment in your diagram, provide the sequence number and the number of bytes of data; for each acknowledgment that you add, provide the ACK number.
+\end{enumerate}
+
+
+\begin{answer}{33em}
+\begin{enumerate}
+  \item In the second segment sent from Host A to B, the sequence number is \underline{334}, the source port number is \underline{45213}, and the destination port number is \underline{8081}.
+  \item If the first segment arrives before the second segment on Host B, in the acknowledgment of the first arriving segment, the ACK number is \underline{235}, the source port number is \underline{45213}, and the destination port number is \underline{8081}.
+  \item If the second segment arrives before the first segment on Host B, in the acknowledgment of the first arriving segment, the ACK number is \underline{234}.
+  \item 
+\end{enumerate}
+\end{answer}
+
+\end{problem}
+
+
+
+\newpage
+\begin{problem}
+For a TCP connection, suppose at time $T_0$, the EstimatedRTT and DevRTT are 130~ms and 12~ms respectively.
+The next three measured SampleRTT values after $T_0$ are 140~ms, 120~ms, and 150~ms.
+Following the algorithm in the lecture slides, compute the following values after \textbf{each} of the three SampleRTT measurements is obtained in sequence:
+
+\begin{itemize}
+    \item DevRTT
+    \item EstimatedRTT
+    \item TimeoutInterval
+\end{itemize}
+
+Round your calculation results to two decimals (e.g., 123.45).
+\medskip
+
+\begin{answer}{50em}
+    Given that at $T_0$, EstimatedRTT = 130ms, DevRTT = 12ms, SampleRTT$_{1, 2, 3}$ = 140ms, 120ms, 
+    150ms and assuming $\alpha = \frac{1}{8}$, $\beta = \frac{1}{4}$, we get
+    \begin{align*}
+        \text{DevRTT} &= (1 - \beta) \cdot \text{DevRTT} + \beta \cdot | \text{SampleRTT}_1 - \text{EstimatedRTT}| \\
+        \text{EstimatedRTT} &= (1 - \alpha) \cdot \text{EstimatedRTT} + \alpha \cdot \text{SampleRTT} \\
+        \text{TimeoutInterval} &= \text{EstimatedRTT} + 4 \cdot \text{DevRTT}
+    \end{align*}
+    \begin{enumerate}[label=\arabic*.]
+        \item
+            \begin{enumerate}[label=\textit{(\roman*)}]
+                \item
+                    $
+                    \text{DevRTT} = \frac{3}{4} (12) + \frac{3}{4} \cdot |140 - 130|
+                    = 4 + 7.5
+                    = 11.5 \text{ms}
+                    $
+                \item 
+                    $
+                    \text{EstimatedRTT} = \frac{7}{8} (130) + \frac{1}{8} (140)
+                    = 113.75 + 17.5
+                    = 131.25 \text{ms}
+                    $
+                \item 
+                    $
+                    \text{TimeoutInterval} = 131.25 + 4(11.5)
+                    = 177.25 \text{ms}
+                    $
+            \end{enumerate}
+        \item
+            \begin{enumerate}[label=\textit{(\roman*)}]
+                \item
+                    $
+                    \text{DevRTT} = \frac{3}{4} (12) + \frac{3}{4} \cdot |120 - 130|
+                    = 4 + 7.5
+                    = 11.5 \text{ms}
+                    $
+                \item 
+                    $
+                    \text{EstimatedRTT} = \frac{7}{8} (130) + \frac{1}{8} (120)
+                    = 113.75 + 15
+                    = 128.75 \text{ms}
+                    $
+                \item 
+                    $
+                    \text{TimeoutInterval} = 128.75 + 4(11.5)
+                    = 174.75 \text{ms}
+                    $
+            \end{enumerate}
+        \item
+            \begin{enumerate}[label=\textit{(\roman*)}]
+                \item
+                    $
+                    \text{DevRTT} = \frac{3}{4} (12) + \frac{3}{4} \cdot |150 - 130|
+                    = 4 + 15
+                    = 19 \text{ms}
+                    $
+                \item 
+                    $
+                    \text{EstimatedRTT} = \frac{7}{8} (130) + \frac{1}{8} (150)
+                    = 113.75 + 18.75
+                    = 132.5 \text{ms}
+                    $
+                \item 
+                    $
+                    \text{TimeoutInterval} = 132.5 + 4(19)
+                    = 208.5 \text{ms}
+                    $
+            \end{enumerate}
+    \end{enumerate}
+\end{answer}
+\end{problem}
+
+
+
+\newpage
+\begin{problem}
+You are designing a reliable, sliding window, byte-stream protocol similar to TCP.
+It will be used for communication with a geosynchronous satellite network, for which the bandwidth is $1$ Gbps ($1\textrm{G}=10^9$) and the RTT is $200$ ms. Assume the maximum segment lifetime is $10$ seconds.
+
+\begin{enumerate}
+\item What is the minimum number of bits you should use for \textsf{ReceiveWindow} and \textsf{SequenceNum} fields so that full utilization of the channel can be achieved? (Hints: The \textsf{ReceiveWindow} should be able to encode the maximum possible in-flight number of bytes. \textsf{SequenceNum} should be large enough so that the sequence number does not wrap around when the delayed segment is still in the channel.)
+\item If \textsf{ReceiveWindow} is 16 bits, what upper bound would that impose on the effective bandwidth?
+
+\end{enumerate}
+
+\medskip
+
+\begin{answer}{45em}
+    10s = 10000ms,
+    bandwidth = 1 $\times 10^6$ bits/ms, 
+    RTT = 200ms
+    \begin{enumerate}
+        \item
+            $\textsf{ReceiveWindow} \geq \log_{2}(200 \cdot 1 \times 10^6) = 28$ bits. \\
+            $\textsf{SequenceNum} \geq \log_{2}() = $ bits.
+        \item 
+    \end{enumerate}
+\end{answer}
+\end{problem}
+
+\newpage
+\begin{problem}
+In this question you are comparing among the following three schemes:
+\begin{itemize}
+    \item Go-Back-N: cumulative ACK is used. The ACK number is the sequence number of corresponding segment (Figure 3.22 in the textbook).
+    \item Selective Repeat: individual ACK is used. The ACK number is the sequence number of corresponding segment (Figure 3.26 in the textbook).
+    \item TCP: cumulative ACK is used with no delayed ACK. The ACK number is the next expected sequence number.
+\end{itemize}
+
+Assume that timeout values for all three protocols are sufficiently long, such that 8 consecutive data segments and their corresponding ACKs can be received (if not lost in the channel) by the receiving host (Host B) and the sending host (Host A), respectively.
+
+Suppose Host A sends 8 data segments to Host B, and the 5th segment (sent from A) is lost. No other segments are lost.
+In the end, all 8 data segments have been correctly received by Host B. The first segment starts from sequence number 1 and each segment contains 1 byte of data. The round trip time is greater than the transmission time for the 8 segments, so that the first ACK arrives after all 8 segments have been transmitted. For TCP, assume that the connection is already established and you don't need to count the connection establishment.
+
+\begin{enumerate}
+  \item How many segments has Host A sent in total and how many ACKs has Host B sent in total? What are their sequence numbers? Answer this question for all three protocols.
+  \item If the timeout values for all three protocols are very long (e.g., longer than several RTTs), then which protocol successfully delivers all 8 data segments in shortest time interval?
+\end{enumerate}
+
+\begin{answer}{30em}
+    We will assume window size is 8.
+    \begin{enumerate}
+        \item 
+            \begin{enumerate}[label=\textit{(\roman*)}]
+                \item Host A sends 12 segments in total and Host B sends 11 ACKs in total. Their 
+                    sequence numbers are: $A = \{1, 2, 3, 4, 5, 6, 7, 8, 5, 6, 7, 8\}$ and
+                    $B = \{1, 2, 3, 4, 4, 4, 4, 5, 6, 7, 8\}$
+                \item Host A sends 9 segments in total and Host B sends 11 ACKs in total. Their 
+                    sequence numbers are: $A = \{1, 2, 3, 4, 5, 6, 7, 8, 5, 6, 7, 8\}$ and
+                    $B = \{1, 2, 3, 4, 4, 4, 4, 5, 6, 7, 8\}$
+            \end{enumerate}
+        \item 
+    \end{enumerate}
+\end{answer}
+\end{problem}
+
+
+\newpage
+\begin{problem}
+Consider the evolution of a TCP connection with the following characteristics. Assume that all the following algorithms are implemented in TCP congestion control: slow start, congestions avoidance, fast retransmit and fast recovery, and retransmission upon timeout. If ssthresh equals to cwnd, use the slow start algorithm in your calculation.
+
+
+\begin{itemize}
+\item The TCP sender sends a number of data segments of 1 byte each. 
+\item The TCP receiver follows cumulative ACK convention without delayed ACK, i.e. the receiver acknowledges every successfully received segment immediately.
+\item The RTT is 100 ms for all transmissions, consists of the network latency of 60 ms in sending a segment (header and payload) from the sender to the receiver and 40 ms in sending an acknowledgment (header only) from the receiver to the sender. Ignore packet-processing delays at the sender and the receiver.
+\item To simplify the setting, rather than estimating RTO from sampled RTT values, the RTO at the send is set to 500ms and does not change during the connection lifetime.
+\item Initially ssthresh at the sender is set to 6. Assume cwnd and ssthresh are measured in segments, and the transmission time for each segment is negligible.
+% \item Retransmission timeout (RTO) is initially set to 150ms at the sender, with EstimatedRTT and DevRTT being 110ms and 10ms respectively. The value is updated 
+\item The connection (already established) starts to transmit data at time t = 0, and the initial sequence number starts from 1. TCP segment with sequence number 6 is lost once (i.e., it sees segment loss during its first transmission). No other segments are lost during transmissions.
+\end{itemize}
+What are the values for cwnd and ssthreshold when the sender receives the TCP ACK with number 15? Show your intermediate steps or your diagram in your solution.
+
+\textbf{Note:} For simplicity, we assume that TCP sender does NOTHING when receiving 1st and 2nd duplicate ACKs, following the convention in the textbook, rather than the optimized behaviors described in RFC 5681, Section 3.2.
+
+\begin{answer}{65em}
+  % Write your answer here and remove the following line
+  \hfil
+\end{answer}
+\end{problem}
+
+\end{document}
