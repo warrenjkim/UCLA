@@ -20,9 +20,9 @@ In the first segment, the sequence number is 234, the source port number is 4521
 Fill in the blanks for questions (a)--(c) directly; work out the diagram in the box for question (d).
 
 \begin{enumerate}
-  \item In the second segment sent from Host A to B, the sequence number is \underline{\quad\quad\quad}, the source port number is \underline{\quad\quad\quad}, and the destination port number is \underline{\quad\quad\quad}.
-  \item If the first segment arrives before the second segment on Host B, in the acknowledgment of the first arriving segment, the ACK number is \underline{\quad\quad\quad}, the source port number is \underline{\quad\quad\quad}, and the destination port number is \underline{\quad\quad\quad}.
-  \item If the second segment arrives before the first segment on Host B, in the acknowledgment of the first arriving segment, the ACK number is \underline{\quad\quad\quad}.
+  \item In the second segment sent from Host A to B, the sequence number is \underline{334}, the source port number is \underline{45213}, and the destination port number is \underline{8081}.
+  \item If the first segment arrives before the second segment on Host B, in the acknowledgment of the first arriving segment, the ACK number is \underline{294}, the source port number is \underline{45213}, and the destination port number is \underline{8081}.
+  \item If the second segment arrives before the first segment on Host B, in the acknowledgment of the first arriving segment, the ACK number is \underline{234}.
   \item Suppose the two segments sent by A arrive in order at B.
   The first acknowledgment is lost and the second acknowledgment arrives after A's timeout intervals for both the first and the second packets.
  
@@ -36,7 +36,7 @@ Fill in the blanks for questions (a)--(c) directly; work out the diagram in the 
 \begin{answer}{33em}
 \begin{enumerate}
   \item In the second segment sent from Host A to B, the sequence number is \underline{334}, the source port number is \underline{45213}, and the destination port number is \underline{8081}.
-  \item If the first segment arrives before the second segment on Host B, in the acknowledgment of the first arriving segment, the ACK number is \underline{235}, the source port number is \underline{45213}, and the destination port number is \underline{8081}.
+  \item If the first segment arrives before the second segment on Host B, in the acknowledgment of the first arriving segment, the ACK number is \underline{294}, the source port number is \underline{45213}, and the destination port number is \underline{8081}.
   \item If the second segment arrives before the first segment on Host B, in the acknowledgment of the first arriving segment, the ACK number is \underline{234}.
   \item 
 \end{enumerate}
@@ -74,8 +74,8 @@ Round your calculation results to two decimals (e.g., 123.45).
             \begin{enumerate}[label=\textit{(\roman*)}]
                 \item
                     $
-                    \text{DevRTT} = \frac{3}{4} (12) + \frac{3}{4} \cdot |140 - 130|
-                    = 4 + 7.5
+                    \text{DevRTT} = \frac{3}{4} (12) + \frac{1}{4} \cdot |140 - 130|
+                    = 2.5 + 9
                     = 11.5 \text{ms}
                     $
                 \item 
@@ -94,40 +94,40 @@ Round your calculation results to two decimals (e.g., 123.45).
             \begin{enumerate}[label=\textit{(\roman*)}]
                 \item
                     $
-                    \text{DevRTT} = \frac{3}{4} (12) + \frac{3}{4} \cdot |120 - 130|
-                    = 4 + 7.5
-                    = 11.5 \text{ms}
+                    \text{DevRTT} = \frac{3}{4} (11.5) + \frac{1}{4} \cdot |120 - 131.25|
+                    = 8.63 + 2.81
+                    = 11.44 \text{ms}
                     $
                 \item 
                     $
-                    \text{EstimatedRTT} = \frac{7}{8} (130) + \frac{1}{8} (120)
-                    = 113.75 + 15
-                    = 128.75 \text{ms}
+                    \text{EstimatedRTT} = \frac{7}{8} (131.25) + \frac{1}{8} (120)
+                    = 114.84 + 15
+                    = 129.84 \text{ms}
                     $
                 \item 
                     $
-                    \text{TimeoutInterval} = 128.75 + 4(11.5)
-                    = 174.75 \text{ms}
+                    \text{TimeoutInterval} = 129.84 + 4(11.44)
+                    = 175.6 \text{ms}
                     $
             \end{enumerate}
         \item
             \begin{enumerate}[label=\textit{(\roman*)}]
                 \item
                     $
-                    \text{DevRTT} = \frac{3}{4} (12) + \frac{3}{4} \cdot |150 - 130|
-                    = 4 + 15
-                    = 19 \text{ms}
+                    \text{DevRTT} = \frac{3}{4} (11.44) + \frac{1}{4} \cdot |150 - 129.84|
+                    = 8.58 + 5.04
+                    = 13.62 \text{ms}
                     $
                 \item 
                     $
-                    \text{EstimatedRTT} = \frac{7}{8} (130) + \frac{1}{8} (150)
-                    = 113.75 + 18.75
-                    = 132.5 \text{ms}
+                    \text{EstimatedRTT} = \frac{7}{8} (129.84) + \frac{1}{8} (150)
+                    = 113.61 + 18.75
+                    = 132.36 \text{ms}
                     $
                 \item 
                     $
-                    \text{TimeoutInterval} = 132.5 + 4(19)
-                    = 208.5 \text{ms}
+                    \text{TimeoutInterval} = 132.36 + 4(13.62)
+                    = 186.84 \text{ms}
                     $
             \end{enumerate}
     \end{enumerate}
@@ -155,9 +155,10 @@ It will be used for communication with a geosynchronous satellite network, for w
     RTT = 200ms
     \begin{enumerate}
         \item
-            $\textsf{ReceiveWindow} \geq \log_{2}(200 \cdot 1 \times 10^6) = 28$ bits. \\
-            $\textsf{SequenceNum} \geq \log_{2}() = $ bits.
-        \item 
+            $\textsf{ReceiveWindow} \geq \log_{2}(200 \times 10^6) = \log_{2}(2 \times 10^8$ bits) = $\log_{2}(2.5 \times 10^7$ bytes) = $25$ bits. \\
+            $\textsf{SequenceNum} \geq \log_{2}(10 \times 10^{9}) = \log_{2}(1 \times 10^{10}$ bits) = $\log_{2}(1.25 \times 10^9$ bytes) = $31$ bits.
+        \item If \textsf{ReceiveWindow} is $16$ bits, we have an upper bound of: \\
+            $\textsf{EffectiveBandwidth} = \frac{\textsf{ReceiveWindow}}{RTT} = \frac{2^{16}}{200} = 327.68$ KB/s
     \end{enumerate}
 \end{answer}
 \end{problem}
@@ -186,14 +187,18 @@ In the end, all 8 data segments have been correctly received by Host B. The firs
     \begin{enumerate}
         \item 
             \begin{enumerate}[label=\textit{(\roman*)}]
-                \item Host A sends 12 segments in total and Host B sends 11 ACKs in total. Their 
+                \item Host A sends 12 segments in total and Host B sends 12 ACKs in total. Their 
                     sequence numbers are: $A = \{1, 2, 3, 4, 5, 6, 7, 8, 5, 6, 7, 8\}$ and
-                    $B = \{1, 2, 3, 4, 4, 4, 4, 5, 6, 7, 8\}$
-                \item Host A sends 9 segments in total and Host B sends 11 ACKs in total. Their 
-                    sequence numbers are: $A = \{1, 2, 3, 4, 5, 6, 7, 8, 5, 6, 7, 8\}$ and
-                    $B = \{1, 2, 3, 4, 4, 4, 4, 5, 6, 7, 8\}$
+                    $B = \{1, 2, 3, 4, 4, 4, 4, 4, 5, 6, 7, 8\}$
+                \item Host A sends 9 segments in total and Host B sends 8 ACKs in total. Their 
+                    sequence numbers are: $A = \{1, 2, 3, 4, 5, 6, 7, 8, 5\}$ and
+                    $B = \{1, 2, 3, 4, 6, 7, 8, 5\}$
+                \item Host A sends 9 segments in total and Host B sends 2 ACKs in total. Their 
+                    sequence numbers are: $A = \{1, 2, 3, 4, 5, 6, 7, 8, 5\}$ and
+                    $B = \{5, 9\}$
             \end{enumerate}
-        \item 
+        \item If the timeout values for all three protocols are very long, then TCP with cumulative and no delayed
+            ACK will successfully deliver all 8 data segments in the shortest time interval.
     \end{enumerate}
 \end{answer}
 \end{problem}
