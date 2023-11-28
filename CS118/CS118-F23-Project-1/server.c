@@ -242,30 +242,9 @@ void handle_request(struct server_app *app, int client_socket) {
 
   free(file_name);
 }
+{{
 
 void serve_local_file(int client_socket, const char *path) {
-  // TODO: Properly implement serving of local files
-  // The following code returns a dummy response for all requests
-  // but it should give you a rough idea about what a proper response looks like
-  // What you need to do
-  // (when the requested file exists):
-  // * Open the requested file
-  // * Build proper response headers (see details in the spec), and send them
-  // * Also send file content
-  // (When the requested file does not exist):
-  // * Generate a correct response
-
-  // char response[] = "HTTP/1.0 200 OK\r\n"
-  // "Content-Type: text/plain; charset=UTF-8\r\n"
-  // "Content-Length: 15\r\n"
-  // "\r\n"
-  // "Sample response";
-
-  // ***** NOTE *****
-  // I HAVE NOT IMPLEMENTED A LOT OF THE RESPONSES. THIS IS JUST THE BARE
-  // MINIMUM TO SEE SOMETHING RUNNING.
-
-  // @todo this is hardcoded in. should we leave it?
   char not_found_header[] =
       "HTTP/1.0 404 Not Found\r\n"
       "Content-Type: text/html; charset=UTF-8\r\n"
@@ -281,12 +260,9 @@ void serve_local_file(int client_socket, const char *path) {
 
   char ok_header[] = "HTTP/1.0 200 OK\r\n";
 
-  // get the file's metadata
   struct local_file *file = parse_file(path);
-  // we want to dynamically build our response
   char *response = NULL;
 
-  // there is no file with the specified path on the server
   if (!file) {
     response = (char *)malloc(strlen(not_found_header));
     sprintf(response, "%s", not_found_header);
@@ -321,14 +297,6 @@ void serve_local_file(int client_socket, const char *path) {
 
 void proxy_remote_file(struct server_app *app, int client_socket,
                        const char *request) {
-  // TODO: Implement proxy request and replace the following code
-  // What's needed:
-  // * Connect to remote server (app->remote_server/app->remote_port)
-  // * Forward the original request to the remote server
-  // * Pass the response from remote server back
-  // Bonus:
-  // * When connection to the remote server fail, properly generate
-  // HTTP 502 "Bad Gateway" response
 
   struct sockaddr_in address;
   address.sin_family = AF_INET;
@@ -336,27 +304,26 @@ void proxy_remote_file(struct server_app *app, int client_socket,
   inet_pton(AF_INET, app->remote_host, &(address.sin_addr));
 
   int remote_socket = socket(AF_INET, SOCK_STREAM, 0);
-  int connected;
-  DEBUG_PRINT("Trying to connect to: %d:%d\n", address.sin_addr.s_addr,
-         address.sin_port);
+  DEBUG_PRINT("Trying to connect: %d:%d\n", address.sin_addr.s_addr, address.sin_port);
 
-  // bad connection
-  if (connect(remote_socket, (struct sockaddr *)&address, sizeof(address)) != 0) {
+  if (connect(remote_socket, (struct sockaddr*)&address, sizeof(address)) != 0) {
     char response[] = "HTTP/1.0 502 Bad Gateway";
     send(client_socket, response, strlen(response), 0);
-  }
+  } 
   else {
     DEBUG_PRINT("Connected\n");
     send(remote_socket, request, strlen(request), 0);
-    DEBUG_PRINT("Sent request: %s\n", request);
+    DEBUG_PRINT("Request sent: %s\n", request);
 
-    int big_ass_number = 1000000;
-    char response[big_ass_number];
-    recv(remote_socket, response, BUFFER_SIZE, MSG_WAITALL);
-    long int response_size = recv(remote_socket, response, sizeof(response) - 1, MSG_WAITALL);
-    DEBUG_PRINT("Received: %s\n\n of size: %ld / %ld\n\n", response, response_size,
-           sizeof(response));
-    send(client_socket, response, response_size, 0);
+    char response[BUFFER_SIZE];
+    int length;
+    while ((length = recv(remote_socket, response, BUFFER_SIZE, 0)) != 0) {
+      DEBUG_PRINT("Received: %s\n\n length: %d / %ld\n\n", response, length, sizeof(response));
+      send(client_socket, response, length, 0);
+    }
+
+    DEBUG_PRINT("Closing socket\n");
+    close(remote_socket);
   }
 }
 
@@ -516,60 +483,46 @@ char *get_read_type(const char *file_name) {
   return "rb";
 }
 
-/**
+
+/*
  * @brief Clean the URL
  *
  * This function cleans the URL by replacing all instances of "%20" with " ".
- *
  * @param url: The request URL.
- *
  * @return The cleaned URL.
  */
 char *clean_request_url(const char *url) {
-  // the string we'll be building into
   char *clean_url = (char *)malloc(strlen(url) + 1);
-  // current index of clean_url
   int index = 0;
 
-  // what we want to replace
   char space[] = "%20";
-  // the current index of space
+  char percent[] = "%25";
   int curr = 0;
-  int space_size = strlen(space);
+  int replace_size = strlen(space);
+  char curr_str[replace_size];
 
-  // iterate through the URL
   for (int i = 0; i < strlen(url); i++) {
-    // we want to reset curr, write over the "%20", and add a space.
-    // e.g. "string%20" will turn into "string 20" where the "20" will be
-    // overwritten
-    //
-    // Before:
-    // string%20
-    //         ^
-    // After:
-    // string 20
-    //        ^
-    if (curr == space_size) {
+    if (curr == replace_size) {
       curr = 0;
-      index -= space_size;
-      clean_url[index++] = ' ';
+      index -= replace_size;
+
+      if (!strcmp(curr_str, space))
+        clean_url[index++] = ' ';
+      else if (!strcmp(curr_str, percent))
+        clean_url[index++] = '%';
+
     }
 
-    // since we want the substring (not subsequence), we reset it to 0 on every
-    // mismatch
     if (url[i] == space[curr])
-      curr++;
+      curr_str[curr++] = url[i];
     else
       curr = 0;
 
-    // build the string
     clean_url[index++] = url[i];
   }
 
-  // end string
   clean_url[index] = '\0';
 
-  // trim the URL
   unsigned long length = strlen(clean_url);
   char *temp = (char *)malloc(length + 1);
 
