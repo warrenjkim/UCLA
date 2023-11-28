@@ -2141,7 +2141,7 @@ allocation.
 \subsection{Managing Variable-Sized Partitions}
 \label{subsec:FL}
 \definitionBegin{Free List}
-The \textbf{free list} is a data structure (often implmented with a list or array) that keeps track
+The \textbf{free list} is a data structure (often implemented with a list or array) that keeps track
 of all available chunks of unallocated memory.
 \definitionEnd
 
@@ -3929,7 +3929,7 @@ In the general case\footnote{The general case assumes there is no FIFO queue for
 \[P_\textit{conflict} = 1 - \left(1 - \frac{T_\textit{critical}}{T_\textit{total}}\right)^{\textit{threads}}\]
 
 In both cases, as contention increases, the probability of contention increases. If
-$T_\textit{wait}$ becomes \textit{long enough}\footnote{$T_\textit{wait}$ reaches teh mean
+$T_\textit{wait}$ becomes \textit{long enough}\footnote{$T_\textit{wait}$ reaches the mean
   inter-arrival time.}, newcomers joining the queu can make the wait time even longer, potentially
 ceasing parallelism. 
 
@@ -4583,7 +4583,7 @@ the operating system to device drivers.
 
 The DKI outlines the functionalities that drivers can request the kernel to perform, similar to an
 ABI (See \refto{sec}{ABIS}). It is essential for the DKI to be well-defined and stable to facilitate
-teh development of third-party drivers and to ensure backwards compatibility. Each OS has its own
+the development of third-party drivers and to ensure backwards compatibility. Each OS has its own
 DKI, but they are all similar.
 
 \exampleBegin{``You'll Never Find Someone Like Me''}
@@ -4802,7 +4802,7 @@ address scatter/gather I/O:
 \begin{enumerate}[label=\textit{(\roman*)}]
 \item Copy all user data into a physically contiguous buffer.
 \item Split logical requests into chain-scheduled page requests.
-\item Utilize teh I/O MMU to automatically handle scatter/gather operations.
+\item Utilize the I/O MMU to automatically handle scatter/gather operations.
 \end{enumerate}
 
 \subsection{Memory Mapped I/O}
