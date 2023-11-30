@@ -4,6 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <iomanip>
 
 typedef struct Trace {
   bool load;
@@ -58,7 +59,7 @@ int main(int argc, char *argv[]) { // the program runs like this: ./program <fil
 
   // Defining cache and stat
   Cache cache;
-  int memory[MEM_SIZE];
+  int memory[MEM_SIZE] = { 0 };
 
   int trace_counter = 0;
   bool load;
@@ -77,10 +78,16 @@ int main(int argc, char *argv[]) { // the program runs like this: ./program <fil
                                                         // your FSM, LW, SW, and MM.
   }
 
-  float L1_miss_rate, L2_miss_rate, AAT;
+  double l1_miss_rate, vic_miss_rate, l2_miss_rate, aat;
   // compute the stats here:
+  
+  l1_miss_rate = (double)(cache.l1_miss());
+  vic_miss_rate = (double)(cache.vic_miss());
+  l2_miss_rate = (double)(cache.l2_miss());
 
-  std::cout << "(" << L1_miss_rate << "," << L2_miss_rate << "," << AAT << ")"
+  aat = HT_L1 + (HT_VIC + (HT_L2 + (MP) * l2_miss_rate) * vic_miss_rate) * l1_miss_rate;
+
+  std::cout << std::setprecision(10) << "(" << l1_miss_rate << "," << l2_miss_rate << "," << aat << ")"
             << std::endl;
 
   // closing the file
