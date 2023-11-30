@@ -85,10 +85,12 @@ int main(int argc, char *argv[]) { // the program runs like this: ./program <fil
   vic_miss_rate = (double)(cache.vic_miss());
   l2_miss_rate = (double)(cache.l2_miss());
 
-  aat = HT_L1 + (HT_VIC + (HT_L2 + (MP) * l2_miss_rate) * vic_miss_rate) * l1_miss_rate;
+  aat = HT_L1 + (HT_VIC + (HT_L2 + ((MP) * l2_miss_rate)) * vic_miss_rate) * l1_miss_rate;
 
-  std::cout << std::setprecision(10) << "(" << l1_miss_rate << "," << l2_miss_rate << "," << aat << ")"
-            << std::endl;
+  std::cout << "(" << std::setprecision(10) << l1_miss_rate << 
+      "," << std::setprecision(10) << l2_miss_rate << 
+      "," << std::setprecision(10) << aat << 
+      ")" << std::endl;
 
   // closing the file
   fin.close();

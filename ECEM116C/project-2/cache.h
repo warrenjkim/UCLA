@@ -43,6 +43,7 @@ typedef union byte_addr {
 typedef struct CacheBlock {
   int tag;
   int index;
+  int addr;
   int lru_position;
   union {
     int data;
@@ -62,7 +63,6 @@ typedef struct Stat {
 
   int vic_miss;
   int vic_hit;
-  // add more stat if needed. Don't forget to initialize!
 
   Stat()
       : l1_miss(0), l1_hit(0), l2_miss(0), l2_hit(0), vic_miss(0), vic_hit(0) {}
