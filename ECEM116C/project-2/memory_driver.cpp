@@ -1,5 +1,4 @@
 #include "cache.h"
-#include <cstring>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -51,9 +50,6 @@ int main(int argc, char *argv[]) { // the program runs like this: ./program <fil
     trace[trace_size].store = stoi(s2);
     trace[trace_size].addr = stoi(s3);
     trace[trace_size].data = stoi(s4);
-    /* std::cout << "(" << trace[trace_size].load << ", " << trace[trace_size].store */
-    /*           << ", " << trace[trace_size].addr << ", " */
-    /*           << trace[trace_size].data << ")" << std::endl; */
     trace_size += 1;
   }
 

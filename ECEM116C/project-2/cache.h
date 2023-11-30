@@ -19,69 +19,51 @@
 #define HT_L2 8
 #define MP 100
 
-#define OFFSET_MASK 3
-#define INDEX_MASK 29
+typedef enum { L1, VIC, L2 } CacheLevel;
 
-#define OFFSET_SIZE 2
-#define INDEX_SIZE 4
-#define TAG_SIZE 26
-
-#define INDEX_SHIFT 2
-#define TAG_SHIFT 6
-
-typedef enum {
-    L1,
-    VIC,
-    L2
-} CacheLevel;
-
-typedef union byte_addr {
-    int memory = 0;
-    uint8_t byte[4];
-} byte_addr;
 
 typedef struct CacheBlock {
-  int tag;
-  int index;
-  int addr;
-  int lru_position;
+  int tag = 0;
+  int index = 0;
+  int lru_position = 0;
   union {
-    int data;
+    int data = 0;
     uint8_t byte[4];
   };
-  bool valid;
-
-  CacheBlock() : tag(0), lru_position(0), data(0), valid(false) {}
+  bool valid = false;
 } CacheBlock;
 
+
 typedef struct Stat {
-  int l1_miss;
-  int l1_hit;
+  int l1_miss = 0;
+  int l1_hit = 0;
 
-  int l2_miss;
-  int l2_hit;
+  int l2_miss = 0;
+  int l2_hit = 0;
 
-  int vic_miss;
-  int vic_hit;
-
-  Stat()
-      : l1_miss(0), l1_hit(0), l2_miss(0), l2_hit(0), vic_miss(0), vic_hit(0) {}
+  int vic_miss = 0;
+  int vic_hit = 0;
 } Stat;
+
 
 class Cache {
 private:
-  CacheBlock l1[L1_CACHE_SETS];                // 1 set per row.
-  CacheBlock l2[L2_CACHE_SETS][L2_CACHE_WAYS]; // x ways per row
+  CacheBlock l1[L1_CACHE_SETS];
+  CacheBlock l2[L2_CACHE_SETS][L2_CACHE_WAYS];
   CacheBlock victim[VICTIM_SIZE];
 
   Stat stat;
+
 public:
   Cache();
   void controller(bool load, bool store, int *data, int addr, int *memory);
+
   void lw(int addr, int *memory);
   void sw(int *data, int addr, int *memory);
+
   void evict(const CacheBlock &block, CacheLevel level);
-  void update_lru(CacheBlock *arr, CacheLevel level, int position = -1);
+  void update_lru(CacheBlock *arr, CacheLevel level, int position = 1);
+
   CacheBlock *min_block(CacheLevel level, int index = -1);
 
   double l1_miss();
