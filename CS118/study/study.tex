@@ -1,0 +1,84 @@
+\documentclass{article}
+\usepackage{enumitem}
+
+\begin{document}
+
+\section*{Chapter 4 (Data Plane)}
+\begin{enumerate}[label=\textit{(\roman*)}]
+    \item \textit{What is the Internet service model?}
+        \newline
+        \newline
+        Best effort
+    \item \textit{Compare VC and datagram networks}
+        \newline
+        \newline
+        Virtual Circuit switching is a connection-oriented switching mechanism that provides
+            a predetermined path between sender and receiver. Datagram networks are a connectionless
+        switching mechanism that dynamically finds the most efficient path from sender to receiver.
+    \item \textit{How does a router decide which next hop to forward when a packet arrives?}
+        \newline
+        \newline
+        Each router has a forwarding table which is used to determine the next hop router
+        using intra/inter-AS routing algorithms (e.g. BGP, OSPF, etc.). In the forwarding table,
+    we use longest prefix matching to determine which router to send the packet to.
+    \item \textit{What is the rationale for each field in the IP packet header?}
+        \begin{enumerate}
+            \item Version: Gives the IP version number.
+            \item Header length: We have a variable length header due to Options.
+            \item Type of service: Determines the type of datagram (e.g. non/real-time) for efficient
+                packet handling.
+            \item Datagram length (bytes): Length of the IP datagram.
+            \item 16-bit Identifier: For fragmentation
+            \item Flags: For fragmentation
+            \item 13-bit Fragmentation offset: For fragmentation.
+            \item TTL: So we don't have forwarding loops. Measured in hop count.
+            \item Upper-layer protocol: How to parse the payload (UDP/TCP/ICMP).
+            \item Header checksum: For bit errors.
+            \item Source/Destination IP address: We need to know the IP addresses.
+            \item Options: Variable length.
+        \end{enumerate}
+    \item \textit{What is a subnet? What is CIDR? How do we use a network mask to identify a subnet?}
+        \begin{enumerate}
+            \item A subnet is a set of devices that are physically connected (via the link layer) without
+                passing through an intervening router.
+            \item CIDR: Classless Inter-Domain Routing. It replaced the classless IP addressing because it 
+                is more space efficient. CIDR defines the subnet portion of the IP address.
+            \item We set the upper $N$ bits to 1 and bitwise-and them together with the IP address
+                to get the subnet mask.
+        \end{enumerate}
+    \item \textit{How does NAT work?}
+        \newline
+        \newline
+        NAT translates (public) WAN addresses to (private) LAN addresses + port number and vice versa.
+    \item \textit{What are the limitations of NAT?}
+        \newline
+        \newline
+        Traversal problem. 
+    \item \textit{What issues does NAT address?}
+        \newline
+        \newline
+        NAT addresses the issue of running out of IP addresses in IPv4. 
+    \item \textit{What are common solutions to NAT traversal problem?}
+        \newline
+        \newline
+        The server should not sit behind a NAT.
+    \item \textit{How does DHCP work?}
+        \newline
+        \newline
+        DISCOVER, OFFER, REQUEST, and ACK.
+    \item \textit{What other info can DHCP provide to a host, in addition to a new IP address?}
+        \newline
+        \newline
+        IP of next hop router, IP of DNS server, subnet mask.
+    \item \textit{How does tunneling work}
+        \newline
+        \newline
+        Encapsulate IP datagram in an IP datagram.
+    \item 
+
+
+
+
+\end{enumerate}
+
+\end{document}
