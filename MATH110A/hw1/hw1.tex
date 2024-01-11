@@ -1,0 +1,122 @@
+%\documentstyle [12pt,amsmath,amsfonts] {article}
+\documentclass [12pt] {article}
+
+\newtheorem{exercise}{Exercise}[section]
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{problem}{Problem}
+\newtheorem{solution}{Solution}
+\newtheorem{cor}{Corollary}[section]
+\newtheorem{prop}{Proposition}[section]
+\newtheorem{rmk}{Remark}[section]
+\newtheorem{conj}{Conjecture}[section]
+\usepackage{amsfonts}      
+\usepackage{amsmath}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[margin=0.75in]{geometry} 
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newenvironment{proof}{\paragraph{Proof:}}{\hfill$\square$}
+\setlength\parindent{0pt}
+% \setcounter{section}{-1}
+
+
+
+
+\title{110A HW1}
+\author{Warren Kim}
+\date{Winter 2024}
+
+\begin{document}
+
+\maketitle
+
+\section*{Question 1}
+Let $a$ and $b$ be integers, such that $b \neq 0$. Show that there exist unique $q, r \in \Z$ such 
+that $a = bq + r$, where $0 \leq r < |b|$. 
+\subsection*{Response}
+\newpage
+
+\section*{Question 2}
+If $b | a$ and $a \neq 0$, show that $|b| \leq |a|$.  Hint: recall that $|xy| = |x||y|$.
+
+\subsection*{Response}
+\begin{proof}
+    Suppose $b | a$ and $a \neq 0$. Then, there exists some $c \in \Z$ such that $a = bc$. Since
+    $a \neq 0$, $c$ is necessarily nonzero. Therefore, we have the inequality $-bc \leq b \leq bc$.
+    This is equivalent to $|b| \leq |bc|$. But $bc = a$ so $|b| \leq |a|$.
+\end{proof}
+\newpage
+
+\section*{Question 3}
+Let $a,b,c\in \Z$ such that $(a,b)=1$. Suppose $a|c$ and $b|c$. Show that $ab|c$. 
+
+\subsection*{Response}
+Let $a, b, c \in \Z$ such that $(a, b) = 1$. Suppose $a | c$ and $b | c$. Then there exist some
+$x, y \in \Z$ such that $c = ax$ and $c = by$.
+\newpage
+
+\section*{Question 4}
+Show the backwards direction of Theorem 1.5:
+
+Let $p\in\Z$ such that $p\neq 0,\pm1$. Show that the second statement implies the first.
+	\begin{enumerate}
+        \item $p$ is prime 
+		\item If $p|bc$ where $b,c\in\Z$, then $p|b$ or $p|c$.
+	\end{enumerate}
+
+[Hint: contrapositive/contradiction are valid ways to prove this.]
+
+\subsection*{Response}
+\newpage
+
+\section*{Question 5}
+If $p$ is prime and $p|a_1\cdots a_n$, show that there must be at least one $a_i$ such that $p|a_i$. 
+\subsection*{Response}
+\newpage
+
+\section*{Question 6}
+Suppose $a,b,c\in\Z$, such that $(a,c)=(b,c)=1$. Show that $(ab,c)=1$. 
+
+\subsection*{Response}
+\begin{proof}
+Suppose $a, b, c \in \Z$, such that $(a, c) = (b, c) = 1$. Then, we can rewrite the gcd as
+$ax + cy = 1$ and $bx' + cy' = 1$ respectively. Then, we have
+\begin{align*}
+    1 &= ax + cy  \\
+      &= (ax + cy) \cdot 1  \\
+      &= (ax + cy)(bx' + cy') \\
+      &= abxx' + acxy' + bcx'y + c^2yy' \\
+    1 &= ab(xx') + c(axy' + bx'y + cyy') \\
+\end{align*}
+Setting $n = xx'$ and $m = axy' + bx'y + cyy'$, we get $(ab)n + cm = 1$, so $(ab, c) = 1$.
+\end{proof}
+\newpage
+
+% Suppose $a,b,c\in\Z$, such that $a|(b+c)$ and $(b,c)=1$. Show that $(a,b)=(a,c)=1$. 
+
+\section*{Question 7}
+Let $p>3$ be prime. Prove that $p^2+2$ is not prime. [hint: If you divide $p$ by $3$, what are the possible remainders?]
+\subsection*{Response}
+\newpage
+
+\section*{Question 8}
+Let $p$ be prime. Show that if $p|a^5$, then $p|a$. 
+
+\subsection*{Response}
+\begin{proof}
+Let $p$ be prime and suppose that $p | a^5$. Rewrite $a^5 = a_1 \cdot a_2 \cdot a_3 \cdot a_4 \cdot a_5$
+where $a_1 = a_2 = a_3 = a_4 = a_5 = a$. Then, $p | a^5$ is equivalent to writing 
+$p | a_1 \cdot a_2 \cdot a_3 \cdot a_4 \cdot a_5$. By Corollary 1.2 (proven in \textbf{Question 5}),
+$p$ must divide at least one $a_i$, but since $a_i = a$ for $i \in \{1, 2, 3, 4, 5\}$, $p | a$.
+\end{proof}
+\newpage
+
+
+\end{document}
+
