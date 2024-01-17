@@ -1,0 +1,220 @@
+\documentclass{report}
+\usepackage{amsmath, amsthm, amssymb, graphicx, enumitem, esvect}
+\usepackage[english]{babel}
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+\usepackage[most]{tcolorbox}
+\usepackage[hidelinks]{hyperref}
+\usepackage{graphicx}
+
+\newenvironment{definition}[1]{\begin{tcolorbox}[title={Definition: #1}]}{\end{tcolorbox}}
+\newenvironment{aside}[1]{\begin{tcolorbox}[title={Aside: #1},colback=blue!5!white,colframe=black!75!blue]}{\end{tcolorbox}}
+
+
+\newcommand{\refto}[2]{\textbf{\ref{#1:#2} \nameref{#1:#2}}}
+\renewcommand{\bf}[1]{\textbf{{#1}}}
+\renewcommand{\tt}[1]{\texttt{{#1}}}
+\renewcommand{\it}[1]{\textit{{#1}}}
+\newcommand{\ib}[1]{\textit{\textbf{{#1}}}}
+
+\title{CS 143}
+\author{Warren Kim}
+\date{}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+\newpage
+
+\section{Purpose of a Database}
+We will be studying (mostly) Relational DataBase Management Systems (RDBMS).
+\begin{definition}{Database}
+    A \bf{database} abstracts how data is stored, maintained, and processed. It is a system that uses
+    advanced data structures to store and index data.
+\end{definition}
+A database abstracts away the data integrity and file management aspect of CRUD operations. Moreover,
+a database provides us with a single location for all of the data, even if the database itself is
+distributed.
+
+
+
+
+
+\section{Abstraction Layers}
+There are three layers of abstraction: physical, logical, and view. 
+\begin{definition}{Physical Abstraction}
+    The \bf{physical abstraction} defines the data and its relationships to other data within the 
+    database.
+\end{definition}
+\begin{definition}{Logical Abstraction}
+    The \bf{logical abstraction} deals with how we interface with the database.
+\end{definition}
+\begin{definition}{View Abstraction}
+    The \bf{view abstraction} refers to specific use cases and filters the data from the logical
+    abstraction.
+\end{definition}
+We start by learning the logical abstraction.
+
+
+
+
+
+\section{Instances and Schema}
+\begin{definition}{Schema and Instance}
+    A \bf{schema}\footnote{Note: schema can also refer to a relation (table).} is the overall design 
+    of a database. It defines the structure of the data as well as how it is organized. \vspace{10pt}
+
+    An \bf{instance} of a database is the actual set of data stored in the database at a particular 
+    moment in time. 
+\end{definition}
+
+
+
+
+
+\section{Data Models}
+Data models define how we design databases and interact with data. We want to answer the following:
+\begin{enumerate}[label=\it{(\roman*)}]
+    \item How do we define data?
+    \item How do we encode relationships among data?
+    \item How do we impose constraints on data?
+\end{enumerate}
+Data models are either an Implementation model or a Design mechanism. Implementation models build 
+databases from the ground up while design mechanisms are implemented as features in a database. We 
+discuss five major types (an several niche ones).
+
+\subsection{Relational}
+In a relational model, all data is stored as a \ib{relation}\footnote{Note: tables are an 
+implementation of relations.}. Rows represent individual $n$-tuple units (\ib{records}). Columns 
+represent (typed) \ib{attributes} common to all records in the relations.
+
+\subsection{Entity-Relationship (ER)}
+An entity-relationship model uses a collection of basic objects (\ib{entities}) and define 
+\ib{relationships} among them.
+
+\subsection{Object-Oriented}
+The object-oriented model is similar to OOP with encapsulation, methods, adn object identity. It
+was originally an implementation model but is now a design mechanism.
+
+\subsection{Document (Semi-Structured)}
+A document model stores records as \ib{documents}, which do \ib{not} have an enforced schema. This 
+allows for more versatility in the type of data stored in the database.
+
+\subsection{Network/Hierarchical/Graphical}
+A graph model is analogous to how we think. Records are stored as \ib{nodes} and relationships 
+between records as \ib{edges}.
+
+\subsection{Vector}
+A vector model stores records as \ib{vectors} in $\mathbb{R}^{n}$, and are stored in a way that 
+enables efficient retrieval and comparison (e.g. nearest neighbor[s]).
+
+\subsection{Key-Value}
+A key-value model stores data as a key-value pair (typically using a hash function). In this model,
+data typically lives in RAM as opposed to disk.
+
+\section{Database Languages}
+There are two main semantic systems when working with databases:
+\begin{enumerate}[label=\it{(\roman*)}]
+    \item Data Manipulation Language (DML)
+    \item Data Definition Language (DDL)
+\end{enumerate}
+Note that a relational model typically uses SQL for both DDL and DML.
+
+\subsection{Data Manipulation Language}
+DML's can either be procedural or declarative.
+\begin{definition}{Query}
+    A \ib{query} is a written expression to retrieve or manipulate data.
+\end{definition}
+\begin{aside}{A Note on SQL}
+    SQL is a declarative language, and as such, it is hard to perform sequential or 
+    nontrivial\footnote{Nontrivial: Any computation where we have to specify \it{how} to perform
+    the computation.} computations in SQL. To remedy this, a common option is to write an \ib{ETL job}
+    in another language (pick one). We \bf{E}xtract the data from the database (using a connection
+    driver), \bf{T}ransform the data using another lanuage (pick one!), and \bf{L}oad the data
+    into a new table using the same driver. We can schedule these jobs using something like \tt{cron}.
+\end{aside}
+
+\subsection{Data Definition Language}
+DDL's specify a schema: a collection of attribute names and data types, consistency constraints, and
+optionally storage structure and access methods. There are four types of consistency constraints:
+\begin{enumerate}[label=\it{(\roman*)}]
+    \item Domain constraints define the domain of an attribute (e.g. \tt{tinyint}, \tt{enum}, etc.).
+    \item Assertions are business rules that must hold true (e.g. an enforced prerequisite for a 
+        class must be present in your transcript before you can add a class to your study list).
+    \item Authorization determines who can do what (e.g. full CRUD, read-only, etc.).
+    \item Referential integrity ensures that links from one table to another must be defined (Suppose
+        we have two relations $R, R'$. If there is a link $f : R \to R'$, then $f$ is surjective).
+\end{enumerate}
+
+\section{Data Storage and Querying}
+\begin{definition}{Storage Manager}
+    A \ib{storage manager} that abstracts away how the data is laid out on disk.
+\end{definition}
+A storage manager is helpful because reading data from disk to RAM is \it{slow}, and the storage
+manager handles swapping\footnote{Swapping: Virtual memory in CS111!} and makes retrieval efficient.
+
+\begin{definition}{Query Manager}
+    A \ib{query manager} takes the DML statements and organize them into a 
+    \it{query plan}\footnote{Note: The query plan dictates the performance of a query.} that 
+    ``compiles'' a query (using relational algebra) and executes the instruction(s).
+\end{definition}
+
+\section{Keys}
+\begin{aside}{A Note on Context and Instance}
+    Based on \bf{context} means that the given data is a subset of the complete dataset.
+    \newline
+    Based on \bf{instance} means that we treat the given data as the complete dataset.
+\end{aside}
+
+\subsection{Superkey}
+\begin{definition}{Superkey}
+    A \bf{superkey} is a set of one or more attributes that uniquely identifies a record (tuple) and 
+    distinguishes it from all other records in the relation.\vspace{10pt}
+
+    Formally, let $R$ be a relation with a set $S = \{a_1, a_2, \ldots, a_n : a 
+    \text{ is an attribute of } R\}$. A \bf{superkey} is a subset $s \subseteq S$ such that $s$ 
+    uniquely identifies each $n$-tuple in $R$.
+\end{definition}
+Note that the superkey $s = S = \{a_1, a_2, \ldots, a_n\} = \bigcup^{n}_{i = 1} \{a_i\}$ is called the \ib{trivial superkey}. 
+Additionally, $\emptyset$ is not a superkey. Further note that for every relation $R$, there exists 
+at most $2^n - 1$ superkeys where $n$ is the number of attributes.
+
+
+\subsection{Candidate Key}
+\begin{definition}{Candidate Key}
+    A \bf{candidate key} is a superkey such that no subset of the candidate key is a superkey; i.e.
+    it is the minimal superkey. A candidate key may be null.\vspace{10pt}
+
+    Formally, let $R$ be a relation with a set $S = \{a_1, a_2, \ldots, a_n : a 
+    \text{ is an attribute of } R\}$. A \bf{candidate key} is a superkey $s \subseteq S$ such that
+    for every propery subset $t \subsetneq s$, $t$ is not a superkey.
+\end{definition}
+
+\subsection{Primary Key}
+\begin{definition}{Primary Key and Composite Key}
+    A \bf{primary key} is a candidate key (chosen by the database designer) to enforce uniqueness
+    for a particular use case. A primary key cannot be null.\vspace{10pt}
+
+    A \bf{composite key} is a candidate or primary key that is composed of one or more attributes.
+\end{definition}
+
+\subsection{Foreign Key}
+\begin{definition}{Foreign Key}
+    A \bf{foreign key} is a set of attributes that links tuples of two relations.\vspace{10pt}
+
+    Formally, let $R, R'$ be relations with sets $S = \{a_1, a_2, \ldots, a_n : a 
+        \text{ is an attribute of } R\}, S' = \{a'_1, a'_2, \ldots, a'_n : a' \text{ is an attribute of }
+    R'\}$. A \bf{foreign key} is a key $s \subseteq S$ of $R$ that maps to the primary key 
+    $p \subseteq S'$ of $R'$.
+\end{definition}
+Foreign keys are used to enforce referential integrity constraints; i.e. a foreign keys in a 
+relation $R$ are used to protect data in $R$ from being orphaned and/or inconsistent.
+
+
+
+
+
+
+
+
+\end{document}
