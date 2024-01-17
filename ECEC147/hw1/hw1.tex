@@ -1,0 +1,73 @@
+\documentclass [12pt] {article}
+
+
+\newtheorem{exercise}{Exercise}[section]
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{problem}{Problem}
+\newtheorem{solution}{Solution}
+\newtheorem{cor}{Corollary}[section]
+\newtheorem{prop}{Proposition}[section]
+\newtheorem{rmk}{Remark}[section]
+\newtheorem{conj}{Conjecture}[section]
+\usepackage{amsfonts}      
+\usepackage{amsmath}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage[margin=1in]{geometry}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\QT}{\bf{Q$^{\bf{T}}$}}
+\newcommand{\QI}{\bf{Q$^{\bf{-1}}$}}
+\newcommand{\QQ}{\bf{Q}}
+\newenvironment{proof}{\paragraph{Proof:}}{\hfill$\square$}
+\setlength\parindent{0pt}
+\usepackage{enumitem}
+
+\renewcommand{\it}[1]{\textit{{#1}}}
+\renewcommand{\bf}[1]{\textbf{{#1}}}
+\renewcommand{\tt}[1]{\texttt{{#1}}}
+
+\newcommand{\ib}[1]{\it{\bf{{#1}}}}
+
+
+
+
+\begin{document}
+\begin{enumerate}
+    \item \bf{Linear algebra refresher.}
+        \begin{enumerate}
+            \item Let \QQ {} be a real orthogonal matrix.
+                \begin{enumerate}
+                    \item If \QQ {} is orthogonal, then $\QQ \QT = \QT \QQ = \bf{I}$. Consider \QT. We
+                        want to show \[\QT \left(\QT\right)^{\bf{T}} = \bf{I}\]
+                        Recall that $\left(\QT\right)^{\bf{T}} = \QQ$. Then substituting 
+                        $\left(\QT\right)^{\bf{T}}$ with $\QQ$, we get 
+                        \[\QT \QQ = \QQ \QT = \bf{I}\]
+                        Note that if \QQ {} is orthogonal, then $\QT = \QI$. Then, since $\QT$ is 
+                        orthogonal, $\QI$ is orthogonal.
+                    \item 
+                        \begin{align*}
+                            \QQ \bf{x} &= \lambda \bf{x} \\
+                            \QT \QQ \bf{x} &= \QT \lambda \bf{x} \\
+                            \bf{Ix} &= \QT \lambda \bf{x} \\
+                            \bf{x} &= \QT \lambda \bf{x} \\
+                            \bf{x}^* \QQ \bf{x} &= \bf{x}^* \lambda \bf{x} \\
+                                                &= \lambda \bf{x}^* \bf{x} \\
+                                                &= \lambda \|\bf{x}\|^2 \\
+                                                &= 
+                        \end{align*}
+                    % \item To show that \QQ {} has eigenvalues with norm 1, we consider the norm function
+                    %     defined as $\sqrt{\text{trace}(\QT \QQ)}$. Then, from before, $\QT \QQ = \bf{I}$
+                    %     so we have 
+                    %     \[\sqrt{\text{trace}(\QT \QQ)} = \sqrt{\text{trace}(\bf{I})} = \sqrt{n}\]
+                    %     where $n$ is the dimension of \QQ.
+                \end{enumerate}
+        \end{enumerate}
+\end{enumerate}
+\end{document}
