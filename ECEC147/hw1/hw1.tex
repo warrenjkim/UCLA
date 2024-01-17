@@ -1,6 +1,4 @@
 \documentclass [12pt] {article}
-
-
 \newtheorem{exercise}{Exercise}[section]
 \newtheorem{definition}{Definition}[section]
 \newtheorem{theorem}{Theorem}[section]
@@ -22,9 +20,6 @@
 \newcommand{\C}{\mathbb{C}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\Q}{\mathbb{Q}}
-\newcommand{\QT}{\bf{Q$^{\bf{T}}$}}
-\newcommand{\QI}{\bf{Q$^{\bf{-1}}$}}
-\newcommand{\QQ}{\bf{Q}}
 \newenvironment{proof}{\paragraph{Proof:}}{\hfill$\square$}
 \setlength\parindent{0pt}
 \usepackage{enumitem}
@@ -42,31 +37,67 @@
 \begin{enumerate}
     \item \bf{Linear algebra refresher.}
         \begin{enumerate}
-            \item Let \QQ {} be a real orthogonal matrix.
+            \item 
+                \newcommand{\QT}{\bf{Q$^{\bf{T}}$}}
+                \newcommand{\QI}{\bf{Q$^{\bf{-1}}$}}
+                \newcommand{\QQ}{\bf{Q}}
+                Let \QQ {} be a real orthogonal matrix.
                 \begin{enumerate}
-                    \item If \QQ {} is orthogonal, then $\QQ \QT = \QT \QQ = \bf{I}$. Consider \QT. We
+                    \item To show that \QT {} and \QI {} are also orthogonal, suppose \QQ {} is 
+                        orthogonal. Then $\QQ \QT = \QT \QQ = \bf{I}$. Consider \QT. We
                         want to show \[\QT \left(\QT\right)^{\bf{T}} = \bf{I}\]
                         Recall that $\left(\QT\right)^{\bf{T}} = \QQ$. Then substituting 
                         $\left(\QT\right)^{\bf{T}}$ with $\QQ$, we get 
                         \[\QT \QQ = \QQ \QT = \bf{I}\]
                         Note that if \QQ {} is orthogonal, then $\QT = \QI$. Then, since $\QT$ is 
                         orthogonal, $\QI$ is orthogonal.
-                    \item 
+
+                    \item To show that \QQ {} has eigenvalues with norm 1, consider
+                        \newcommand{\x}{\bf{x}}
+                        \newcommand{\T}{\bf{T}}
                         \begin{align*}
-                            \QQ \bf{x} &= \lambda \bf{x} \\
-                            \QT \QQ \bf{x} &= \QT \lambda \bf{x} \\
-                            \bf{Ix} &= \QT \lambda \bf{x} \\
-                            \bf{x} &= \QT \lambda \bf{x} \\
-                            \bf{x}^* \QQ \bf{x} &= \bf{x}^* \lambda \bf{x} \\
-                                                &= \lambda \bf{x}^* \bf{x} \\
-                                                &= \lambda \|\bf{x}\|^2 \\
-                                                &= 
+                            \QQ \x &= \lambda \x \\
+                            \left( \QQ \x \right)^{\T} \QQ \x &= \left( \QQ \x \right)^{\T} \lambda \x \\
+                            \x^{\T} \QQ^{\T} \QQ \x &= \left( \lambda \x \right)^{\T} \lambda \x && \QQ \x = \lambda \x \\
+                            \x^{\T} \bf{I} \x &= \lambda^2 \x^{\T} \x && \text{\QQ {} is orthogonal} \\
+                            \x^{\T} \x &= \lambda^2 \x^{\T} \x && \x^{\T} \x = \|\x\|^2 \\
+                            \|\x\|^2 &= \lambda^2 \|\x\|^2 \\
+                            \lambda^2 &= 1
                         \end{align*}
-                    % \item To show that \QQ {} has eigenvalues with norm 1, we consider the norm function
-                    %     defined as $\sqrt{\text{trace}(\QT \QQ)}$. Then, from before, $\QT \QQ = \bf{I}$
-                    %     so we have 
-                    %     \[\sqrt{\text{trace}(\QT \QQ)} = \sqrt{\text{trace}(\bf{I})} = \sqrt{n}\]
-                    %     where $n$ is the dimension of \QQ.
+                        This implies that $|\lambda| = 1$.
+
+                    \item To show that the determinant of \QQ {} is $\pm 1$, we have that
+                        $\QQ \QT = \bf{I}$. Taking the determinant of both sides, we get
+                        \[\det \left( \QQ \QT \right) = \det \left( \QQ \right) \cdot 
+                        \det \left( \QT \right) = \det \left( \bf{I} \right)\]
+                        Since $\det \left( \bf{I} \right) = 1$, we have
+                        $\det \left( \QQ \right) \cdot \det \left( \QT \right) = 1$. Recall that
+                        $\det \left( \QQ \right) = \det \left( \QT \right)$, so
+                        $\left[\det \left( \QQ \right)\right]^2 = 1 \to \det \left( \QQ \right) = \pm 1$.
+
+                    \item To show that \QQ {} defines a length preserving transformation, consider
+                        a linear transformation $T : \R^n \to \R^n$. By assumption, \QQ {} is an
+                        orthogonal matrix, so $\QQ \QT = \QT \QQ = \bf{I}$. We can represent
+                        the linear transformation $T$ by \QQ, so $T \x = \QQ \x$. Then, taking the
+                        norm of both sides, we get
+                        \begin{align*}
+                            \|T \x\|^2 &= \|\QQ \x\|^2 \\
+                                       &= \left( \QQ \x \right)^{\T} \QQ \x \\
+                                       &= \x^{\T} \QT  \QQ \x \\ 
+                                       &= \x^{\T} \bf{I} \x && \text{\QQ {} is orthogonal} \\ 
+                                       &= \x^{\T} \x \\ 
+                            \|T \x\|^2 &= \|\x\|^2 && \x^{\T} \x = \|\x\|^2 \\
+                        \end{align*}
+                        Taking the square root of both sides, we get $\|T \x\| = \|\x\|$, so \QQ {}
+                        is a length preserving transformation.
+                \end{enumerate}
+                
+            \item
+                \newcommand{\A}{\bf{A}}
+                \newcommand{\AT}{\bf{A}$^T$}
+                Let \A {} be a matrix.
+                \begin{enumerate}
+                    \item 
                 \end{enumerate}
         \end{enumerate}
 \end{enumerate}
