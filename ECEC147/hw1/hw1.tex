@@ -20,6 +20,8 @@
 \newcommand{\C}{\mathbb{C}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\Q}{\mathbb{Q}}
+\newcommand{\T}{\bf{T}}
+\newcommand{\x}{\bf{x}}
 \newenvironment{proof}{\paragraph{Proof:}}{\hfill$\square$}
 \setlength\parindent{0pt}
 \usepackage{enumitem}
@@ -41,63 +43,140 @@
                 \newcommand{\QT}{\bf{Q$^{\bf{T}}$}}
                 \newcommand{\QI}{\bf{Q$^{\bf{-1}}$}}
                 \newcommand{\QQ}{\bf{Q}}
-                Let \QQ {} be a real orthogonal matrix.
+                Let $\QQ$ be a real orthogonal matrix.
                 \begin{enumerate}
-                    \item To show that \QT {} and \QI {} are also orthogonal, suppose \QQ {} is 
-                        orthogonal. Then $\QQ \QT = \QT \QQ = \bf{I}$. Consider \QT. We
-                        want to show \[\QT \left(\QT\right)^{\bf{T}} = \bf{I}\]
-                        Recall that $\left(\QT\right)^{\bf{T}} = \QQ$. Then substituting 
-                        $\left(\QT\right)^{\bf{T}}$ with $\QQ$, we get 
-                        \[\QT \QQ = \QQ \QT = \bf{I}\]
-                        Note that if \QQ {} is orthogonal, then $\QT = \QI$. Then, since $\QT$ is 
+                    \item To show that $\QT$ and \QI {} are also orthogonal, suppose $\QQ$ is 
+                        orthogonal. Then $\QQ \QT = \QT \QQ = \bf{I}$. Consider \QT. 
+                        Recall that $\left(\QT\right)^{\bf{T}} = \QQ$. Then,
+                        \[\QT \left( \QT \right)^{\T} = \QT \QQ = \bf{I} = \QQ \QT = \left( \QT \right)^{\T} \QT\]
+                        Note that if $\QQ$ is orthogonal, then $\QT = \QI$. Then, since $\QT$ is 
                         orthogonal, $\QI$ is orthogonal.
 
-                    \item To show that \QQ {} has eigenvalues with norm 1, consider
-                        \newcommand{\x}{\bf{x}}
-                        \newcommand{\T}{\bf{T}}
+                    \item To show that $\QQ$ has eigenvalues with norm 1, consider
                         \begin{align*}
                             \QQ \x &= \lambda \x \\
                             \left( \QQ \x \right)^{\T} \QQ \x &= \left( \QQ \x \right)^{\T} \lambda \x \\
                             \x^{\T} \QQ^{\T} \QQ \x &= \left( \lambda \x \right)^{\T} \lambda \x && \QQ \x = \lambda \x \\
-                            \x^{\T} \bf{I} \x &= \lambda^2 \x^{\T} \x && \text{\QQ {} is orthogonal} \\
+                            \x^{\T} \bf{I} \x &= \x^{\T} \lambda \lambda \x && \text{$\QQ$ is orthogonal} \\
                             \x^{\T} \x &= \lambda^2 \x^{\T} \x && \x^{\T} \x = \|\x\|^2 \\
                             \|\x\|^2 &= \lambda^2 \|\x\|^2 \\
                             \lambda^2 &= 1
                         \end{align*}
                         This implies that $|\lambda| = 1$.
 
-                    \item To show that the determinant of \QQ {} is $\pm 1$, we have that
-                        $\QQ \QT = \bf{I}$. Taking the determinant of both sides, we get
+                    \item To show that the determinant of $\QQ$ is $\pm 1$, recall that $\Q$ is 
+                        orthogonal, so we have that $\QQ \QT = \bf{I}$. Taking the determinant of 
+                        both sides, we get
                         \[\det \left( \QQ \QT \right) = \det \left( \QQ \right) \cdot 
                         \det \left( \QT \right) = \det \left( \bf{I} \right)\]
                         Since $\det \left( \bf{I} \right) = 1$, we have
-                        $\det \left( \QQ \right) \cdot \det \left( \QT \right) = 1$. Recall that
-                        $\det \left( \QQ \right) = \det \left( \QT \right)$, so
-                        $\left[\det \left( \QQ \right)\right]^2 = 1 \to \det \left( \QQ \right) = \pm 1$.
+                        $\det \left( \QQ \right) \cdot \det \left( \QT \right) = 1$. Because $\Q$
+                        is orthogonal, $\det \left( \QQ \right) = \det \left( \QT \right)$, so
+                        $\left[ \det \left( \QQ \right) \right]^2 = 1 \to \det \left( \QQ \right) = \pm 1$.
 
-                    \item To show that \QQ {} defines a length preserving transformation, consider
-                        a linear transformation $T : \R^n \to \R^n$. By assumption, \QQ {} is an
+                    \item To show that $\QQ$ defines a length preserving transformation, consider
+                        a linear transformation $T : \R^n \to \R^n$. By assumption, $\QQ$ is an
                         orthogonal matrix, so $\QQ \QT = \QT \QQ = \bf{I}$. We can represent
-                        the linear transformation $T$ by \QQ, so $T \x = \QQ \x$. Then, taking the
-                        norm of both sides, we get
+                        the linear transformation $T$ by \QQ, so write $T \x = \QQ \x$. Then, 
+                        taking the norm of both sides, we get
                         \begin{align*}
                             \|T \x\|^2 &= \|\QQ \x\|^2 \\
                                        &= \left( \QQ \x \right)^{\T} \QQ \x \\
                                        &= \x^{\T} \QT  \QQ \x \\ 
-                                       &= \x^{\T} \bf{I} \x && \text{\QQ {} is orthogonal} \\ 
+                                       &= \x^{\T} \bf{I} \x && \text{$\QQ$ is orthogonal} \\ 
                                        &= \x^{\T} \x \\ 
                             \|T \x\|^2 &= \|\x\|^2 && \x^{\T} \x = \|\x\|^2 \\
                         \end{align*}
-                        Taking the square root of both sides, we get $\|T \x\| = \|\x\|$, so \QQ {}
+                        Taking the square root of both sides, we get $\|T \x\| = \|\x\|$, so $\QQ$
                         is a length preserving transformation.
                 \end{enumerate}
                 
             \item
                 \newcommand{\A}{\bf{A}}
-                \newcommand{\AT}{\bf{A}$^T$}
-                Let \A {} be a matrix.
+                \newcommand{\U}{\bf{U}}
+                \newcommand{\V}{\bf{V}}
+                \newcommand{\AT}{\bf{A$^{\T}$}}
+                Let $\A$ be a matrix.
                 \begin{enumerate}
-                    \item 
+                    \item Recall that the singular value decomposition of a matrix 
+                        $\A \in \R^{m \times n}$ is $\A = \U \Sigma \V^{\T}$, where 
+                        $\U \in \R^{m \times m}, \Sigma \in \R^{m \times n}, \V \in \R^{n \times n}$. 
+                        Then, we can write $\A \AT \in \R^{m \times m}$ as
+                        \begin{align*}
+                            \A \AT &= \left( \U \Sigma \V^{\T} \right) \left( \U \Sigma \V^{\T} \right)^{\T} \\
+                                   &= \U \Sigma \V^{\T} \left( \V^{\T} \right)^{\T} \Sigma^{\T} \U^{\T} \\
+                                   &= \U \Sigma \V^{\T} \V \Sigma^{\T} \U^{\T} \\
+                                   &= \U \Sigma \bf{I} \Sigma^{\T} \U^{\T} && \V \text{ is orthogonal} \\
+                                   &= \U \Sigma \Sigma^{\T} \U^{\T} \\
+                                   &= \U \Sigma^2 \U^{\T} && \Sigma \text{ is diagonal} \\
+                        \end{align*}
+                        Since $\U$ is orthogonal, we have $\U^{\T} = \U^{-1}$. So,
+                        $\A \AT = \U \Sigma^2 \U^{\T}$, where $\U$ are the eigenvectors of 
+                        \A \AT. Then, the left singular vectors of $\A$ are the eigenvectors of 
+                        \A \AT. \vspace{10pt}
+
+                        Similarly, we can write $\AT \A \in \R^{n \times n}$ as
+                        \begin{align*}
+                            \AT \A &= \left( \U \Sigma \V^{\T} \right)^{\T} \left( \U \Sigma \V^{\T} \right) \\
+                                   &= \left( \V^{\T} \right)^{\T} \Sigma^{\T} \U^{\T} \U \Sigma \V^{\T} \\
+                                   &= \V \Sigma^{\T} \U^{\T} \U \Sigma \V ^{\T} \\
+                                   &= \V \Sigma^{\T} \bf{I} \Sigma \V ^{\T} && \U \text{ is orthogonal} \\
+                                   &= \V \Sigma^2 \V ^{\T} && \Sigma \text{ is diagonal} \\
+                        \end{align*}
+                        Since $\V$ is orthogonal, we have $\V^{\T} = \V^{-1}$. So,
+                        $\AT \A = \V \Sigma^2 \V^{\T}$, where $\V$ are the eigenvectors of 
+                        \AT \A. Then, the right singular vectors of $\A$ are the eigenvectors of 
+                        \AT \A.
+                    \item From the above part, we have that $\A \AT = \U \Sigma^2 \U^{\T}$ and
+                        $\AT \A = \V \Sigma^2 \V^{\T}$. Then, the singular values of $\A$ are 
+                        the square root of the eigenvalues of $\A \AT$ and $\AT \A$.
+                \end{enumerate}
+            \item True or False.
+                \begin{enumerate}
+                    \item Every linear operator in an $n$-dimensional vector space has $n$ distinct 
+                        eigenvalues. \vspace{10pt}
+
+                        \bf{Response:} False. Every linear operator in an $n$-dimensional 
+                        vector space has \ib{at most} $n$ distinct eigenvalues.
+
+                    \item A non-zero sum of two eigenvectors of a matrix $\A$ is an eigenvector. \vspace{10pt}
+
+                        \bf{Response:} Consider two eigenvectors $\bf{x}, \bf{y}$ of a matrix
+                        $\A \in \R^2$. There are two cases:
+                        \begin{enumerate}[label=\textit{Case \arabic*:},leftmargin=*]
+                            \item If $\bf{x}, \bf{y}$ correspond to the same eigenvalue $\lambda$, 
+                                the statement is True since 
+                                $\A(\bf{x} + \bf{y}) = \A \bf{x} + \A \bf{y} = \lambda \bf{x} + \lambda \bf{y} = \lambda(\bf{x} + \bf{y})$
+                            \item If $\bf{x}, \bf{y}$ correspond to unique eigenvalues 
+                                $\lambda_{\bf{x}}, \lambda_{\bf{y}}$, the statement is False since
+                                $\A(\bf{x} + \bf{y}) = \A \bf{x} + \A \bf{y} = \lambda_{\bf{x}} \bf{x} + \lambda_{\bf{y}} \bf{y} \neq \lambda(\bf{x} + \bf{y})$
+                        \end{enumerate}
+
+                    \item If a matrix $\A$ has the positive semidefinite property, i.e., 
+                        $\x^{\T} \A \x \geq 0$ for all $\x$, then its eigenvalues must be
+                        non-negative. \vspace{10pt}
+
+                        \bf{Response:} True. Suppose a matrix $\A$ has the positive semidefinite
+                        property; i.e. $\x^{\T} \A \x \geq 0$ for all $\x$. Consider an arbirtrary
+                        eigenvalue $\lambda$ of $\A$. Then, $\A \x = \lambda \x$ for some eigenvector
+                        $\x$. Multiplying both sides by $\x^{\T}$, we get 
+                        \[0 \leq \x^{\T} \A \x = \x^{\T} \lambda \x = \lambda \x^{\T} \x\]
+                        and since $\x^{\T}x = \|\x\|^2 > 0$ for every $\x$, $\lambda$ is non-negative.
+
+                    \item The rank of a matrix can exceed the number of distinct non-zero 
+                        eigenvalues. \vspace{10pt}
+
+                        \bf{Response:} True. Consider a matrix $\A$ with $\text{rank}(A) = 2$ and 
+                        an eigenvalue $\lambda$ with algebraic multiplicity $2$. Then, the rank of
+                        the matrix exceeds the number of distinct non-zero eigenvalues.
+
+                    \item A non-zero sum of two eigenvectors of a matrix $\A$ corresponding to the
+                        same eigenvalue $\lambda$ is always an eigenvector. \vspace{10pt}
+
+                        \bf{Response:} True. Consider two eigenvectors $\bf{x}, \bf{y}$ of a matrix
+                        $\A$ and suppose $\bf{x}, \bf{y}$ correspond to the same eigenvalue $\lambda$. 
+                        Then
+                        \[\A(\bf{x} + \bf{y}) = \A \bf{x} + \A \bf{y} = \lambda \bf{x} + \lambda \bf{y} = \lambda(\bf{x} + \bf{y})\]
                 \end{enumerate}
         \end{enumerate}
 \end{enumerate}
