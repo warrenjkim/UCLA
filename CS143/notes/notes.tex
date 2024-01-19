@@ -5,16 +5,18 @@
 \usepackage[most]{tcolorbox}
 \usepackage[hidelinks]{hyperref}
 \usepackage{graphicx}
+\usepackage{nicefrac}
 
 \newenvironment{definition}[1]{\begin{tcolorbox}[title={Definition: #1}]}{\end{tcolorbox}}
 \newenvironment{aside}[1]{\begin{tcolorbox}[title={Aside: #1},colback=blue!5!white,colframe=black!75!blue]}{\end{tcolorbox}}
 
 
-\newcommand{\refto}[2]{\textbf{\ref{#1:#2} \nameref{#1:#2}}}
+% \newcommand{\refto}[2]{\textbf{\ref{#1:#2} \nameref{#1:#2}}}
 \renewcommand{\bf}[1]{\textbf{{#1}}}
 \renewcommand{\tt}[1]{\texttt{{#1}}}
 \renewcommand{\it}[1]{\textit{{#1}}}
 \newcommand{\ib}[1]{\textit{\textbf{{#1}}}}
+\newcommand{\R}{\mathbb{R}}
 
 \title{CS 143}
 \author{Warren Kim}
@@ -175,28 +177,32 @@ manager handles swapping\footnote{Swapping: Virtual memory in CS111!} and makes 
     \text{ is an attribute of } R\}$. A \bf{superkey} is a subset $s \subseteq S$ such that $s$ 
     uniquely identifies each $n$-tuple in $R$.
 \end{definition}
-Note that the superkey $s = S = \{a_1, a_2, \ldots, a_n\} = \bigcup^{n}_{i = 1} \{a_i\}$ is called the \ib{trivial superkey}. 
-Additionally, $\emptyset$ is not a superkey. Further note that for every relation $R$, there exists 
-at most $2^n - 1$ superkeys where $n$ is the number of attributes.
+The superkey $s = S = \{a_1, a_2, \ldots, a_n\} = \bigcup^{n}_{i = 1} \{a_i\}$ is called the 
+\ib{trivial superkey}. Additionally, $\emptyset$ is not a superkey. Further note that for every 
+relation $R$, there exists at most $2^n - 1$ superkeys where $n$ is the number of 
+attributes.
 
 
 \subsection{Candidate Key}
 \begin{definition}{Candidate Key}
     A \bf{candidate key} is a superkey such that no subset of the candidate key is a superkey; i.e.
-    it is the minimal superkey. A candidate key may be null.\vspace{10pt}
+    it is the minimal superkey. \vspace{10pt}
 
     Formally, let $R$ be a relation with a set $S = \{a_1, a_2, \ldots, a_n : a 
     \text{ is an attribute of } R\}$. A \bf{candidate key} is a superkey $s \subseteq S$ such that
     for every propery subset $t \subsetneq s$, $t$ is not a superkey.
 \end{definition}
+Candidate keys may vary in length, and the attributes of a candiate key may be \tt{NULL} as long as
+it uniquely identifies an $n$-tuple in the relation.
+
 
 \subsection{Primary Key}
 \begin{definition}{Primary Key and Composite Key}
     A \bf{primary key} is a candidate key (chosen by the database designer) to enforce uniqueness
-    for a particular use case. A primary key cannot be null.\vspace{10pt}
-
-    A \bf{composite key} is a candidate or primary key that is composed of one or more attributes.
+    for a particular use case.
 \end{definition}
+The primary key is typically chosen to be the minimal candidate key for simplicity. The attributes
+of a primary key may not be \tt{NULL}. 
 
 \subsection{Foreign Key}
 \begin{definition}{Foreign Key}
@@ -207,8 +213,80 @@ at most $2^n - 1$ superkeys where $n$ is the number of attributes.
     R'\}$. A \bf{foreign key} is a key $s \subseteq S$ of $R$ that maps to the primary key 
     $p \subseteq S'$ of $R'$.
 \end{definition}
-Foreign keys are used to enforce referential integrity constraints; i.e. a foreign keys in a 
-relation $R$ are used to protect data in $R$ from being orphaned and/or inconsistent.
+Foreign keys are used to enforce referential integrity constraints; i.e. foreign keys in a 
+relation $R$ are used to protect data in $R$ from being orphaned and/or inconsistent. Given two
+relations $R, R'$ related via a foreign key, $R'$ is said to be the \it{referring} relation and 
+$R$ the \it{referred} relation.
+
+Let two relations $R, S$ be related via a foreign key, where $S$ is the \it{referring} relation
+and $R$ is the \it{referred} relation. Suppose we want to remove an $n$-tuple $r \in R$. Then there
+are two cases:
+\begin{enumerate}[label=\textit{Case \arabic*}]
+    \item If there is no $s \in S$ such that $s \mapsto r$, we simply remove $r$.
+    \item If there is at least one $s \in S$ such that $s \mapsto r$, we can either throw an error
+        to prevent the deletion of $r$ or \it{cascade}\footnote{Cascade: Delete $r$ and all 
+        $s \in S$ that refer to $r$.} the delete.
+\end{enumerate}
+
+
+
+
+
+\section{Defining a Schema}
+A schema can be written as \tt{relation(\underline{attribute$_{\tt{1}}$}, \tt{$\ldots$}, 
+attribute$_{\tt{n}}$}) where underlined attributes represent the primary key.
+
+
+
+
+
+\section{Relational Algebra}
+describe relational algebra
+
+\subsection{Selection}
+\begin{definition}{Selection}
+    \bf{Selection} retrieves a subset of tuples from a \it{single} relation $R$ that satisfies some
+    predicate $\psi$ and returns a new relation $R' \subseteq R$, and is defined by
+    \[\sigma_{\psi}(R) = R' = \{ t \in R : \psi(t) \}\]
+    where $\psi$ is a boolean predicate on attributes and values with respect to a unary or binary 
+    operator\footnote{We may use the following operators: $\{=, \neq, <, >, \leq, \geq, \lnot \}$.}
+\end{definition}
+We can build complex predicates using conjunction $\land$ (and) or disjunction $\lor$ (or). 
+\begin{center}\bf{Note: that selection $\sigma$ is implemented as \tt{WHERE} in SQL.} \end{center}
+Below are a list of examples of selection, assuming all attributes and relations are well-defined:
+\begin{enumerate}[label=\textit{(\roman*)}]
+    \item $\sigma_{(\tt{dislikes} < \tt{likes})}(\tt{youtube\_video})$
+    \item $\sigma_{(\tt{cat\_id} = 17)}(\tt{youtube\_video})$
+    \item $\sigma_{([\tt{dislikes} < \tt{likes}] \land [\tt{views} > 1000000] \land [\tt{cat\_id=24}])}(\tt{youtube\_video})$
+    \item $\sigma_{(\tt{dislikes} < \tt{likes})}(\sigma_{(\tt{views} > 1000000)}(\sigma_{(\tt{cat\_id} = 24)}(\tt{youtube\_videos})))$
+\end{enumerate}
+Note that \it{(iii)} and \it{(iv)} are equivalent.
+
+\subsection{Projection}
+\begin{definition}{Projection}
+    \bf{Projection} extracts attributes from a set of tuples and removes duplicates. Given a 
+    relation $R$, $n$-tuple $t$, and a set of attributes $a_1, \cdots, a_n$,
+    \[\Pi_{a_1, \cdots, a_n}(R) = \{ t[a_1, \cdots, a_n] : t \in R \}\]
+    Projection is usually the last (outermost) operation done on a relation.
+\end{definition}
+\begin{aside}{Projection?}
+    We call it a projection because we are collapsing an $n$-tuple down to an $(n - k)$-tuple. That
+    is, we take the $n$-tuples in a relation $R_n$ and collapse them into a set of $(n-k)$-tuples 
+    in a new relation $R'_{n - k}$. \footnotetext{Here, $R_n$ is a relation with $n$ attributes.}
+\end{aside}
+
+
+% Consider the following relation $R$:
+% \begin{center}
+%     \begin{tabular}{c|c|c}
+%         A & B & C \\
+%         \hline
+%         $\alpha$ & $\delta$ & $\xi$ \\
+%         $\beta$ & $\delta$ & $\psi$ \\
+%         $\gamma$ & $\eta$ & $\xi$
+%     \end{tabular}
+% \end{center}
+
 
 
 
