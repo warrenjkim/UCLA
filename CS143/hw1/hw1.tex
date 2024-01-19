@@ -123,15 +123,16 @@ this relation is Facility ($A$).
         be unique by the problem statement (EmployeeID is always used by only one employee at a time 
         and is retired (never re-used) after an employee leaves the department).
 
-
     \item Suppose an analyst decides to choose both \tt{EmployeeID} and \tt{UID} 
         as a composite primary key for \tt{Employee} since both are unique. Explain why 
         this is not correct. \bf{Hint:} Think about what this might imply about each 
         attribute in the primary key and what data integrity issues can arise. \vspace{2pt}
 
-        \bf{Response:} This is not correct because the primary key is supposed to be a candidate key, 
-        but since EmployeeID and UID are candidate keys by by themselves, the provided composite 
-        primary key is, by definition, not a candidate key and therefore not a valid primary key. 
+        \bf{Response:} If either EmployeeID or UID change for any reason, we would have to update
+        all relations that use the composite key as a foreign key, increasing the risk of errors. 
+        This makes maintaining consistency across all relations more complex. If at least one of
+        the relations' foreign keys (that link to the composite key) are not updated properly, we 
+        break referential integrity.
 
     \item Identify all foreign keys in context of the problem (assume that all tables have more 
         rows). How do these foreign keys help us ensure referential integrity in this context? Note 
