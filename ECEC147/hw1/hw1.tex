@@ -1,4 +1,4 @@
-\documentclass [12pt] {article}
+\documentclass [11pt] {article}
 \newtheorem{exercise}{Exercise}[section]
 \newtheorem{definition}{Definition}[section]
 \newtheorem{theorem}{Theorem}[section]
@@ -22,10 +22,23 @@
 \newcommand{\Q}{\mathbb{Q}}
 \newcommand{\T}{\bf{T}}
 \newcommand{\x}{\bf{x}}
-\newenvironment{proof}{\paragraph{Proof:}}{\hfill$\square$}
+\newcommand{\y}{\bf{y}}
+\newcommand{\A}{\bf{A}}
+\newcommand{\B}{\bf{B}}
+\newcommand{\U}{\bf{U}}
+\newcommand{\V}{\bf{V}}
+\newcommand{\W}{\bf{W}}
+\newcommand{\AT}{\bf{A$^{\T}$}}
+\newcommand{\QT}{\bf{Q$^{\bf{T}}$}}
+\newcommand{\QI}{\bf{Q$^{\bf{-1}}$}}
+\newcommand{\QQ}{\bf{Q}}
+\newenvironment{proof}{\vspace{-10pt}\paragraph{Proof:}}{\hfill$\square$}
+\newenvironment{response}{\vspace{-10pt}\paragraph{Response:}}{}
 \setlength\parindent{0pt}
-\usepackage{enumitem}
-
+\usepackage{stackengine}
+\usepackage{mathtools}
+\usepackage{tabularx}
+\DeclareMathOperator{\tr}{tr}
 \renewcommand{\it}[1]{\textit{{#1}}}
 \renewcommand{\bf}[1]{\textbf{{#1}}}
 \renewcommand{\tt}[1]{\texttt{{#1}}}
@@ -40,144 +53,334 @@
     \item \bf{Linear algebra refresher.}
         \begin{enumerate}
             \item 
-                \newcommand{\QT}{\bf{Q$^{\bf{T}}$}}
-                \newcommand{\QI}{\bf{Q$^{\bf{-1}}$}}
-                \newcommand{\QQ}{\bf{Q}}
                 Let $\QQ$ be a real orthogonal matrix.
-                \begin{enumerate}
-                    \item To show that $\QT$ and \QI {} are also orthogonal, suppose $\QQ$ is 
-                        orthogonal. Then $\QQ \QT = \QT \QQ = \bf{I}$. Consider \QT. 
-                        Recall that $\left(\QT\right)^{\bf{T}} = \QQ$. Then,
-                        \[\QT \left( \QT \right)^{\T} = \QT \QQ = \bf{I} = \QQ \QT = \left( \QT \right)^{\T} \QT\]
-                        Note that if $\QQ$ is orthogonal, then $\QT = \QI$. Then, since $\QT$ is 
-                        orthogonal, $\QI$ is orthogonal.
+                \begin{enumerate}[itemsep=10pt]
+                    \item Show that $\QT$ and $\QI$ are also orthogonal.
+                        \begin{proof}
+                            To show that $\QT$ and $\QI$ are also orthogonal, suppose $\QQ$ is 
+                            orthogonal. Then $\QQ \QT = \QT \QQ = \bf{I}$. Consider \QT. 
+                            Recall that $\left(\QT\right)^{\bf{T}} = \QQ$. Then,
+                            \[\QT \left( \QT \right)^{\T} = \QT \QQ = \bf{I} = \QQ \QT = \left( \QT \right)^{\T} \QT\]
+                            Note that if $\QQ$ is orthogonal, then $\QT = \QI$. Then, since $\QT$ is 
+                            orthogonal, $\QI$ is orthogonal.
+                        \end{proof}
 
-                    \item To show that $\QQ$ has eigenvalues with norm 1, consider
-                        \begin{align*}
-                            \QQ \x &= \lambda \x \\
-                            \left( \QQ \x \right)^{\T} \QQ \x &= \left( \QQ \x \right)^{\T} \lambda \x \\
-                            \x^{\T} \QQ^{\T} \QQ \x &= \left( \lambda \x \right)^{\T} \lambda \x && \QQ \x = \lambda \x \\
-                            \x^{\T} \bf{I} \x &= \x^{\T} \lambda \lambda \x && \text{$\QQ$ is orthogonal} \\
-                            \x^{\T} \x &= \lambda^2 \x^{\T} \x && \x^{\T} \x = \|\x\|^2 \\
-                            \|\x\|^2 &= \lambda^2 \|\x\|^2 \\
-                            \lambda^2 &= 1
-                        \end{align*}
-                        This implies that $|\lambda| = 1$.
+                    \item Show that $\QQ$ has eigenvalues with norm 1.
+                        \begin{proof}
+                            To show that $\QQ$ has eigenvalues with norm 1, consider
+                            \begin{align*}
+                                \QQ \x &= \lambda \x \\
+                                \left( \QQ \x \right)^{\T} \QQ \x &= \left( \QQ \x \right)^{\T} \lambda \x \\
+                                \x^{\T} \QQ^{\T} \QQ \x &= \left( \lambda \x \right)^{\T} \lambda \x && \QQ \x = \lambda \x \\
+                                \x^{\T} \bf{I} \x &= \x^{\T} \lambda \lambda \x && \text{$\QQ$ is orthogonal} \\
+                                \x^{\T} \x &= \lambda^2 \x^{\T} \x \\
+                                \|\x\|^2 &= \lambda^2 \|\x\|^2 && \x^{\T} \x = \|\x\|^2 \\
+                                \lambda^2 &= 1
+                            \end{align*}
+                            This implies that $|\lambda| = 1$.
+                        \end{proof}
 
-                    \item To show that the determinant of $\QQ$ is $\pm 1$, recall that $\Q$ is 
-                        orthogonal, so we have that $\QQ \QT = \bf{I}$. Taking the determinant of 
-                        both sides, we get
-                        \[\det \left( \QQ \QT \right) = \det \left( \QQ \right) \cdot 
-                        \det \left( \QT \right) = \det \left( \bf{I} \right)\]
-                        Since $\det \left( \bf{I} \right) = 1$, we have
-                        $\det \left( \QQ \right) \cdot \det \left( \QT \right) = 1$. Because $\Q$
-                        is orthogonal, $\det \left( \QQ \right) = \det \left( \QT \right)$, so
-                        $\left[ \det \left( \QQ \right) \right]^2 = 1 \to \det \left( \QQ \right) = \pm 1$.
+                    \item Show that the determinant of $\QQ$ is $\pm 1$.
+                        \begin{proof}
+                            To show that the determinant of $\QQ$ is $\pm 1$, recall that $\Q$ is 
+                            orthogonal, so we have that $\QQ \QT = \bf{I}$. Taking the determinant of 
+                            both sides, we get
+                            \[\det \left( \QQ \QT \right) = \det \left( \QQ \right) \cdot 
+                            \det \left( \QT \right) = \det \left( \bf{I} \right)\]
+                            Since $\det \left( \bf{I} \right) = 1$, we have
+                            $\det \left( \QQ \right) \cdot \det \left( \QT \right) = 1$. Because $\Q$
+                            is orthogonal, $\det \left( \QQ \right) = \det \left( \QT \right)$, so
+                            $\left[ \det \left( \QQ \right) \right]^2 = 1 \to \det \left( \QQ \right) = \pm 1$.
+                        \end{proof}
 
-                    \item To show that $\QQ$ defines a length preserving transformation, consider
-                        a linear transformation $T : \R^n \to \R^n$. By assumption, $\QQ$ is an
-                        orthogonal matrix, so $\QQ \QT = \QT \QQ = \bf{I}$. We can represent
-                        the linear transformation $T$ by \QQ, so write $T \x = \QQ \x$. Then, 
-                        taking the norm of both sides, we get
-                        \begin{align*}
-                            \|T \x\|^2 &= \|\QQ \x\|^2 \\
-                                       &= \left( \QQ \x \right)^{\T} \QQ \x \\
-                                       &= \x^{\T} \QT  \QQ \x \\ 
-                                       &= \x^{\T} \bf{I} \x && \text{$\QQ$ is orthogonal} \\ 
-                                       &= \x^{\T} \x \\ 
-                            \|T \x\|^2 &= \|\x\|^2 && \x^{\T} \x = \|\x\|^2 \\
-                        \end{align*}
-                        Taking the square root of both sides, we get $\|T \x\| = \|\x\|$, so $\QQ$
-                        is a length preserving transformation.
+                    \item Show that $\QQ$ defines a length preserving transformation.
+                        \begin{proof}
+                            To show that $\QQ$ defines a length preserving transformation, consider
+                            a linear transformation $T : \R^n \to \R^n$. By assumption, $\QQ$ is an
+                            orthogonal matrix, so $\QQ \QT = \QT \QQ = \bf{I}$. We can represent
+                            the linear transformation $T$ by \QQ, so write $T \x = \QQ \x$. Then, 
+                            taking the norm of both sides, we get
+                            \begin{align*}
+                                \|T \x\|^2 &= \|\QQ \x\|^2 \\
+                                           &= \left( \QQ \x \right)^{\T} \QQ \x \\
+                                           &= \x^{\T} \QT  \QQ \x \\ 
+                                           &= \x^{\T} \bf{I} \x && \text{$\QQ$ is orthogonal} \\ 
+                                           &= \x^{\T} \x \\ 
+                                \|T \x\|^2 &= \|\x\|^2 && \x^{\T} \x = \|\x\|^2 \\
+                            \end{align*}
+                            Taking the square root of both sides, we get $\|T \x\| = \|\x\|$, so $\QQ$
+                            is a length preserving transformation.
+                        \end{proof}
                 \end{enumerate}
-                
+
             \item
-                \newcommand{\A}{\bf{A}}
-                \newcommand{\U}{\bf{U}}
-                \newcommand{\V}{\bf{V}}
-                \newcommand{\AT}{\bf{A$^{\T}$}}
                 Let $\A$ be a matrix.
-                \begin{enumerate}
-                    \item Recall that the singular value decomposition of a matrix 
-                        $\A \in \R^{m \times n}$ is $\A = \U \Sigma \V^{\T}$, where 
-                        $\U \in \R^{m \times m}, \Sigma \in \R^{m \times n}, \V \in \R^{n \times n}$. 
-                        Then, we can write $\A \AT \in \R^{m \times m}$ as
-                        \begin{align*}
-                            \A \AT &= \left( \U \Sigma \V^{\T} \right) \left( \U \Sigma \V^{\T} \right)^{\T} \\
-                                   &= \U \Sigma \V^{\T} \left( \V^{\T} \right)^{\T} \Sigma^{\T} \U^{\T} \\
-                                   &= \U \Sigma \V^{\T} \V \Sigma^{\T} \U^{\T} \\
-                                   &= \U \Sigma \bf{I} \Sigma^{\T} \U^{\T} && \V \text{ is orthogonal} \\
-                                   &= \U \Sigma \Sigma^{\T} \U^{\T} \\
-                                   &= \U \Sigma^2 \U^{\T} && \Sigma \text{ is diagonal} \\
-                        \end{align*}
-                        Since $\U$ is orthogonal, we have $\U^{\T} = \U^{-1}$. So,
-                        $\A \AT = \U \Sigma^2 \U^{\T}$, where $\U$ are the eigenvectors of 
-                        \A \AT. Then, the left singular vectors of $\A$ are the eigenvectors of 
-                        \A \AT. \vspace{10pt}
+                \begin{enumerate}[itemsep=10pt]
+                    \item 
+                        What is the relationship between the singular vectors of $\A$ and the
+                        eigenvectors of $\A \AT$? What about $\AT \A$?
+                        \begin{response}
+                            Recall that the singular value decomposition of a matrix 
+                            $\A \in \R^{m \times n}$ is $\A = \U \Sigma \V^{\T}$, where 
+                            $\U \in \R^{m \times m}, \Sigma \in \R^{m \times n}, \V \in \R^{n \times n}$. 
+                            Then, we can write $\A \AT \in \R^{m \times m}$ as
+                            \begin{align*}
+                                \A \AT &= \left( \U \Sigma \V^{\T} \right) \left( \U \Sigma \V^{\T} \right)^{\T} \\
+                                       &= \U \Sigma \V^{\T} \left( \V^{\T} \right)^{\T} \Sigma^{\T} \U^{\T} \\
+                                       &= \U \Sigma \V^{\T} \V \Sigma^{\T} \U^{\T} \\
+                                       &= \U \Sigma \bf{I} \Sigma^{\T} \U^{\T} && \V \text{ is orthogonal} \\
+                                       &= \U \Sigma \Sigma^{\T} \U^{\T} \\
+                                       &= \U \Sigma^2 \U^{\T} && \Sigma \text{ is diagonal} \\
+                            \end{align*}
+                            Since $\U$ is orthogonal, we have $\U^{\T} = \U^{-1}$. So,
+                            $\A \AT = \U \Sigma^2 \U^{\T}$, where $\U$ are the eigenvectors of 
+                            \A \AT. Then, the left singular vectors of $\A$ are the eigenvectors of 
+                            \A \AT. \vspace{10pt}
 
-                        Similarly, we can write $\AT \A \in \R^{n \times n}$ as
-                        \begin{align*}
-                            \AT \A &= \left( \U \Sigma \V^{\T} \right)^{\T} \left( \U \Sigma \V^{\T} \right) \\
-                                   &= \left( \V^{\T} \right)^{\T} \Sigma^{\T} \U^{\T} \U \Sigma \V^{\T} \\
-                                   &= \V \Sigma^{\T} \U^{\T} \U \Sigma \V ^{\T} \\
-                                   &= \V \Sigma^{\T} \bf{I} \Sigma \V ^{\T} && \U \text{ is orthogonal} \\
-                                   &= \V \Sigma^2 \V ^{\T} && \Sigma \text{ is diagonal} \\
-                        \end{align*}
-                        Since $\V$ is orthogonal, we have $\V^{\T} = \V^{-1}$. So,
-                        $\AT \A = \V \Sigma^2 \V^{\T}$, where $\V$ are the eigenvectors of 
-                        \AT \A. Then, the right singular vectors of $\A$ are the eigenvectors of 
-                        \AT \A.
-                    \item From the above part, we have that $\A \AT = \U \Sigma^2 \U^{\T}$ and
-                        $\AT \A = \V \Sigma^2 \V^{\T}$. Then, the singular values of $\A$ are 
-                        the square root of the eigenvalues of $\A \AT$ and $\AT \A$.
+                            Similarly, we can write $\AT \A \in \R^{n \times n}$ as
+                            \begin{align*}
+                                \AT \A &= \left( \U \Sigma \V^{\T} \right)^{\T} \left( \U \Sigma \V^{\T} \right) \\
+                                       &= \left( \V^{\T} \right)^{\T} \Sigma^{\T} \U^{\T} \U \Sigma \V^{\T} \\
+                                       &= \V \Sigma^{\T} \U^{\T} \U \Sigma \V ^{\T} \\
+                                       &= \V \Sigma^{\T} \bf{I} \Sigma \V ^{\T} && \U \text{ is orthogonal} \\
+                                       &= \V \Sigma^2 \V ^{\T} && \Sigma \text{ is diagonal} \\
+                            \end{align*}
+                            Since $\V$ is orthogonal, we have $\V^{\T} = \V^{-1}$. So,
+                            $\AT \A = \V \Sigma^2 \V^{\T}$, where $\V$ are the eigenvectors of 
+                            \AT \A. Then, the right singular vectors of $\A$ are the eigenvectors of 
+                            \AT \A.
+                        \end{response}
+                    \item What is the relationship between the singular values of $\A$ and the
+                        eigenvalues of $\A \AT$? What about $\AT \A$?
+                        \begin{response}
+                            From the above part, we have that $\A \AT = \U \Sigma^2 \U^{\T}$ and
+                            $\AT \A = \V \Sigma^2 \V^{\T}$. Then, the singular values of $\A$ are 
+                            the square root of the eigenvalues of $\A \AT$ and $\AT \A$.
+                        \end{response}
                 \end{enumerate}
-            \item True or False.
-                \begin{enumerate}
+            \item True or False. Partial credit on an incorrect solution may be awarded if you
+                justify your answer.
+                \begin{enumerate}[itemsep=10pt]
                     \item Every linear operator in an $n$-dimensional vector space has $n$ distinct 
-                        eigenvalues. \vspace{10pt}
+                        eigenvalues.
+                        \begin{response}
+                            False. Every linear operator in an $n$-dimensional vector space has 
+                            \ib{at most} $n$ distinct eigenvalues.
+                        \end{response}
 
-                        \bf{Response:} False. Every linear operator in an $n$-dimensional 
-                        vector space has \ib{at most} $n$ distinct eigenvalues.
-
-                    \item A non-zero sum of two eigenvectors of a matrix $\A$ is an eigenvector. \vspace{10pt}
-
-                        \bf{Response:} Consider two eigenvectors $\bf{x}, \bf{y}$ of a matrix
-                        $\A \in \R^2$. There are two cases:
-                        \begin{enumerate}[label=\textit{Case \arabic*:},leftmargin=*]
-                            \item If $\bf{x}, \bf{y}$ correspond to the same eigenvalue $\lambda$, 
-                                the statement is True since 
-                                $\A(\bf{x} + \bf{y}) = \A \bf{x} + \A \bf{y} = \lambda \bf{x} + \lambda \bf{y} = \lambda(\bf{x} + \bf{y})$
-                            \item If $\bf{x}, \bf{y}$ correspond to unique eigenvalues 
-                                $\lambda_{\bf{x}}, \lambda_{\bf{y}}$, the statement is False since
-                                $\A(\bf{x} + \bf{y}) = \A \bf{x} + \A \bf{y} = \lambda_{\bf{x}} \bf{x} + \lambda_{\bf{y}} \bf{y} \neq \lambda(\bf{x} + \bf{y})$
-                        \end{enumerate}
+                    \item A non-zero sum of two eigenvectors of a matrix $\A$ is an eigenvector.
+                        \begin{response}
+                            Consider two eigenvectors $\bf{x}, \bf{y}$ of a matrix
+                            $\A \in \R^2$. There are two cases:
+                            \begin{enumerate}[label=\textit{Case \arabic*:},leftmargin=*]
+                                \item If $\bf{x}, \bf{y}$ correspond to the same eigenvalue $\lambda$, 
+                                    the statement is True since 
+                                    $\A(\bf{x} + \bf{y}) = \A \bf{x} + \A \bf{y} = \lambda \bf{x} + \lambda \bf{y} = \lambda(\bf{x} + \bf{y})$
+                                \item If $\bf{x}, \bf{y}$ correspond to unique eigenvalues 
+                                    $\lambda_{\bf{x}}, \lambda_{\bf{y}}$, the statement is False since
+                                    $\A(\bf{x} + \bf{y}) = \A \bf{x} + \A \bf{y} = \lambda_{\bf{x}} \bf{x} + \lambda_{\bf{y}} \bf{y} \neq \lambda(\bf{x} + \bf{y})$
+                            \end{enumerate}
+                        \end{response}
 
                     \item If a matrix $\A$ has the positive semidefinite property, i.e., 
                         $\x^{\T} \A \x \geq 0$ for all $\x$, then its eigenvalues must be
-                        non-negative. \vspace{10pt}
-
-                        \bf{Response:} True. Suppose a matrix $\A$ has the positive semidefinite
-                        property; i.e. $\x^{\T} \A \x \geq 0$ for all $\x$. Consider an arbirtrary
-                        eigenvalue $\lambda$ of $\A$. Then, $\A \x = \lambda \x$ for some eigenvector
-                        $\x$. Multiplying both sides by $\x^{\T}$, we get 
-                        \[0 \leq \x^{\T} \A \x = \x^{\T} \lambda \x = \lambda \x^{\T} \x\]
-                        and since $\x^{\T}x = \|\x\|^2 > 0$ for every $\x$, $\lambda$ is non-negative.
+                        non-negative.
+                        \begin{response}
+                            True. Suppose a matrix $\A$ has the positive semidefinite
+                            property; i.e. $\x^{\T} \A \x \geq 0$ for all $\x$. Consider an arbirtrary
+                            eigenvalue $\lambda$ of $\A$. Then, $\A \x = \lambda \x$ for some eigenvector
+                            $\x$. Multiplying both sides by $\x^{\T}$, we get 
+                            \[0 \leq \x^{\T} \A \x = \x^{\T} \lambda \x = \lambda \x^{\T} \x\]
+                            and since $\x^{\T}x = \|\x\|^2 > 0$ for every $\x$, $\lambda$ is non-negative.
+                        \end{response}
 
                     \item The rank of a matrix can exceed the number of distinct non-zero 
-                        eigenvalues. \vspace{10pt}
-
-                        \bf{Response:} True. Consider a matrix $\A$ with $\text{rank}(A) = 2$ and 
-                        an eigenvalue $\lambda$ with algebraic multiplicity $2$. Then, the rank of
-                        the matrix exceeds the number of distinct non-zero eigenvalues.
+                        eigenvalues.
+                        \begin{response}
+                            True. Consider a matrix $\A$ with $\text{rank}(A) = 2$ and 
+                            an eigenvalue $\lambda$ with algebraic multiplicity $2$. Then, the rank of
+                            the matrix exceeds the number of distinct non-zero eigenvalues.
+                        \end{response}
 
                     \item A non-zero sum of two eigenvectors of a matrix $\A$ corresponding to the
-                        same eigenvalue $\lambda$ is always an eigenvector. \vspace{10pt}
-
-                        \bf{Response:} True. Consider two eigenvectors $\bf{x}, \bf{y}$ of a matrix
-                        $\A$ and suppose $\bf{x}, \bf{y}$ correspond to the same eigenvalue $\lambda$. 
-                        Then
-                        \[\A(\bf{x} + \bf{y}) = \A \bf{x} + \A \bf{y} = \lambda \bf{x} + \lambda \bf{y} = \lambda(\bf{x} + \bf{y})\]
+                        same eigenvalue $\lambda$ is always an eigenvector.
+                        \begin{response}
+                            True. Consider two eigenvectors $\bf{x}, \bf{y}$ of a matrix
+                            $\A$ and suppose $\bf{x}, \bf{y}$ correspond to the same eigenvalue $\lambda$. 
+                            Then
+                            \[\A(\bf{x} + \bf{y}) = \A \bf{x} + \A \bf{y} = \lambda \bf{x} + \lambda \bf{y} = \lambda(\bf{x} + \bf{y})\]
+                        \end{response}
                 \end{enumerate}
         \end{enumerate}
+    \item \bf{Probability refresher.}
+        \begin{enumerate}
+            \item A and B are involved in a duel. The rules of the duel are that they are to
+                pick up their guns and shoot at each other simultaneously. If one or both are hit, 
+                then the duel is over. If both shots miss, then they repeat the process. Suppose 
+                that the results of the shots are independent and that each shot of A will hit B 
+                with probability $p_A$ and each shot of B will hit A with probability $p_B$. What
+                is:
+                \begin{enumerate}[itemsep=10pt]
+                    \item the probability that A is not hit?
+                        \begin{response}
+                            The probability that A is not hit is 
+                            \vspace{-5pt}
+                            \[p_{(A \text{ is not hit})} = 1 - p_B\]
+                        \end{response}
+
+                    \item the probability that both duelists are hit?
+                        \begin{response}
+                            The probability that both duelists are hit is 
+                            \vspace{-5pt}
+                            \[p_{(A \text{ and } B \text{ are hit})} = p_A \cdot p_B\]
+                        \end{response}
+
+                    \item the probability that the duel ends after the $n^{\it{th}}$ round of shots?
+                        \begin{response}
+                            The probability that the duel ends is
+                            \vspace{-5pt}
+                            \[p_{(\text{duel ends})} = p_A + p_B - \left( p_A \cdot p_B \right)\]
+                            \vspace{-15pt}
+
+                            Then, the probability that the duel ends after the $n^{\it{th}}$ round of 
+                            shots is 
+                            \vspace{-5pt}
+                            \[p_{(X = n)} = p_{(\text{duel ends})} \cdot \left(1 - p_{(\text{duel ends})} \right)^{n - 1}\]
+                        \end{response}
+
+                    \item the conditional probability that the duel ends after the $n^{\it{th}}$ 
+                        round of shots given that A is not hit?
+                        \begin{response}
+                            The conditional probability that the duel ends after the $n^{\it{th}}$ 
+                            round of shots given that A is not hit is
+                            \vspace{-5pt}
+                            \[p_{(X = n | A \text{ is not hit})} = p_A \cdot \left[ \left( 1 - p_B \right) \left( 1 - p_A \right) \right]^{n - 1}\]
+                        \end{response}
+
+                    \item the conditional probability that the duel ends after the $n^{\it{th}}$ 
+                        round of shots given that both duelists are hit?
+                        \begin{response}
+                            The conditional probability that the duel ends after the $n^{\it{th}}$ 
+                            round of shots given that both duelists are hit is
+                            \vspace{-5pt}
+                            \[p_{(X = n | A \text{ and } B \text{ are hit})} = \left[ p_A \cdot p_B \right] \left[ \left( 1 - p_B \right) \left( 1 - p_A \right) \right]^{n - 1}\]
+                        \end{response}
+                \end{enumerate}
+
+            \item Consider a group of 18 UCLA faculty members containing 6 ECE faculty,
+                6 CSE faculty, and 6 Math faculty. We mix up the faculty members and place all 18
+                faculties around a circular table, with one faculty member per seat.
+                \begin{enumerate}[itemsep=10pt]
+                    \item A faculty member is called ``isolated'' if his/her department does not
+                        agree with either of the nearby faculties (i.e., if he/she has a different 
+                        department than the faculty to his/her right and a different department 
+                        than the faculty to his/her left). Let $X$ denote the number of isolated 
+                        faculties. Find $E(X)$.
+                        \begin{response}
+                            \[E(X) = 18 \cdot \frac{12}{17} \cdot \frac{11}{16} = 8.735\] 
+                        \end{response}
+                    \item A faculty member is called ``semi-happy'' if his/her department agrees
+                        with exactly one (but not both) of the nearby faculties (i.e., if his/her 
+                        department agrees with the department of the faculty on his/her left or on 
+                        his/her right, but not both). Let $Y$ denote the number of semi-happy 
+                        faculties. Find $E(Y)$.
+                        \begin{response}
+                            \[E(Y) = 18 \cdot \left( \frac{5}{17} \cdot \frac{11}{16} + \frac{11}{17} \cdot \frac{5}{16}\right) = 7.279\]
+                        \end{response}
+                    \item A faculty member is called ``joyous'' if his/her department agrees with
+                        both of the nearby faculties (i.e., if his/her department agrees with the 
+                        department of the faculties on his/her left and on his/her right). Let $Z$ 
+                        denote the number of joyous faculties. Find $E(Z)$.
+                        \begin{response}
+                            \[E(Z) = 18 \cdot \frac{5}{17} \cdot \frac{4}{16} = 1.324\]
+                        \end{response}
+                \end{enumerate}
+
+                \hrule \vspace{10pt}
+
+                \hrule
+
+            \item There is a screening test for lung cancer that looks at the level of LSA (lung
+                specific antigen) in the blood. There are a number of reasons besides lung cancer 
+                that a man can have elevated LSA levels. In addition, many types of lung cancer 
+                develop so slowly that they are never a problem. Unfortunately, there is currently 
+                no test to distinguish the different types and using the test is controversial 
+                because it’s hard to quantify the accuracy rates and the harm done by false 
+                positives. For this problem, we will call a positive test a true positive if it 
+                catches a dangerous type of lung cancer. Also, we will assume the following numbers:
+                \begin{itemize}
+                    \item Rate of dangerous type of lung cancer among men over 30 = 0.0005
+                    \item True positive rate for the test = 0.9
+                    \item False positive rate for the test = 0.01
+                \end{itemize}
+                Suppose you randomly select a man over 30 and perform a screening test.
+                \begin{enumerate}[itemsep=10pt]
+                    \item The probability that the man has a dangerous type of the disease given 
+                        that he had a positive test is
+                    \item The probability that the man has a dangerous type of the disease given 
+                        that he had a negative test is
+                \end{enumerate}
+
+            \item Let $x_1, x_2, \ldots, x_n$ be identically distributed random variables. A random
+                vector, $\x$, is defined as
+                \[\x = \begin{bmatrix} x_1 \\ x_2 \\ \vdots \\ x_n \end{bmatrix}\]
+                What is $\mathbb{E}(\A \x + \bf{b})$ in terms of $\mathbb{E}(\x)$, given that
+                $\A$ and $\bf{b}$ are deterministic?
+
+            \item Let
+                \[\bf{cov}(\x) = \mathbb{E}\left( \left( \x - \mathbb{E} \x \right) \left( \x - \mathbb{E} \x \right)^\T \right)\]
+                What is $\bf{cov}(\A \x + \bf{b})$ in terms of $\bf{cov}(\x)$, given that $\A$ and 
+                $\bf{B}$ are deterministic?
+        \end{enumerate}
+
+    \item \bf{Multivariate derivatives.}
+        \begin{enumerate}[itemsep=10pt]
+            \item Let $\x \in \R^n, \y \in \R^m,$ and $\A \in \R^{n \times m}$. 
+                What is $\Delta_{\x} \x^{\T} \A \y$?
+            \item Let $\x \in \R^n, \y \in \R^m,$ and $\A \in \R^{n \times m}$. 
+                What is $\Delta_{\y} \x^{\T} \A \y$?
+            \item Let $\x \in \R^n, \y \in \R^m,$ and $\A \in \R^{n \times m}$. 
+                What is $\Delta_{\A} \x^{\T} \A \y$?
+            \item Let $\x \in \R^n, \A \in \R^{n \times n},$ and let 
+                $f = \x^{\T} \A \x + \bf{b}^{\T} \x$. What is $\Delta_{\x} f$?
+            \item Let $\A \in \R^{n \times n}, \B \in \R^{n \times n}$ and 
+                $f = \tr\left( \A \B \right)$. What is $\Delta_{\A} f$?
+            \item Let $\A \in \R^{n \times n}, \B \in \R^{n \times n}$ and 
+                $f = \tr\left( \B \A + \AT \B + \A^2 \B \right)$. What is $\Delta_{\A} f$?
+            \item Let $\A \in \R^{n \times n}, \B \in \R^{n \times n}$ and 
+                $f = \| \A + \lambda \B \|^{2}_{F}$. What is $\Delta_{\A} f$?
+        \end{enumerate}
+
+    \item \bf{Deriving least-squares with matrix derivatives.} 
+        \newline
+        In least-squares, we seek to estimates some multivariate output $\y$ via the model
+        \[\hat{\bf{y}} = \W \x\]
+        In the training set we're given paired data examples $\left( \x^{(i)}, \y^{(i)} \right)$
+        from $i = 1, \ldots, n$. Least-squares is the following quadratic optimization problem:
+        \[\underset{\W}{\min} \text{ } \frac{1}{2} \sum^{n}_{i = 1} \left\| \y^{(i)} - \W \x^{(i)} \right\|^2\]
+        Derive the optimal $\W$. \vspace{10pt}
+
+        Where $\W$ is a matrix, and for each example in the training set, both $\x^{(i)}$ and 
+        $\y^{(i)} \forall i = 1, \ldots, n$ are vectors.
+        \newline
+        Hint: you may find the following derivatives useful:
+        \begin{align*}
+            \frac{\partial \tr \left( \W \A \right)}{\partial \W} &= \AT \\
+            \frac{\partial \tr \left( \W \A \W^{\T} \right)}{\partial W} &= \W \AT + \W \A
+        \end{align*}
+
+    \item \bf{Regularized least squares} \vspace{10pt}
+
+        In lecture, we worked through the following least squares problem
+        \[\arg \underset{\theta}{\min} \text{ } \frac{1}{2} \sum^{N}_{i = 1} (y^{(i)} - \theta^T \hat{\x}^{(i)})^2\]
+        However, the least squares has a tendency to overfit the training data. One common 
+        technique used to address the overfitting problem is regularization. In this problem, 
+        we work through one of the regularization techniques namely ridge regularization which 
+        is also known as the regularized least squares problem. In the regularized least 
+        squares we solve the following optimization problem
+        \[\arg \underset{\theta}{\min} \text{ } \frac{1}{2} \sum^{N}_{i = 1} (y^{(i)} - \theta^T \hat{\x}^{(i)})^2 + \frac{\lambda}{2} \|\theta\|^2_2\]
+        where $\lambda$ is a unable regularization parameter. From the above cost function it 
+        can be observed that we are seeking least squares solution with a smaller 2-norm. 
+        Derive the solution to the regularized least squares problem, i.e Find $\theta^*$.
 \end{enumerate}
 \end{document}
