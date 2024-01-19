@@ -57,12 +57,10 @@ In either case, there exist $q, r \in \Z$ such that $a = bq + r$ where $0 \leq r
 
 \paragraph{Uniqueness}
 Suppose we have $q_1, r_1, q_2, r_2 \in \Z$ such that $a = bq_1 + r_1 = bq_2 + r_2$ where 
-$0 \leq r_1, r_2 < |b|$. Then, we have $bq_1 + r_1 = bq_2 + r_2$. Subtracting $bq_2 + r_2$ from 
+$0 \leq r_1, r_2 < |b|$. Then, we have $bq_1 + r_1 = bq_2 + r_2$. Subtracting $(bq_2 + r_2)$ from 
 both sides, we get
-\[(bq_1 + r_1) - (bq_2 + r_2) = 0\]
-or 
-\[b(q_1 - q_2) + (r_1 - r_2) = 0\]
-Subtracting $r_1 - r_2$ from both sides, we get
+\[(bq_1 + r_1) - (bq_2 + r_2) = b(q_1 - q_2) + (r_1 - r_2) = 0\]
+Subtracting $(r_1 - r_2)$ from both sides, we get
 \[b(q_1 - q_2) = r_2 - r_1\]
 Since $0 \leq r_1, r_2 < |b|$, we have that $-|b| < r_2 - r_1 < |b|$. The possible values for
 $r_2 - r_1$ are $0b, b, 2b, \ldots$, but since $-|b| < r_2 - r_1 < |b|$, we have that
@@ -76,9 +74,9 @@ If $b | a$ and $a \neq 0$, show that $|b| \leq |a|$.  Hint: recall that $|xy| = 
 \subsection*{Response}
 \begin{proof}
     Suppose $b | a$ and $a \neq 0$. Then, there exists some $c \in \Z$ such that $a = bc$. Since
-    $a \neq 0$, $c$ is necessarily nonzero. Applying the absolute value to the equation, we get
-    $|a| = |b||c| = |bc|$. Then, since $c \neq 0$, we have that $|b| \leq |bc|$. But $|bc| = |a|$ 
-    so $|b| \leq |a|$.
+    $a \neq 0$, $b, c$ are necessarily nonzero. Applying the absolute value to the equation, we get
+    $|a| = |bc| = |b||c|$. Then, since $b, c \neq 0$, we have that $|b|, |c| > 0$. Then, we have
+    $|b| \leq |b||c| = |bc| = |a|$, so $|b| \leq |a|$.
 \end{proof}
 \newpage
 
@@ -117,9 +115,9 @@ Let $p\in\Z$ such that $p\neq 0,\pm1$. Show that the second statement implies th
     To prove the reverse implication, suppose the contrapositive: ``If $p$ is not prime, then there 
     exists some $b, c \in \Z$ such that $p | bc$ but $p \nmid b$ and $p \nmid c$.'' Suppose $p \in 
     \Z$ such that $p \neq 0, \pm 1$ is not prime; i.e. $p$ is composite. Then, $p$ can be written 
-    as $q_1 q_2 \cdots q_n$ where $n \geq 2$ and each $q_i$ is a unique prime. Choose $b = q_1$ and 
+    as its unique prime factorization $q_1 q_2 \cdots q_n$ where $n \geq 2$ and each $q_i$ is a prime. Choose $b = q_1$ and 
     $c = q_2 \cdots q_n$. Then $p | bc$ because $bc = p$ and $p | p$, but $p \nmid b$ and $p \nmid c$
-    because $p > b$ and $p > c$.
+    because $|p| > |b|$ and $|p| > |c|$ respectively.
 \end{proof}
 
 
@@ -155,8 +153,10 @@ Suppose $a,b,c\in\Z$, such that $(a,c)=(b,c)=1$. Show that $(ab,c)=1$.
         1 &= ab(xn) + c(axm + bny + cym)
     \end{align*}
     Setting $p = xn$ and $q = axm + bny + cym$, we get $(ab)p + cq = 1$. To show $(ab, c) = 1$,
-    let $d = (ab, c)$. Then, $d | (ab)$ and $d | c$ by definition. This implies that 
-    $d | (abp + cq)$, but $abp + cq = 1$, so $d = 1$. Therefore, $(ab, c) = 1$.
+    let $d = (ab, c)$. Then, $d | (ab)$ and $d | c$ by definition, so $d | (ab)p$ and $d | cq$ for 
+    some $p, q \in \Z$. This implies that $d | (abp + cq)$ for some $p, q \in \Z$. Setting
+    $p = xn$ and $q = axm + bny + cym$, we get that $abp + cq = 1$ from above, 
+    so we have $d | (abp + cq) = 1$, so $d | 1 \implies d = 1$. Therefore, $(ab, c) = 1$.
 \end{proof}
 \newpage
 
@@ -172,7 +172,7 @@ Let $p>3$ be prime. Prove that $p^2+2$ is not prime. [hint: If you divide $p$ by
         \item If $p \equiv 1 \pmod{3}$, we can rewrite this as $p = 3n + 1$ for some $n \in \N$.
             Then, we can write $p^2 + 2 = (3n + 1)^2 + 2 = 9n^2 + 6n + 1 + 2 = 3(3n^2 + 2n + 1)$.
         \item If $p \equiv 2 \pmod{3}$, we can rewrite this as $p = 3n + 2$ for some $n \in \N$.
-            Then, we can write $p^2 + 2 = (3n + 2)^2 + 2 = 9n^2 + 12n + 4 + 2 = 3(3n^2 + 4n + 2)$
+            Then, we can write $p^2 + 2 = (3n + 2)^2 + 2 = 9n^2 + 12n + 4 + 2 = 3(3n^2 + 4n + 2)$.
     \end{enumerate}
     In either case, $p^2 + 2$ is divisible by $3$ and therefore is not prime.
     % Then, either $p \equiv 1 \pmod{3}$ or $p \equiv 2 \pmod{3}$, since if 
@@ -192,8 +192,8 @@ Let $p$ be prime. Show that if $p|a^5$, then $p|a$.
 \begin{proof}
 Let $p$ be prime and suppose $p | a^5$. Rewrite $a^5$ as $a \cdot a \cdot a \cdot a \cdot a$. Then, 
 $p | a^5$ is equivalent to writing $p | (a \cdot a \cdot a \cdot a \cdot a)$. By 
-Corollary 1.2 (proven in \textbf{Question 5}), since $p$ divides the product $a^5$, $p$ must divide 
-$a$, so $p | a$.
+Corollary 1.2 (proven in \textbf{Question 5}), since $p$ divides the product 
+$a^5 = a \cdot a \cdot a \cdot a \cdot a$, $p$ must divide $a$, so $p | a$.
 \end{proof}
 \newpage
 
