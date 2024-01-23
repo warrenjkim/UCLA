@@ -1,49 +1,59 @@
 \documentclass [11pt] {article}
-\newtheorem{exercise}{Exercise}[section]
-\newtheorem{definition}{Definition}[section]
-\newtheorem{theorem}{Theorem}[section]
-\newtheorem{lemma}{Lemma}[section]
-\newtheorem{problem}{Problem}
-\newtheorem{solution}{Solution}
-\newtheorem{cor}{Corollary}[section]
-\newtheorem{prop}{Proposition}[section]
-\newtheorem{rmk}{Remark}[section]
-\newtheorem{conj}{Conjecture}[section]
 \usepackage{amsfonts}      
 \usepackage{amsmath}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{enumitem}
+\usepackage{mdframed}
+\usepackage{stackengine}
+\usepackage{mathtools}
+\usepackage{tabularx}
+\usepackage{changepage}
+\usepackage{fancyhdr}
 \usepackage[margin=1in]{geometry}
-\newcommand{\N}{\mathbb{N}}
-\newcommand{\Z}{\mathbb{Z}}
-\newcommand{\C}{\mathbb{C}}
 \newcommand{\R}{\mathbb{R}}
-\newcommand{\Q}{\mathbb{Q}}
 \newcommand{\T}{\bf{T}}
+\newcommand{\QQ}{\bf{Q}}
+\newcommand{\QT}{\bf{Q$^{\bf{T}}$}}
+\newcommand{\QI}{\bf{Q$^{\bf{-1}}$}}
+\newcommand{\A}{\bf{A}}
+\newcommand{\AT}{\bf{A$^{\T}$}}
+\newcommand{\X}{\bf{X}}
+\newcommand{\Y}{\bf{Y}}
 \newcommand{\x}{\bf{x}}
 \newcommand{\y}{\bf{y}}
-\newcommand{\A}{\bf{A}}
+\renewcommand{\b}{\bf{b}}
 \newcommand{\B}{\bf{B}}
 \newcommand{\U}{\bf{U}}
 \newcommand{\V}{\bf{V}}
 \newcommand{\W}{\bf{W}}
-\newcommand{\AT}{\bf{A$^{\T}$}}
-\newcommand{\QT}{\bf{Q$^{\bf{T}}$}}
-\newcommand{\QI}{\bf{Q$^{\bf{-1}}$}}
-\newcommand{\QQ}{\bf{Q}}
-\newenvironment{proof}{\vspace{-10pt}\paragraph{Proof:}}{\hfill$\square$}
-\newenvironment{response}{\vspace{-10pt}\paragraph{Response:}}{}
+
+\newmdenv[
+topline=true,
+bottomline=true,
+leftline=true,
+rightline=true,
+skipabove=\medskipamount,
+skipbelow=\medskipamount
+]{responseframe}
+\newenvironment{proof}{\begin{responseframe}\vspace{-10pt}\paragraph{Proof:}}{\hfill$\square$\end{responseframe}}
+\newenvironment{response}{\begin{responseframe}\vspace{-10pt}\paragraph{Response:}}{\end{responseframe}}
+
 \setlength\parindent{0pt}
-\usepackage{stackengine}
-\usepackage{mathtools}
-\usepackage{tabularx}
+
 \DeclareMathOperator{\tr}{tr}
+
 \renewcommand{\it}[1]{\textit{{#1}}}
 \renewcommand{\bf}[1]{\textbf{{#1}}}
 \renewcommand{\tt}[1]{\texttt{{#1}}}
-
 \newcommand{\ib}[1]{\it{\bf{{#1}}}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\bf{ECE C147}}
+\fancyhead[C]{\it{Homework 1}}
+\fancyhead[R]{\bf{Warren Kim}}
+\setlength{\headsep}{0.1in}
 
 
 
@@ -57,9 +67,8 @@
                 \begin{enumerate}[itemsep=10pt]
                     \item Show that $\QT$ and $\QI$ are also orthogonal.
                         \begin{proof}
-                            To show that $\QT$ and $\QI$ are also orthogonal, suppose $\QQ$ is 
-                            orthogonal. Then $\QQ \QT = \QT \QQ = \bf{I}$. Consider \QT. 
-                            Recall that $\left(\QT\right)^{\bf{T}} = \QQ$. Then,
+                            Suppose $\QQ$ is orthogonal. Then $\QQ \QT = \QT \QQ = \bf{I}$. 
+                            Consider \QT and note that $\left(\QT\right)^{\bf{T}} = \QQ$. Then
                             \[\QT \left( \QT \right)^{\T} = \QT \QQ = \bf{I} = \QQ \QT = \left( \QT \right)^{\T} \QT\]
                             Note that if $\QQ$ is orthogonal, then $\QT = \QI$. Then, since $\QT$ is 
                             orthogonal, $\QI$ is orthogonal.
@@ -67,46 +76,48 @@
 
                     \item Show that $\QQ$ has eigenvalues with norm 1.
                         \begin{proof}
-                            To show that $\QQ$ has eigenvalues with norm 1, consider
+                            Suppose $\lambda \in \R$ is an eigenvalue of $\QQ$. Then
                             \begin{align*}
                                 \QQ \x &= \lambda \x \\
                                 \left( \QQ \x \right)^{\T} \QQ \x &= \left( \QQ \x \right)^{\T} \lambda \x \\
                                 \x^{\T} \QQ^{\T} \QQ \x &= \left( \lambda \x \right)^{\T} \lambda \x && \QQ \x = \lambda \x \\
-                                \x^{\T} \bf{I} \x &= \x^{\T} \lambda \lambda \x && \text{$\QQ$ is orthogonal} \\
-                                \x^{\T} \x &= \lambda^2 \x^{\T} \x \\
+                                \x^{\T} \bf{I} \x &= \x^{\T} \lambda^{\T} \lambda \x && \text{$\QQ$ is orthogonal} \\
+                                \x^{\T} \x &= \lambda^2 \x^{\T} \x && \lambda^{\T} = \lambda \\
                                 \|\x\|^2 &= \lambda^2 \|\x\|^2 && \x^{\T} \x = \|\x\|^2 \\
                                 \lambda^2 &= 1
                             \end{align*}
-                            This implies that $|\lambda| = 1$.
+                            This implies that $|\lambda| = 1$ because $\QQ$ is real.
                         \end{proof}
 
                     \item Show that the determinant of $\QQ$ is $\pm 1$.
                         \begin{proof}
-                            To show that the determinant of $\QQ$ is $\pm 1$, recall that $\Q$ is 
-                            orthogonal, so we have that $\QQ \QT = \bf{I}$. Taking the determinant of 
-                            both sides, we get
+                            Because $\QQ$ is orthogonal, we have that $\QQ \QT = \bf{I}$. Taking 
+                            the determinant of both sides, we get
                             \[\det \left( \QQ \QT \right) = \det \left( \QQ \right) \cdot 
                             \det \left( \QT \right) = \det \left( \bf{I} \right)\]
                             Since $\det \left( \bf{I} \right) = 1$, we have
-                            $\det \left( \QQ \right) \cdot \det \left( \QT \right) = 1$. Because $\Q$
-                            is orthogonal, $\det \left( \QQ \right) = \det \left( \QT \right)$, so
-                            $\left[ \det \left( \QQ \right) \right]^2 = 1 \to \det \left( \QQ \right) = \pm 1$.
+                            $\det \left( \QQ \right) \cdot \det \left( \QT \right) = 1$. Note that
+                            $\det \left( \QQ \right) = \det \left( \QT \right)$. Then
+                            \[\det \left( \QQ \right) \cdot \det \left( \QT \right) = 
+                                \det \left( \QQ \right) \cdot \det \left( \QQ \right) = 
+                            \left[ \det \left( \QQ \right) \right]^2 = 1 \]
+                            so $\det \left( \QQ \right) = \pm 1$.
                         \end{proof}
 
+                        \newpage
                     \item Show that $\QQ$ defines a length preserving transformation.
                         \begin{proof}
-                            To show that $\QQ$ defines a length preserving transformation, consider
-                            a linear transformation $T : \R^n \to \R^n$. By assumption, $\QQ$ is an
-                            orthogonal matrix, so $\QQ \QT = \QT \QQ = \bf{I}$. We can represent
-                            the linear transformation $T$ by \QQ, so write $T \x = \QQ \x$. Then, 
-                            taking the norm of both sides, we get
+                            Consider a linear transformation $T : \R^n \to \R^n$. By assumption, 
+                            $\QQ$ is an orthogonal matrix, so $\QQ \QT = \QT \QQ = \bf{I}$. We can 
+                            represent the linear transformation $T$ by \QQ, so write $T \x = \QQ \x$. 
+                            Then, taking the norm of both sides, we get
                             \begin{align*}
                                 \|T \x\|^2 &= \|\QQ \x\|^2 \\
                                            &= \left( \QQ \x \right)^{\T} \QQ \x \\
                                            &= \x^{\T} \QT  \QQ \x \\ 
                                            &= \x^{\T} \bf{I} \x && \text{$\QQ$ is orthogonal} \\ 
                                            &= \x^{\T} \x \\ 
-                                \|T \x\|^2 &= \|\x\|^2 && \x^{\T} \x = \|\x\|^2 \\
+                                \|T \x\|^2 &= \|\x\|^2 && \x^{\T} \x = \|\x\|^2
                             \end{align*}
                             Taking the square root of both sides, we get $\|T \x\| = \|\x\|$, so $\QQ$
                             is a length preserving transformation.
@@ -120,9 +131,10 @@
                         What is the relationship between the singular vectors of $\A$ and the
                         eigenvectors of $\A \AT$? What about $\AT \A$?
                         \begin{response}
-                            Recall that the singular value decomposition of a matrix 
-                            $\A \in \R^{m \times n}$ is $\A = \U \Sigma \V^{\T}$, where 
+                            The singular value decomposition of a matrix 
+                            $\A \in \R^{m \times n}$ is $\A = \U \Sigma \V^{-1}$, where 
                             $\U \in \R^{m \times m}, \Sigma \in \R^{m \times n}, \V \in \R^{n \times n}$. 
+                            But because $\U$ and $\V$ are orthogonal, we have $\A = \U \Sigma \V^{-1} = \U \Sigma \V^{\T}$.
                             Then, we can write $\A \AT \in \R^{m \times m}$ as
                             \begin{align*}
                                 \A \AT &= \left( \U \Sigma \V^{\T} \right) \left( \U \Sigma \V^{\T} \right)^{\T} \\
@@ -130,10 +142,9 @@
                                        &= \U \Sigma \V^{\T} \V \Sigma^{\T} \U^{\T} \\
                                        &= \U \Sigma \bf{I} \Sigma^{\T} \U^{\T} && \V \text{ is orthogonal} \\
                                        &= \U \Sigma \Sigma^{\T} \U^{\T} \\
-                                       &= \U \Sigma^2 \U^{\T} && \Sigma \text{ is diagonal} \\
+                                       &= \U \Sigma^2 \U^{\T} && \Sigma \text{ is diagonal}
                             \end{align*}
-                            Since $\U$ is orthogonal, we have $\U^{\T} = \U^{-1}$. So,
-                            $\A \AT = \U \Sigma^2 \U^{\T}$, where $\U$ are the eigenvectors of 
+                            So $\A \AT = \U \Sigma^2 \U^{\T}$, where $\U$ are the eigenvectors of 
                             \A \AT. Then, the left singular vectors of $\A$ are the eigenvectors of 
                             \A \AT. \vspace{10pt}
 
@@ -143,13 +154,13 @@
                                        &= \left( \V^{\T} \right)^{\T} \Sigma^{\T} \U^{\T} \U \Sigma \V^{\T} \\
                                        &= \V \Sigma^{\T} \U^{\T} \U \Sigma \V ^{\T} \\
                                        &= \V \Sigma^{\T} \bf{I} \Sigma \V ^{\T} && \U \text{ is orthogonal} \\
-                                       &= \V \Sigma^2 \V ^{\T} && \Sigma \text{ is diagonal} \\
+                                       &= \V \Sigma^2 \V ^{\T} && \Sigma \text{ is diagonal}
                             \end{align*}
-                            Since $\V$ is orthogonal, we have $\V^{\T} = \V^{-1}$. So,
-                            $\AT \A = \V \Sigma^2 \V^{\T}$, where $\V$ are the eigenvectors of 
+                            So, $\AT \A = \V \Sigma^2 \V^{\T}$, where $\V$ are the eigenvectors of 
                             \AT \A. Then, the right singular vectors of $\A$ are the eigenvectors of 
                             \AT \A.
                         \end{response}
+
                     \item What is the relationship between the singular values of $\A$ and the
                         eigenvalues of $\A \AT$? What about $\AT \A$?
                         \begin{response}
@@ -171,7 +182,7 @@
                     \item A non-zero sum of two eigenvectors of a matrix $\A$ is an eigenvector.
                         \begin{response}
                             Consider two eigenvectors $\bf{x}, \bf{y}$ of a matrix
-                            $\A \in \R^2$. There are two cases:
+                            $\A \in \R^n$. There are two cases:
                             \begin{enumerate}[label=\textit{Case \arabic*:},leftmargin=*]
                                 \item If $\bf{x}, \bf{y}$ correspond to the same eigenvalue $\lambda$, 
                                     the statement is True since 
@@ -191,7 +202,7 @@
                             eigenvalue $\lambda$ of $\A$. Then, $\A \x = \lambda \x$ for some eigenvector
                             $\x$. Multiplying both sides by $\x^{\T}$, we get 
                             \[0 \leq \x^{\T} \A \x = \x^{\T} \lambda \x = \lambda \x^{\T} \x\]
-                            and since $\x^{\T}x = \|\x\|^2 > 0$ for every $\x$, $\lambda$ is non-negative.
+                            and since $\x^{\T} \x = \|\x\|^2 \geq 0$ for every $\x$, $\lambda$ is non-negative.
                         \end{response}
 
                     \item The rank of a matrix can exceed the number of distinct non-zero 
@@ -202,6 +213,7 @@
                             the matrix exceeds the number of distinct non-zero eigenvalues.
                         \end{response}
 
+                        \newpage
                     \item A non-zero sum of two eigenvectors of a matrix $\A$ corresponding to the
                         same eigenvalue $\lambda$ is always an eigenvector.
                         \begin{response}
@@ -225,27 +237,27 @@
                         \begin{response}
                             The probability that A is not hit is 
                             \vspace{-5pt}
-                            \[p_{(A \text{ is not hit})} = 1 - p_B\]
+                            \[p_{(A \text{ is not hit})} = \frac{p_A \left( 1 - p_B \right)}{(p_A + p_B) - p_A p_B}\]
                         \end{response}
 
                     \item the probability that both duelists are hit?
                         \begin{response}
                             The probability that both duelists are hit is 
                             \vspace{-5pt}
-                            \[p_{(A \text{ and } B \text{ are hit})} = p_A \cdot p_B\]
+                            \[p_{(A \text{ and } B \text{ are hit})} = \frac{p_A p_B}{(p_A + p_B) - p_A p_B}\]
                         \end{response}
 
                     \item the probability that the duel ends after the $n^{\it{th}}$ round of shots?
                         \begin{response}
                             The probability that the duel ends is
                             \vspace{-5pt}
-                            \[p_{(\text{duel ends})} = p_A + p_B - \left( p_A \cdot p_B \right)\]
+                            \[p_{(\text{duel ends})} = (p_A + p_B) - \left( p_A \cdot p_B \right)\]
                             \vspace{-15pt}
 
                             Then, the probability that the duel ends after the $n^{\it{th}}$ round of 
                             shots is 
                             \vspace{-5pt}
-                            \[p_{(X = n)} = p_{(\text{duel ends})} \cdot \left(1 - p_{(\text{duel ends})} \right)^{n - 1}\]
+                            \[p_{(X = n)} = ([p_A + p_B] - p_A p_B) \cdot \left([1 - p_A] [1 - p_B] \right)^{n - 1}\]
                         \end{response}
 
                     \item the conditional probability that the duel ends after the $n^{\it{th}}$ 
@@ -254,16 +266,17 @@
                             The conditional probability that the duel ends after the $n^{\it{th}}$ 
                             round of shots given that A is not hit is
                             \vspace{-5pt}
-                            \[p_{(X = n | A \text{ is not hit})} = p_A \cdot \left[ \left( 1 - p_B \right) \left( 1 - p_A \right) \right]^{n - 1}\]
+                            \[p_{(X = n | A \text{ is not hit})} = ([p_A + p_B] - p_A p_B) \cdot \left( \left[ 1 - p_B \right] \left[ 1 - p_A \right] \right)^{n - 1}\]
                         \end{response}
 
+                        \newpage
                     \item the conditional probability that the duel ends after the $n^{\it{th}}$ 
                         round of shots given that both duelists are hit?
                         \begin{response}
                             The conditional probability that the duel ends after the $n^{\it{th}}$ 
                             round of shots given that both duelists are hit is
                             \vspace{-5pt}
-                            \[p_{(X = n | A \text{ and } B \text{ are hit})} = \left[ p_A \cdot p_B \right] \left[ \left( 1 - p_B \right) \left( 1 - p_A \right) \right]^{n - 1}\]
+                            \[p_{(X = n | A \text{ and } B \text{ are hit})} = ([p_A + p_B] - p_A p_B) \cdot \left( \left[ 1 - p_B \right] \left[ 1 - p_A \right] \right)^{n - 1}\]
                         \end{response}
                 \end{enumerate}
 
@@ -285,7 +298,7 @@
                         his/her right, but not both). Let $Y$ denote the number of semi-happy 
                         faculties. Find $E(Y)$.
                         \begin{response}
-                            \[E(Y) = 18 \cdot \left( \frac{5}{17} \cdot \frac{11}{16} + \frac{11}{17} \cdot \frac{5}{16}\right) = 7.279\]
+                            \[E(Y) = 18 \cdot \left( \frac{5}{17} \cdot \frac{11}{16} + \frac{12}{17} \cdot \frac{5}{16}\right) = 7.61\]
                         \end{response}
                     \item A faculty member is called ``joyous'' if his/her department agrees with
                         both of the nearby faculties (i.e., if his/her department agrees with the 
@@ -295,10 +308,6 @@
                             \[E(Z) = 18 \cdot \frac{5}{17} \cdot \frac{4}{16} = 1.324\]
                         \end{response}
                 \end{enumerate}
-
-                \hrule \vspace{10pt}
-
-                \hrule
 
             \item There is a screening test for lung cancer that looks at the level of LSA (lung
                 specific antigen) in the blood. There are a number of reasons besides lung cancer 
@@ -315,42 +324,248 @@
                 \end{itemize}
                 Suppose you randomly select a man over 30 and perform a screening test.
                 \begin{enumerate}[itemsep=10pt]
-                    \item The probability that the man has a dangerous type of the disease given 
-                        that he had a positive test is
-                    \item The probability that the man has a dangerous type of the disease given 
-                        that he had a negative test is
+                    \item What is the probability that the man has a dangerous type of the disease
+                        given that he had a positive test?
+                        \begin{response}
+                            Given the following,
+                            \begin{align*}
+                                p_{(\text{disease})} &= 0.005 \\
+                                p_{(\text{positive} | \text{disease})} &= 0.9 \\
+                                p_{(\text{positive} | \text{no disease})} &= 0.01
+                            \end{align*}
+                            the probability that the man has a dangerous type of the disease given 
+                            that he had a positive test is
+
+                            \begin{align*}
+                                p &= \frac{p_{(\text{disease})} \cdot p_{(\text{positive} | \text{disease})}}
+                                {\left[ p_{(\text{positive} | \text{disease})} \cdot p_{(\text{disease})} \right] + 
+                                    \left[ p_{(\text{positive} | \text{no disease})} \cdot 
+                                \left( 1 - p_{(\text{disease})} \right) \right]} \\
+                                  &= \frac{0.0005 \cdot 0.9}{(0.9)(0.0005) + (0.01)(1 - 0.0005)} \\
+                                p &= 0.0431
+                            \end{align*}
+                        \end{response}
+
+                    \item What is the probability that the man has a dangerous type of the disease
+                        given that he had a negative test?
+                        \begin{response}
+                            Given the following,
+                            \begin{align*}
+                                p_{(\text{disease})} &= 0.005 \\
+                                p_{(\text{negative} | \text{disease})} &= 1 - p_{(\text{positive} | \text{disease})} = 0.1 \\
+                                p_{(\text{negative} | \text{no disease})} &= 1 - p_{(\text{positive} | \text{no disease})} = 0.99
+                            \end{align*}
+                            the probability that the man has a dangerous type of the disease given 
+                            that he had a negative test is
+
+                            \begin{align*}
+                                p &= \frac{p_{(\text{disease})} \cdot p_{(\text{negative} | \text{disease})}}
+                                {\left[ p_{(\text{negative} | \text{disease})} \cdot p_{(\text{disease})} \right] + 
+                                    \left[ p_{(\text{negative} | \text{no disease})} \cdot 
+                                \left( 1 - p_{(\text{disease})} \right) \right]} \\
+                                  &= \frac{0.0005 \cdot 0.1}{(0.1)(0.0005) + (0.99)(1 - 0.0005)} \\
+                                p &= 0.0000505
+                            \end{align*}
+                        \end{response}
                 \end{enumerate}
 
+                \newpage
             \item Let $x_1, x_2, \ldots, x_n$ be identically distributed random variables. A random
                 vector, $\x$, is defined as
                 \[\x = \begin{bmatrix} x_1 \\ x_2 \\ \vdots \\ x_n \end{bmatrix}\]
-                What is $\mathbb{E}(\A \x + \bf{b})$ in terms of $\mathbb{E}(\x)$, given that
-                $\A$ and $\bf{b}$ are deterministic?
+                What is $\mathbb{E}(\A \x + \b)$ in terms of $\mathbb{E}(\x)$, given that
+                $\A$ and $\b$ are deterministic?
+                \begin{response}
+                    Note that if $\A$ and $\b$ are deterministic, they are independent of $\x$; i.e.
+                    $\mathbb{E}(\A) = \A$ and $\mathbb{E}(\b) = \b$.
+
+                    Then, 
+                    \[\mathbb{E}(\A \x + \b) = \mathbb{E}(\A \x) + \mathbb{E}(\b) = \A \mathbb{E}(\x) + \b\]
+                \end{response}
 
             \item Let
                 \[\bf{cov}(\x) = \mathbb{E}\left( \left( \x - \mathbb{E} \x \right) \left( \x - \mathbb{E} \x \right)^\T \right)\]
-                What is $\bf{cov}(\A \x + \bf{b})$ in terms of $\bf{cov}(\x)$, given that $\A$ and 
-                $\bf{B}$ are deterministic?
+                What is $\bf{cov}(\A \x + \b)$ in terms of $\bf{cov}(\x)$, given that $\A$ and 
+                $\b$ are deterministic?
+                \begin{response}
+                    \begin{small}
+                        Note that 
+                        \[\bf{cov}(\x) = \mathbb{E}\left( \left( \x - \mathbb{E} \x \right) \left( \x - \mathbb{E} \x \right)^\T \right)\]
+                        and because $\A$ and $\b$ are deterministic,
+                        \[\mathbb{E}(\A \x + \b) = \A \mathbb{E}(\x) + \b\]
+                        Then,
+                        \begin{align*}
+                            \bf{cov}(\A \x + \b) &= \mathbb{E}\left( \left( [\A \x + \b] - \mathbb{E}[\A \x  + \b] \right) \left( \A \x + \b - \mathbb{E}[\A \x + \b] \right)^\T \right) \\
+                                                 &= \mathbb{E}\left( \left[ \A \x + \b - \A \mathbb{E}(\x) - \b \right] \left[ \A \x + \b - \A \mathbb{E}(\x) - \b \right]^{\T} \right) \\
+                                                 &= \mathbb{E}\left( \left[ \A \x - \A \mathbb{E}(\x) \right] \left[ \A \x - \A \mathbb{E}(\x) \right]^{\T} \right) \\
+                                                 &= \mathbb{E}\left( \left[ \A \left( \x - \mathbb{E}[\x] \right) \right] \left[ \A \left( \x - \mathbb{E}[\x] \right) \right]^{\T} \right) \\
+                                                 &= \mathbb{E}\left( \A \left[\x - \mathbb{E}(\x) \right] \left[\x - \mathbb{E}(\x) \right]^{\T} \AT \right) \\
+                                                 &= \A \left[ \mathbb{E}\left( \left[\x - \mathbb{E}(\x) \right] \left[\x - \mathbb{E}(\x) \right]^{\T} \right) \right] \AT \\
+                            \bf{cov}(\A \x + \b) &= \A \bf{cov}(\x) \AT 
+                        \end{align*}
+                    \end{small}
+                \end{response}
         \end{enumerate}
 
     \item \bf{Multivariate derivatives.}
         \begin{enumerate}[itemsep=10pt]
             \item Let $\x \in \R^n, \y \in \R^m,$ and $\A \in \R^{n \times m}$. 
                 What is $\nabla_{\x} \x^{\T} \A \y$?
+                \begin{response}
+                    Setting $\bf{v} := \A \y$, we have
+                    \begin{align*}
+                        \nabla_{\x} \x^{\T} \A \y = \nabla_{\x} \x^{\T} \bf{v}  = \bf{v} = \A \y && \text{mat. cookbook } (69)
+                    \end{align*}
+                \end{response}
+
+                \newpage
             \item Let $\x \in \R^n, \y \in \R^m,$ and $\A \in \R^{n \times m}$. 
                 What is $\nabla_{\y} \x^{\T} \A \y$?
+                \begin{response}
+                    Setting $\bf{v}^{\T} := \x^{\T} \A$, we have
+                    \begin{align*}
+                        \nabla_{\y} \x^{\T} \A \y = \nabla_{\y} \bf{v}^{\T} \y = \bf{v} = \AT \x && \text{mat. cookbook } (69)
+                    \end{align*}
+                \end{response}
+
             \item Let $\x \in \R^n, \y \in \R^m,$ and $\A \in \R^{n \times m}$. 
                 What is $\nabla_{\A} \x^{\T} \A \y$?
+                \begin{response}
+                    Let
+                    \[s := \x^{\T} \A \y = \sum^{n}_{i = 1} \sum^{m}_{j = 1} x_i \cdot a_{ij} \cdot y_j\]
+                    where $s$ is a scalar. Then
+                    \[
+                        \nabla_{\A} \x^{\T} \A \y = 
+                        \begin{bmatrix}
+                            \frac{\partial s}{\partial a_{11}} & \frac{\partial s}{\partial a_{12}} & \cdots & \frac{\partial s}{\partial a_{1m}} \\
+                            \frac{\partial s}{\partial a_{21}} & \frac{\partial s}{\partial a_{22}} & \cdots & \frac{\partial s}{\partial a_{2m}} \\
+                            \vdots & \vdots & \ddots & \vdots \\
+                            \frac{\partial s}{\partial a_{n1}} & \frac{\partial s}{\partial a_{n2}} & \cdots & \frac{\partial s}{\partial a_{nm}}
+                        \end{bmatrix} =
+                        \begin{bmatrix}
+                            x_1 y_1 & x_1 y_2 & \cdots & x_1 y_m \\
+                            x_2 y_1 & x_2 y_2 & \cdots & x_2 y_m \\
+                            \vdots & \vdots & \ddots & \vdots \\
+                            x_n y_1 & x_n y_2 & \cdots & x_n y_m \\
+                        \end{bmatrix}
+                        = \x \y^{\T}
+                    \]
+                \end{response}
+
             \item Let $\x \in \R^n, \A \in \R^{n \times n},$ and let 
                 $f = \x^{\T} \A \x + \bf{b}^{\T} \x$. What is $\nabla_{\x} f$?
+                \begin{response}
+                    Note that $\bf{b}^{\T}$ is a constant with respect to $\x$. Then,
+                    \begin{align*}
+                        \nabla_{\x} f = (\A + \AT) \x + \bf{b} && \nabla_{\x} \x^{\T} \A \x = (\A + \AT) \x \text{ from lecture}
+                    \end{align*}
+                \end{response}
+
             \item Let $\A \in \R^{n \times n}, \B \in \R^{n \times n}$ and 
                 $f = \tr\left( \A \B \right)$. What is $\nabla_{\A} f$?
+                \begin{response}
+                    Note that
+                    \[f = \tr\left( \A \B \right) = \sum^{n}_{i = 1} \sum^{n}_{j = 1} a_{ij} \cdot b_{ji}\]
+                    Then, 
+                    \[
+                        \nabla_{\A} f =
+                        \begin{bmatrix}
+                            \frac{\partial f}{\partial a_{11}} & \frac{\partial f}{\partial a_{12}} & \cdots & \frac{\partial f}{\partial a_{1n}} \\
+                            \frac{\partial f}{\partial a_{21}} & \frac{\partial f}{\partial a_{22}} & \cdots & \frac{\partial f}{\partial a_{2n}} \\
+                            \vdots & \vdots & \ddots & \vdots \\
+                            \frac{\partial f}{\partial a_{n1}} & \frac{\partial f}{\partial a_{n2}} & \cdots & \frac{\partial f}{\partial a_{nn}}
+                        \end{bmatrix} = 
+                        \begin{bmatrix}
+                            b_{11} & b_{21} & \cdots & b_{n1} \\
+                            b_{12} & b_{22} & \cdots & b_{n2} \\
+                            \vdots & \vdots & \ddots & \vdots \\
+                            b_{1n} & b_{2n} & \cdots & b_{nn} \\
+                        \end{bmatrix} = \B^{\T}
+                    \]
+                \end{response}
+
+                \newpage
             \item Let $\A \in \R^{n \times n}, \B \in \R^{n \times n}$ and 
                 $f = \tr\left( \B \A + \AT \B + \A^2 \B \right)$. What is $\nabla_{\A} f$?
+                \begin{response}
+                    Note that since trace is linear, $\tr(\X + \Y) = \tr(\X) + \tr(\Y)$. Then
+                    \[
+                        \tr \left( \B \A + \AT \B + \A^2 \B \right) = 
+                        \tr \left( \B \A \right) + 
+                        \tr \left( \AT \B \right) + 
+                        \tr \left( \A^2 \B \right)
+                    \]
+                    and consider the following properties of trace:
+                    \begin{align*}
+                        \tr \left( \A \B \right) &= \tr \left( \B \A \right) \\
+                        \tr \left( \AT \right) &= \tr \left( \A \right)
+                    \end{align*}
+                    We can rewrite the equation as 
+                    \begin{align*}
+                        \tr \left( \B \A + \AT \B + \A^2 \B \right) &= 
+                        \tr \left( \B \A \right) + 
+                        \tr \left( \AT \B \right) + 
+                        \tr \left( \A^2 \B \right) \\
+                                                                    &= 
+                                                                    \tr \left( \A \B \right) + 
+                                                                    \tr \left( \AT \B \right) + 
+                                                                    \tr \left( \A^2 \B \right) \\
+                                                                    &= 
+                                                                    \tr \left( \A \B \right) + 
+                                                                    \tr \left( \AT \B \right) + 
+                                                                    \tr \left( \A \A \B \right)
+                    \end{align*}
+                    Then
+                    \begin{align*}
+                        \nabla_{\A} f &= 
+                        \nabla_{\A} \tr \left( \A \B \right) + 
+                        \nabla_{\A} \tr \left( \AT \B \right) + 
+                        \nabla_{\A} \tr \left( \A \A \B \right) \\
+                                      &= \B^{\T} + \B + (\A \B + \B \A)^{\T} && \text{mat. cookbook } (103), (107) \\
+                        \nabla_{\A} f &= \B^{\T} + \B + \B^{\T} \A^{\T} + \A^{\T} \B^{\T} \\
+                    \end{align*}
+                \end{response}
             \item Let $\A \in \R^{n \times n}, \B \in \R^{n \times n}$ and 
                 $f = \| \A + \lambda \B \|^{2}_{F}$. What is $\nabla_{\A} f$?
+                \begin{adjustwidth}{-7.7em}{-3em}
+                    \small{
+                        \begin{response}
+                            Note that
+                            \[f = \| \A + \lambda \B \|^{2}_{F} = \tr \left( \left[ \A + \lambda \B \right] \left[ \A + \lambda \B \right]^{\bf{H}} \right)\]
+                            Then
+                            \begin{align*}
+                                \nabla_{A} \| \A + \lambda \B \|^{2}_{F} \| 
+                        &= \nabla_{\A} \tr \left( \left[ \A + \lambda \B \right] \left[ \A + \lambda \B \right]^{\bf{H}} \right) \\
+                        &= \nabla_{\A} \tr \left( \left[ \A + \lambda \B \right] \left[ \A + \lambda \B \right]^{\T} \right) && \X \in \R \to \X^{\bf{H}} = \AT \\
+                        &= \nabla_{\A} \tr \left( \left[ \A + \lambda \B \right] \left[ \AT + \lambda^{\T} \B^{\T} \right] \right) \\ 
+                        &= \nabla_{\A} \tr \left( \A \AT + \lambda \B \AT + \A \lambda \B^{\T}  + \lambda^2 \B \B^{\T} \right ) && \lambda^{\T} = \lambda \\
+                        &= 
+                        \nabla_{\A} \tr \left( \A \AT \right) +
+                        \nabla_{\A} \tr \left( \lambda \B \AT \right) +
+                        \nabla_{\A} \tr \left( \A \lambda \B^{\T} \right) +
+                        \nabla_{\A} \tr \left( \lambda^2 \B \B^{\T} \right) \\
+                        &= 
+                        \nabla_{\A} \tr \left( \A \AT \right) +
+                        \nabla_{\A} \lambda \tr \left( \left[ \B \A^{\T} \right]^{\T} \right) +
+                        \nabla_{\A} \lambda \tr \left( \A \B^{\T} \right) +
+                        0
+                        && \tr \left( \X \right) = \tr \left( \X^{\T}\right) \\
+                        &= 
+                        \nabla_{\A} \tr \left( \A \AT \right) +
+                        \nabla_{\A} \tr \left( \lambda \B \AT \right) +
+                        \nabla_{\A} \tr \left( \lambda \B \AT \right) \\
+                        &= 
+                        \nabla_{\A} \tr \left( \A \AT \right) +
+                        \nabla_{\A} 2 \lambda \tr \left( \B \AT \right) \\
+                        &= 2 \A + 2 \lambda \B \\
+                                \nabla_{A} \| \A + \lambda \B \|^{2}_{F} \| &= 2 \left( \A + \lambda \B \right) 
+                            \end{align*}
+                        \end{response}
+                    }
+                \end{adjustwidth}
         \end{enumerate}
 
+        \newpage
     \item \bf{Deriving least-squares with matrix derivatives.} 
         \newline
         In least-squares, we seek to estimates some multivariate output $\y$ via the model
@@ -361,14 +576,129 @@
         Derive the optimal $\W$. \vspace{10pt}
 
         Where $\W$ is a matrix, and for each example in the training set, both $\x^{(i)}$ and 
-        $\y^{(i)} \forall i = 1, \ldots, n$ are vectors.
+        $\y^{(i)} \ \forall i = 1, \ldots, n$ are vectors.
         \newline
         Hint: you may find the following derivatives useful:
         \begin{align*}
-            \frac{\partial \tr \left( \W \A \right)}{\partial \W} &= \AT \\
-            \frac{\partial \tr \left( \W \A \W^{\T} \right)}{\partial W} &= \W \AT + \W \A
+            \frac{\partial \tr \left( \W \A \right)}{\partial \W} &= \AT  && (1) \\
+            \frac{\partial \tr \left( \W \A \W^{\T} \right)}{\partial \W} &= \W \AT + \W \A && (2)
         \end{align*}
 
+        \begin{adjustwidth}{-8.4em}{-6em}
+            \small{
+                \begin{response}
+                    We can rewrite $\frac{1}{2} \sum^{n}_{i = 1} \left\| \y^{(i)} - \W \x^{(i)} \right\|^2$
+                    by writing $\x^{(i)}$ and $\y^{(i)}$ in matrix form to get
+                    \[
+                        \X := 
+                        \begin{bmatrix}
+                            \x^{(1)} \\
+                            \x^{(2)} \\
+                            \vdots \\
+                            \x^{(n)}
+                        \end{bmatrix},
+                        \Y :=
+                        \begin{bmatrix}
+                            \y^{(1)} \\
+                            \y^{(2)} \\
+                            \vdots \\
+                            \y^{(n)}
+                        \end{bmatrix}
+                    \]
+                    % Taking the gradient with respect to $\W$, we get
+                    % \begin{align*}
+                    %     \nabla_{\W} \frac{1}{2} \sum^{n}_{i = 1} \left\| \y^{(i)} - \W \x^{(i)} \right\|^2 
+                    %     &= \nabla_{\W} \frac{1}{2} \sum^{n}_{i = 1} \left\| \y^{(i)} - \W \x^{(i)} \right\|^2 \\
+                    %     &= \nabla_{\W} \frac{1}{2} \sum^{n}_{i = 1} \left\| \y^{(i)} - \W \x^{(i)} \right\|^2 \\
+                    %     &= \nabla_{\W} \frac{1}{2} \sum^{n}_{i = 1} \left( \y^{(i)} - \W \x^{(i)} \right)^{\T} \left( \y^{(i)} - \W \x^{(i)} \right) \\
+                    %     &= \nabla_{\W} \frac{1}{2} \sum^{n}_{i = 1} \left( \left[ \y^{(i)} \right]^{\T} - \left[ \x^{(i)} \right]^{\T} \W^{\T} \right) \left( \y^{(i)} - \W \x^{(i)} \right) \\
+                    %     &= \nabla_{\W} \frac{1}{2} \sum^{n}_{i = 1} \left[ \y^{(i)} \right]^{\T} \y^{(i)} 
+                    %     - \left[ \x^{(i)} \right]^{\T} \W^{\T} \y^{(i)}
+                    %     - \left[ \y^{(i)} \right]^{\T} \W \x^{(i)}
+                    %     + \left[ \x^{(i)} \right]^{\T} \W^{\T} \W \x^{(i)} \\
+                    %     &= \left\| \y^{(i)} \right\|
+                    % \end{align*}
+
+                    Then
+                    \[\frac{1}{2} \sum^{n}_{i = 1} \left\| \y^{(i)} - \W \x^{(i)} \right\|^2 = \frac{1}{2} \left\| \Y - \W \X \right\|^2 \]
+                    where
+                    \begin{align*}
+                        \left\| \Y + \W \X \right\|^{2}_{F} = \tr \left( \left[ \Y + \W \X \right] \left[ \Y + \W \X \right]^{\bf{H}} \right) && \text{mat. cookbook } (541)
+                    \end{align*}
+                    Taking the gradient with respect to $\W$, we get
+                    \begin{align*}
+                        \nabla_{\W} \frac{1}{2} \left\| \Y - \W \X \right\|^2
+                                    &= \nabla_{\W} \frac{1}{2} \tr \left( \left[ \Y - \W \X \right] \left[ \Y - \W \X \right]^{\bf{H}} \right) \\
+                                    &= \nabla_{\W} \frac{1}{2} \tr \left( \left[ \Y - \W \X \right] \left[ \Y - \W \X \right]^{\T} \right) && \A \in \R \to \A^{\bf{H}} = \AT\\
+                                    &= \nabla_{\W} \frac{1}{2} \tr \left( \left[ \Y - \W \X \right] \left[ \Y^{\T} - \X^{\T} \W^{\T} \right] \right) \\
+                                    &= \nabla_{\W} \frac{1}{2} \tr \left( \Y \Y^{\T} - \W \X \Y^{\T} - \Y \X^{\T} \W^{\T} - \W \X \X^{\T} \W^{\T} \right) \\
+                                    &= 
+                                    \frac{1}{2} 
+                                    \left[
+                                        \nabla_{\W} \tr \left( \Y \Y^{\T} \right) -
+                                        \nabla_{\W} \tr \left( \W \X \Y^{\T} \right) -
+                                        \nabla_{\W} \tr \left( \Y \X^{\T} \W^{\T} \right) +
+                                        \nabla_{\W} \tr \left( \W \X \X^{\T} \W^{\T} \right)
+                                    \right] \\
+                                    &= 
+                                    \frac{1}{2} 
+                                    \left[
+                                        0 + 
+                                        \nabla_{\W} \tr \left( \W \X \Y^{\T} \right) -
+                                        \nabla_{\W} \tr \left( \W \X \Y^{\T} \right) +
+                                        \nabla_{\W} \tr \left( \W \X \X^{\T} \W^{\T} \right)
+                                    \right] \\
+                                    &= 
+                                    \frac{1}{2} 
+                                    \left[
+                                        -2 \nabla_{\W} \tr \left( \W \X \Y^{\T} \right) +
+                                        \nabla_{\W} \tr \left( \W \X \X^{\T} \W^{\T} \right)
+                                    \right] \\
+                                    &= 
+                                    \frac{1}{2} 
+                                    \left[
+                                        -2 \Y \X^{\T} +
+                                        \nabla_{\W} \tr \left( \W \X \X^{\T} \W^{\T} \right) 
+                                    \right]
+                                    && \A := \X \Y^{\T} \to (1) \\
+                                    &= 
+                                    \frac{1}{2}
+                                    \left[
+                                        -2 \Y \X^{\T} +
+                                        \W \left( \X \X^{\T} \right)^{\T} + \W \left( \X \X^{\T} \right)
+                                    \right]
+                                    && \A := \X \X^{\T} \to (2) \\
+                                    &= 
+                                    \frac{1}{2}
+                                    \left[
+                                        -2 \Y \X^{\T} +
+                                        \W \left( \X^{\T} \right)^{\T} \X^{\T} + \W \X \X^{\T} 
+                                    \right]
+                                    \\
+                                    &= 
+                                    \frac{1}{2}
+                                    \left[
+                                        -2 \Y \X^{\T} +
+                                        \W \X \X^{\T} + \W \X \X^{\T} 
+                                    \right] \\
+                                    &= \frac{1}{2} \left( -2 \Y \X^{\T} + 2 \W \X \X^{\T} \right) \\
+                                    \nabla_{\W} \frac{1}{2} \left\| \Y - \W \X \right\|^2
+                                    &= \left( -\Y + \W \X \right) \X^{\T}
+                    \end{align*}
+                    Then, setting $\nabla_{\W} \frac{1}{2} \left\| \Y - \W \X \right\|^2 = 0$, we
+                    get
+                    \begin{align*}
+                        0 &= \nabla_{\W} \frac{1}{2} \left\| \Y - \W \X \right\|^2 \\
+                        0 &= -\Y \X^{\T} + \W \X \X^{\T} \\
+                        \W \X \X^{\T} &= \Y \X^{\T} \\
+                        \W \left( \X \X^{\T} \right) \left( \X \X^{\T} \right)^{-1} &= \Y \X^{\T} \left( \X \X^{\T} \right)^{-1} \\
+                        \W &= \Y \X^{\T} \left( \X \X^{\T} \right)^{-1} \\
+                    \end{align*}
+                \end{response}
+            }
+        \end{adjustwidth}
+
+        \newpage
     \item \bf{Regularized least squares} \vspace{10pt}
 
         In lecture, we worked through the following least squares problem
@@ -379,8 +709,105 @@
         is also known as the regularized least squares problem. In the regularized least 
         squares we solve the following optimization problem
         \[\arg \underset{\theta}{\min} \text{ } \frac{1}{2} \sum^{N}_{i = 1} (y^{(i)} - \theta^T \hat{\x}^{(i)})^2 + \frac{\lambda}{2} \|\theta\|^2_2\]
-        where $\lambda$ is a unable regularization parameter. From the above cost function it 
+        where $\lambda$ is a tunable regularization parameter. From the above cost function it 
         can be observed that we are seeking least squares solution with a smaller 2-norm. 
         Derive the solution to the regularized least squares problem, i.e Find $\theta^*$.
+        \begin{adjustwidth}{-8.4em}{-6em}
+            \begin{response}
+                Note that from lecture, 
+                \[
+                    \arg \underset{\theta}{\min} \text{ } \frac{1}{2} \sum^{N}_{i = 1} (y^{(i)} - \theta^T \hat{\x}^{(i)})^2 
+                    = \frac{1}{2} \left( \y - \X \theta \right)^{\T} \left( \y - \X \theta \right)
+                \]
+                Then define $f$ to be
+                \[ 
+                    f := \arg \underset{\theta}{\min} \text{ } \frac{1}{2} \sum^{N}_{i = 1} (y^{(i)} - \theta^T \hat{\x}^{(i)})^2 + \frac{\lambda}{2} \|\theta\|^2_2
+                \]
+                From the matrix cookbook,
+                \begin{align*}
+                    \nabla_{\x} \x^{\T} \bf{a} &= \nabla_{\x} \bf{a}^{\T} \x = \bf{a} && (69) \\
+                    \nabla_{\X} \tr \left( \X^{\T} \A \X \right) &= \X \AT + \X \A && (108)
+                \end{align*}
+                Then,
+                \begin{align*}
+                    \nabla_{\theta} f
+                &= \nabla_{\theta} \frac{1}{2} \left[ \left( \y - \X \theta \right)^{\T} \left( \y - \X \theta \right) + \lambda \|\theta\|^2_2 \right] \\
+                &= \nabla_{\theta} \frac{1}{2} \left[ \left( \y^{\T} - \theta^{\T} X^{\T} \right) \left( \y - \X \theta \right) + \lambda \|\theta\|^2_2 \right] \\
+                &= \nabla_{\theta} 
+                \frac{1}{2} 
+                \left[
+                    \y^{\T} \y 
+                    - \theta^{\T} \X^{\T} \y
+                    - \y^{\T} \X \theta 
+                    + \theta^{\T} \X^{\T} \X \theta
+                    + \lambda \|\theta\|^2_2 
+                \right] \\
+                &= \frac{1}{2} 
+                \left[
+                    \nabla_{\theta} \left( \y^{\T} \y \right)
+                    - \nabla_{\theta} \left( \theta^{\T} \X^{\T} \y \right)
+                    - \nabla_{\theta} \left( \y^{\T} \X \theta  \right)
+                    + \nabla_{\theta} \left( \theta^{\T} \X^{\T} \X \theta \right)
+                    + \nabla_{\theta} \left( \lambda \theta^{\T} \theta \right)
+                \right] \\
+                &= \frac{1}{2} 
+                \left[ 
+                    0 
+                    - \X^{\T} \y
+                    - \nabla_{\theta} \left( \y^{\T} \X \theta \right)
+                    + \nabla_{\theta} \left( \theta^{\T} \X^{\T} \X \theta \right)
+                    + \nabla_{\theta} \lambda \left( \theta^{\T} \theta \right)
+                \right]
+                && \bf{a} := \X^{\T} \y \to (69) \\
+                &= \frac{1}{2} 
+                \left[ 
+                    - \X^{\T} \y
+                    - \X^{\T} \y
+                    + \nabla_{\theta} \left( \theta^{\T} \X^{\T} \X \theta \right)
+                    + \nabla_{\theta} \lambda \left( \theta^{\T} \theta \right)
+                \right]
+                && \bf{a}^{\T} := \y^{\T} \X \to (69) \\
+                &= \frac{1}{2} 
+                \left[ 
+                    - 2 \X^{\T} \y
+                    + \left( \X^{\T} \X \right)^{\T} \theta + \X^{\T} \X \theta
+                    + \nabla_{\theta} \lambda \left( \theta^{\T} \theta \right)
+                \right]
+                && \bf{a} := \theta^{\T} \X^{\T} \X, \bf{a}' := \X^{\T} \X \theta \to (69) \\
+                &= \frac{1}{2} 
+                \left[ 
+                    - 2 \X^{\T} \y
+                    + 2 \left( \X^{\T} \X \right)^{\T} \theta + \X^{\T} \X \theta
+                    + 2 \lambda \theta
+                \right]
+                && (69) \\
+                &= \frac{1}{2} 
+                \left[ 
+                    - 2 \X^{\T} \y
+                    + 2 \X^{\T} \X \theta + \X^{\T} \X \theta
+                    + 2 \lambda \theta
+                \right] \\
+                &= \frac{1}{2} 
+                \left[ 
+                    - 2 \X^{\T} \y
+                    + 2 \X^{\T} \X \theta
+                    + 2 \lambda \theta
+                \right] \\
+                \nabla_{\theta} f
+                &= 
+                - \X^{\T} \y
+                + \X^{\T} \X \theta
+                + \lambda \theta
+                \end{align*}
+
+                Then, setting $\nabla_{\theta} f = - \X^{\T} \y + \X^{\T} \X \theta + \lambda \theta = 0$, we get
+                \begin{align*}
+                    0 &= -\X^{\T} \y + \X^{\T} \X \theta + \lambda \theta \\
+                    0 &= -\X^{\T} \y + \left( \X^{\T} \X + \lambda \bf{I} \right) \theta \\
+                    \left( \X^{\T} \X + \lambda \bf{I} \right)^{-1} \X^{\T} \y &= \left( \X^{\T} \X + \lambda \bf{I} \right)^{-1} \left( \X^{\T} \X + \lambda \bf{I} \right) \theta \\
+                    \theta &= \left( \X^{\T} \X + \lambda \bf{I} \right)^{-1} \X^{\T} \y
+                \end{align*}
+            \end{response}
+        \end{adjustwidth}
 \end{enumerate}
 \end{document}
