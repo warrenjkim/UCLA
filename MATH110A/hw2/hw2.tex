@@ -1,0 +1,108 @@
+\documentclass [12pt] {article}
+
+\newtheorem{exercise}{Exercise}[section]
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{problem}{Problem}
+\newtheorem{solution}{Solution}
+\newtheorem{cor}{Corollary}[section]
+\newtheorem{prop}{Proposition}[section]
+\newtheorem{rmk}{Remark}[section]
+\newtheorem{conj}{Conjecture}[section]
+\usepackage{amsfonts}      
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[margin=0.75in]{geometry} 
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newenvironment{proof}{\paragraph{Proof:}}{\hfill$\square$}
+\setlength\parindent{0pt}
+
+
+
+
+\title{110A HW2}
+\author{Warren Kim}
+\date{Winter 2024}
+
+\begin{document}
+
+\maketitle
+
+\section*{Question 1}
+Let $n\in\Z$ be positive. Show that $n$ is divisible by $9$ if and only if the sum of the digits of $n$ (in base $10$) is divisible by $9$. 
+
+\subsection*{Response}
+\begin{proof}
+    ($\implies$) Suppose $n$ is divisible by 9. Then, $n = 9m$ for some $m \in \Z$.
+\end{proof}
+\newpage
+
+\section*{Question 2}
+Let $[a]\in\Z/n$ be nonzero. Show that precisely one of the follow hold: 
+\begin{enumerate}
+    \item There exists nonzero $[b]\in\Z/n$ such that $[a][b]=[0]$.
+    \item There exists $[c]\in\Z/n$ such that $[a][c]=[1]$.
+\end{enumerate}
+[hint: think about $(a,n)$.]
+
+\subsection*{Response}
+\newpage
+
+\section*{Question 3}
+Suppose $[a],[b]\in\Z/n$ such that $[a]\neq [0]$. Suppose $[ax]=[b]$ has no solution. Show that we 
+can find $b$ such that $[ab]=[0]$. 
+
+\subsection*{Response}
+\begin{proof}
+    Suppose $[a], [b] \in \Z/n$ such that $[a] \neq [0]$ and $[ax] = [b]$ has no solutions. Then,
+    \begin{align*}
+        [ax] &= [b] \\
+    \end{align*}
+\end{proof}
+\newpage
+
+\section*{Question 4}
+Prove the general case of the Chinese remainder theorem: 
+
+\begin{theorem}[Chinese Remainder Theorem, more general]
+    Let $m_1,\cdots,m_1\in\Z$ be positive and pairwise relatively prime (i.e., $(m_i,m_j)=1$ when $i\neq j$). Let $a_1,\cdots,a_n\in \Z$. We can find $x$ such that 
+    \begin{align*}
+        x &\equiv a_1\mod m_1 \\
+        x &\equiv a_2\mod m_2 \\
+        &\vdots \\
+        x &\equiv a_n\mod m_n\,.
+    \end{align*}
+    Moreover, if $y$ is another solution, then $y\equiv x\mod m_1m_2\cdots m_n$
+\end{theorem}
+[Hint: the simple version of the Chinese remainder theorem can be useful here.]
+
+\subsection*{Response}
+\newpage
+
+\section*{Question 5}
+ A gang of 17 bandits stole a chest of gold coins.
+When they tried to divide the coins equally among themselves, there were three left over. This caused a fight in which one bandit was killed. When the remaining bandits tried to divide the coins again, there were ten left over.
+Another fight started, and five of the bandits were killed. When the survivor divided the coins, there were four left over. Another fight ensued in which four bandits were killed. The survivors then divided the coins equally among themselves, with none left over. What is the smallest possible number of coins in the chest? 
+% [Credit: Hungerford 14.1.14]
+
+\subsection*{Response}
+\newpage
+
+\section*{Question 6}
+Let $d=(m,n)$, where $m,n\in\Z$ are positive. Show that the following system 
+\begin{align*}
+    x& \equiv a\mod m \\
+    x& \equiv b\mod n
+\end{align*}
+has a solution if and only if $a\equiv b\mod d$.
+
+\subsection*{Response}
+\newpage
+
+\end{document}
+
