@@ -128,11 +128,15 @@ this relation is Facility ($A$).
         this is not correct. \bf{Hint:} Think about what this might imply about each 
         attribute in the primary key and what data integrity issues can arise. \vspace{2pt}
 
-        \bf{Response:} If either EmployeeID or UID change for any reason, we would have to update
-        all relations that use the composite key as a foreign key, increasing the risk of errors. 
-        This makes maintaining consistency across all relations more complex. If at least one of
-        the relations' foreign keys (that link to the composite key) are not updated properly, we 
-        break referential integrity.
+        \bf{Response:} Because \tt{Employee} and \tt{Facility} are related, if we use the chosen
+        composite key, there is no possible foreign key from \tt{Facility} into \tt{Employee} since 
+        \tt{Facility} does not have a \tt{UID} attribute. So, referential integrity is broken and
+        the two relations can no longer be linked by a foreign key.
+        % If either EmployeeID or UID change for any reason, we would have to update
+        % all relations that use the composite key as a foreign key, increasing the risk of errors. 
+        % This makes maintaining consistency across all relations more complex. If at least one of
+        % the relations' foreign keys (that link to the composite key) are not updated properly, we 
+        % break referential integrity.
 
     \item Identify all foreign keys in context of the problem (assume that all tables have more 
         rows). How do these foreign keys help us ensure referential integrity in this context? Note 
@@ -140,6 +144,7 @@ this relation is Facility ($A$).
 
         \bf{Response:} Let $\cal{E}, \cal{F}$ be the relations for \tt{Employee}, \tt{Facility} 
         respectively. Then $D \in \cal{E}$ and $B \in \cal{F}$ are foreign keys into $A \in \cal{E}$.
+        Also, $A \in \cal{E}$ is a foreign key into $B \in \cal{F}$.
         By the problem statement, a ManagerID \it{is} an EmployeeID. Therefore, we ensure referential
         integrity because if we reference a ManagerID $\alpha$ in either relation, the employee 
         with EmployeeID $\alpha$ must exist in \tt{Employee}.
@@ -253,4 +258,11 @@ primary keys were intentionally withheld in the specification above).
                         \draw[->] ([yshift=0pt]$(Order.east)$) -- ([yshift=5pt]$(Restaurant.west)$);
     \end{tikzpicture}
 \end{center}
+The primary key for \tt{Order} is \tt{order\_id}. \\
+The primary key for \tt{User} is \tt{user\_id}. \\
+The primary key for \tt{Robot} is \tt{robot\_id}. \\
+The primary key for \tt{Restaurant} is \tt{restaurant\_id}. \\
+\tt{user} in \tt{Order} is a foreign key into \tt{user\_id} in \tt{User}. \\
+\tt{robot} in \tt{Order} is a foreign key into \tt{robot\_id} in \tt{Robot}. \\
+\tt{restaurant} in \tt{Order} is a foreign key into \tt{restaurant\_id} in \tt{Restaurant}. \\
 \end{document}
