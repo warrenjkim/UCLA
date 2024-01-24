@@ -13,6 +13,7 @@
 \usepackage{amsfonts}      
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{enumitem}
 \usepackage[margin=0.75in]{geometry} 
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\Z}{\mathbb{Z}}
@@ -38,7 +39,27 @@ Let $n\in\Z$ be positive. Show that $n$ is divisible by $9$ if and only if the s
 
 \subsection*{Response}
 \begin{proof}
-    ($\implies$) Suppose $n$ is divisible by 9. Then, $n = 9m$ for some $m \in \Z$.
+    ($\implies$) Suppose $n$ is divisible by 9. Let 
+    $n = n_0 + n_1 10^1 + \cdots + n_k 10^k$ be the string representation of $n$ where $n_i$ is a
+    digit from 0 to 9. Then
+    \begin{align*}
+        n &\equiv 0 \pmod{9} \\
+        n_0 + n_1 10^1 + \cdots + n_k 10^k &\equiv 0 \pmod{9} \\
+        n_0 + n_1 1^1 + \cdots + n_k 1^k &\equiv 0 \pmod{9} && 10 \equiv 1 \pmod{9} \\
+        n_0 + n_1 + \cdots + n_k &\equiv 0 \pmod{9}
+    \end{align*}
+    So the sum of the digits of $n$ is divisible by 9.
+    \newline
+    ($\impliedby$) Suppose the sum of the digits of $n$ is divisible by 9. Let
+    $n = n_0 + n_1 10^1 + \cdots + n_k 10^k$ be the string representation of $n$ where $n_i$ is a
+    digit from 0 to 9. Then
+    \begin{align*}
+        n &\equiv 0 \pmod{9} \\
+        n_0 + n_1 + \cdots + n_k &\equiv 0 \pmod{9} \\
+        n_0 + n_1 1^1 + \cdots + n_k 1^k &\equiv 0 \pmod{9} \\
+        n_0 + n_1 10^1 + \cdots + n_k 10^k &\equiv 0 \pmod{9} && 1 \equiv 10 \pmod{9} 
+    \end{align*}
+    So $n$ is divisible by 9.
 \end{proof}
 \newpage
 
@@ -51,18 +72,38 @@ Let $[a]\in\Z/n$ be nonzero. Show that precisely one of the follow hold:
 [hint: think about $(a,n)$.]
 
 \subsection*{Response}
+\begin{proof}
+    Suppose $[a] \in \Z/n$ is nonzero. There are two cases:
+    \begin{enumerate}[label=\it{Case \roman*:},leftmargin=*]
+        \item If $(a, n) \neq 1$, then $ax + ny = d$ for some $x, y, d \in \Z$ where $d \neq 1$. 
+            We can write $[ab + ny] = [ab] + [ny] = [d]$. But since $[ny] = [n][y] = [0]$, we have
+            $[ab] = [a][b] = [d]$. Recall that $d | n$. Then we can write $d = nm$ for some 
+            $m \in \Z$. Then $[a][b] = [nm] = [0]$, so there exists $[b] \in \Z/n$ such that
+            $[a][b] = [0]$.
+        \item If $(a, n) = 1$, then $ac + ny = 1$ for some $c, y \in \Z$. We can write
+            $[ac + ny] = [ac] + [ny] = [1]$. But since $[ny] = [n][y] = [0]$, we have
+            $[ac] = [a][c] = [1]$, so there exists $[c] \in \Z/n$ such that $[a][c] = [1]$.
+    \end{enumerate}
+\end{proof}
 \newpage
 
 \section*{Question 3}
 Suppose $[a],[b]\in\Z/n$ such that $[a]\neq [0]$. Suppose $[ax]=[b]$ has no solution. Show that we 
-can find $b$ such that $[ab]=[0]$. 
+can find $c$ such that $[ac]=[0]$. 
 
 \subsection*{Response}
 \begin{proof}
-    Suppose $[a], [b] \in \Z/n$ such that $[a] \neq [0]$ and $[ax] = [b]$ has no solutions. Then,
+    Suppose $[a], [b] \in \Z/n$ such that $[a] \neq [0]$ and $[ax] = [b]$ has no solutions. Then
+    assume for the sake of contradiction that there does not exist a $c$ such that $[a][c] = [0]$.
+    Then (from \textbf{Question 2}, there exists a $c$ such that $[a][c] = [1]$. Then,
     \begin{align*}
-        [ax] &= [b] \\
+        [a][c] &= [1] \\
+        [a][c][b] &= [1][b] \\
+        [a][cb] &= [b] && [p][q] = [pq] \\
+        [a(cb)] &= [b] && [p][q] = [pq]
     \end{align*}
+    Setting $[x] = [cb]$, we can see that there is a solution to the equation $[ax] = [b]$, a 
+    contradiction. Therefore, there must exist a $b$ such that $[ab] = [0]$.
 \end{proof}
 \newpage
 
@@ -70,7 +111,7 @@ can find $b$ such that $[ab]=[0]$.
 Prove the general case of the Chinese remainder theorem: 
 
 \begin{theorem}[Chinese Remainder Theorem, more general]
-    Let $m_1,\cdots,m_1\in\Z$ be positive and pairwise relatively prime (i.e., $(m_i,m_j)=1$ when $i\neq j$). Let $a_1,\cdots,a_n\in \Z$. We can find $x$ such that 
+    Let $m_1,\cdots,m_n\in\Z$ be positive and pairwise relatively prime (i.e., $(m_i,m_j)=1$ when $i\neq j$). Let $a_1,\cdots,a_n\in \Z$. We can find $x$ such that 
     \begin{align*}
         x &\equiv a_1\mod m_1 \\
         x &\equiv a_2\mod m_2 \\
@@ -82,15 +123,49 @@ Prove the general case of the Chinese remainder theorem:
 [Hint: the simple version of the Chinese remainder theorem can be useful here.]
 
 \subsection*{Response}
+\begin{proof}
+    We will induct on $n \in \N$. 
+    \newline
+    \textbf{Base case:} At $n = 2$, we have $m_1, m_2 \in \Z$ where $(m_1, m_2) = 1$. Then, we can 
+    find $p, q \in \Z$ such that $m_1 p + m_2 q = 1$. Then, because $m_2 q \equiv 0 \pmod{m_2}$, we 
+    have $m_1 \equiv 1 \pmod{m_2}$. Similarly, $m_2 \equiv 1 \pmod{m_1}$. Consider 
+    $x = (m_2 q)a_1 + (m_1 p)a_2$ for $a_1, a_2 \in \Z$. Then, since $(m_2 q)a_1 \equiv 0 \pmod{m_2}$, we have
+    $x \equiv (m_1 p)a_2 \equiv a_2 \pmod{m_2}$. Similarly, $x \equiv (m_2 q)a_1 \equiv a_1 \pmod{m_1}$.
+    So, $x \equiv a_1 \pmod{m_1}$ and $x \equiv a_2 \pmod{m_2}$. Now suppose $y$ is another solution.
+    Then, we have $y \equiv x \pmod{m}$, which implies that $y - x$ is a multiple of $m_1$. Similarly,
+    $y - x$ is a multiple of $m_2$. Then because $(m_1, m_2) = 1$, we have that $y - x$ is a 
+    multiple of $m_1 m_2$, so $y \equiv x \pmod{m_1 m_2}$. \vspace{12pt}
+
+    \textbf{Inductive step:} At $n = n + 1$, we have $m_1, m_2 \in \Z$ where $(m_1, m_2) = 1$. Then
+    by the inductive hypothesis, we have $x = a_1 + r_1 m_1 = \cdots = a_n + r_n m_n$ where 
+    $r_i \in \Z$. Define $M = \prod^{n}_{i = 1} m_i$ and consider $x' = x + sM$ for some $s \in \Z$. 
+    Then $x' \equiv x + sM \equiv a_i \pmod{m_i}$ since $m_i | M$ for $i = 1, \cdots, n$. Now consider,
+    $x' \equiv x + sM \equiv a_{n + 1} \pmod{m_{n + 1}}$, so $x' \equiv a_{n + 1} \pmod{m_{n + 1}}$.
+    Now suppose $y$ is another solution. Then $y \equiv x \pmod{m}$, which implies that $y - x$ is a
+    multiple of $m_i$ for $i = 1, \cdots, n + 1$. Because $(m_i, m_j) = 1$ for $i \neq j$,
+    $i, j = 1, \cdots, n + 1$, we have $y \equiv x \pmod{m_1 m_2 \cdots m_{n + 1}}$.
+\end{proof}
 \newpage
 
 \section*{Question 5}
- A gang of 17 bandits stole a chest of gold coins.
+A gang of 17 bandits stole a chest of gold coins.
 When they tried to divide the coins equally among themselves, there were three left over. This caused a fight in which one bandit was killed. When the remaining bandits tried to divide the coins again, there were ten left over.
 Another fight started, and five of the bandits were killed. When the survivor divided the coins, there were four left over. Another fight ensued in which four bandits were killed. The survivors then divided the coins equally among themselves, with none left over. What is the smallest possible number of coins in the chest? 
 % [Credit: Hungerford 14.1.14]
 
 \subsection*{Response}
+From the problem statement, we have the following system of equations:
+\begin{align*}
+    x &\equiv 3 \pmod{17} \\
+    x &\equiv 10 \pmod{16} \\
+    x &\equiv 4 \pmod{11} \\
+    x &\equiv 0 \pmod{7}
+\end{align*}
+By the Chinese Remainder Theorem, we have $y \equiv x \pmod{17 \cdot 16 \cdot 11 \cdot 7} \to
+y \equiv x \pmod{20944}$. We can rewrite this as $y - x = 20944q$. Solving for $x$, we get that
+$x = \sum^{n}_{i = 1} a_1 \cdot M_i \cdot M_i^{-1}$ where 
+$M := \prod^{n}_{i = 1} m_i = 17 \cdot 16 \cdot 11 \cdot 7 = 20944$, $a_i$ is the remainder of $m_i$, 
+and $M_i := M / m_i$. Then we get 
 \newpage
 
 \section*{Question 6}
@@ -102,6 +177,38 @@ Let $d=(m,n)$, where $m,n\in\Z$ are positive. Show that the following system
 has a solution if and only if $a\equiv b\mod d$.
 
 \subsection*{Response}
+\begin{proof}
+    ($\implies$) Suppose the following system of equations
+    \begin{align*}
+        x &\equiv a \mod m \\
+        x &\equiv b \mod n
+    \end{align*}
+    has an equation. Then $x = a + mp = b + nq$ for some 
+    $p, q \in \Z$. Then
+    \begin{align*}
+        a + mp &= b + nq \\
+        a - b &= nq - mp \\
+        a - b &= -(mp + nq)
+    \end{align*}
+    Since $d | -(mp + nq)$, we have that $d | a - b$, or $a - b = dt$ for some $t \in \Z$. This is
+    equivalent to writing $a \equiv b \pmod{d}$.
+    \newline
+    ($\impliedby$) Suppose $a \equiv b \pmod{d}$. We can rewrite this as $a - b = dt$ for some 
+    $t \in \Z$. Then 
+    \begin{align*}
+        a - b &= dt \\
+              &= (mp' + nq')t && (m, n) = d \iff mp' + nq' = d, p', q' \in \Z \\
+        a - b &= (mp')t + (nq')t \\
+        a + (-mp')t &= b + (nq')t \\
+        a + mp &= b + nq && p := -p't, q := q't \\
+    \end{align*}
+    Setting $x = a + mp = b + nq$, we have $x - a = mp$ and $x - b = nq$ for some $p, q \in \Z$.
+    Then we have the following system of equations:
+    \begin{align*}
+        x &\equiv a \mod m \\
+        x &\equiv b \mod n
+    \end{align*}
+\end{proof}
 \newpage
 
 \end{document}
