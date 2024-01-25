@@ -75,7 +75,7 @@ Let $[a]\in\Z/n$ be nonzero. Show that precisely one of the follow hold:
 \begin{proof}
     Suppose $[a] \in \Z/n$ is nonzero. There are two cases:
     \begin{enumerate}[label=\it{Case \roman*:},leftmargin=*]
-        \item If $(a, n) \neq 1$, then $ax + ny = d$ for some $x, y, d \in \Z$ where $d \neq 1$. 
+        \item If $(a, n) \neq 1$, then $ax + ny = d$ for some $x, y, d \in \Z$ where $(a, n) = d \neq 1$. 
             We can write $[ab + ny] = [ab] + [ny] = [d]$. But since $[ny] = [n][y] = [0]$, we have
             $[ab] = [a][b] = [d]$. Recall that $d | n$. Then we can write $d = nm$ for some 
             $m \in \Z$. Then $[a][b] = [nm] = [0]$, so there exists $[b] \in \Z/n$ such that
@@ -95,15 +95,15 @@ can find $c$ such that $[ac]=[0]$.
 \begin{proof}
     Suppose $[a], [b] \in \Z/n$ such that $[a] \neq [0]$ and $[ax] = [b]$ has no solutions. Then
     assume for the sake of contradiction that there does not exist a $c$ such that $[a][c] = [0]$.
-    Then (from \textbf{Question 2}, there exists a $c$ such that $[a][c] = [1]$. Then,
+    Then (from \textbf{Question 2}, there exists a $c$ such that $[ac] = [a][c] = [1]$. Then,
     \begin{align*}
-        [a][c] &= [1] \\
-        [a][c][b] &= [1][b] \\
-        [a][cb] &= [b] && [p][q] = [pq] \\
-        [a(cb)] &= [b] && [p][q] = [pq]
+        [ac] &= [1] \\
+        [ac][b] &= [1][b] \\
+        [a(cb)] &= [b] && [p][q] = [pq] \\
+        [a][cb] &= [b] && [p][q] = [pq]
     \end{align*}
-    Setting $[x] = [cb]$, we can see that there is a solution to the equation $[ax] = [b]$, a 
-    contradiction. Therefore, there must exist a $b$ such that $[ab] = [0]$.
+    Setting $[x] = [cb]$, we can see that there is a solution to the equation $[a][x] = [ax] = [b]$, 
+    a contradiction. Therefore, there must exist a $c$ such that $[ac] = [0]$.
 \end{proof}
 \newpage
 
@@ -132,18 +132,21 @@ Prove the general case of the Chinese remainder theorem:
     $x = (m_2 q)a_1 + (m_1 p)a_2$ for $a_1, a_2 \in \Z$. Then, since $(m_2 q)a_1 \equiv 0 \pmod{m_2}$, we have
     $x \equiv (m_1 p)a_2 \equiv a_2 \pmod{m_2}$. Similarly, $x \equiv (m_2 q)a_1 \equiv a_1 \pmod{m_1}$.
     So, $x \equiv a_1 \pmod{m_1}$ and $x \equiv a_2 \pmod{m_2}$. Now suppose $y$ is another solution.
-    Then, we have $y \equiv x \pmod{m}$, which implies that $y - x$ is a multiple of $m_1$. Similarly,
-    $y - x$ is a multiple of $m_2$. Then because $(m_1, m_2) = 1$, we have that $y - x$ is a 
-    multiple of $m_1 m_2$, so $y \equiv x \pmod{m_1 m_2}$. \vspace{12pt}
+    Then, we have $y \equiv x \pmod{m}$, which implies that $m_1 | (y - x)$ and similarly, 
+    $m_2 | (y - x)$. Then because $(m_1, m_2) = 1$, we have that $m_1 m_2 | (y - x)$,
+    so $y \equiv x \pmod{m_1 m_2}$. \vspace{12pt}
 
     \textbf{Inductive step:} At $n = n + 1$, we have $m_1, m_2 \in \Z$ where $(m_1, m_2) = 1$. Then
-    by the inductive hypothesis, we have $x = a_1 + r_1 m_1 = \cdots = a_n + r_n m_n$ where 
-    $r_i \in \Z$. Define $M = \prod^{n}_{i = 1} m_i$ and consider $x' = x + sM$ for some $s \in \Z$. 
-    Then $x' \equiv x + sM \equiv a_i \pmod{m_i}$ since $m_i | M$ for $i = 1, \cdots, n$. Now consider,
-    $x' \equiv x + sM \equiv a_{n + 1} \pmod{m_{n + 1}}$, so $x' \equiv a_{n + 1} \pmod{m_{n + 1}}$.
-    Now suppose $y$ is another solution. Then $y \equiv x \pmod{m}$, which implies that $y - x$ is a
-    multiple of $m_i$ for $i = 1, \cdots, n + 1$. Because $(m_i, m_j) = 1$ for $i \neq j$,
-    $i, j = 1, \cdots, n + 1$, we have $y \equiv x \pmod{m_1 m_2 \cdots m_{n + 1}}$.
+    by the inductive hypothesis, we have a set of $n$ pairwise coprime integers $m_1, \cdots, m_n$
+    where $x' \equiv a_i \pmod{m_i}$ for each $i = 1, \cdots, n$. Define $M = \prod^{n}_{i = 1} m_i$ 
+    and consider $x = x' + sM$ for some $s \in \Z$. 
+    Then since $m_i | M$ implies $sM \equiv 0 \pmod{m_i}$ and from the inductive hypothesis, 
+    $x' \equiv a_i \pmod{m_i}$, we have $x \equiv x' + sM \equiv x' \equiv a_i \pmod{m_i}$ 
+    for $i = 1, \cdots, n$. At $m_{n + 1}$, because $m_{n + 1} \nmid M$, 
+    we can choose an $s \in \Z$ such that $x \equiv x' + sM \equiv a_{n + 1} \pmod{m_{n + 1}}$. Now 
+    suppose $y$ is another solution. Then $y \equiv x' \pmod{M}$ and $y \equiv a_{n + 1} \pmod{m_{n + 1}}$.
+    Since $(M, m_{n + 1}) = 1$, by the inductive hypothesis, we have that 
+    $y \equiv x \pmod{M m_{n + 1}}$, so $y \equiv x \pmod{m_1 m_2 \cdots m_{n + 1}}$.
 \end{proof}
 \newpage
 
@@ -161,11 +164,16 @@ From the problem statement, we have the following system of equations:
     x &\equiv 4 \pmod{11} \\
     x &\equiv 0 \pmod{7}
 \end{align*}
-By the Chinese Remainder Theorem, we have $y \equiv x \pmod{17 \cdot 16 \cdot 11 \cdot 7} \to
-y \equiv x \pmod{20944}$. We can rewrite this as $y - x = 20944q$. Solving for $x$, we get that
-$x = \sum^{n}_{i = 1} a_1 \cdot M_i \cdot M_i^{-1}$ where 
-$M := \prod^{n}_{i = 1} m_i = 17 \cdot 16 \cdot 11 \cdot 7 = 20944$, $a_i$ is the remainder of $m_i$, 
-and $M_i := M / m_i$. Then we get 
+Define the set of remainders as $R := \{3, 10, 4, 0\}$, the set of moduli as $S := \{17, 16, 11, 7\}$,
+and $M := \prod^{4}_{i = 1} s_i = 17 \cdot 16 \cdot 11 \cdot 7 = 20944$. By the Chinese Remainder 
+Theorem, we have $y \equiv x \pmod{M} \to y \equiv x \pmod{20944}$. Then, the set of partial products
+$P$ is defined by $\{p_i = M / s_i, \ i = 1, \cdots, 4\}$, so we get $P = \{1232, 1309, 1904, 2992\}$. The set of modular
+inverses $Q$ is defined by $\{q_i \in \Z : q_i s_i \equiv 1 \pmod{s_i}, \ i = 1, \cdots, 4\}$, so we get $Q = \{15, 5, 1, 5\}$. 
+Then, the solution is $x \equiv \sum^{4}_{i = 1} (r_i \cdot p_i \cdot q_i) \pmod{M}$, so
+$x \equiv 128506 \equiv 2842 \pmod{20944}$. The smallest possible number of coins in the chest is
+$2842$.
+
+
 \newpage
 
 \section*{Question 6}
