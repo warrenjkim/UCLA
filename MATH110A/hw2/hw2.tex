@@ -75,15 +75,27 @@ Let $[a]\in\Z/n$ be nonzero. Show that precisely one of the follow hold:
 \begin{proof}
     Suppose $[a] \in \Z/n$ is nonzero. There are two cases:
     \begin{enumerate}[label=\it{Case \roman*:},leftmargin=*]
-        \item If $(a, n) \neq 1$, then $ax + ny = d$ for some $x, y, d \in \Z$ where $(a, n) = d \neq 1$. 
-            We can write $[ab + ny] = [ab] + [ny] = [d]$. But since $[ny] = [n][y] = [0]$, we have
-            $[ab] = [a][b] = [d]$. Recall that $d | n$. Then we can write $d = nm$ for some 
-            $m \in \Z$. Then $[a][b] = [nm] = [0]$, so there exists $[b] \in \Z/n$ such that
+        \item If $(a, n) = d \neq 1$, then $d | a$ and $d | n$ so we can write $a = dp$ and $n = dq$ for
+            some $p, q \in \Z$. Then, to find $ab \equiv 0 \pmod{n}$, we can rewrite the equation
+            as $(dp)b \equiv 0 \pmod{dq}$. Choosing $b = q$, we get 
+            $(dp)q \equiv (dq)p \equiv 0 \pmod{dq}$. Now, since $d \neq 1$, $q \neq n$, and since $b = q$,
+            $[b] \neq [n]$; i.e. $[b] \neq [0]$. Then, we have a nonzero $[b] \in \Z/n$ such that
             $[a][b] = [0]$.
         \item If $(a, n) = 1$, then $ac + ny = 1$ for some $c, y \in \Z$. We can write
             $[ac + ny] = [ac] + [ny] = [1]$. But since $[ny] = [n][y] = [0]$, we have
             $[ac] = [a][c] = [1]$, so there exists $[c] \in \Z/n$ such that $[a][c] = [1]$.
     \end{enumerate}
+    To show that precisely one of these statements are true, suppose for the sake of contradiction
+    that both statements hold simultaneously. Then, there exists a nonzero $[b] \in \Z$ such that
+    $[a][b] = [0]$ and there exists a $c$ such that $[a][c] = [1]$. Then, we have
+    \begin{align*}
+        [a][c] &= [1] \\
+        [a][c][b] &= [1][b] \\
+        ([a][b])[c] &= [b] \\
+        [0][c] &= [b] && [a][b] = [0] \\
+        [b] &= [0] 
+    \end{align*}
+    but $[b] \neq 0$ by assumption, a contradiction. So, precisely one statement can hold at a time.
 \end{proof}
 \newpage
 
@@ -198,14 +210,14 @@ has a solution if and only if $a\equiv b\mod d$.
         a - b &= nq - mp \\
         a - b &= -(mp + nq)
     \end{align*}
-    Since $d | -(mp + nq)$, we have that $d | a - b$, or $a - b = dt$ for some $t \in \Z$. This is
+    Since $d | -(mp + nq)$, we have that $d | a - b$; i.e. $a - b = dt$ for some $t \in \Z$. This is
     equivalent to writing $a \equiv b \pmod{d}$.
     \newline
     ($\impliedby$) Suppose $a \equiv b \pmod{d}$. We can rewrite this as $a - b = dt$ for some 
     $t \in \Z$. Then 
     \begin{align*}
         a - b &= dt \\
-              &= (mp' + nq')t && (m, n) = d \iff mp' + nq' = d, p', q' \in \Z \\
+              &= (mp' + nq')t && (m, n) = d \iff mp' + nq' = d \text{ for some } p', q' \in \Z \\
         a - b &= (mp')t + (nq')t \\
         a + (-mp')t &= b + (nq')t \\
         a + mp &= b + nq && p := -p't, q := q't \\
