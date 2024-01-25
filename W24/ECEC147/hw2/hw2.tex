@@ -1,0 +1,158 @@
+\documentclass{article}
+\usepackage{amsfonts}      
+\usepackage{amsmath}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bbm}
+\usepackage{enumitem}
+\usepackage{mdframed}
+\usepackage{stackengine}
+\usepackage{mathtools}
+\usepackage{tabularx}
+\usepackage{changepage}
+\usepackage{fancyhdr}
+\usepackage[margin=1in]{geometry}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\T}{\bf{T}}
+\newcommand{\QQ}{\bf{Q}}
+\newcommand{\QT}{\bf{Q$^{\bf{T}}$}}
+\newcommand{\QI}{\bf{Q$^{\bf{-1}}$}}
+\newcommand{\A}{\bf{A}}
+\newcommand{\AT}{\bf{A$^{\T}$}}
+\newcommand{\X}{\bf{X}}
+\newcommand{\Y}{\bf{Y}}
+\newcommand{\x}{\bf{x}}
+\newcommand{\w}{\bf{w}}
+\newcommand{\y}{\bf{y}}
+\renewcommand{\b}{\bf{b}}
+\newcommand{\B}{\bf{B}}
+\newcommand{\U}{\bf{U}}
+\newcommand{\V}{\bf{V}}
+\newcommand{\W}{\bf{W}}
+
+\newmdenv[
+topline=true,
+bottomline=true,
+leftline=true,
+rightline=true,
+skipabove=\medskipamount,
+skipbelow=\medskipamount
+]{responseframe}
+\newenvironment{proof}{\begin{responseframe}\vspace{-10pt}\paragraph{Proof:}}{\hfill$\square$\end{responseframe}}
+\newenvironment{response}{\begin{responseframe}\vspace{-10pt}\paragraph{Response:}}{\end{responseframe}}
+
+\setlength\parindent{0pt}
+
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\sm}{softmax}
+\DeclareMathOperator{\hinge}{hinge}
+
+\renewcommand{\it}[1]{\textit{{#1}}}
+\renewcommand{\bf}[1]{\textbf{{#1}}}
+\renewcommand{\tt}[1]{\texttt{{#1}}}
+\newcommand{\ib}[1]{\it{\bf{{#1}}}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\bf{ECE C147}}
+\fancyhead[C]{\it{Homework 2}}
+\fancyhead[R]{\bf{Warren Kim}}
+\setlength{\headsep}{11pt}
+
+\begin{document}
+    \begin{enumerate}
+        \item \bf{Noisy linear regression} \vspace{11pt}
+            A real estate company have assigned us the task of building a model to predict the house
+            prices in Westwood. For this task, the company has provided us with a dataset $\cal{D}$:
+            \[{\cal{D}} = {(x^{(1)}, y^{(1)}), (x^{(2)}, y^{(2)}), \ldots, (x^{(N)}, y^{(N)})}\]
+            where $x^{(i)} \in R^d$ is a feature vector of the $i^{\it{th}}$ house and $y^{(i)} \in \R$ 
+            is the price of the ith house. Since we just learned about linear regression, so we have 
+            decided to use a linear regression model for this task. Additionally, the IT manager of 
+            the real estate company has requested us to design a model with small weights. In order 
+            to accommodate his request, we will design a linear regression model with parameter 
+            regularization. In this problem, we will navigate through the process of achieving 
+            regularization by adding noise to the feature vectors. Recall, that we define the cost 
+            function in a linear regression problem as:
+            \[{\cal{L}} (\theta) = \frac{1}{N} \sum^{N}_{i = 1} (y^{(i)} - (x^{(i)})^T \theta)^2\]
+            where $\theta \in \R^d$ is the parameter vector. As mentioned earlier, we will be adding 
+            noise to the feature vectors in the dataset. Specifically, we will be adding zero-mean 
+            gaussian noise of known variance $\sigma^2$ from the distribution
+            \[{\cal{N}} (0, \sigma^2 \bf{I})\]
+            where $\bf{I} \in \R^{d \times d}$ and $\sigma \in \R$. WIth the addition of gaussian
+            noise the modified cost function is given by,
+            \[{\tilde{\cal{L}}} (\theta) = \frac{1}{N}\sum^{N}_{i = 1} (y^{(i)} - (x^{(i)} + \delta^{(i)})^T \theta)^2\]
+            where $\delta^{(i)}$ are i.i.d noise vectors with $\delta^{(i)} \sim {\cal{N}} (0, \sigma^2 \bf{I})$.
+            \begin{enumerate}
+                \item Express the expectation of the modified loss over the gaussian noise, 
+                    $\mathbb{E}_{\delta \sim {\cal{N}}} [\tilde{{\cal{L}}} (\theta)]$, in terms of
+                    the original loss plus a term independent of the dataset $\cal{D}$. To be precise, 
+                    your answer should be in the form:
+                    \[\mathbb{E}_{\delta \sim {\cal{N}}} [\tilde{{\cal{L}}} (\theta)] = {\cal{L}} (\theta) + R\]
+                    where $R$ is not a function of $\cal{D}$. For answering this part, you might find the following result useful:
+                    \[\mathbb{E}_{\delta \sim {\cal{N}}} [\delta \delta^T] = \sigma^2 \bf{I}\]
+                \item Based on your answer to (a), under expectation what regularization effect
+                    would the addition of the noise have on the model?
+                \item Suppose $\sigma \longrightarrow 0$, what effect would this have on the model?
+                \item Suppose $\sigma \longrightarrow \infty$, what effect would this have on the model?
+            \end{enumerate}
+
+        \item \bf{$k$-nearest neighbors.}
+
+        \item \bf{Softmax classifier gradient.} For softmax classifier, derive the gradient of the log
+            likelihood. \vspace{10pt}
+
+            Concretely, assume a classification problem with $c$ classes
+            \begin{itemize}
+                \item Samples are $(\x^{(1)}, y^{(1)}, \ldots, \x^{(m)}, y^{(m)})$, where 
+                    $\x^{(j)} \in \R^n, y^{(j)} \in \{1, \ldots, c\}, j = 1, \ldots, m$
+                \item Parameters are $\theta = \{\w_{i}, b_i\}_{i = 1, \ldots, c}$
+                \item Probabilistic model is
+                    \[\Pr \left( y^{(j)} = i \mid \x^{(j)}, \theta \right) = \sm_i(\x^{(j)})\]
+                    where
+                    \[\sm_i (\x) = \frac{e^{\w^{T}_{i} \x + b_i}}{\sum^{c}_{k = 1} e^{\w^{T}_{k} \x + b_k}}\]
+            \end{itemize}
+            Derive the log-likelihood $\cal{L}$, and its gradient w.r.t. the parameters,
+            $\nabla_{\w_i} {\cal{L}}$ and $\nabla_{b_i} {\cal{L}}$ for $i = 1, \ldots, c$.
+            \newline 
+            \bf{Note:} We can group $\w_i$ and $b_i$ into a single vector by augmenting the ata vectors
+            with an additional dimension of constant $1$. Let $\tilde{\x} = \begin{bmatrix} \x \\ \bf{1} \end{bmatrix},
+            \tilde{\w_i} = \begin{bmatrix} \w_i \\ b_i \end{bmatrix}$, then 
+            $a_i(\x) = \w^{T}_{i} \x + b_i = \tilde{\w}^{T}_{i} \tilde{\x}$. This unifies
+            $\nabla_{\w_i} {\cal{L}}$ and $\nabla_{b_i} {\cal{L}}$ into $\nabla_{\tilde{\w_i}} {\cal{L}}$.
+            
+        \item \bf{Hinge loss gradient.} \vspace{10pt}
+
+            Owing to the drastic changes in climate throughout the world, a weather forecasting 
+            organization wants our help to build a model that can classify the observed weather 
+            patterns as severe or not severe. They have accumulated data on various attributes of 
+            the weather pattern such as temperature, precipitation, humidity, wind speed, air 
+            pressure, and geographical location along with severity of weather. However, the 
+            contribution of the attributes to the classification of weather as severe or not is unknown. \vspace{10pt}
+
+            We choose to use a binary support vector machine (SVM) classification model. The SVM
+            model parameters are learned by optimizing a hinge loss. The company has provided us with
+            a data-set
+            \[{\cal{D}} = {(\x^{(1)}, y^{(1)}), (\x^{(2)}, y^{(2)}), \ldots, (\x^{(K)}, y^{(K)})}\]
+            where $\x^{(i)} \in \R^d$ is a feature vector of the $i^{\it{th}}$ data sample and 
+            $y^{(i)} \in \{-1, 1\}$. We define the hinge loss per training sample as
+            \begin{align}
+                \hinge_{y^{(i)}} = \max \left( 0, 1 - y^{(i)} (\w^T \x^{(i)} + b) \right)
+            \end{align}
+            , where $\w \in \R^d$ and bias $b \in \R$ are the model parameters. WIth the hinge loss
+            per sample defined, we can then formulate the average loss for our model as:
+            \begin{align}
+                {\cal{L}} (\w, b) = \frac{1}{K} \sum^{K}_{i = 1} \hinge_{y^{(i)}} (\x^{(i)})
+            \end{align}
+        Find the gradient of the loss function ${\cal{L}} (\w, b)$ with respect to the parameters
+        i.e $\nabla_{\w} \cal{L}$ and $\nabla_b \cal{L}$.
+        \newline
+        Hint: An Indicator function, also known as a characteristic function, takes on the value of
+        $1$ at certain designated points and $0$ at all other points. Mathematically, we can represent
+        it as follows:
+        \begin{align}
+            \mathbbm{1}_{\{p < 1\}} = \begin{cases} 1, & \text{if } p < 1 \\ 0, & \text{otherwise} \end{cases}
+        \end{align}
+
+    \item \bf{Softmax classifier.}
+    \end{enumerate}
+\end{document}

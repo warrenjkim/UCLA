@@ -1,0 +1,83 @@
+\documentclass{article}
+\usepackage{amsfonts}      
+\usepackage{amsmath}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{mdframed}
+\usepackage{stackengine}
+\usepackage{mathtools}
+\usepackage{tabularx}
+\usepackage{changepage}
+\usepackage{fancyhdr}
+\usepackage[margin=1in]{geometry}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\T}{\bf{T}}
+\newcommand{\QQ}{\bf{Q}}
+\newcommand{\QT}{\bf{Q$^{\bf{T}}$}}
+\newcommand{\QI}{\bf{Q$^{\bf{-1}}$}}
+\newcommand{\A}{\bf{A}}
+\newcommand{\AT}{\bf{A$^{\T}$}}
+\newcommand{\X}{\bf{X}}
+\newcommand{\Y}{\bf{Y}}
+\newcommand{\x}{\bf{x}}
+\newcommand{\y}{\bf{y}}
+\renewcommand{\b}{\bf{b}}
+\newcommand{\B}{\bf{B}}
+\newcommand{\U}{\bf{U}}
+\newcommand{\V}{\bf{V}}
+\newcommand{\W}{\bf{W}}
+
+\newmdenv[
+topline=true,
+bottomline=true,
+leftline=true,
+rightline=true,
+skipabove=\medskipamount,
+skipbelow=\medskipamount
+]{responseframe}
+\newenvironment{proof}{\begin{responseframe}\vspace{-10pt}\paragraph{Proof:}}{\hfill$\square$\end{responseframe}}
+\newenvironment{response}{\begin{responseframe}\vspace{-10pt}\paragraph{Response:}}{\end{responseframe}}
+
+\setlength\parindent{0pt}
+
+\DeclareMathOperator{\tr}{tr}
+
+\renewcommand{\it}[1]{\textit{{#1}}}
+\renewcommand{\bf}[1]{\textbf{{#1}}}
+\renewcommand{\tt}[1]{\texttt{{#1}}}
+\newcommand{\ib}[1]{\it{\bf{{#1}}}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\bf{ECE C147}}
+\fancyhead[C]{\it{Notes}}
+\fancyhead[R]{\bf{Warren Kim}}
+\setlength{\headsep}{0.1in}
+
+\begin{document}
+\section{Model}
+\subsection{Model}
+\[\hat{y} = ax + b = \theta^{T} \hat{x}\]
+where $\theta = \begin{bmatrix} a \\ b \end{bmatrix}, \hat{x} \begin{bmatrix} x \\ 1 \end{bmatrix}$.
+\subsection{Cost Function}
+\[
+    {\cal{L}} (\theta) 
+    = \frac{1}{2} \sum^{N}_{i = 1} \left( y^{(i)} - \hat{y}^{(i)} \right)^2 
+    = \frac{1}{2} \sum^{N}_{i = 1} \left( y^{(i)} - \theta^{T} \hat{x} \right)^2
+\]
+To optimize $\cal{L} (\theta)$, calculate $\frac{\partial {\cal{L}}}{\partial \theta} = 0$.
+\section{Gradient}
+Suppose $f : \R^n \to \R$ and $x \in \R^n$. Then if $y = f(x)$, the gradient is defined as
+\[
+    \frac{\partial {\cal{L}}}{\partial \theta} = \nabla_{x} y 
+    = 
+    \begin{bmatrix}
+        \frac{\partial y}{\partial x_1} \\
+        \frac{\partial y}{\partial x_2} \\
+        \vdots \\
+        \frac{\partial y}{\partial x_n} \\
+    \end{bmatrix}
+\]
+
+\end{document}
