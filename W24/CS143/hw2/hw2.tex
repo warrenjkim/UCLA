@@ -5,7 +5,10 @@
 \usepackage{mathtools}
 \usepackage{fancyhdr}
 \usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
 \usepackage{mdframed}
+\usepackage{upquote}
 \usetikzlibrary{calc,positioning,shapes.multipart,shapes}
 \usepackage[margin=1in]{geometry}
 
@@ -139,6 +142,155 @@ described as B73G (Boeing 737-700), B738 (Boeing 737-800) and B38M (Boeing 737 M
         A couple of notes and hints: (1) if a tail only flew one flight, it would not appear in the 
         output, (2) you are essentially traversing a graph, and this is an example of a 
         \emph{self join}, (3) you need to somehow use the departure time and this is an example of 
-        a \emph{non-equi-join}. Be very careful with aliasing and renaming in this problem.
+        a \emph{non-equi-join}. \bf{Be very careful with aliasing and renaming in this problem.}
+        \begin{response}
+            \begin{align*}
+                \Pi_{\tt{flights.tail}}
+                (
+                &\rho_{\tt{other}}(\tt{flights}) 
+                \bowtie_{(\tt{other.tail = flights.tail} \land \tt{other.departure < flights.departure})} 
+                \tt{flights}
+                )
+            \end{align*}
+        \end{response}
 \end{enumerate}
+
+\paragraph{Part 2. SQL Schemas} \vspace{10pt} 
+
+\bf{Use the Starship food delivery scenario from Homework 1 and look at the schema diagram in the 
+solutions. Note that we modify it here slightly.} \vspace{10pt}
+
+\noindent In Homework 1, we created a relational schema and diagram for the Starship example. In
+this problem, we will create a SQL schema using the \tt{CREATE TABLE} syntax. This means we also need to
+pick the proper data types for each column. For a description of how Starship works, see Homework 1.
+\vspace{10pt}
+
+
+\noindent We need a table to represent a \tt{robot}. Each of the following statements is designed to
+give you a hint as to the proper data type.
+
+\begin{enumerate} 
+    \item Each robot has an identifier \tt{robot\_id}, a number. Since Starship is a startup, we
+        assume that there are no more than 10,000 robots. 
+    \item Each robot has a flag \tt{status} that marks it as online, offline (broken etc.), and
+        lost/stolen. Each robot can have only one of these states at a time, and must have a state.
+\end{enumerate}
+
+\noindent We need a table to represent a \bf{customer} (user is a system keyword so I will not use it):
+
+\begin{enumerate} 
+    \item Each user has an identifier \tt{user\_id}, a number, and we assume that Starship has at
+        most 500,000 users for now. 
+    \item A user is just someone that installed the app,
+        not necessarily someone that will use a robot. Thus, they may, or may not have a credit card
+        number \tt{ccnum} (exactly 16 digits) and expiration date \tt{expdate}. Expiration dates
+        usually look like MM/YY, but to make this simpler so you can use a more apparent data type, it
+        is safe to assume that the card expires at midnight (00:00) on the 1st of the month. A credit
+        card can only be associated with one user. 
+    \item Each user must have an \tt{email} address.
+        Assume an email address length is at most 100. An email can only be associated with one user. 
+    \item Each user must have a \tt{name}. Assume a name cannot exceed 255 letters. 
+\end{enumerate}
+
+\noindent We need a table to represent an \bf{order}. Only once food is placed into the robot do we
+enter an order in this table, and its journey begins. Each order is associated with:
+
+\begin{enumerate} 
+    \item a unique identifier \tt{order\_id}, a number. We expect there to be more than 50,000
+        orders. 
+    \item exactly one user \tt{user\_id}, exactly one robot \tt{robot\_id} and exactly one
+        restaurant \tt{restaurant\_id}. 
+    \item a \tt{start\_time} and \tt{end\_time}, which includes the date. In the event that the
+        order is canceled after being dispatched, or the robot fails, there may not be an end time.
+    \item a \tt{delivery\_location} as a GPS coordinate (a latitude/longitude pair). \it{Hint:} See
+        the documentation here. Note that latitude and longitude together form a point on a
+        Cartesian plane (actually a sphere, but we will assume Cartesian plane for this problem). If
+        the order is canceled or an error occurs with the robot, there may not be a delivery
+        location stored. 
+    \item a required order status called \tt{status} that can take on the values \tt{delivered},
+        \tt{canceled}, \tt{error}. 
+\end{enumerate}
+
+\noindent Finally, we need a table to represent a \bf{restaurant} which contains:
+
+\begin{enumerate} 
+    \item a unique identifier for the restaurant \tt{restaurant\_id}. Assume there are currently
+        10,000 restaurants. 
+    \item the name of the restaurant which contains at most 255 characters. 
+    \item a \tt{region\_id} which is a 4 digit alphanumeric code representing the geofenced region.
+        For UCLA this could be UCLA or a code like 1919. 
+\end{enumerate}
+
+\paragraph{Exercise.} Write the SQL schema for the tables discussed above using \tt{CREATE TABLE}.
+Specify a primary key, or composite primary key using the correct syntax. Specify the proper foreign
+key relationship on each table (if they exist) using the proper syntax. Try to minimize storage
+space because we can always promote later.
+
+\lstdefinestyle{psql}{
+  basicstyle=\ttfamily\small,       
+  breakatwhitespace=false,          
+  keywordstyle=\color{blue},          
+  morekeywords={,CREATE, TABLE, TYPE, AS, ENUM, PRIMARY, FOREIGN, KEY, NOT, NULL, UNIQUE,
+  REFERENCES, smallint, date, varchar, timestamptz, DEFAULT, CURRENT_TIMESTAMP,}
+  breaklines=true,                  
+  captionpos=b,                     
+  keepspaces=true,                  
+  showspaces=false,                 
+  showstringspaces=false,           
+  showtabs=false,                   
+  tabsize=2,                        
+  frame=single                      
+}
+
+
+\begin{lstlisting}[style=psql]
+CREATE TYPE robot_status AS ENUM (
+    'online',
+    'offline',
+    'broken',
+    'default'
+);
+
+CREATE TABLE robot (
+    robot_id smallint NOT NULL UNIQUE,
+    status robot_status NOT NULL DEFAULT 'default',
+    PRIMARY KEY (robot_id)
+);
+
+CREATE TABLE customer (
+    user_id int NOT NULL UNIQUE,
+    ccnum char(16) UNIQUE,
+    expdate date,
+    email varchar(100) UNIQUE,
+    name varchar(255)
+    PRIMARY KEY (user_id)
+);
+
+CREATE TYPE order_status AS ENUM (
+    'delivered',
+    'canceled',
+    'error'
+);
+
+CREATE TABLE order (
+    order_id int NOT NULL UNIQUE,
+    user_id int UNIQUE,
+    robot_id UNIQUE,
+    restaurant_id UNIQUE,
+    start_time timestamptz DEFAULT CURRENT_TIMESTAMP,
+    end_time timestamptz,
+    delivery_location point,
+    status order_status
+    PRIMARY KEY (order_id),
+    FOREIGN KEY (user_id) REFERENCES customer (user_id),
+    FOREIGN KEY (robot_id) REFERENCES robot (robot_id),
+    FOREIGN KEY (restaurant_id) REFERENCES restaurant (restaurant_id)
+);
+
+CREATE TABLE restaurant (
+    restaurant_id varchar(255) NOT NULL UNIQUE,
+    region_id varchar(4) NOT NULL,
+    PRIMARY KEY (restaurant_id)
+);
+\end{lstlisting}
 \end{document}
