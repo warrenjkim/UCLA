@@ -1,0 +1,144 @@
+\documentclass{report}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{mathtools}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usepackage{mdframed}
+\usetikzlibrary{calc,positioning,shapes.multipart,shapes}
+\usepackage[margin=1in]{geometry}
+
+\renewcommand{\it}[1]{\textit{{#1}}}
+\renewcommand{\bf}[1]{\textbf{{#1}}}
+\renewcommand{\tt}[1]{\texttt{{#1}}}
+
+\newcommand{\ib}[1]{\it{\bf{{#1}}}}
+
+\newmdenv[
+topline=true,
+bottomline=true,
+leftline=true,
+rightline=true,
+skipabove=\medskipamount,
+skipbelow=\medskipamount
+]{responseframe}
+\newenvironment{response}{\begin{responseframe}\vspace{-10pt}\paragraph{Response:}}{\end{responseframe}}
+
+\pagestyle{fancy}
+\fancyhf{}
+
+\fancyhead[L]{\bf{Computer Science 143}}
+\fancyhead[C]{\it{Homework 2}}
+\fancyhead[R]{\bf{Warren Kim}}
+\setlength{\headsep}{0.1in}
+
+\tikzset{
+    basic/.style={
+        draw,
+        rectangle split,
+        rectangle split parts=2,
+        rectangle split part fill={blue!20,white},
+        minimum width=2.5cm,
+        text width=2cm,
+        align=left,
+        font=\itshape
+    }
+}
+
+\begin{document}
+\paragraph{Part 1. Relational Algebra}\mbox{} \vspace{10pt}
+In this problem, you will use a few relations representing some fictitious Southwest Airlines 
+flights and airplanes. Use only this instance. \tt{flights} contains information about flight 
+routes on a particular day, departure time and the exact aircraft (\tt{tail}) used to fly that 
+particular flight. aircraft contains information about all airplanes that Southwest owns and 
+operates. A smaller relation, \tt{airtran\_aircraft} contains information about airplanes that 
+Southwest acquired in its purchase of Airtran in 2011. Tuples in \tt{airtran\_aircraft} also 
+appear in \tt{aircraft} if they were acquired by Southwest. [If curious, the aircraft types are 
+described as B73G (Boeing 737-700), B738 (Boeing 737-800) and B38M (Boeing 737 MAX 8, or 737-8).]
+
+\begin{table}[ht]
+    \begin{tabular}{c|c|c|c|c}
+        \hline
+        \tt{from} & \tt{to} & \tt{flightnum} & \tt{departure} & \tt{tail} \\
+        \hline
+        LAX & SFO & 181 & 8am & N8751R \\
+        LAX & SJC & 185 & 9am & N705SW \\
+        SJC & LAX & 186 & 10am & N404WN \\
+        BUR & SJC & 191 & 11am & N957WN \\
+        LAX & ATL & 993 & 12pm & N7851A \\
+        MCO & CUN & 991 & 1pm & N7827A \\
+        SJC & BUR & 192 & 2pm & N709SW \\
+        SFO & LAX & 182 & 3pm & N8751R \\
+        SJC & DAL & 94 & 4pm & N705SW \\
+        SJC & PHX & 99 & 5pm & N957WN 
+    \end{tabular}
+    \hfill
+    \begin{tabular}{c|c}
+        \hline
+        \tt{tail} & \tt{type} \\
+        \hline
+        N404WN & B73G \\
+        N705SW & B73G \\
+        N709SW & B73G \\
+        N8751R & B73G \\
+        N7851A & B38M \\
+        N7827A & B73G \\
+        N7854B & B73G \\
+        N7826B & B73G \\
+        N957WN & B738 
+    \end{tabular}
+    \hfill
+    \begin{tabular}{c|c}
+        \hline
+        \tt{tail} & \tt{type} \\
+        \hline
+        N7851A & B73G \\
+        N7827A & B73G \\
+        N7854B & B73G \\
+        N7826B & B73G
+    \end{tabular}
+\end{table}
+\paragraph{Exercises.}
+\begin{enumerate}[label=(\alph*)]
+    \item Write a relational algebra expression that returns the number of flights flown by each 
+        \tt{type} of aircraft. A flight is uniquely identified by its flight number (denoted 
+        \tt{flightnum}). Each flight number is used for one take off and one landing. Your result 
+        should provide insight like ``4 flights were flown by an airplane that is of type B738.'' 
+        \tt{flightnum} is a flight number (i.e. Southwest flight 181) and not the number of flights 
+        flown.
+        \begin{response}
+            \begin{align*}
+                \prescript{}{\tt{type}}{\gamma}_{\tt{flights.tail} \to \tt{count}}
+                (
+                    &\tt{flights} \bowtie_{(\tt{flights.tail = aircraft.tail})} \tt{aircraft}
+                    \cup \\
+                    &\tt{flights} \bowtie_{(\tt{flights.tail = airtran\_aircraft.tail})} \tt{airtran\_aircraft}
+                )
+            \end{align*}
+        \end{response}
+    \item In 2011, Southwest Airlines acquired Airtran. The relation \tt{aircraft} contains 
+        Southwest owns, including those acquired from Airtran. The relation \tt{airtran\_aircraft} 
+        includes information about \emph{only} Airtran’s aircraft. Write a relational algebra 
+        expression that returns all flight numbers (\tt{flightnum}) operated by aircraft that were 
+        \emph{not} operated by Airtran.
+        \begin{response}
+            \begin{align*}
+                \Pi_{\tt{flightnum}}
+                (
+                &\tt{flights} \bowtie_{(\tt{flights.tail = aircraft.tail})} [\tt{aircraft - airtran\_aircraft}]
+                )
+            \end{align*}
+        \end{response}
+    \item Most aircraft fly multiple routes in one day. For example, tail N705SW flies from LAX 
+        (Los Angeles) to SJC (San Jose, CA) and then flies from SJC (San Jose) to DAL (Dallas). 
+        Such schedules form a graph. Write the relational algebra expression that return the tail 
+        and where each plane starts and ends up after two flights: tail, origin (\tt{from}), and 
+        \tt{final\_destination} (to after 2 flights). In the example earlier, the query would 
+        return N705SW, LAX and DAL since it started at LAX and ended up at DAL after two flights. 
+        A couple of notes and hints: (1) if a tail only flew one flight, it would not appear in the 
+        output, (2) you are essentially traversing a graph, and this is an example of a 
+        \emph{self join}, (3) you need to somehow use the departure time and this is an example of 
+        a \emph{non-equi-join}. Be very careful with aliasing and renaming in this problem.
+\end{enumerate}
+\end{document}
