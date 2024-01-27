@@ -1,0 +1,125 @@
+\documentclass [12pt] {article}
+
+\newtheorem{exercise}{Exercise}[section]
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{problem}{Problem}
+\newtheorem{solution}{Solution}
+\newtheorem{cor}{Corollary}[section]
+\newtheorem{prop}{Proposition}[section]
+\newtheorem{rmk}{Remark}[section]
+\newtheorem{conj}{Conjecture}[section]
+\usepackage{amsfonts}      
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[margin=0.75in]{geometry} 
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newenvironment{proof}{\paragraph{Proof:}}{\hfill$\square$}
+\setlength\parindent{0pt}
+
+
+
+
+\title{110A HW3}
+\author{Warren Kim}
+\date{Winter 2024}
+
+\begin{document}
+
+\maketitle
+
+\section*{Question 1}
+Let $R$ be a ring. Show that $1=0$ if and only if $R=\{0\}$. 
+\subsection*{Response}
+\begin{proof}
+    ($\implies$) Let $R$ be a ring and suppose $1 = 0$. Then, for any $a \in R$, we can write 
+    $a = 1 \cdot a = a \cdot 1$. But since $1 = 0$, we have $a = 0 \cdot a = a \cdot 0 = 0$, so 
+    $a = 0$. Because $a$ was arbitrary, $a = 0$ is the only element in $R$.
+    \newline
+    ($\impliedby$) Let $R$ be a ring and let it be defined by $R = \{ 0 \}$. Then, because it's a
+    ring, there exists an element $1_R \in R$ such that $1_R \cdot a = a \cdot 1_R = a$ for any $a \in R$.
+    Because $0$ is the only element in $R$, set $1_R = 0$. Then, since $0$ is the only element in
+    $R$, we have that $a = 0$, so $a \cdot 1_R = 1_R \cdot a = 0 = a = 0 \cdot a = a \cdot 0$.
+\end{proof}
+\newpage
+
+\section*{Question 2}
+Let $R$ be a ring, and consider the associated polynomial ring $R[x]$. 
+
+\begin{enumerate}
+    \item Show that $R$ is commutative if and only if $R[x]$ is commutative. 
+    
+    \item Suppose $R$ is commutative. Show that $R$ is an integral domain if and only if $R[x]$ is an integral domain. 
+\end{enumerate}
+\subsection*{Response}
+\begin{proof}
+    \begin{enumerate}
+        \item ($\implies$) Suppose $R$ is a commutative ring. Then, consider the associated 
+            polynomial ring $R[x]$. Note that $x$ is commutative with all $a \in R$; i.e. $ax = xa$.
+            Then, suppose we have two elements $\sum^{n}_{i = 0} a_i x^i, \sum^{m}_{j = 0} b_j x^j \in R$
+            for some $n, m \in \Z_{> 0}$. Then
+            \begin{align*}
+                \left( \sum^{n}_{i = 0} a_i x^i \right) \left( \sum^{m}_{j = 0} b_j x^j \right)
+                &= \sum^{n}_{i = 0} \sum^{m}_{j = 0} a_i b_j x^{i + j} \\
+                &= \sum^{n}_{i = 0} \sum^{m}_{j = 0} b_j a_i x^{j + i} 
+                && \text{addition in } \Z \text{ and } R \text{ are commutative} \\
+                &= \left( \sum^{m}_{j = 0} b_j x^j \right) \left( \sum^{n}_{i = 0} a_i x^i \right)
+            \end{align*}
+            so $R[x]$ is commutative.
+            \newline
+            ($\impliedby$) Suppose $R[x]$ is a commutative ring. Then given two elements
+            $\sum^{n}_{i = 0} a_i x^i, \sum^{m}_{j = 0} b_j x^j \in R$ for some $n, m \in \Z_{> 0}$,
+            we have that for any $i < n$ and $j < m$, $(a_i x^i)(b_j x^j) = (b_j x^j)(a_i x^i)$. Then
+            $(a_i x^i)(b_j x^j) = a_i x^i b_j x^j = b_j a_i x^{i + j} = b_j x^j a_i x^i = (b_j x^j)(a_i x^i)$.
+            So, $a_i b_j = b_j a_i$, and since $a_i, b_j \in R$, $R$ must be commutative.
+    \end{enumerate}
+\end{proof}
+\newpage
+
+\section*{Question 3}
+Prove the parts of Proposition 2.1 (in the notes) that were not proved in class. 
+\subsection*{Response}
+\newpage
+
+\section*{Question 4}
+Let $R$ and $S$ be rings, and let $f:R\to S$ be a ring homomorphism. Let $a,b\in R$. Prove the following: 
+    \begin{enumerate}
+        \item $f(a-b)=f(a)-f(b)$.
+        \item If $a\in R$ is a unit, then $f(a)$ is a unit as well, with $f(a^{-1})=f(a)^{-1}$.
+    \end{enumerate}
+\subsection*{Response}
+\newpage
+
+\section*{Question 5}
+Consider the Gaussian integers, given by $\Z[i]=\{a+bi|a,b\in\Z\}$, where $i^2=-1$. Consider the map $f:\Z[i]\to \Z[i]$ where $a+bi\mapsto a-bi$. Show $f$ is an isomorphism.
+\subsection*{Response}
+\newpage
+
+\section*{Question 6}
+Let $R$ be a ring. We say that $a\in R$ is nilpotent if there is some integer $n$ such that $a^n=0$. 
+Show that $1+a$ is a unit. 
+\subsection*{Response}
+\newpage
+
+\section*{Question 7}
+We say that a ring $R$ is a Boolean ring if, for every $a\in R$, we have $a^2=a$. 
+
+\begin{enumerate}
+    \item Show that a Boolean ring $R$ is commutative.
+    \item Suppose $R$ is a Boolean ring and an integral domain. Show that $|R|=2$. [Hint: show that any nonzero element must be $1$.]
+\end{enumerate} 
+\subsection*{Response}
+\newpage
+
+\section*{Question 8}
+Let $R$ and $S$ be rings. Show that if $R$ and $S$ are isomorphic, then $R[x]$ and $S[x]$ are isomorphic. 
+\subsection*{Response}
+\newpage
+
+\end{document}
+
