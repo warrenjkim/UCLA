@@ -9,6 +9,7 @@
 \usepackage{listings}
 \usepackage{mdframed}
 \usepackage{upquote}
+\usepackage{changepage}
 \usetikzlibrary{calc,positioning,shapes.multipart,shapes}
 \usepackage[margin=1in]{geometry}
 
@@ -110,16 +111,14 @@ described as B73G (Boeing 737-700), B738 (Boeing 737-800) and B38M (Boeing 737 M
         should provide insight like ``4 flights were flown by an airplane that is of type B738.'' 
         \tt{flightnum} is a flight number (i.e. Southwest flight 181) and not the number of flights 
         flown.
-        \begin{response}
-            \begin{align*}
-                \prescript{}{\tt{type}}{\gamma}_{\tt{flights.tail} \to \tt{count}}
-                (
-                    &\tt{flights} \bowtie_{(\tt{flights.tail = aircraft.tail})} \tt{aircraft}
-                    \cup \\
-                    &\tt{flights} \bowtie_{(\tt{flights.tail = airtran\_aircraft.tail})} \tt{airtran\_aircraft}
-                )
-            \end{align*}
-        \end{response}
+                \begin{response}
+                    \begin{align*}
+                        \prescript{}{\tt{type}}{\gamma}_{\tt{COUNT}(\tt{flightnum}) \to \tt{count}}
+                        (
+                    &\tt{flights} \bowtie \tt{aircraft}
+                    )
+                    \end{align*}
+                \end{response}
     \item In 2011, Southwest Airlines acquired Airtran. The relation \tt{aircraft} contains 
         Southwest owns, including those acquired from Airtran. The relation \tt{airtran\_aircraft} 
         includes information about \emph{only} Airtran’s aircraft. Write a relational algebra 
@@ -129,7 +128,7 @@ described as B73G (Boeing 737-700), B738 (Boeing 737-800) and B38M (Boeing 737 M
             \begin{align*}
                 \Pi_{\tt{flightnum}}
                 (
-                &\tt{flights} \bowtie_{(\tt{flights.tail = aircraft.tail})} [\tt{aircraft - airtran\_aircraft}]
+                &\tt{flights} \bowtie [\tt{aircraft - airtran\_aircraft}]
                 )
             \end{align*}
         \end{response}
@@ -143,16 +142,21 @@ described as B73G (Boeing 737-700), B738 (Boeing 737-800) and B38M (Boeing 737 M
         output, (2) you are essentially traversing a graph, and this is an example of a 
         \emph{self join}, (3) you need to somehow use the departure time and this is an example of 
         a \emph{non-equi-join}. \bf{Be very careful with aliasing and renaming in this problem.}
-        \begin{response}
-            \begin{align*}
-                \Pi_{\tt{flights.tail}}
-                (
-                &\rho_{\tt{other}}(\tt{flights}) 
-                \bowtie_{(\tt{other.tail = flights.tail} \land \tt{other.departure < flights.departure})} 
-                \tt{flights}
+        \begin{adjustwidth}{-7.7em}{-5.2em}
+            \begin{response}
+                \begin{align*}
+                    &\Pi_{\tt{dest.tail} \to \tt{tail}, \tt{src.from} \to \tt{origin}, \tt{dest.to} \to \tt{final\_destination}} \\
+                    &
+                    (
+                \rho_{\tt{src}}(\tt{flights}) 
+                \bowtie_{(\tt{src.tail = dest.tail} 
+                \land \tt{dest.from = src.to}
+            \land \tt{src.departure < dest.departure})}
+                \rho_{\tt{dest}}(\tt{flights})
                 )
-            \end{align*}
-        \end{response}
+                \end{align*}
+            \end{response}
+        \end{adjustwidth}
 \end{enumerate}
 
 \paragraph{Part 2. SQL Schemas} \vspace{10pt} 
@@ -231,7 +235,7 @@ space because we can always promote later.
   breakatwhitespace=false,          
   keywordstyle=\color{blue},          
   morekeywords={,CREATE, TABLE, TYPE, AS, ENUM, PRIMARY, FOREIGN, KEY, NOT, NULL, UNIQUE,
-  REFERENCES, smallint, date, varchar, timestamptz, DEFAULT, CURRENT_TIMESTAMP,}
+  REFERENCES, smallint, date, varchar, timestamptz, DEFAULT, CURRENT_TIMESTAMP, point,}
   breaklines=true,                  
   captionpos=b,                     
   keepspaces=true,                  
@@ -259,7 +263,7 @@ CREATE TABLE robot (
 
 CREATE TABLE customer (
     user_id int NOT NULL UNIQUE,
-    ccnum char(16) UNIQUE,
+    ccnum numeric(16, 0) UNIQUE,
     expdate date,
     email varchar(100) UNIQUE,
     name varchar(255)
@@ -267,6 +271,7 @@ CREATE TABLE customer (
 );
 
 CREATE TYPE order_status AS ENUM (
+    'in-progress'
     'delivered',
     'canceled',
     'error'
@@ -274,13 +279,13 @@ CREATE TYPE order_status AS ENUM (
 
 CREATE TABLE order (
     order_id int NOT NULL UNIQUE,
-    user_id int UNIQUE,
-    robot_id UNIQUE,
-    restaurant_id UNIQUE,
+    user_id int,
+    robot_id smallint,
+    restaurant_id smallint,
     start_time timestamptz DEFAULT CURRENT_TIMESTAMP,
     end_time timestamptz,
     delivery_location point,
-    status order_status
+    status order_status NOT NULL,
     PRIMARY KEY (order_id),
     FOREIGN KEY (user_id) REFERENCES customer (user_id),
     FOREIGN KEY (robot_id) REFERENCES robot (robot_id),
@@ -288,8 +293,9 @@ CREATE TABLE order (
 );
 
 CREATE TABLE restaurant (
-    restaurant_id varchar(255) NOT NULL UNIQUE,
-    region_id varchar(4) NOT NULL,
+    restaurant_id smallint NOT NULL UNIQUE,
+    name varchar(255),
+    region_id numeric(4, 0) NOT NULL,
     PRIMARY KEY (restaurant_id)
 );
 \end{lstlisting}
