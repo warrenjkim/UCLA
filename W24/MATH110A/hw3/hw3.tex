@@ -23,6 +23,7 @@
 \setlength\parindent{0pt}
 
 
+\renewcommand{\it}[1]{\textit{{#1}}}
 
 
 \title{110A HW3}
@@ -57,33 +58,132 @@ Let $R$ be a ring, and consider the associated polynomial ring $R[x]$.
     \item Suppose $R$ is commutative. Show that $R$ is an integral domain if and only if $R[x]$ is an integral domain. 
 \end{enumerate}
 \subsection*{Response}
-\begin{proof}
-    \begin{enumerate}
-        \item ($\implies$) Suppose $R$ is a commutative ring. Then, consider the associated 
+\begin{enumerate}
+    \item Show that $R$ is commutative if and only if $R[x]$ is commutative. \vspace{-12pt}
+
+        \begin{proof}
+            ($\implies$) Suppose $R$ is a commutative ring. Then, consider the associated 
             polynomial ring $R[x]$. Note that $x$ is commutative with all $a \in R$; i.e. $ax = xa$.
-            Then, suppose we have two elements $\sum^{n}_{i = 0} a_i x^i, \sum^{m}_{j = 0} b_j x^j \in R$
+            Then, suppose we have two elements $\sum^{n}_{i = 0} a_i x^i, \sum^{m}_{j = 0} b_j x^j \in R[x]$
             for some $n, m \in \Z_{> 0}$. Then
             \begin{align*}
                 \left( \sum^{n}_{i = 0} a_i x^i \right) \left( \sum^{m}_{j = 0} b_j x^j \right)
-                &= \sum^{n}_{i = 0} \sum^{m}_{j = 0} a_i b_j x^{i + j} \\
-                &= \sum^{n}_{i = 0} \sum^{m}_{j = 0} b_j a_i x^{j + i} 
-                && \text{addition in } \Z \text{ and } R \text{ are commutative} \\
+                &= \sum^{n}_{i = 0} \sum^{m}_{j = 0} a_i x^i b_j x^j \\
+                &= \sum^{n}_{i = 0} \sum^{m}_{j = 0} x^i a_i b_j x^j && a_i x^i = x^i a_i \\
+                &= \sum^{n}_{i = 0} \sum^{m}_{j = 0} (a_i b_j) x^i x^j && a_i x^i = x^i a_i \\
+                &= \sum^{n}_{i = 0} \sum^{m}_{j = 0} (a_i b_j) x^{i + j} && x^i x^j = x^{i + j} \\
+                &= \sum^{n}_{i = 0} \sum^{m}_{j = 0} (b_j a_i) x^{j + i} 
+                && R \text{ is commutative} \\
                 &= \left( \sum^{m}_{j = 0} b_j x^j \right) \left( \sum^{n}_{i = 0} a_i x^i \right)
             \end{align*}
             so $R[x]$ is commutative.
             \newline
             ($\impliedby$) Suppose $R[x]$ is a commutative ring. Then given two elements
-            $\sum^{n}_{i = 0} a_i x^i, \sum^{m}_{j = 0} b_j x^j \in R$ for some $n, m \in \Z_{> 0}$,
-            we have that for any $i < n$ and $j < m$, $(a_i x^i)(b_j x^j) = (b_j x^j)(a_i x^i)$. Then
-            $(a_i x^i)(b_j x^j) = a_i x^i b_j x^j = b_j a_i x^{i + j} = b_j x^j a_i x^i = (b_j x^j)(a_i x^i)$.
-            So, $a_i b_j = b_j a_i$, and since $a_i, b_j \in R$, $R$ must be commutative.
-    \end{enumerate}
-\end{proof}
+            $\sum^{n}_{i = 0} a_i x^i, \sum^{m}_{j = 0} b_j x^j \in R[x]$ for some $n, m \in \Z_{> 0}$,
+            we have that for any $i < n$ and $j < m$, $(a_i x^i)(b_j x^j) = (b_j x^j)(a_i x^i)$. 
+            Then
+            \begin{align*}
+                (a_i b_j) x^{i + j} 
+                &= (x^i a_i) b_j x^j && a_i x^i = x^i a_i \\ 
+                &= a_i x^i b_j x^j && a_i x^i = x^i a_i \\
+                &= b_j x^j a_i x^i && (a_i x^i)(b_j x^j) = (b_j x^j)(a_i x^i) \\
+                &= x^j b_j a_i x^i && a_i x^i = x^i a_i \\
+                (a_i b_j) x^{i + j} 
+                &= (b_j a_i) x^{j + i} && a_i x^i = x^i a_i
+            \end{align*}
+            So, $a_i b_j = b_j a_i$, and since $a_i, b_j \in R$ were arbitrary, $R$ is commutative.
+        \end{proof}
+
+    \item Suppose $R$ is commutative. Show that $R$ is an integral domain if and only if $R[x]$ 
+        is an integral domain. \vspace{-12pt}
+
+        \begin{proof}
+            Suppose $R$ is commutative.
+            \newline
+            ($\implies$) Let $R$ be an integral domain. Then, for any nonzero $a, b \in R$, we
+            have $ab \neq 0$. Now, consider nonzero
+            $\sum^{n}_{i = 0} a_i x^i, \sum^{m}_{j = 0} b_j x^j \in R[x]$ for some 
+            $n, m \in \Z_{> 0}$. Then
+            \[
+                \left( \sum^{n}_{i = 0} a_i x^i \right) 
+                \cdot 
+                \left (\sum^{m}_{j = 0} b_j x^j \right)
+                = \sum^{n}_{i = 0} \sum^{m}_{j = 0} (a_i b_j) x^{i + j} \neq 0
+            \]
+            because $a_i b_j \neq 0$ if $a_i, b_j$ are nonzero, so $R[x]$ is an integral domain.
+            \newline
+            ($\impliedby$) Let $R[x]$ be an integral domain. Then, consider nonzero
+            $a, b \in R$. Then define $a_0 := a, b_0 := b \in R[x]$ where $a_0, b_0$ are the zero
+            polynomials. Since $R[x]$ is an integral domain, $a_0 b_0 \neq 0$. but 
+            $a_0 = a, b_0 = b$, so $ab \neq 0$ for any nonzero $a, b \in R$.
+        \end{proof}
+\end{enumerate}
 \newpage
 
 \section*{Question 3}
 Prove the parts of Proposition 2.1 (in the notes) that were not proved in class. 
 \subsection*{Response}
+\begin{enumerate}
+    \item[\it{4.}] \it{The multiplicative identity is unique.} \vspace{-12pt}
+
+        \begin{proof}
+            Let $R$ be a ring. Suppose we have two identities $1_1, 1_2 \in R$. Then we have the
+            following: $1_1 = 1_1 \cdot 1_2 = 1_2 \cdot 1_1 = 1_2$, so $1_1 = 1_2$.
+        \end{proof}
+    \item[\it{5.}] \it{If $a$ is a unit, its inverse is unique.} \vspace{-12pt}
+
+        \begin{proof}
+            Let $R$ be a ring and $a \in R$ be a unit. Suppose there exist $a^{-1}_1, a^{-2}_2 \in R$
+            such that $a^{-1}_1, a^{-2}_2$ are inverses of $a$. Then, we have the following:
+            $aa^{-1}_1 = 1 = aa^{-1}_2$, and since $a$ is nonzero, $a^{-1}_1 = a^{-1}_2$ by 
+            the cancellation property.
+        \end{proof}
+    \item[\it{8.}] $-(-a) = a$. \vspace{-12pt}
+
+        \begin{proof}
+            Let $R$ be a ring and $a \in R$. Then, 
+            \begin{align*}
+                -(-a) &= 0 - (-a) \\
+                      &= (a + (-a)) + (-(-a)) \\
+                      &= a + ((-a) + -(-a)) \\
+                      &= a + 0 \\
+                -(-a) &= a
+            \end{align*}
+        \end{proof}
+    \item[\it{9.}] $-(a + b) = -a - b$. \vspace{-12pt}
+
+        \begin{proof}
+            Let $R$ be a ring and $a, b \in R$. Then, 
+            \begin{align*}
+                -(a + b) &= 0 - (a + b)) \\
+                         &= 0 + 0 - (a + b)) \\
+                         &= (a - a) + (-b + b) - (a + b) \\
+                         &= a + (-a - b) + b - (a + b) && a - b = a + (-b) \\
+                         &= (-a - b) + (a + b) - (a + b) \\
+                         &= (-a - b) + 0 \\
+                -(a + b) &= -a - b
+            \end{align*}
+        \end{proof}
+    \item[\it{10.}] $-(a - b) = -a + b$. \vspace{-12pt}
+
+        \begin{proof}
+            Let $R$ be a ring and $a, b \in R$. Then,
+            \begin{align*}
+                -(a - b) &= -(a + (-b)) \\
+                         &= -a - (-b) && -(a + b) = -a - b \\
+                -(a - b) &= -a + b && -(-a) = a
+            \end{align*}
+        \end{proof}
+    \item[\it{11.}] $(-a)(-b) = ab$. \vspace{-12pt}
+
+        \begin{proof}
+            Let $R$ be a ring and $a, b \in R$. Then,
+            \begin{align*}
+                (-a)(-b) &= a(-(-b)) && -ab = a(-b) \\
+                (-a)(-b) &= ab && -(-a) = a
+            \end{align*}
+        \end{proof}
+\end{enumerate}
 \newpage
 
 \section*{Question 4}
@@ -93,17 +193,90 @@ Let $R$ and $S$ be rings, and let $f:R\to S$ be a ring homomorphism. Let $a,b\in
         \item If $a\in R$ is a unit, then $f(a)$ is a unit as well, with $f(a^{-1})=f(a)^{-1}$.
     \end{enumerate}
 \subsection*{Response}
+    \begin{enumerate}
+        \item $f(a - b) = f(a) - f(b)$. \vspace{-12pt}
+
+            \begin{proof}
+                Let $R, S$ be rings, $f : R \to S$ a ring homomorphism, and $a, b \in R$. Then,
+                \begin{align*}
+                    f(a - b) &= f(a + (-b)) \\
+                             &= f(a) + f(-b) \\
+                             &= f(a) + f((-1_R) \cdot b) && -a = 1(-a) = -1a = (-1)a \\
+                             &= f(a) + f((-1_R)) \cdot f(b) && f(ab) = f(a) \cdot f(b)\\
+                             &= f(a) + (-1_S) \cdot f(b) && f(1_R) = 1_S \\
+                    f(a - b) &= f(a) - f(b)
+                \end{align*}
+            \end{proof}        
+        \item If $a\in R$ is a unit, then $f(a)$ is a unit as well, with $f(a^{-1})=f(a)^{-1}$. \vspace{-12pt}
+
+            \begin{proof}
+                Let $R, S$ be rings, $f : R \to S$ a ring homomorphism, and $a \in R$ be a unit. 
+                Then,
+                \begin{align*}
+                    1_S &= f(1_R) \\
+                        &= f(a a^{-1}) && 1_R = a a^{-1} \\
+                        &= f(a) \cdot f(a^{-1}) && f(ab) = f(a) \cdot f(b) \\
+                    f(a)^{-1} \cdot 1_S &= f(a^{-1}) \\
+                    f(a)^{-1} &= f(a^{-1}) && a1 = 1a = a
+                \end{align*}
+            \end{proof}
+    \end{enumerate}
 \newpage
 
 \section*{Question 5}
 Consider the Gaussian integers, given by $\Z[i]=\{a+bi|a,b\in\Z\}$, where $i^2=-1$. Consider the map $f:\Z[i]\to \Z[i]$ where $a+bi\mapsto a-bi$. Show $f$ is an isomorphism.
 \subsection*{Response}
+\begin{proof}
+    Let $\Z[i] = \{ a + bi : a, b \in \Z \}$ where $i^2 = -1$ and define $f : \Z[i] \to \Z[i]$, 
+    $a + bi \mapsto a - bi$. Then
+    \begin{enumerate}
+        \item $1 \in \Z[i]$: Take $1 \in Z[i]$. Then, $f(1) = f(1 + 0i) = 1 - 0i = 1$.
+        \item Closure under addition: Consider $a + bi, c + di \in \Z[i]$. Then
+            \begin{align*}
+                f((a + bi) + (c + di)) &= f(a + bi + c + di) \\
+                                       &= f(a + c + bi + di) \\
+                                       &= f((a + c) + (b + d)i) \\
+                                       &= (a + c) - (b + d)i \\
+                                       &= a + c - bi - di \\
+                                       &= (a - bi) + (c - di) \\
+                f((a + bi) + (c + di)) &= f(a + bi) + f(c + di)
+            \end{align*}
+
+        \item Closure under multiplication Consider $a + bi, c + di \in \Z[i]$. Then
+            \begin{align*}
+                f((a + bi) \cdot (c + di)) &= f(ac + bci + adi + bdi^2) \\
+                                       &= f(ac + bci + adi - bd) \\
+                                       &= f((ac - bd) + (bc + ad)i) \\
+                                       &= (ac - bd) - (bc + ad)i \\
+                                       &= ac - bd - bci - adi \\
+                                       &= ac - bci - adi + bdi^2 \\
+                                       &= c(a - bi) - di(a - bi) \\
+                                       &= (a - bi) \cdot (c - di) \\
+                f((a + bi) \cdot (c + di)) &= f(a + bi) \cdot f(c + di)
+            \end{align*}
+    \end{enumerate}
+    (1) - (3) show that $f$ is a homomorphism. To show that $f$ is an isomorphism, consider
+    $f : \Z[i] \to \Z[i]$, $f^{-1} := f$. Then for $a + bi \in \Z[i]$, 
+    $f(f^{-1}(a + bi)) = f(a - bi) = a + bi = f^{-1}(a - bi) = f^{-1}(f(a + bi))$. So, $f$ is an
+    isomorphism.
+\end{proof}
 \newpage
 
 \section*{Question 6}
 Let $R$ be a ring. We say that $a\in R$ is nilpotent if there is some integer $n$ such that $a^n=0$. 
 Show that $1+a$ is a unit. 
 \subsection*{Response}
+\begin{proof}
+    Let $R$ be a ring and suppose $a \in R$ is nilpotnet; i.e. there is some integer $n$ such that
+    $a^n = 0$. Then, since $R$ is a ring, $1 \in R$. Consider the elements 
+    $(1 + a), (1 - a^n) \in R$. Then
+    \begin{align*}
+        (1 + a)(1 - a^n) &= 1^2 - a \cdot a^n \\
+                         &= 1 - a0 && a \text{ is nilpotent} \\
+        (1 + a)(1 - a^n) &= 1
+    \end{align*}
+    so $1 + a$ is a unit.
+\end{proof}
 \newpage
 
 \section*{Question 7}
@@ -114,11 +287,120 @@ We say that a ring $R$ is a Boolean ring if, for every $a\in R$, we have $a^2=a$
     \item Suppose $R$ is a Boolean ring and an integral domain. Show that $|R|=2$. [Hint: show that any nonzero element must be $1$.]
 \end{enumerate} 
 \subsection*{Response}
+\begin{enumerate}
+    \item Show that a Boolean ring $R$ is commutative. \vspace{-12pt}
+
+        \begin{proof}
+            To show that a Boolean ring $R$ is commutative, consider $a + b \in R$. Then
+            \begin{align*}
+                a + b &= (a + b)^2 \\
+                      &= a^2 + ab + ba + b^2 \\
+                      &= a + ab + ba + b \\
+                (a - a) + (b - b) &= (a - a) + ab + ba + (b - b) \\
+                0 &= ab + ba \\
+                0 &= ab - ba && a = -a
+            \end{align*}
+            so $ab = ba$.
+        \end{proof}
+
+    \item Suppose $R$ is a Boolean ring and an integral domain. Show that $|R|=2$. \vspace{-12pt}
+
+        \begin{proof}
+            Suppose $R$ is a Boolean ring and an integral domain. Let $a \in R$ be nonzero. Since 
+            $R$ is a Boolean ring, $a^2 = a$. Then, $a^2 = aa = a$. Because $R$ is an integral 
+            domain, $ab \neq 0$ for all $a, b \in R$, so by the cancellation property, we get 
+            $a = 1$. Since $a$ was arbitrary, this holds for all $a \in R$. Because $R$ is a ring, 
+            $0 \in R$. Set $1_R = 1 \in R$. Then, $R := \{ 0, 1 \}$, so $|R| = 2$.
+        \end{proof}
+\end{enumerate} 
 \newpage
 
 \section*{Question 8}
 Let $R$ and $S$ be rings. Show that if $R$ and $S$ are isomorphic, then $R[x]$ and $S[x]$ are isomorphic. 
 \subsection*{Response}
+\begin{proof}
+    Let $R, S$ be rings. Suppose $R \simeq S$. Then, there exists a bijection $f : R \to S$. 
+    Consider the function $g : R[x] \to S[x]$ defined by 
+    $\sum^{n}_{i = 0} a_i x^i \mapsto \sum^{n}_{i = 0} f(a_i) x^i$ \vspace{12pt}
+
+    Consider two polynomials 
+    $\sum^{n}_{i = 0} a_i x^i, \sum^{m}_{j = 0} b_j x^j \in R[x]$ for some $n, m \in \Z_{>0}$.
+    \begin{enumerate}
+        \item Closure under addition: Without loss of generality, assume $m \leq n$ and set 
+            $b_i = 0$ for $m < i \leq n$. Then
+            \begin{align*}
+                g
+                \left(
+                    \sum^{n}_{i = 0} a_i x^i + \sum^{n}_{i = 0} b_i x^i
+                \right) 
+                &= g 
+                \left( 
+                    \sum^{n}_{i = 0} (a_i + b_i) x^i
+                \right) \\
+                &= \sum^{n}_{i = 0} f(a_i + b_i) x^i \\
+                &= \sum^{n}_{i = 0} (f(a_i) + f(b_i)) x^i \\
+                &= \sum^{n}_{i = 0} \left( f(a_i) x^i + f(b_i) x^i \right) \\
+                &= \sum^{n}_{i = 0} f(a_i) x^i + \sum^{n}_{i = 0} f(b_i) x^i \\
+                g
+                \left(
+                    \sum^{n}_{i = 0} a_i x^i + \sum^{n}_{i = 0} b_i x^i
+                \right)
+                &= g 
+                \left( 
+                    \sum^{n}_{i = 0} a_i x^i 
+                \right)
+                + 
+                g
+                \left( 
+                    \sum^{n}_{i = 0} b_i x^i
+                \right)
+            \end{align*}
+            so $g$ is closed under addition.
+        \item Closure under multiplication:
+            \begin{align*}
+                g
+                \left(
+                    \left(\sum^{n}_{i = 0} a_i x^i \right)
+                    \left(\sum^{m}_{j = 0} b_j x^j \right)
+                \right) 
+                &= 
+                g \left(\sum^{n}_{i = 0} \sum^{m}_{j = 0} a_i x^i b_j x^j \right) \\
+                &= 
+                g \left(\sum^{n}_{i = 0} \sum^{m}_{j = 0} x^i a_i b_j x^j \right)
+                && a_i x^i = x^i a_i \\
+                &= \sum^{n}_{i = 0} \sum^{m}_{j = 0} x^i f(a_i b_j) x^j \\
+                &= \sum^{n}_{i = 0} \sum^{m}_{j = 0} x^i f(a_i) \cdot f(b_j) x^j \\
+                &= \sum^{n}_{i = 0} \sum^{m}_{j = 0} f(a_i) x^i \cdot f(b_j) x^j
+                && f(a_i) x^i = x^i f(a_i) \\
+                &= \left(\sum^{n}_{i = 0} f(a_i) x^i \right) \cdot \left( \sum^{m}_{j = 0} f(b_j) x^j \right) \\
+                &= g\left(\sum^{n}_{i = 0} a_i x^i \right) \cdot g \left( \sum^{m}_{j = 0} b_j x^j \right)
+            \end{align*}
+            so $g$ is closed under multiplication.
+        \item $g(1_{R[x]}) = 1_{S[x]}$:
+            \[
+                g(1_{R[x]}) = f(1_{R}) = 1_{S} = 1_{S[x]}
+            \]
+            so the multiplicative identity exists.
+    \end{enumerate}
+    so $g$ is a homomorphism. To show that $g$ is an isomorphism, consider $g^{-1} : S[x] \to R[x]$, 
+    $\sum^{n}_{i = 0} a_i x^i \mapsto \sum^{n}_{i = 0} f^{-1}(a_i) x^i$ where 
+    $f^{-1} : S[x] \to R[x]$ is the inverse of $f$. Then for all $\sum^{n}_{i = 0} a_i x^i \in R[x]$
+    \[
+        g^{-1}\left (g\left (\sum^{n}_{i = 0} a_i x^i \right) \right) 
+        = g^{-1}\left (\sum^{n}_{i = 0} f\left (a_i \right) x^i \right)
+        = \sum^{n}_{i = 0} f^{-1}\left (f\left (a_i \right) \right) x^i
+        = \sum^{n}_{i = 0} a_i x^i
+    \]
+    and for all $\sum^{n}_{i = 0} b_i x^i \in S[x]$ we have
+    \[
+        g\left( g^{-1}\left( \sum^{n}_{i = 0} b_i x^i \right) \right) 
+        = g\left( \sum^{n}_{i = 0} f^{-1}\left( b_i \right) x^i \right)
+        = \sum^{n}_{i = 0} f\left( f^{-1}\left( b_i \right) \right) x^i
+        = \sum^{n}_{i = 0} b_i x^i
+    \]
+    so $g$ is an isomorphism and therefore $R[x]$ and $S[x]$ are isomorphic.
+\end{proof}
+
 \newpage
 
 \end{document}
