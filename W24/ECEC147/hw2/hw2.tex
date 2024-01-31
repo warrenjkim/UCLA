@@ -64,7 +64,7 @@ skipbelow=\medskipamount
         \item \bf{Noisy linear regression} \vspace{11pt}
             A real estate company have assigned us the task of building a model to predict the house
             prices in Westwood. For this task, the company has provided us with a dataset $\cal{D}$:
-            \[{\cal{D}} = {(x^{(1)}, y^{(1)}), (x^{(2)}, y^{(2)}), \ldots, (x^{(N)}, y^{(N)})}\]
+            \[\mathcal{D} = {(x^{(1)}, y^{(1)}), (x^{(2)}, y^{(2)}), \ldots, (x^{(N)}, y^{(N)})}\]
             where $x^{(i)} \in R^d$ is a feature vector of the $i^{\it{th}}$ house and $y^{(i)} \in \R$ 
             is the price of the ith house. Since we just learned about linear regression, so we have 
             decided to use a linear regression model for this task. Additionally, the IT manager of 
@@ -73,27 +73,160 @@ skipbelow=\medskipamount
             regularization. In this problem, we will navigate through the process of achieving 
             regularization by adding noise to the feature vectors. Recall, that we define the cost 
             function in a linear regression problem as:
-            \[{\cal{L}} (\theta) = \frac{1}{N} \sum^{N}_{i = 1} (y^{(i)} - (x^{(i)})^T \theta)^2\]
+            \[\mathcal{L} (\theta) = \frac{1}{N} \sum^{N}_{i = 1} (y^{(i)} - (x^{(i)})^T \theta)^2\]
             where $\theta \in \R^d$ is the parameter vector. As mentioned earlier, we will be adding 
             noise to the feature vectors in the dataset. Specifically, we will be adding zero-mean 
             gaussian noise of known variance $\sigma^2$ from the distribution
-            \[{\cal{N}} (0, \sigma^2 \bf{I})\]
+            \[\mathcal{N} (0, \sigma^2 \bf{I})\]
             where $\bf{I} \in \R^{d \times d}$ and $\sigma \in \R$. WIth the addition of gaussian
             noise the modified cost function is given by,
-            \[{\tilde{\cal{L}}} (\theta) = \frac{1}{N}\sum^{N}_{i = 1} (y^{(i)} - (x^{(i)} + \delta^{(i)})^T \theta)^2\]
-            where $\delta^{(i)}$ are i.i.d noise vectors with $\delta^{(i)} \sim {\cal{N}} (0, \sigma^2 \bf{I})$.
+            \[\tilde{\mathcal{L}} (\theta) = \frac{1}{N}\sum^{N}_{i = 1} (y^{(i)} - (x^{(i)} + \delta^{(i)})^T \theta)^2\]
+            where $\delta^{(i)}$ are i.i.d noise vectors with $\delta^{(i)} \sim \mathcal{N} (0, \sigma^2 \bf{I})$.
             \begin{enumerate}
                 \item Express the expectation of the modified loss over the gaussian noise, 
-                    $\mathbb{E}_{\delta \sim {\cal{N}}} [\tilde{{\cal{L}}} (\theta)]$, in terms of
+                    $\mathbb{E}_{\delta \sim \mathcal{N}} [\tilde{\mathcal{L}} (\theta)]$, in terms of
                     the original loss plus a term independent of the dataset $\cal{D}$. To be precise, 
                     your answer should be in the form:
-                    \[\mathbb{E}_{\delta \sim {\cal{N}}} [\tilde{{\cal{L}}} (\theta)] = {\cal{L}} (\theta) + R\]
+                    \[\mathbb{E}_{\delta \sim \mathcal{N}} [\tilde{\mathcal{L}} (\theta)] = \mathcal{L} (\theta) + R\]
                     where $R$ is not a function of $\cal{D}$. For answering this part, you might find the following result useful:
-                    \[\mathbb{E}_{\delta \sim {\cal{N}}} [\delta \delta^T] = \sigma^2 \bf{I}\]
+                    \[\mathbb{E}_{\delta \sim \mathcal{N}} [\delta \delta^T] = \sigma^2 \bf{I}\]
+
+                    \begin{adjustwidth}{-7.7em}{-3em}
+                        \begin{response}
+                            We can rewrite $\tilde{\mathcal{L}} (\theta)$ as
+                            \begin{align*}
+                                \tilde{\mathcal{L}} (\theta) 
+                            &= \frac{1}{N}
+                            \sum^{N}_{i = 1} 
+                            \left( y^{(i)} - \left( x^{(i)} + \delta^{(i)} \right)^T \theta \right)^2 \\
+                            &= \frac{1}{N} 
+                            \sum^{N}_{i = 1} 
+                            \left( \left[y^{(i)} - x^{(i)} \theta \right] - \delta^{(i)T} \theta \right)^2 \\
+                            &= \frac{1}{N} 
+                            \sum^{N}_{i = 1} 
+                            \left( 
+                                \left[ y^{(i)} - x^{(i)} \theta \right]^2
+                                -
+                                2\left[ y^{(i)} - x^{(i)} \theta \right] \delta^{(i)T} \theta 
+                                + 
+                                \delta^{(i)T} \theta \delta^{(i)T} \theta 
+                            \right) \\
+                            &= \frac{1}{N} 
+                            \sum^{N}_{i = 1} 
+                            \left( 
+                                \left[ y^{(i)} - x^{(i)} \theta \right]^2
+                                -
+                                2\left[ y^{(i)} - x^{(i)} \theta \right] \delta^{(i)T} \theta 
+                                + 
+                                \theta^T \delta^{(i)} \delta^{(i)T} \theta 
+                            \right) 
+                            && \delta^{(i)T} \theta \in \R \iff \delta^{(i)T} \theta = \theta^T \delta^{(i)} \\
+                            &= \frac{1}{N} 
+                            \sum^{N}_{i = 1} 
+                            \left( 
+                                \left[ y^{(i)} - x^{(i)} \theta \right]^2
+                                -
+                                2\left[ y^{(i)} - x^{(i)} \theta \right] \theta^T \delta^{(i)} 
+                                + 
+                                \theta^T \delta^{(i)} \delta^{(i)T} \theta 
+                            \right) \\
+                            &= \frac{1}{N} 
+                            \sum^{N}_{i = 1} 
+                            \left( 
+                                \left[ y^{(i)} - x^{(i)} \theta \right]^2
+                                -
+                                2\left[ y^{(i)} \theta^T - x^{(i)} \theta \theta^T \right]  \delta^{(i)}
+                                + 
+                                \theta^T \delta^{(i)} \delta^{(i)T} \theta 
+                            \right) \\
+                            \tilde{\mathcal{L}} (\theta) 
+                            &= \mathcal{L} (\theta) - \frac{1}{N} 
+                            \sum^{N}_{i = 1} 
+                            \left(
+                                2\left[ y^{(i)} \theta^T - x^{(i)} \theta \theta^T \right] \delta^{(i)}
+                                -
+                                \theta^T \delta^{(i)} \delta^{(i)T} \theta 
+                            \right)
+                            \end{align*}
+                            Then
+                            \begin{align*}
+                                \mathbb{E}_{\delta \sim \mathcal{N}} [\tilde{\mathcal{L}} (\theta)]
+                            &= 
+                            \mathbb{E}_{\delta \sim \mathcal{N}} 
+                            \left[
+                                \mathcal{L} (\theta) - \frac{1}{N} 
+                                \sum^{N}_{i = 1} 
+                                \left(
+                                    2\left[ y^{(i)} \theta^T - x^{(i)} \theta \theta^T \right] \delta^{(i)}
+                                    -
+                                    \theta^T \delta^{(i)} \delta^{(i)T} \theta 
+                                \right) 
+                            \right]
+                            \\
+                            &= 
+                            \mathbb{E}_{\delta \sim \mathcal{N}} [\mathcal{L} (\theta)] 
+                            - \frac{1}{N}
+                            \sum^{N}_{i = 1} 
+                            \left[
+                                \mathbb{E}_{\delta \sim \mathcal{N}}
+                                \left(
+                                    2\left[ y^{(i)} \theta^T - x^{(i)T} \theta \theta^T \right] \delta^{(i)}
+                                    -
+                                    \theta^T \delta^{(i)} \delta^{(i)T} \theta 
+                                \right)
+                            \right] \\
+                            &= 
+                            \mathcal{L} (\theta) - \frac{1}{N} 
+                            \sum^{N}_{i = 1} 
+                            \left[
+                                2 \mathbb{E}_{\delta \sim \mathcal{N}}
+                                \left( \left[ y^{(i)} \theta^T - x^{(i)T} \theta \theta^T \right] \left[ \delta^{(i)} \right] \right) 
+                                -
+                                \mathbb{E}_{\delta \sim \mathcal{N}}
+                                \left( \theta^T \delta^{(i)} \delta^{(i)T} \theta \right)
+                            \right] \\
+                            &= 
+                            \mathcal{L} (\theta) - \frac{1}{N} 
+                            \sum^{N}_{i = 1} 
+                            \left[
+                                2 \left( y^{(i)} \theta^T - x^{(i)T} \theta \theta^T \right)
+                                \mathbb{E}_{\delta \sim \mathcal{N}} (\delta^{(i)})
+                                -
+                                \theta^T 
+                                \mathbb{E}_{\delta \sim \mathcal{N}}
+                                \left( \sigma^2 \bf{I} \right)
+                                \theta 
+                            \right] \\
+                            &= 
+                            \mathcal{L} (\theta) - \frac{1}{N}
+                            \sum^{N}_{i = 1} 
+                            \left( 0 - \sigma^2 \theta^T \theta \right)
+                            && \mathbb{E}_{\delta \sim \mathcal{N}} (\delta^{(i)}) = 0 \\
+                            &= 
+                            \mathcal{L} (\theta)
+                            +
+                                \sigma^2 \| \theta \|^2_2 && \theta^T \theta = \| \theta \|^2_2
+                            \end{align*}
+                            Setting $R := \sigma^2 \| \theta \|^2_2$, we get 
+                            $\mathcal{L} (\theta) + R$
+                        \end{response}
+                \end{adjustwidth}
+
                 \item Based on your answer to (a), under expectation what regularization effect
                     would the addition of the noise have on the model?
+                    \begin{response}
+                        $L^2$
+                    \end{response}
                 \item Suppose $\sigma \longrightarrow 0$, what effect would this have on the model?
+                    \begin{response}
+                        If $\sigma \longrightarrow 0$, there is no regularization which means there 
+                        may be overfitting.
+                    \end{response}
                 \item Suppose $\sigma \longrightarrow \infty$, what effect would this have on the model?
+                    \begin{response}
+                        If $\sigma \longrightarrow \infty$, we are optimizing for the $R$ term which
+                        means there may be underfitting.
+                    \end{response}
             \end{enumerate}
 
         \item \bf{$k$-nearest neighbors.}
@@ -112,14 +245,139 @@ skipbelow=\medskipamount
                     \[\sm_i (\x) = \frac{e^{\w^{T}_{i} \x + b_i}}{\sum^{c}_{k = 1} e^{\w^{T}_{k} \x + b_k}}\]
             \end{itemize}
             Derive the log-likelihood $\cal{L}$, and its gradient w.r.t. the parameters,
-            $\nabla_{\w_i} {\cal{L}}$ and $\nabla_{b_i} {\cal{L}}$ for $i = 1, \ldots, c$.
+            $\nabla_{\w_i} \mathcal{L}$ and $\nabla_{b_i} \mathcal{L}$ for $i = 1, \ldots, c$.
             \newline 
-            \bf{Note:} We can group $\w_i$ and $b_i$ into a single vector by augmenting the ata vectors
+            \bf{Note:} We can group $\w_i$ and $b_i$ into a single vector by augmenting the data vectors
             with an additional dimension of constant $1$. Let $\tilde{\x} = \begin{bmatrix} \x \\ \bf{1} \end{bmatrix},
             \tilde{\w_i} = \begin{bmatrix} \w_i \\ b_i \end{bmatrix}$, then 
             $a_i(\x) = \w^{T}_{i} \x + b_i = \tilde{\w}^{T}_{i} \tilde{\x}$. This unifies
-            $\nabla_{\w_i} {\cal{L}}$ and $\nabla_{b_i} {\cal{L}}$ into $\nabla_{\tilde{\w_i}} {\cal{L}}$.
+            $\nabla_{\w_i} \mathcal{L}$ and $\nabla_{b_i} \mathcal{L}$ into $\nabla_{\tilde{\w_i}} \mathcal{L}$.
             
+            \begin{response}
+                Let
+                \[
+                    \mathcal{L} (\theta)
+                    = -\log[\mathcal{L}' (\theta)] 
+                    =
+                    -\log
+                    \left[
+                        \Pr \left( y^{(j)} = i \mid \x^{(j)}, \theta \right) 
+                    \right]
+                \]
+                Then
+                \begin{align*}
+                    \mathcal{L} (\theta) 
+                    &= -\log[\mathcal{L}' (\theta)] \\
+                    &= \sum^{m}_{j = 1} -\log \left[ \Pr \left( y^{(j)} = i \mid \x^{(j)}, \theta \right) \right] \\
+                    &= \sum^{m}_{j = 1} -\log [\sm_i(\x^{(j)})] \\
+                    &= \sum^{m}_{j = 1} 
+                    -\log 
+                    \left[  
+                        \frac{e^{\w^{T}_{i} \x^{(j)} + b_i}}{\sum^{c}_{k = 1} e^{\w^{T}_{k} \x^{(j)} + b_k}}
+                    \right] \
+                    \mathcal{L} (\theta)
+                    &= \sum^{m}_{j = 1}
+                    \left[  
+                        \log \left( \sum^{c}_{k = 1} e^{\w^{T}_{k} \x^{(j)} + b_k} \right)
+                        - 
+                        \left( \w^{T}_{i} \x^{(j)} + b_i \right)
+                    \right] \\
+                \end{align*}
+                So $\nabla_{\w_i} \mathcal{L}$ is
+                \begin{align*}
+                    \nabla_{\w_i} \mathcal{L} (\theta)
+                    &= 
+                    \nabla_{\w_i}
+                    \sum^{m}_{j = 1}
+                    \left[  
+                        \log \left( \sum^{c}_{k = 1} e^{\w^{T}_{k} \x^{(j)} + b_k} \right)
+                        - 
+                        \left( \w^{T}_{i} \x^{(j)} + b_i \right)
+                    \right] \\
+                    &= 
+                    \sum^{m}_{j = 1}
+                    \left[  
+                        \nabla_{\w_i}
+                        \log \left( \sum^{c}_{k = 1} e^{\w^{T}_{k} \x^{(j)} + b_k} \right)
+                        - 
+                        \nabla_{\w_i}
+                        \left( \w^{T}_{i} \x^{(j)} + b_i \right)
+                    \right] \\
+                    &= 
+                    \sum^{m}_{j = 1}
+                    \left[  
+                        \frac{1}{\sum^{c}_{k = 1} e^{\w^{T}_{k} \x^{(j)} + b_k}}
+                        \left( \sum^{c}_{k = 1} \nabla_{\w_i} \left[ e^{\w^{T}_{k} \x^{(j)} + b_k} \right] \right)
+                        - 
+                        \x^{(j)}
+                    \right] \\
+                    &= 
+                    \sum^{m}_{j = 1}
+                    \left[  
+                        \frac{\left( e^{\w^{T}_{i} \x^{(j)} + b_i} \right)\left( \x^{(j)} \right)}
+                        {\sum^{c}_{k = 1} e^{\w^{T}_{k} \x^{(j)} + b_k}}
+                        - 
+                        \mathbbm{1}_{i = y^{(j)}}(\x^{(j)})
+                    \right] \\
+                    \nabla_{\w_i} \mathcal{L} (\theta)
+                    &= 
+                    \sum^{m}_{j = 1}
+                    \left[  
+                        \frac{\left( e^{\w^{T}_{i} \x^{(j)} + b_i} \right)}
+                        {\sum^{c}_{k = 1} e^{\w^{T}_{k} \x^{(j)} + b_k}}
+                        - 
+                        \mathbbm{1}_{i = y^{(j)}}
+                    \right] \x^{(j)}
+                \end{align*}
+                and $\nabla_{b_i} \mathcal{L}$ is
+                \begin{align*}
+                    \nabla_{b_i} \mathcal{L} (\theta)
+                    &= 
+                    \nabla_{b_i}
+                    \sum^{m}_{j = 1}
+                    \left[  
+                        \log \left( \sum^{c}_{k = 1} e^{\w^{T}_{k} \x^{(j)} + b_k} \right)
+                        - 
+                        \left( \w^{T}_{i} \x^{(j)} + b_i \right)
+                    \right] \\
+                    &= 
+                    \sum^{m}_{j = 1}
+                    \left[  
+                        \nabla_{b_i}
+                        \log \left( \sum^{c}_{k = 1} e^{\w^{T}_{k} \x^{(j)} + b_k} \right)
+                        - 
+                        \nabla_{b_i}
+                        \left( \w^{T}_{i} \x^{(j)} + b_i \right)
+                    \right] \\
+                    &= 
+                    \sum^{m}_{j = 1}
+                    \left[  
+                        \frac{1}{\left( \sum^{c}_{k = 1} e^{\w^{T}_{k} \x^{(j)} + b_k} \right)}
+                        \left( \sum^{c}_{k = 1} \nabla_{b_i} \left[ e^{\w^{T}_{k} \x^{(j)} + b_k} \right] \right)
+                        - 
+                        1
+                    \right] \\
+                    &= 
+                    \sum^{m}_{j = 1}
+                    \left[  
+                        \frac{1}{\left( \sum^{c}_{k = 1} e^{\w^{T}_{k} \x^{(j)} + b_k} \right)}
+                        \left( e^{\w^{T}_{i} \x^{(j)} + b_i} \right)
+                        - 
+                        1
+                    \right] \\
+                    \nabla_{b_i} \mathcal{L} (\theta)
+                    &= 
+                    \sum^{m}_{j = 1}
+                    \left[  
+                        \frac{\left( e^{\w^{T}_{i} \x^{(j)} + b_i} \right)}
+                        {\left( \sum^{c}_{k = 1} e^{\w^{T}_{k} \x^{(j)} + b_k} \right)}
+                        - 
+                        \mathbbm{1}_{i = y^{(j)}}
+                    \right]
+                \end{align*}
+                where 
+                \[\mathbbm{1}_{i = y^{(j)}} = \begin{cases} 1, & \text{if } i = y^{(j)} \\ 0, & \text{otherwise} \end{cases}\]
+            \end{response}
         \item \bf{Hinge loss gradient.} \vspace{10pt}
 
             Owing to the drastic changes in climate throughout the world, a weather forecasting 
@@ -132,19 +390,19 @@ skipbelow=\medskipamount
             We choose to use a binary support vector machine (SVM) classification model. The SVM
             model parameters are learned by optimizing a hinge loss. The company has provided us with
             a data-set
-            \[{\cal{D}} = {(\x^{(1)}, y^{(1)}), (\x^{(2)}, y^{(2)}), \ldots, (\x^{(K)}, y^{(K)})}\]
+            \[\mathcal{D} = {(\x^{(1)}, y^{(1)}), (\x^{(2)}, y^{(2)}), \ldots, (\x^{(K)}, y^{(K)})}\]
             where $\x^{(i)} \in \R^d$ is a feature vector of the $i^{\it{th}}$ data sample and 
             $y^{(i)} \in \{-1, 1\}$. We define the hinge loss per training sample as
             \begin{align}
-                \hinge_{y^{(i)}} = \max \left( 0, 1 - y^{(i)} (\w^T \x^{(i)} + b) \right)
+                \hinge_{y^{(i)}} (\x^{(i)}) = \max \left( 0, 1 - y^{(i)} (\w^T \x^{(i)} + b) \right)
             \end{align}
-            , where $\w \in \R^d$ and bias $b \in \R$ are the model parameters. WIth the hinge loss
+            , where $\w \in \R^d$ and bias $b \in \R$ are the model parameters. With the hinge loss
             per sample defined, we can then formulate the average loss for our model as:
             \begin{align}
-                {\cal{L}} (\w, b) = \frac{1}{K} \sum^{K}_{i = 1} \hinge_{y^{(i)}} (\x^{(i)})
+                \mathcal{L} (\w, b) = \frac{1}{K} \sum^{K}_{i = 1} \hinge_{y^{(i)}} (\x^{(i)})
             \end{align}
-        Find the gradient of the loss function ${\cal{L}} (\w, b)$ with respect to the parameters
-        i.e $\nabla_{\w} \cal{L}$ and $\nabla_b \cal{L}$.
+        Find the gradient of the loss function $\mathcal{L} (\w, b)$ with respect to the parameters
+        i.e $\nabla_{\w} \mathcal{L}$ and $\nabla_b \cal{L}$.
         \newline
         Hint: An Indicator function, also known as a characteristic function, takes on the value of
         $1$ at certain designated points and $0$ at all other points. Mathematically, we can represent
@@ -152,6 +410,43 @@ skipbelow=\medskipamount
         \begin{align}
             \mathbbm{1}_{\{p < 1\}} = \begin{cases} 1, & \text{if } p < 1 \\ 0, & \text{otherwise} \end{cases}
         \end{align}
+
+        \begin{response}
+            $\nabla_{\w} \mathcal{L}$ is
+            \begin{align*}
+            \nabla_{\w} \mathcal{L} (\w, b) 
+            &= \nabla_{\w} \frac{1}{K} \sum^{K}_{i = 1} \hinge_{y^{(i)}} (\x^{(i)}) \\
+            &= 
+            \nabla_{\w} 
+            \frac{1}{K} \sum^{K}_{i = 1} 
+            \max \left( 0, 1 - y^{(i)} (\w^T \x^{(i)} + b) \right) \\
+            &= 
+            \frac{1}{K} \sum^{K}_{i = 1} 
+            \nabla_{\w} 
+            \max \left( 0, 1 - y^{(i)} (\w^T \x^{(i)} + b) \right) \\
+            \nabla_{\w} \mathcal{L} (\w, b) 
+            &= 
+            \frac{1}{K} \sum^{K}_{i = 1} 
+                \begin{cases} -y^{(i)} \x^{(i)}, & \text{if } 1 - y^{(i)} (\w^T \x^{(i)} + b) > 0 \\ 0, & \text{otherwise} \end{cases}
+            \end{align*}
+            and $\nabla_{b} \mathcal{L}$ is
+            \begin{align*}
+            \nabla_{b} \mathcal{L} (\w, b) 
+            &= \nabla_{b} \frac{1}{K} \sum^{K}_{i = 1} \hinge_{y^{(i)}} (\x^{(i)}) \\
+            &= 
+            \nabla_{b} 
+            \frac{1}{K} \sum^{K}_{i = 1} 
+            \max \left( 0, 1 - y^{(i)} (\w^T \x^{(i)} + b) \right) \\
+            &= 
+            \frac{1}{K} \sum^{K}_{i = 1} 
+            \nabla_{b} 
+            \max \left( 0, 1 - y^{(i)} (\w^T \x^{(i)} + b) \right) \\
+            \nabla_{b} \mathcal{L} (\w, b) 
+            &=
+            \frac{1}{K} \sum^{K}_{i = 1} 
+                \begin{cases} -y^{(i)}, & \text{if } 1 - y^{(i)} (\w^T \x^{(i)} + b) > 0 \\ 0, & \text{otherwise} \end{cases} \\
+            \end{align*}
+        \end{response}
 
     \item \bf{Softmax classifier.}
     \end{enumerate}
