@@ -6,8 +6,11 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage{graphicx}
 \usepackage{nicefrac}
+\usepackage{titlesec}
+\usepackage{mathtools}
 
 \newenvironment{definition}[1]{\begin{tcolorbox}[title={Definition: #1}]}{\end{tcolorbox}}
+\newenvironment{example}{\begin{tcolorbox}[title={Example},colback=green!5!white,colframe=black!75!green]}{\end{tcolorbox}}
 \newenvironment{aside}[1]{\begin{tcolorbox}[title={Aside: #1},colback=blue!5!white,colframe=black!75!blue]}{\end{tcolorbox}}
 
 
@@ -17,6 +20,9 @@
 \renewcommand{\it}[1]{\textit{{#1}}}
 \newcommand{\ib}[1]{\textit{\textbf{{#1}}}}
 \newcommand{\R}{\mathbb{R}}
+
+\setlength{\parindent}{0pt}
+\titleformat{\chapter}[display]{\normalfont\huge\bfseries}{\vspace{-100pt}}{20pt}{\Huge}
 
 \title{CS 143}
 \author{Warren Kim}
@@ -28,6 +34,7 @@
 \tableofcontents
 \newpage
 
+\chapter{Overview}
 \section{Purpose of a Database}
 We will be studying (mostly) Relational DataBase Management Systems (RDBMS).
 \begin{definition}{Database}
@@ -37,9 +44,6 @@ We will be studying (mostly) Relational DataBase Management Systems (RDBMS).
 A database abstracts away the data integrity and file management aspect of CRUD operations. Moreover,
 a database provides us with a single location for all of the data, even if the database itself is
 distributed.
-
-
-
 
 
 \section{Abstraction Layers}
@@ -58,9 +62,6 @@ There are three layers of abstraction: physical, logical, and view.
 We start by learning the logical abstraction.
 
 
-
-
-
 \section{Instances and Schema}
 \begin{definition}{Schema and Instance}
     A \bf{schema}\footnote{Note: schema can also refer to a relation (table).} is the overall design 
@@ -69,9 +70,6 @@ We start by learning the logical abstraction.
     An \bf{instance} of a database is the actual set of data stored in the database at a particular 
     moment in time. 
 \end{definition}
-
-
-
 
 
 \section{Data Models}
@@ -114,6 +112,7 @@ enables efficient retrieval and comparison (e.g. nearest neighbor[s]).
 A key-value model stores data as a key-value pair (typically using a hash function). In this model,
 data typically lives in RAM as opposed to disk.
 
+
 \section{Database Languages}
 There are two main semantic systems when working with databases:
 \begin{enumerate}[label=\it{(\roman*)}]
@@ -148,6 +147,7 @@ optionally storage structure and access methods. There are four types of consist
         we have two relations $R, R'$. If there is a link $f : R \to R'$, then $f$ is surjective).
 \end{enumerate}
 
+
 \section{Data Storage and Querying}
 \begin{definition}{Storage Manager}
     A \ib{storage manager} that abstracts away how the data is laid out on disk.
@@ -161,14 +161,24 @@ manager handles swapping\footnote{Swapping: Virtual memory in CS111!} and makes 
     ``compiles'' a query (using relational algebra) and executes the instruction(s).
 \end{definition}
 
-\section{Keys}
+
+\section{Defining a Schema}
+A schema can be written as \tt{relation(\underline{attribute$_{\tt{1}}$}, \tt{$\ldots$}, 
+attribute$_{\tt{n}}$}) where underlined attributes represent the primary key.
+
+
+
+
+
+\chapter{Keys}
 \begin{aside}{A Note on Context and Instance}
     Based on \bf{context} means that the given data is a subset of the complete dataset.
     \newline
     Based on \bf{instance} means that we treat the given data as the complete dataset.
 \end{aside}
 
-\subsection{Superkey}
+
+\section{Superkey}
 \begin{definition}{Superkey}
     A \bf{superkey} is a set of one or more attributes that uniquely identifies a record (tuple) and 
     distinguishes it from all other records in the relation.\vspace{10pt}
@@ -183,7 +193,7 @@ relation $R$, there exists at most $2^n - 1$ superkeys where $n$ is the number o
 attributes.
 
 
-\subsection{Candidate Key}
+\section{Candidate Key}
 \begin{definition}{Candidate Key}
     A \bf{candidate key} is a superkey such that no subset of the candidate key is a superkey; i.e.
     it is the minimal superkey. \vspace{10pt}
@@ -196,7 +206,7 @@ Candidate keys may vary in length, and the attributes of a candiate key may be \
 it uniquely identifies an $n$-tuple in the relation.
 
 
-\subsection{Primary Key}
+\section{Primary Key}
 \begin{definition}{Primary Key and Composite Key}
     A \bf{primary key} is a candidate key (chosen by the database designer) to enforce uniqueness
     for a particular use case.
@@ -204,7 +214,7 @@ it uniquely identifies an $n$-tuple in the relation.
 The primary key is typically chosen to be the minimal candidate key for simplicity. The attributes
 of a primary key may not be \tt{NULL}. 
 
-\subsection{Foreign Key}
+\section{Foreign Key}
 \begin{definition}{Foreign Key}
     A \bf{foreign key} is a set of attributes that links tuples of two relations.\vspace{10pt}
 
@@ -232,18 +242,9 @@ are two cases:
 
 
 
-\section{Defining a Schema}
-A schema can be written as \tt{relation(\underline{attribute$_{\tt{1}}$}, \tt{$\ldots$}, 
-attribute$_{\tt{n}}$}) where underlined attributes represent the primary key.
+\chapter{Relational Algebra}
 
-
-
-
-
-\section{Relational Algebra}
-describe relational algebra
-
-\subsection{Selection}
+\section{Selection}
 \begin{definition}{Selection}
     \bf{Selection} retrieves a subset of tuples from a \it{single} relation $R$ that satisfies some
     predicate $\psi$ and returns a new relation $R' \subseteq R$, and is defined by
@@ -252,7 +253,7 @@ describe relational algebra
     operator\footnote{We may use the following operators: $\{=, \neq, <, >, \leq, \geq, \lnot \}$.}
 \end{definition}
 We can build complex predicates using conjunction $\land$ (and) or disjunction $\lor$ (or). 
-\begin{center}\bf{Note: that selection $\sigma$ is implemented as \tt{WHERE} in SQL.} \end{center}
+\begin{center}\bf{Note: that selection $\sigma$ is the most analogous to \tt{WHERE} in SQL.} \end{center}
 Below are a list of examples of selection, assuming all attributes and relations are well-defined:
 \begin{enumerate}[label=\textit{(\roman*)}]
     \item $\sigma_{(\tt{dislikes} < \tt{likes})}(\tt{youtube\_video})$
@@ -262,7 +263,7 @@ Below are a list of examples of selection, assuming all attributes and relations
 \end{enumerate}
 Note that \it{(iii)} and \it{(iv)} are equivalent.
 
-\subsection{Projection}
+\section{Projection}
 \begin{definition}{Projection}
     \bf{Projection} extracts attributes from a set of tuples and removes duplicates. Given a 
     relation $R$, $n$-tuple $t$, and a set of attributes $a_1, \cdots, a_n$,
@@ -274,18 +275,264 @@ Note that \it{(iii)} and \it{(iv)} are equivalent.
     is, we take the $n$-tuples in a relation $R_n$ and collapse them into a set of $(n-k)$-tuples 
     in a new relation $R'_{n - k}$. \footnotetext{Here, $R_n$ is a relation with $n$ attributes.}
 \end{aside}
+Projections can be generalized to ``create'' new attributes or rename attributes using the $\to$
+notation.
+\begin{example}
+    We can apply arbitrary expressions to existing attributes (and create another one) by doing
+    $\Pi_{\tt{likes} / (\tt{likes} + \tt{dislikes}) \to \tt{interactions}}(R)$
+    or rename attributes by doing
+    $\Pi_{\tt{likes} \to \tt{thumbs\_up}}(R)$
+\end{example}
+\begin{example}
+    Consider the following relation $R$ with $\Pi_{A, B}(R)$:
+    \begin{center}
+        \begin{tabular}{c|c|c}
+            A & B & C \\
+            \hline
+            $\alpha$ & $\beta$ & $\delta$ \\
+            $\alpha$ & $\beta$ & $\gamma$ \\
+            $\alpha$ & $\beta$ & $\lambda$
+        \end{tabular}
+        $\overset{\it{Extract} A, B}{\longrightarrow}$
+        \begin{tabular}{c|c}
+            A & B \\
+            \hline
+            $\alpha$ & $\beta$ \\
+            $\alpha$ & $\beta$ \\
+            $\alpha$ & $\beta$
+        \end{tabular}
+        $\overset{\Pi_{A, B} (R)}{\longrightarrow}$
+        \begin{tabular}{c|c}
+            A & B \\
+            \hline
+            $\alpha$ & $\beta$
+        \end{tabular}
+    \end{center}
+\end{example}
+\begin{center}\bf{Note: that projection $\Pi$ is the most analogous to \tt{SELECT DISTINCT} in SQL.} \end{center}
 
 
-% Consider the following relation $R$:
-% \begin{center}
-%     \begin{tabular}{c|c|c}
-%         A & B & C \\
-%         \hline
-%         $\alpha$ & $\delta$ & $\xi$ \\
-%         $\beta$ & $\delta$ & $\psi$ \\
-%         $\gamma$ & $\eta$ & $\xi$
-%     \end{tabular}
-% \end{center}
+\section{Cartesian Product}
+\begin{definition}{Cartesian Product}
+    A \bf{Cartesian product} forms all possible pairs of tuples. Given relations $R, S$,
+    \[R \times S = \{ (r, s) : r \in R \land s \in S \}\]
+\end{definition}
+\begin{example}
+    Suppose we have two relations $R, S$ defined below:
+    \begin{center}
+        $R :=$
+        \begin{tabular}{c|c}
+            A & B \\
+            \hline
+            $\alpha$ & $\beta$ \\
+            $\alpha$ & $\gamma$
+        \end{tabular}
+        , $S :=$
+        \begin{tabular}{c|c}
+            A & B \\
+            \hline
+            $\alpha$ & $\gamma$ \\
+            $\Delta$ & $\eta$
+        \end{tabular}
+    \end{center}
+    Then, 
+    \begin{center}
+        $R \times S =$
+        \begin{tabular}{c|c|c|c}
+            A & B & C & D \\
+            \hline
+            $\alpha$ & $\beta$ & $\alpha$ & $\gamma$ \\
+            $\beta$ & $\gamma$ & $\Delta$ & $\eta$ \\
+            $\Delta$ & $\eta$ & $\alpha$ & $\gamma$ \\
+            $\Delta$ & $\eta$ & $\beta$ & $\gamma$ \\
+        \end{tabular}
+    \end{center}
+\end{example}
+Cartesian products are \it{very} expensive since they require a lot of compute power, ram, and disk
+space. 
+
+\section{Aggregation}
+\begin{definition}{Aggregation}
+    The aggregation operator ($\gamma$ or $\mathcal{G}$) is a function on groups of tuples in a relation
+    to summarize them. Common ones include: \tt{SUM}, \tt{AVG}, \tt{MIN}, \tt{MAX}, \tt{COUNT}, etc.
+    Given a relation $R$,
+    \[
+        \prescript{}{\it{A}}{\gamma}_{F}(R) = \prescript{}{\it{A}}{\mathcal{G}}_{F}(R)
+    \]
+    where $A := \{ \text{attributes to group by} \}, F := \{ \text{functions to apply} \}$
+\end{definition}
+
+\section{Rename}
+\begin{definition}{Rename}
+    The rename operator ($\rho$) renames relations or attributes. Given a relation with name $R$,
+    renaming a relation looks like $\rho_{R'}(R)$, where $R'$ is the new name. Renaming an attribute
+    in $R$ looks like $\rho_{a'/a}(R)$, where $a'$ is the new name. \vspace{10pt}
+    
+    \bf{Note:} We must rename one of the $R$'s when doing $R \times R$. That is, we must have
+    $\rho_{R'}(R) \times R$ or $R \times \rho_{R'}(R)$.
+\end{definition}
+
+\section{Set Operations}
+\begin{definition}{Set Operations (Union, Intersection, Set Difference)}
+    Let $R, S$ be two sets of tuples. Then, union is defined to be
+    \[R \cup S = \{ r_1, \cdots, r_{|R|}, s_1, \cdots s_{|S|} : r_i \in R \lor s_j \in S\}\]
+    intersection is defined as
+    \[R \cap S = \{ t : t \in R \land t \in S\}\]
+    and set difference is defined as
+    \[R - S = R \setminus S = \{ t : t \in R \land t \notin S\}\]
+\end{definition}
+
+\section{Order of Precedence}
+The order of precedence from highest to lowest is as follows:
+\[(\sigma, \Pi, \rho), (\times, \bowtie), \cap, (\cup, -)\]
+
+
+
+
+
+\chapter{Week 3}
+\section{Join}
+\begin{definition}{Join}
+    A \bf{join} merges tuples from two relations $R, S$ based on some contextually related
+    attribute(s) in both relations. The resulting relation contains tuples of the form $(r, s)$
+    where $r \in R, s \in S$. \vspace{12pt}
+
+    A \bf{join key} is the set of attribute(s) that are used to join $R$ and $S$. Note that a join
+    key is \ib{completely unrelated} to do with uniqueness.
+\end{definition}
+There are two types of joins: natural and theta.
+
+
+\section{Natural Join}
+\begin{definition}{Natural Join}
+    A \bf{natural join} $\bowtie$ is a join where the join key is determined by the RDBMS. The
+    simplest natural join is defined using the cartesian product:
+    \[
+        R \bowtie S 
+        = \Pi_{R \cup S} \left( \sigma_{R.k = S.k} (R \times S) \right) 
+        = \left\{ (r, s) : r \in R \land s \in S \land (r[k] = s[k]) \right\}
+    \]
+    The natural join is also characterized as an \it{equijoin}.
+\end{definition}
+
+\subsubsection{Edge Cases}
+\begin{enumerate}
+    \item If we have two relations $R, S$ that have no common attributes ($k = \emptyset$), then
+        \[
+            R \bowtie S 
+            = \left\{ (r, s) : r \in R \land s \in S \land (r[k] = s[k]) \right\} 
+            = R \times S
+        \]
+        because the empty set is unique.
+    \item If we have two relations $R, S$ that have common attributes but no matches, then
+        \[
+            R \bowtie S 
+            = \left\{ (r, s) : r \in R \land s \in S \land (r[k] = s[k]) \right\} 
+            = \emptyset
+        \]
+        because $r[k] = s[k]$ is always false.
+\end{enumerate}
+
+
+\section{Theta Join}
+\begin{definition}{Theta Join}
+    A \bf{theta join} $\bowtie_{\theta}$ is a join where the join key and condition are specified.
+    Mathematically,
+    \[
+        R \bowtie_{\theta} S 
+        = \sigma_{\theta} (R_1 \times R_2)
+        = \left\{ (r, s) : r \in R \land s \in S \land \theta((r, s)) \right\}
+    \]
+    where $\theta$ is the join condition.
+\end{definition}
+\ib{Note:} For any join, if there is a name clash in either the relation or attribute(s), we must
+alias them.
+\begin{example}
+    Suppose we have two relations $R, S$ defined below:
+    \begin{center}
+        $R :=$
+        \begin{tabular}{c|c}
+            A & B \\
+            \hline
+            $\alpha$ & $\beta$ \\
+            $\beta$ & $\beta$
+        \end{tabular}
+        , $S :=$
+        \begin{tabular}{c|c}
+            A & B \\
+            \hline
+            $\beta$ & $\alpha$ \\
+            $\alpha$ & $\gamma$
+        \end{tabular}
+    \end{center}
+    Define $\theta := R.A = S.A$. Then,
+    \begin{center}
+        $R \bowtie_{\theta} S = R \bowtie_{R.A = S.A} S =$
+        \begin{tabular}{c|c|c|c}
+            A & B & C & D \\
+            \hline
+            $\alpha$ & $\beta$ & $\alpha$ & $\gamma$ \\
+            $\beta$ & $\beta$ & $\beta$ & $\alpha$ \\
+        \end{tabular}
+    \end{center}
+\end{example}
+
+
+\section{Inner Joins}
+\begin{definition}{Theta Join}
+    An \bf{inner join} between two relations $R, S$ is a theta join that omits elements that do not
+    satisfy the join condition $\theta$.
+\end{definition}
+
+
+\chapter{PostgreSQL Data Types}
+The ANSI SQL standard defines the following data types:
+\begin{enumerate}[label=\textit{(\roman*)}]
+    \item numeric
+    \item string/text
+    \item binary
+    \item dates and times
+\end{enumerate}
+
+\begin{aside}{Promoted}
+    It is always good practice to only promote types to increaese precision, and never demote.
+\end{aside}
+
+
+\section{Numbers}
+Numeric data types have the following forms:
+\begin{enumerate}[label=\textit{(\roman*)}]
+    \item int(eger) (4 bytes)
+    \item smallint (2 bytes)
+    \item bigint (8 bytes)
+    \item numeric($n$, $d$), where $n$ is the number of digits and $p$ is the number of digits that
+        appear after the decimal point.
+    \item real, double precision
+    \item float($n$), where $n$ is the precision.
+\end{enumerate}
+
+
+\section{Strings}
+String data types have the following forms:
+\begin{enumerate}[label=\textit{(\roman*)}]
+    \item char($n$) is a fixed-length character array of length $n$.
+    \item varchar($n$) is a variable-length character array of length $\leq n$.
+\end{enumerate}
+
+
+\section{Strings}
+String data types have the following forms:
+\begin{enumerate}[label=\textit{(\roman*)}]
+    \item date (YYYY-MM-DD)
+    \item time (HH:MM:SS)
+    \item timestamp (YY-MM-DD)
+\end{enumerate}
+
+
+
+
+
+
 
 
 
