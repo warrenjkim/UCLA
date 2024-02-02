@@ -3,7 +3,7 @@
 \newtheorem{exercise}{Exercise}[section]
 \newtheorem{definition}{Definition}[section]
 \newtheorem{theorem}{Theorem}
-\newtheorem{lemma}{Lemma}[section]
+\newtheorem{lemma}{Lemma}
 \newtheorem{problem}{Problem}
 \newtheorem{solution}{Solution}
 \newtheorem{cor}{Corollary}[section]
@@ -127,7 +127,7 @@ Prove the parts of Proposition 2.1 (in the notes) that were not proved in class.
     \item[\it{4.}] \it{The multiplicative identity is unique.} \vspace{-12pt}
 
         \begin{proof}
-            Let $R$ be a ring. Suppose we have two identities $1_1, 1_2 \in R$. Then we have the
+            Let $R$ be a ring. Suppose we have two identities $1_1, 1_2 \in R$. Then, we have the
             following: $1_1 = 1_1 \cdot 1_2 = 1_2 \cdot 1_1 = 1_2$, so $1_1 = 1_2$.
         \end{proof}
     \item[\it{5.}] \it{If $a$ is a unit, its inverse is unique.} \vspace{-12pt}
@@ -135,8 +135,8 @@ Prove the parts of Proposition 2.1 (in the notes) that were not proved in class.
         \begin{proof}
             Let $R$ be a ring and $a \in R$ be a unit. Suppose there exist $a^{-1}_1, a^{-2}_2 \in R$
             such that $a^{-1}_1, a^{-2}_2$ are inverses of $a$. Then, we have the following:
-            $aa^{-1}_1 = 1 = aa^{-1}_2$, and since $a$ is nonzero, $a^{-1}_1 = a^{-1}_2$ by 
-            the cancellation property.
+            $aa^{-1}_1 = 1 = aa^{-1}_2$, so $aa^{-1}_1 = aa^{-1}_2$ and since $a$ is nonzero, 
+            $a^{-1}_1 = a^{-1}_2$ by the cancellation property.
         \end{proof}
     \item[\it{8.}] $-(-a) = a$. \vspace{-12pt}
 
@@ -145,7 +145,7 @@ Prove the parts of Proposition 2.1 (in the notes) that were not proved in class.
             \begin{align*}
                 -(-a) &= 0 - (-a) \\
                       &= (a + (-a)) + (-(-a)) \\
-                      &= a + ((-a) + -(-a)) \\
+                      &= a + ((-a) - (-a)) && a - b = a + (-b) \\
                       &= a + 0 \\
                 -(-a) &= a
             \end{align*}
@@ -215,10 +215,16 @@ Let $R$ and $S$ be rings, and let $f:R\to S$ be a ring homomorphism. Let $a,b\in
                 \begin{align*}
                     1_S &= f(1_R) \\
                         &= f(a a^{-1}) && 1_R = a a^{-1} \\
-                        &= f(a) \cdot f(a^{-1}) && f(ab) = f(a) \cdot f(b) \\
-                    f(a)^{-1} \cdot 1_S &= f(a^{-1}) \\
-                    f(a)^{-1} &= f(a^{-1}) && a1 = 1a = a
+                    1_S &= f(a) \cdot f(a^{-1}) && f(ab) = f(a) \cdot f(b) \\
                 \end{align*}
+                and 
+                \begin{align*}
+                    1_S &= f(1_R) \\
+                        &= f(a^{-1} a) && 1_R = a a^{-1} \\
+                    1_S &= f(a^{-1}) \cdot f(a) && f(ab) = f(a) \cdot f(b) \\
+                \end{align*}
+                so $f(a) f(a^{-1}) = f(a^{-1})f(a) = 1_S$. Therefore, $f(a)$ is a unit and define
+                $f(a)^{-1} := f(a^{-1})$, so $f(a^{-1}) = f(a)^{-1}$.
             \end{proof}
     \end{enumerate}
 \newpage
@@ -269,12 +275,43 @@ Show that $1+a$ is a unit.
 \begin{proof}
     Let $R$ be a ring and suppose $a \in R$ is nilpotnet; i.e. there is some integer $n$ such that
     $a^n = 0$. Then, since $R$ is a ring, $1 \in R$. Consider the elements 
-    $(1 + a), (1 - a^n) \in R$. Then
+    $(1 + a), \sum^{n - 1}_{i = 0} (-1)^{i} a^{i} \in R$. Then
     \begin{align*}
-        (1 + a)(1 - a^n) &= 1^2 - a \cdot a^n \\
-                         &= 1 - a0 && a \text{ is nilpotent} \\
-        (1 + a)(1 - a^n) &= 1
+        \left( 1 + a \right) \left(\sum^{n - 1}_{i = 0} (-1)^{i} a^{i} \right)
+        &=
+        1 \cdot \left(\sum^{n - 1}_{i = 0} (-1)^{i} a^{i} \right) 
+        + a \cdot \left(\sum^{n - 1}_{i = 0} (-1)^{i} a^{i} \right) \\
+        &=
+        \left(\sum^{n - 1}_{i = 0} (-1)^{i} a^{i} \right) 
+        + \left(\sum^{n - 1}_{i = 0} (-1)^{i} a^{i + 1} \right) \\
+        &= (1 - a + a^2 - \cdots + (-1)^{n - 1} a^{n - 1})
+        +
+        (a - a^2 + a^3 - \cdots + (-1)^{n - 2} a^{n - 1} + (-1)^{n - 1} a^n) \\
+        &= 1 + (-a + a) + (a^2 - a^2) + \cdots + ((-1)^{n - 1} a^{n - 1} + (-1)^{n - 2} a^{n - 1}) + (-1)^{n - 1} a^n \\
+        &= 1 + 0 + 0 + \cdots + 0 + (-1)^{n - 1} a^n \\
+        &= 1 + (-1)^{n - 1} a^n \\
+        &= 1 + 0 \\
+        \left( 1 + a \right) \left(\sum^{n - 1}_{i = 0} (-1)^{i} a^{i} \right)
+        &= 1
     \end{align*}
+    and
+    \begin{align*}
+        \left(\sum^{n - 1}_{i = 0} (-1)^{i} a^{i} \right) \left( 1 + a \right) 
+        &=
+        \left(\sum^{n - 1}_{i = 0} (-1)^{i} a^{i} \right) \cdot 1
+        + \left(\sum^{n - 1}_{i = 0} (-1)^{i} a^{i} \right) \cdot a \\
+        &=
+        \left(\sum^{n - 1}_{i = 0} (-1)^{i} a^{i} \right) 
+        + \left(\sum^{n - 1}_{i = 0} (-1)^{i} a^{i + 1} \right) \\
+        &= (1 - a + a^2 - \cdots + (-1)^{n - 1} a^{n - 1}) + (a - a^2 + a^3 - \cdots + (-1)^{n - 2} a^{n - 1} + (-1)^{n - 1} a^n) \\
+        &= 1 + (-a + a) + (a^2 - a^2) + \cdots + ((-1)^{n - 1} a^{n - 1} + (-1)^{n - 2} a^{n - 1}) + (-1)^{n - 1} a^n \\
+        &= 1 + 0 + 0 + \cdots + 0 + (-1)^{n - 1} a^n \\
+        &= 1 + (-1)^{n - 1} a^n \\
+        &= 1 + 0 \\
+        \left(\sum^{n - 1}_{i = 0} (-1)^{i} a^{i} \right) \left( 1 + a \right) 
+        &= 1
+    \end{align*}
+
     so $1 + a$ is a unit.
 \end{proof}
 \newpage
@@ -291,7 +328,10 @@ We say that a ring $R$ is a Boolean ring if, for every $a\in R$, we have $a^2=a$
     \item Show that a Boolean ring $R$ is commutative. \vspace{-12pt}
 
         \begin{proof}
-            To show that a Boolean ring $R$ is commutative, consider $a + b \in R$. Then
+            To show that a Boolean ring $R$ is commutative, we will first show that for any 
+            $a \in R$, $a = -a$. Since $R$ is a Boolean ring, we have that
+            $-a \in R$ and $a^2 = a$. Then, $(-a)^2 = (-a)(-a) = a^2$, so $-a = a$. Because equality
+            is symmetric, $a = -a$. Now consider $a + b \in R$. Then
             \begin{align*}
                 a + b &= (a + b)^2 \\
                       &= a^2 + ab + ba + b^2 \\
@@ -307,10 +347,16 @@ We say that a ring $R$ is a Boolean ring if, for every $a\in R$, we have $a^2=a$
 
         \begin{proof}
             Suppose $R$ is a Boolean ring and an integral domain. Let $a \in R$ be nonzero. Since 
-            $R$ is a Boolean ring, $a^2 = a$. Then, $a^2 = aa = a$. Because $R$ is an integral 
-            domain, $ab \neq 0$ for all $a, b \in R$, so by the cancellation property, we get 
-            $a = 1$. Since $a$ was arbitrary, this holds for all $a \in R$. Because $R$ is a ring, 
-            $0 \in R$. Set $1_R = 1 \in R$. Then, $R := \{ 0, 1 \}$, so $|R| = 2$.
+            $R$ is a Boolean ring, $a^2 = a$. Then
+            \begin{align*}
+                a^2 &= a \\
+                a^2 - a &= 0 \\
+                a(a - 1) &= 0
+            \end{align*}
+            Because $R$ is an integral domain, $a = 0$ or $a = 1$, but because $a$ is chosen to be 
+            nonzero, $a = 1$. Since $a$ was arbitrary, this holds for all $a \in R$. 
+            Because $R$ is a ring, $0 \in R$. Set $1_R = 1 \in R$. Then, $R := \{ 0, 1 \}$, so 
+            $|R| = 2$.
         \end{proof}
 \end{enumerate} 
 \newpage
@@ -384,7 +430,7 @@ Let $R$ and $S$ be rings. Show that if $R$ and $S$ are isomorphic, then $R[x]$ a
     \end{enumerate}
     so $g$ is a homomorphism. To show that $g$ is an isomorphism, consider $g^{-1} : S[x] \to R[x]$, 
     $\sum^{n}_{i = 0} a_i x^i \mapsto \sum^{n}_{i = 0} f^{-1}(a_i) x^i$ where 
-    $f^{-1} : S[x] \to R[x]$ is the inverse of $f$. Then for all $\sum^{n}_{i = 0} a_i x^i \in R[x]$
+    $f^{-1} : S \to R$ is the inverse of $f$. Then for all $\sum^{n}_{i = 0} a_i x^i \in R[x]$
     \[
         g^{-1}\left (g\left (\sum^{n}_{i = 0} a_i x^i \right) \right) 
         = g^{-1}\left (\sum^{n}_{i = 0} f\left (a_i \right) x^i \right)
