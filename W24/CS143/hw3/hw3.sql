@@ -1,8 +1,8 @@
 1a) 
-SELECT name FROM ta_restaurant WHERE name ~ '.* Lotus .*'; -- returns 10 results
+SELECT id, name, city, rating, price, num_reviews, url FROM ta_restaurant WHERE name ~ '.* Lotus .*'; -- returns 10 results
 
 1b) 
-SELECT rating, COUNT(rating) AS total 
+SELECT rating, COUNT(*) AS total 
 FROM ta_restaurant 
 GROUP BY rating 
 ORDER BY rating;
@@ -41,7 +41,7 @@ WHERE r.time IS NULL;
 2c) 
 SELECT l.id AS trip_id, COALESCE(3.49 + (0.30 * ((EXTRACT(EPOCH FROM (r.time - l.time)) / 60)::integer)), 1000.00) AS trip_charge 
 FROM sf_trip_start l 
-FULL OUTER JOIN sf_trip_end r ON l.id = r.id 
+LEFT OUTER JOIN sf_trip_end r ON l.id = r.id 
 ORDER BY trip_id;
 
 2d) 
@@ -50,7 +50,7 @@ CASE WHEN user_type = 'Customer' THEN COALESCE(3.49 + (0.30 * ((EXTRACT(EPOCH FR
 WHEN user_type = 'Subscriber' THEN COALESCE(0.20 * ((EXTRACT(EPOCH FROM (r.time - l.time)) / 60)::integer), 1000.00)
 END AS trip_cost
 FROM sf_trip_start l
-FULL JOIN sf_trip_end r ON l.id = r.id
+LEFT OUTER JOIN sf_trip_end r ON l.id = r.id
 JOIN sf_trip_user u ON l.id = u.trip_id ORDER BY trip_id;
 
 2e)
