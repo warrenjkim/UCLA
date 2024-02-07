@@ -26,7 +26,7 @@
 
 
 \renewcommand{\bf}[1]{\textbf{{#1}}}
-
+\renewcommand{\Im}{\text{Im}}
 
 \title{110A HW4}
 \author{Warren Kim}
@@ -43,26 +43,148 @@ Let $F$ be a field, and consider the polynomial ring $F[x,y]$ with two variables
 
 \section*{Question 2}
 Let $R$ be a ring, and let $I_1,\cdots,I_k$ be ideals. Show that the following sets are ideals: 
-    \begin{enumerate}
-        \item $I_1+\cdots+I_k=\{i_1+\cdots+i_k|i_j\in I_j\}$
-        \item $I_1\cap I_2\cap \cdots\cap I_k$
-    \end{enumerate}
+\begin{enumerate}
+    \item $I_1+\cdots+I_k=\{i_1+\cdots+i_k|i_j\in I_j\}$
+    \item $I_1\cap I_2\cap \cdots\cap I_k$
+\end{enumerate}
 \subsection*{Response}
+\begin{enumerate}
+    \item $I_1+\cdots+I_k=\{i_1+\cdots+i_k|i_j\in I_j\}$ is an ideal.
+        \begin{proof}
+            Let $R$ be a ring, and $I_1, \cdots, I_k$ be ideals.
+            \begin{enumerate}
+                \item Closure under addition. Take two elements $a, b \in I_1 + \cdots + I_k$. We can
+                    rewrite $a, b$ as,
+                    $a = p_1 + \cdots + p_k$ and $b = q_1 + \cdots + q_k$ for $p_j, q_j \in I_j$. Then
+                    $
+                    a + b 
+                    = (p_1 + \cdots + p_k) + (q_1 + \cdots + q_k)
+                    = (p_1 + q_1) + \cdots + (p_k + q_k)
+                    $, and since $p_j + q_j \in I_j$ for all $j \leq k$, we get 
+                    $a + b \in I_1 + \cdots + I_k$, so $I_1 + \cdots + I_k$ is closed under addition.
+                \item Absorbing property. Take any $a \in I_1 + \cdots + I_k$. We can
+                    rewrite $a$ as, $a = p_1 + \cdots + p_k$ for $p_j \in I_j$. Consider an element $r \in R$. 
+                    Then, $ar = (p_1 + \cdots + p_k) r = p_1 r + \cdots + p_k r$. Similarly,
+                    $ar = r (p_1 + \cdots + p_k) = r p_1 + \cdots + r p_k$. Since $I_j$ is an ideal, 
+                    $p_j r, r p_j \in I_j$, so $ar \in I_1 + \cdots + I_k$. Therefore, $I_1 + \cdots + I_k$ 
+                    satisfies the absorbing property.
+            \end{enumerate}
+            Because $I_1 + \cdots + I_k$ is closed under addition and satisfies the absorbing property, 
+            $I_1 + \cdots + I_k$ is an ideal.
+        \end{proof}
+    \item $I_1 \cap \cdots \cap I_k$ is an ideal.
+        \begin{proof}
+            Let $R$ be a ring, and $I_1, \cdots, I_k$ be ideals.
+            \begin{enumerate}
+                \item Closure under addition. Take two elements $a, b \in I_1 \cap \cdots \cap I_k$. 
+                    Then since each $I_j$ is an ideal, they are closed under addition. So, 
+                    $a + b \in I_1 \cap \cdots \cap I_k$ because $a + b \in I_j$. Therefore, 
+                    $I_1 \cap \cdots \cap I_k$ is closed under addition.
+                \item Absorbing property. Take any $a \in I_1 + \cdots + I_k$. Consider an element 
+                    $r \in R$. Then, since each $I_j$ is an ideal, they satisfy the absorbing
+                    property. Therefore, $ar, ra \in I_1 \cap \cdots \cap I_k$ because 
+                    $ar, ra \in I_j$. Therefore, $I_1 \cap \cdots \cap I_k$ satisfies the absorbing
+                    property.
+            \end{enumerate}
+            Because $I_1 \cap \cdots \cap I_k$ is closed under addition and satisfies the absorbing property, 
+            $I_1 \cap \cdots \cap I_k$ is an ideal.
+        \end{proof}
+\end{enumerate}
 \newpage
 
 \section*{Question 3}
 Let $R$ be a ring, $a\in R$, and $I\subseteq R$ be an ideal. Show that the set $a+I=\{a+x|x\in I\}$ is precisely the congruence class modulo $I$ that contains $a$. That is, show that $b\equiv a\mod I$ if and only if $b\in a+I$. 
 \subsection*{Response}
+\begin{proof}
+    Let $R$ be a ring, $a \in R$, and $I \subseteq R$ be an ideal. Consider the set 
+    $a + I = \{ a + x \mid x \in I \}$.
+    \newline
+    ($\implies$) Suppose $b \equiv a \pmod{I}$ for some $b \in R$. By definition, $b - a \in I$. 
+    Then there exists some $i \in I$ such that $b - a = i$. Therefore, $b = a + i$ for some 
+    $i \in I$, so $b \in a + I$.
+    \newline
+    ($\impliedby$) Suppose $b \in a + I$. By definition, there exists some $i \in I$ such that
+    $b = a + i$. Subtracting $a$ from both sides, we get $b - a = i$, which is in $I$, so 
+    $b \equiv a \pmod{I}$.
+\end{proof}
 \newpage
 
 \section*{Question 4}
 Let $f:R\to S$ be a ring homomorphism, and suppose $I\subseteq R$ is an ideal such that $I\subseteq \ker(f)$. Show that there is a unique homomorphism $\overline{f}:R/I\to S$ such that $f=\overline{f}\circ\pi$.
 \subsection*{Response}
+\begin{proof}
+    Let $f : R \to S$ be a ring homomorphism, and $I \subseteq R$ an ideal such that 
+    $I \subseteq \ker(f)$. Consider $\overline{f} : R/I \to S, a + I \mapsto f(a)$. To show that
+    $\overline{f}$ is a homomorphism:
+    \begin{enumerate}
+        \item Closed under addition. Let $a + I, b + I \in R/I$. Then
+            \begin{align*}
+                \overline{f}((a + I) + (b + I)) 
+                &= \overline{f}((a + b) + I)  \\
+                &= f(a + b) \\
+                &= f(a) + f(b) \\ 
+                \overline{f}((a + I) + (b + I)) 
+                &= \overline{f}(a + I) + \overline{f}(b + I)
+            \end{align*}
+            so $\overline{f}$ is closed under addition.
+        \item Closed under multiplication. Let $a + I, b + I \in R/I$. Then
+            \begin{align*}
+                \overline{f}((a + I) \cdot (b + I)) 
+                &= \overline{f}((a \cdot b) + I)  \\
+                &= f(a \cdot b) \\
+                &= f(a) \cdot f(b) \\ 
+                \overline{f}((a + I) \cdot (b + I)) 
+                &= \overline{f}(a + I) \cdot \overline{f}(b + I)
+            \end{align*}
+            so $\overline{f}$ is closed under multiplication.
+        \item Preservation of the additive identity. Let $0_{R/I} := 0 + I \in R/I$. Then
+            \[\overline{f}(0_{R/I}) = \overline{f}(0 + I) = f(0) = 0_S\]
+            so $\overline{f}$ preserves the additive identity.
+        \item Preservation of the multiplicative identity. Let $1_{R/I} := 1 + I \in R/I$. Then
+            \[\overline{f}(1_{R/I}) = \overline{f}(1 + I) = f(1) = 1_S\]
+            so $\overline{f}$ preserves the multiplicative identity.
+    \end{enumerate}
+    So $\overline{f}$ is a ring homomorphism. To show that $f = \overline{f} \circ \pi$, consider
+    $a \in R$. Then
+    \[\overline{f} \circ \pi (a) = \overline{f}(\pi(a)) = \overline{f}(a + I) = f(a)\]
+    so $f = \overline{f} \circ \pi$. To show that $\overline{f}$ is unique, suppose we have another
+    homomorphism $g : R/I \to S$ such that $f \neq g$. Then
+    \[
+        g \circ \pi (a) = g(\pi(a)) = g(a + I) 
+        \neq f(a) 
+        = \overline{f}(a + I) = \overline{f}(\pi(a)) = \overline{f} \circ \pi (a)
+    \]
+    so $\overline{f}$ is unique.
+\end{proof}
 \newpage
 
 \section*{Question 5}
 Let $a\in\R$ be any real number. Show that the quotient ring $\R[x]/(x-a)$ is isomorphic to $\R$. [hint: you can use, without proof, that a polynomial $p(x)$ has a root $a$ if and only if it can be written $p(x)=(x-a)q(x)$, where $q(x)$ is another polynomial.] 
 \subsection*{Response}
+\begin{proof}
+    Let $a \in \R$ and $\R[x]/(x - a)$ be a quotient ring. Consider $f : \R[x] \to \R$ where
+    $p(x) \mapsto p(a)$. To show that $f$ is a homomorphism:
+    \begin{enumerate}
+        \item Closed under addition. Let $p(x), q(x) \in \R[x]$. Then
+            \[f(p(x) + q(x)) = p(a) + q(a) = f(p(x)) + f(q(x))\]
+            so $f$ is closed under addition.
+        \item Closed under multiplication. Let $p(x), q(x) \in \R[x]$. Then
+            \[f(p(x) \cdot q(x)) = p(a) \cdot q(a) = f(p(x)) \cdot f(q(x))\]
+            so $f$ is closed under multiplication.
+        \item Preservation of the additive identity. Let $0_{\R[x]} \in \R[x]$. Then
+            \[f(0_{\R[x]}) = 0(a) = 0_{\R}\]
+            so $f$ preserves the additive identity.
+        \item Preservation of the multiplicative identity. Let $1_{\R[x]} \in \R[x]$. Then
+            \[f(1_{\R[x]}) = 1(a) = 1_{\R}\]
+            so $f$ preserves the multiplicative identity.
+    \end{enumerate}
+    So $f$ is a ring homomorphism. Take an arbitrary $b \in \R$. Then there is some $p(x) \in \R[x]$ 
+    such that $f(p(x)) = b$, so $f$ is surjective. Pick $p(x) \in \ker(f)$. Then $f(p(x)) = p(a) = 0$ 
+    is only true when $p(x) = (x - a)q(x)$ where $q(x)$ is another polynomial. So, $\ker(f)$ is 
+    generated by the principal ideal $(x - a)$. By the First Isomorphism Theorem (proven in class),
+    since $f : \R[x] \to S$, we have that $\R[x]/\ker(f) \simeq \Im(f)$. From above, we have that
+    $\ker(f) = (x - a)$ and $\Im(f) = \R$, so $\R[x]/(x - a) \simeq \R$.
+\end{proof}
 \newpage
 
 \section*{Question 6}
@@ -70,11 +192,62 @@ Let $R$ be a commutative ring, and let $I,J\subseteq R$ be ideals. Consider $$IJ
 
 \begin{enumerate}
     \item Show that $IJ$ is an ideal. 
-
     \item Show that $IJ\subseteq I\cap J$. 
     \item Show that if $I+J=R$, then $IJ=I\cap J$.
 \end{enumerate}
 \subsection*{Response}
+\begin{enumerate}
+    \item $IJ$ is an ideal. 
+        \vspace{-1em}
+        \begin{proof}
+            Let $R$ be a ring, and $I, J \subseteq R$ be ideals. Then, to show that 
+            \[IJ = \{ i_1 j_1 + \cdots + i_n j_n \mid i_r \in I, j_s \in J, n>0 \}\] 
+            is an ideal:
+            \begin{enumerate}
+                \item Closure under addition. Take two elements $a, b \in IJ$. We can rewrite $a, b$ 
+                    as,
+                    $a = p_1 q_1 + \cdots + p_n q_n$ and $b = u_1 v_1 + \cdots + u_n v_n$ for $p_r,
+                    u_r \in I, q_s, v_s \in J$. Then
+                    \[
+                        a + b = (p_1 q_1 + \cdots + p_n q_n) + (u_1 v_1 + \cdots + u_n v_n)
+                    \]
+                    which is a finite sum that can be rewritten in the form 
+                    $i_1 j_1 + \cdots + i_n j_n$ for $i_r \in I, j_s \in J$. Then by definition, 
+                    $a + b \in IJ$, so $IJ$ is closed under addition.
+                \item Absorbing property. Take any $a \in IJ$. We can
+                    rewrite $a$ as, $a = i_1 j_1 + \cdots + i_n j_n$ for $i_t \in I, j_s \in J$. 
+                    Consider an element $t \in R$. Then, 
+                    $at = (i_1 j_1 + \cdots + i_n j_n) t = i_1 j_1 t + \cdots + i_n j_n t$. Similarly,
+                    $at = t (i_1 j_1 + \cdots + i_n j_n) = t i_1 j_1 + \cdots + t i_n j_n$. Since 
+                    $I, J \subseteq R$ are ideals, $i_r t, t i_r \in I, j_s \in J$, so
+                    $t i_r j_s \in IJ$. Similarly, $i_r \in I, j_s t, t j_s \in J$, so
+                    $i_r j_s t \in IJ$. So $IJ$ satisfies the absorbing property.
+            \end{enumerate}
+            Because $IJ$ is closed under addition and satisfies the absorbing property, $IJ$ is an 
+            ideal. 
+        \end{proof}
+    \item $IJ \subseteq I \cap J$. 
+        \vspace{-1em}
+        \begin{proof}
+            Let $R$ be a ring, and $I, J \subseteq R$ be ideals. Then, from $(1)$, $IJ$ is an ideal
+            in $R$. Suppose we have an arbitrary element $i_1 j_1 + \cdots + i_n j_n \in IJ$. Since 
+            $I, J \subseteq R$ are ideals, $i_r j_s \in I$ and $i_r j_s \in J$. That is, 
+            $i_r j_s \in I \cap J$. Since $I, J \subseteq R$ are ideals, they are both closed under
+            addition. So, $i_1 j_1 + \cdots + i_n j_n \in I \cap J$. Since 
+            $i_1 j_1 + \cdots + i_n j_n$ was arbitrary, $IJ \subseteq I \cap J$.
+        \end{proof}
+    \item If $I+J=R$, then $IJ=I\cap J$.
+        \vspace{-1em}
+        \begin{proof}
+            Suppose $I + J = R$. Then $1_I + 1_J = 1_R$. Pick any $a \in I \cap J$. Then,
+            $a = a \cdot 1_R = a \cdot (1_I + 1_J) = a \cdot 1_I + a \cdot 1_J$. Then, 
+            $a \cdot 1_I \in I$ because $a, 1_I \in I$. Similarly, $a \cdot 1_J \in J$ 
+            because $a, 1_J \in J$. So, $a \cdot 1_I + a \cdot 1_J \in I \cap J$ since $I \cap J$ 
+            is an ideal (\textbf{Question 2}). Because $a \cdot 1_I + a \cdot 1_J \in I \cap J$ 
+            was arbitrary, $I \cap J \subseteq IJ$. From $(2)$, $IJ \subseteq I \cap J$. It follows 
+            that $IJ = I \cap J$.
+        \end{proof}
+\end{enumerate}
 \newpage
 
 \section*{Question 7}
@@ -87,24 +260,24 @@ Let $R$ be a commutative ring. Recall that $r\in R$ is nilpotent if there is som
 \end{enumerate}
 
 \subsection*{Response}
-\begin{proof}
-    Let $R$ be a commutative ring. First, we will show that $Nil(R)$ is a nonunital subring of $R$.
-    Define $S := Nil(R)$.
-    \begin{enumerate}
-        \item \bf{Closure under addition:} Let $a, b \in S$. Then, there exist some $n, m > 0$ such
-            that $a^n = b^m = 0$. Then $(a + b)^{n + m} = (a + b)^n (a + b)^m = 0 \cdot 0 = 0$, so
-            $a + b \in Nil(R)$.
-            \begin{align*}
-                (a + b)^{n + m} 
-                &= \sum^{n + m}_{k = 0} \binom{n + m}{k} a^{n + m - k} b^k \\
-                &=
-                \sum^{n + m}_{k = 0} \binom{n + m}{k} a^{n + m - k} b^k \\
-            \end{align*}
-        \item \bf{Closure under multiplication:} Let $a, b \in S$. Then, there exist some $n, m > 0$
-            such that $a^n = b^m = 0$.
-        \item \bf{Existence of Inverses:}
-    \end{enumerate}
-\end{proof}
+% \begin{proof}
+%     Let $R$ be a commutative ring. First, we will show that $Nil(R)$ is a nonunital subring of $R$.
+%     Define $S := Nil(R)$.
+%     \begin{enumerate}
+%         \item \bf{Closure under addition:} Let $a, b \in S$. Then, there exist some $n, m > 0$ such
+%             that $a^n = b^m = 0$. Then $(a + b)^{n + m} = (a + b)^n (a + b)^m = 0 \cdot 0 = 0$, so
+%             $a + b \in Nil(R)$.
+%             \begin{align*}
+%                 (a + b)^{n + m} 
+%                 &= \sum^{n + m}_{k = 0} \binom{n + m}{k} a^{n + m - k} b^k \\
+%                 &=
+%                 \sum^{n + m}_{k = 0} \binom{n + m}{k} a^{n + m - k} b^k \\
+%             \end{align*}
+%         \item \bf{Closure under multiplication:} Let $a, b \in S$. Then, there exist some $n, m > 0$
+%             such that $a^n = b^m = 0$.
+%         \item \bf{Existence of Inverses:}
+%     \end{enumerate}
+% \end{proof}
 \newpage
 \end{document}
 
