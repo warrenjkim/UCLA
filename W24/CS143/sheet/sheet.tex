@@ -1,7 +1,7 @@
 \documentclass{report}
 \usepackage{amsmath, amsthm, amssymb, graphicx, enumitem, esvect}
 \usepackage[english]{babel}
-\usepackage[letterpaper,top=1in,bottom=0.05in,left=0.05in,right=1in]{geometry}
+\usepackage[letterpaper,top=1in,bottom=0.25cm,left=0.25cm,right=1in]{geometry}
 \usepackage[most]{tcolorbox}
 \usepackage[hidelinks]{hyperref}
 \usepackage{graphicx}
@@ -9,6 +9,12 @@
 \usepackage{titlesec}
 \usepackage{mathtools}
 \usepackage{multicol}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\lstset{
+    basicstyle=\ttfamily,
+    mathescape=true
+}
 
 \renewcommand{\bf}[1]{\textbf{{#1}}}
 \renewcommand{\tt}[1]{\texttt{{#1}}}
@@ -16,9 +22,16 @@
 \newcommand{\ib}[1]{\textit{\textbf{{#1}}}}
 \newcommand{\R}{\mathbb{R}}
 
+\renewcommand{\headrulewidth}{0pt}
 \setlength{\parindent}{0pt}
+\fancypagestyle{name}{
+  \fancyhf{} 
+  \fancyhead[L]{(\bf{Name:} Warren Kim, \bf{UID:} 305600694)} 
+}
+
 
 \begin{document}
+\thispagestyle{name}
 \bf{Relation:} consists of a \it{set} of tuples (records). Each tuple is a row and has $n$
 attributes or columns. Each tuple contains the exact same attributes in the same order.
 \hfil \newline
@@ -414,4 +427,402 @@ on an \ib{entire} key; i.e. it is not partially dependent on \ib{any} composite 
 i.e. if all $a \in R$ are part of a candidate key, $R$ is 3NF.
 \bf{Zaniolo's 3NF:} $\forall f \in F$, at least one is true: \bf{(1)} $a \to \beta$ is trivial.
 \bf{(2)} $\alpha \in R$ is SK. \bf{(3)} $\beta \in$ CK.
+\hfil \newline
+\bf{BCNF:} $\forall f : \alpha \to \beta \in F$, at least one is true: \bf{(1)} $f$ is trivial
+($\beta \subseteq \alpha$) or \bf{(2)} $\alpha$ is a SK for $R$.
+\hfil \newline
+\bf{Note - BCNF:} As Normal Form $\uparrow$, Redundancy $\downarrow$, but Data Integrity may also $\downarrow$.
+\hfil \newline
+\bf{Note - BCNF:} BCNF removes all redundancy due to functional dependencies only. There may be
+redundancy due to other causes.
+\hfil \newline
+\vspace{-0.8em}
+\hrule
+\vspace{0.2em}
+
+\bf{Losslessness:} A decomposition is lossless if $R_1 \bowtie R_2 = R$. We can also check \bf{(1)}
+$R_1 \cup R_2 = R$, \bf{(2)} $R_1 \cap R_2 \neq \emptyset$, and \bf{(3)} $(R_1 \cap R_2)^+$ forms an
+SK for either $R_1$ or $R_2$. 
+\hfil \newline
+\bf{Note - Losslessness:} 1NF, 2NF, 3NF, BCNF guarantee losslessness.
+\hfil \newline
+\bf{Attribute Closure:} $\alpha^+$ is the set of attributes inferred by $\alpha$. If, $\alpha^+ =
+R$, then $\alpha$ is an SK.
+\hfil \newline
+\vspace{-0.8em}
+\hrule
+\vspace{0.2em}
+
+\bf{Example - Lossless:}
+$R(A, B, C, D, E, G)$ with $R_1(A, B, C, G), R_2(A, D, E), F = \{A \to B, A \to C, CD \to E, B \to
+D, E \to A\}$ is lossless.
+\hfil \newline
+\bf{(1)} $R_1 \cup R_2 = \{A, B, C, D, E, G\} = R$.
+\bf{(2)} $R_1 \cap R_2 = \{A\} \neq \emptyset$.
+\bf{(3)} $(R_1 \cap R_2)^+ = \{A\}^+ = ABCDE$ is SK for $R_1$ so $R_1 \cap R_2 \to R_2$.
+\bf{Example - Not 3NF:} $F = \{AB \to CD, C \to D\}$, CK $= AB$. Then, $AB \to C, AB \to D, C \to
+D$. $AB \to D$ is transitive so $R \not \in$ 3NF. Normalized, we get $R_1(A, B, C), R_2(C, D)$.
+\hfil \newline
+\bf{Example - Not BCNF:} $R(A, B, C, D, E), F = \{A \to BC, C \to B, D \to E, E \to D\}$.
+$A \to BC$: $A^+ = ABC \neq ABCDE$. \it{(i)} not trivial \it{(ii)} $A$ is not an SK. $R \not
+\in$ BCNF. Normalized, we get $R_1(A, B, C), R_2(A, D, E)$. which is BCNF by inspection.
+\hfil \newline
+\bf{Example - Not BCNF:} $R(A, B, C), F = \{AB \to C, C \to B\}$.
+$AB \to C$ (\checkmark): $(AB)^+ = ABC = R$ \it{(i)} not trivial \it{(ii)} $AB$ is SK.
+$C \to B$ (\bf{\textsf{x}}): \it{(i)} not trivial \it{(ii)} $C$ not SK. $R \not \in$ BCNF.
+Normalized, we get $R_1(B, C), R_2 (A, C)$.
+\hfil \newline
+\bf{Example- 3NF, Not BCNF:} $R(A, B, C)$, CK $= AB$, $F = \{AB \to C, C \to B\}$.
+$AB \to C$ (\checkmark): \it{(i)} not trivial \it{(ii)} $AB$ is SK.
+$C \to B$ (\bf{\textsf{x}}): \it{(i)} not trivial \it{(ii)} $C$ not SK. $R \not \in$ BCNF. $R \in$
+3NF since $C$ depends on $AB$.
+\hfil \newline
+\vspace{-0.8em}
+\hrule
+\vspace{0.2em}
+
+\bf{BCNF Decomposition Algorithm:}
+\vspace{-0.8em}
+\begin{lstlisting}
+for any $R_i$ in the schema
+    if ($\alpha \to \beta$ holds on $R_i$ and
+        $\alpha \to \beta$ is non-trivial and
+        $\alpha$ is not a superkey), then
+            Decompose $R_i$ into $R_{i_1} (\alpha^+)$ and $R_{i_2} (\alpha \cup (R_i - \alpha^+))$
+            // $\alpha$ is the common attriute(s)
+repeat until no more decompositions are necessary
+\end{lstlisting}
+\vspace{-0.5em}
+\bf{Example - BCNF Decomposition:} $R(A, B, C), F = \{A \to B, B \to C\}$. $A^+ = ABC$.
+$A \to B$ (\checkmark): \it{(i)} not trivial \it{(ii)} $A$ is SK.
+$B \to C$ (\bf{\textsf{x}}): \it{(i)} not trivial \it{(ii)} $B$ not SK.
+$R \not \in$ BCNF. Decomposing, we get $R_1(B, C), R_2(A, B)$.
+\hfil \newline
+\bf{Example - BCNF Decomposition:} $R(A, B, C, D), F = \{C \to D, C \to A, B \to C\}$. $B+ = BCDA =
+R$.
+$C \to AD$ (\bf{\textsf{x}}): \it{(i)} not trivial \it{(ii)} $C$ not SK.
+$B \to C$ (\checkmark): \it{(i)} not trivial \it{(ii)} $B$ is SK.
+$R \not \in$ BCNF. Decomposing, we get $R_1(A, C, D), R_2(B, C)$.
+\newpage
+\bf{Functional Dependencies as Constraints:} By definition, a functional dependency is a constraint.
+When designing DB, we want BCNF/3NF, losslessness, and dependency preservation.
+\hfil \newline
+\bf{Dependency Preservation:} 1NF, 2NF, 3NF guarantee dependency preservation.
+\hfil \newline
+\vspace{-0.8em}
+\hrule
+\vspace{0.2em}
+
+\bf{Query Examples}
+\vspace{-1em}
+\begin{multicols}{2}
+    \begin{verbatim}
+SELECT l.departure_time, l.tail, l.flight, 
+       SUM(r.distance) AS miles
+FROM (
+    SELECT departure_time, tail, a.flight, distance
+    FROM equipment_flight a
+    JOIN flights b
+    ON a.flight = b.flight
+) l -- earlier flight
+JOIN (
+    SELECT departure_time, tail, a.flight, distance
+    FROM equipment_flight a
+    JOIN flights b
+    ON a.flight = b.flight
+) r -- later flight
+ON l.tail = r.tail AND l.departure_time < r.departure_time 
+   AND HOURDIFF(l.departure_time, r.departure_time) <= 12
+WHERE DATE(l.departure_time) = CURDATE()
+GROUP BY l.tail, l.departure_time, l.flight;
+    \end{verbatim}
+    \columnbreak
+    \begin{verbatim}
+SELECT tail, COUNT(*) as total
+FROM equipment_flight
+WHERE DATE(departure_time) = YESTERDAY()
+GROUP BY tai
+HAVING COUNT(*) > 5;
+    \end{verbatim}
+\end{multicols}
+\vspace{-1em}
+\hrule
+\vspace{0.2em}
+
+\bf{Example - BCNF Decomposition:} $R(A, B, C, D, E, G)$, $F = \{A \to B, A \to C, C \to E, B \to
+D\}$. $A^+ = ABCDE$, $B^+ = BD$, $C^+ = CE$.
+\hfil \newline
+$A \to BC$ (\bf{\textsf{x}}): \it{(i)} not trivial \it{(ii)} $A$ not SK.
+\hfil \newline
+$C \to E$ (\bf{\textsf{x}}): \it{(i)} not trivial \it{(ii)} $C$ not SK.
+\hfil \newline
+$B \to D$ (\bf{\textsf{x}}): \it{(i)} not trivial \it{(ii)} $B$ not SK.
+\hfil \newline
+$R \not \in$ BCNF. Decomposing on $C \to E$, we get $R_1(C, E), R_2(A, B, C, D, G)$.
+\hfil \newline
+$A \to BC$ (\bf{\textsf{x}}): \it{(i)} not trivial \it{(ii)} $A$ not SK.
+\hfil \newline
+$B \to D$ (\bf{\textsf{x}}): \it{(i)} not trivial \it{(ii)} $B$ not SK.
+\hfil \newline
+$R_2 \not \in$ BCNF. Decomposing on $B \to D$, we get $R_1(C, E), R_3(B, D), R_4(A, B, C, G)$.
+\hfil \newline
+$A \to BC$ (\bf{\textsf{x}}): \it{(i)} not trivial \it{(ii)} $A$ not SK.
+\hfil \newline
+$R_4 \not \in$ BCNF. Decomposing on $A \to BC$, we get $R_1(C, E), R_3(B, D), R_5(A, B, C), R_6(A, G)$.
+\hfil \newline
+\vspace{-0.8em}
+\hrule
+\vspace{-0.8em}
+\begin{multicols}{2}
+\begin{tabular}{l|l|l}
+A & B & C \\ 
+\hline
+Mighty Mighty Bosstones & The Impression That I Get & ska      \\
+Hoku                   & Perfect Day                & pop      \\
+The 1975               & Somebody Else              & alt \\
+beabadoobee            & Space Cadet                & alt \\
+beabadoobee            & Care                       & alt \\
+Duran Duran            & Perfect Day                & nw \\
+Dave Matthews Band     & Ants Marching              & rock \\
+ABC                    & Poison Arrow               & nw \\
+\end{tabular}
+\columnbreak
+
+$F = \{A \to C, AB \to C, BC \to A\}$, $F_c = \{AB \to C, BC \to A\}$.
+$R$ is in 3NF since we have no non-prime attributes. $AB, BC$ are candidate keys since $(AB)^+ =
+(BC)^+ = ABC$.
+\end{multicols}
+\vspace{-0.5em}
+\hrule
+\vspace{0.2em}
+
+\bf{Cross Join v. Full Join} A Cross join is the cartesian product. A full join requires a join
+condition, matching on it but leaving \tt{null}'s whenever there is no match on the LHS or RHS.
+\hfil \newline
+\vspace{-0.8em}
+\hrule
+\vspace{0.2em}
+
+\bf{Theory v. Practice:} Relations must have a key, but tables need not. \tt{null}'s not allowed in
+Theory, allowed in practice.
+\hfil \newline
+\bf{Example - Update w/ Subquery:} \tt{UPDATE scores SET midterm = midterm + (SELECT 100 - MAX(midterm)
+FROM scores);}
+\hfil \newline
+\vspace{-0.8em}
+\hrule
+\vspace{0.2em}
+
+\bf{Example - Having:}
+\vspace{-1em}
+\begin{verbatim}
+SELECT major, AVG(gpa)::decimal(3, 2) AS average
+FROM bruinbase
+WHERE career = 'UG'
+GROUP BY major
+HAVING AVG(gpa) < 3.95
+ORDER BY average DESC
+LIMIT 2;
+\end{verbatim}
+\vspace{-1em}
+returns all majors that have an undergrad GPA of less than 3.95.
+\hfil \newline
+\vspace{-0.8em}
+\hrule
+\vspace{0.2em}
+
+\bf{Sketching out a Query:}
+\tt{FROM $\to$ WHERE $\to$ GROUP BY $\to$ HAVING $\to$ SELECT (AS) $\to$ ORDER BY $\to$ LIMIT}
+\hfil \newline
+\vspace{-0.8em}
+\hrule
+\vspace{0.2em}
+
+\bf{Example - Multiple Joins}
+\vspace{-1em}
+\begin{verbatim}
+SELECT instructor_name AS name, course_name AS course
+FROM instructor l
+JOIN course r
+ON l.ID = r.ID
+LEFT JOIN course_offering t
+ON r.course = t.course;
+\end{verbatim}
+\vspace{-1em}
+we can join on attributes not in the \tt{SELECT}.
+\newpage
+\bf{Self Join:} joins a table with itself. Typically used for graph traversals.
+\hfil \newline
+\bf{Example - Friend of a Friend:} Given
+\hfil \newline
+\begin{tabular}{r|r}
+    \tt{id} & \tt{friend\_id} \\
+    \hline
+    1 & 2 \\
+    1 & 3 \\
+    3 & 5 \\
+    5 & 2 \\
+    3 & 1
+\end{tabular}
+the joined relation is
+\begin{tabular}{r|r|r|r}
+    \tt{l.id} & \tt{l.friend\_id} & \tt{r.id} & \tt{r.friend\_id} \\
+    \hline
+    1 & 3 & 3 & 5 \\
+    1 & 3 & 3 & 1 \\
+    3 & 5 & 5 & 2 \\
+    3 & 1 & 1 & 2
+\end{tabular}
+where FOAF is between \tt{l.id} and \tt{r.friend\_id}.
+\bf{(1)} Compute the cartesian product: $R \times R := \rho_l (R) \times R$.
+\hfil \newline
+\bf{(2)} $\theta := l.friend\_id = r.id \land l.id \neq r.friend\_id$.
+\hfil \newline
+\bf{(3)} $\Pi_{l.id \to id, r.friend\_id \to foaf}(\sigma_{\theta} (R \times R))$.
+\hfil \newline
+Then the full expression is $\Pi_{l.id \to id, r.friend\_id \to foaf}(\sigma_{l.friend\_id = r.id \land l.id \neq r.friend\_id} (\rho_l (R) \times R))$.
+\hfil \newline
+The SQL for it is
+\vspace{-1em}
+\begin{verbatim}
+SELECT DISTINCT l.id AS user, r.friend_id AS foaf
+FROM friends l
+JOIN friends r
+ON l.friend_id = r.id AND l.id != r.friend_id;
+\end{verbatim}
+\vspace{-0.8em}
+\hrule
+\vspace{0.2em}
+
+\bf{Example - Left Join:}
+\vspace{-1em}
+\begin{verbatim}
+SELECT l.trip_id AS trip_id
+l.time AS start_time
+r.time AS end_time
+FROM trip_start l
+LEFT JOIN trip_end r
+ON l.trip_id = r.trip_id;
+\end{verbatim}
+\vspace{-1em}
+will return all the rows in \tt{trip\_start} but may have \tt{null}'s for unmatched columns.
+\hfil \newline
+\vspace{-1em}
+\hrule
+\vspace{0.2em}
+
+\bf{Example - Non-Equi Self Join as Window Function:}
+\vspace{-1em}
+\begin{verbatim}
+SELECT l.trans_id, l.customer_id, SUM(r.result) AS chargebacks
+FROM purchase L
+JOIN purchase R
+ON l.customer_id = r.customer_id 
+AND l.transtime - r.transtime + 1 <= 5
+AND r.transtime <= l.transtime
+GROUP BY l.trans_id, l.customer_id
+ORDER BY trans_id DESC;
+\end{verbatim}
+\vspace{-1em}
+returns the total number of chargebacks within a particular window of time.
+\hfil \newline
+\vspace{-1em}
+\hrule
+\vspace{0.2em}
+
+\bf{Nested/Sub Queries:}
+\hfil \newline
+\bf{(1)} Construct derived tables in \tt{FROM} or \tt{JOIN}.
+\hfil \newline
+\bf{(2)} Compute scalar subqueries in \tt{WHERE} or \tt{HAVING}.
+\hfil \newline
+\bf{(3)} Set membership with \tt{IN/NOT IN} (e.g. \tt{SELECT * FROM table WHERE r.foo IN (SELECT
+...);}).
+\hfil \newline
+\bf{(4)} Testing for empty relations using \tt{EXISTS}.
+\hfil \newline
+\bf{(5)} Set comparison with \tt{ANY} or \tt{ALL}.
+\hfil \newline
+\bf{(6)} Uniqueness using \tt{UNIQUE}.
+\hfil \newline
+\vspace{-1em}
+\hrule
+\vspace{0.2em}
+
+\bf{Constraints in Databases v. Applications:} Rule of thumb: Business logic in the app, data
+integrity in the database.
+\vspace{-1em}
+\begin{multicols}{2}
+\bf{Pros (Database):}
+\hfil \newline
+\bf{(1)} Purpose of DB is data integrity.
+\hfil \newline
+\bf{(2)} Set syntax for checking constraints.
+\hfil \newline
+\bf{(3)} Don't need to trust the app developer.
+\hfil \newline
+\bf{(4)} Changes to the app don't break data integrity.
+\hfil \newline
+\bf{Cons (Database):}
+\hfil \newline
+\bf{(1)} Limited functionality.
+\hfil \newline
+\bf{(2)} Less flexibility
+\hfil \newline
+\bf{(3)} More CPU load due to checking constraints over CRUD.
+\columnbreak
+
+\bf{Pros (Application):}
+\hfil \newline
+\bf{(1)} Constraints can be more complex with more sophisticated data structures.
+\hfil \newline
+\bf{(2)} Failures are easier to debug.
+\hfil \newline
+\bf{Cons (Application):}
+\hfil \newline
+\bf{(1)} We need to manually handle bad user input.
+\hfil \newline
+\bf{(2)} Reimplement check constraints if stack changes.
+\hfil \newline
+\bf{(3)} Not as fast (potentially).
+\end{multicols}
+\vspace{-1em}
+\bf{RegEx:} \tt{SELECT name FROM ta\_restaurant WHERE name LIKE '\% Lotus \%'};
+\hfil \newline
+\bf{Example Queries:}
+\vspace{-1em}
+\begin{multicols}{2}
+    \begin{verbatim}
+SELECT city
+FROM ta_restaurant l
+JOIN ta_cuisine r
+ON l.id = r.id
+WHERE r.cuisine = 'Indian'
+GROUP BY city
+HAVING AVG(rating) > 4.2
+ORDER BY AVG(rating);
+    \end{verbatim}
+    \columnbreak
+
+    \begin{verbatim}
+SELECT origin, destination
+FROM flights l
+LEFT JOIN snacks r
+ON l.flight = r.flight
+WHERE snack IS NULL;
+    \end{verbatim}
+\end{multicols}
+\vspace{-2em}
+\hrule
+\vspace{0.2em}
+\small{\bf{Relational Algebra Examples:}}
+\hfil \newline
+$\Pi_{id, name} (\sigma_{building = 'Watson'}(department) \bowtie instructor)$. -- id, name of each
+instructor in a dept. located in the Watson building.
+\hfil \newline
+$\Pi_{course\_id} (\sigma_{semester = 'Spring' \land year = 2009}(section)$. -- All course id's of
+courses taught in Spring 2009.
+\hfil \newline
+$\Pi_{name, salary} (\sigma_{salary = max.salary}(instructor \times \gamma_{MAX(salary) \to
+max.salary} (instructor)))$. -- name, salary of instructors with the highest salary.
 \end{document}
