@@ -1,0 +1,417 @@
+\documentclass{report}
+\usepackage{amsmath, amsthm, amssymb, graphicx, enumitem, esvect}
+\usepackage[english]{babel}
+\usepackage[letterpaper,top=1in,bottom=0.05in,left=0.05in,right=1in]{geometry}
+\usepackage[most]{tcolorbox}
+\usepackage[hidelinks]{hyperref}
+\usepackage{graphicx}
+\usepackage{nicefrac}
+\usepackage{titlesec}
+\usepackage{mathtools}
+\usepackage{multicol}
+
+\renewcommand{\bf}[1]{\textbf{{#1}}}
+\renewcommand{\tt}[1]{\texttt{{#1}}}
+\renewcommand{\it}[1]{\textit{{#1}}}
+\newcommand{\ib}[1]{\textit{\textbf{{#1}}}}
+\newcommand{\R}{\mathbb{R}}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+\bf{Relation:} consists of a \it{set} of tuples (records). Each tuple is a row and has $n$
+attributes or columns. Each tuple contains the exact same attributes in the same order.
+\hfil \newline
+\bf{Superkey:} a set of $k \leq n$ attributes that uniquely identifies a tuple. There are at most
+$2^n - 1$ superkeys for an $n$-attribute relation.
+\hfil \newline
+\bf{Candidate Key:} is a minimal superkey s.t. no subset of its attributes form a superkey itself.
+A candidate key may be \tt{null}.
+\hfil \newline
+\bf{Primay Key:} is a candidate key chosen by the DB designer to enforce uniqueness based on use
+case. A primary key may not be \tt{null}. If a primary key is composite, no component can be 
+\tt{null}
+\hfil \newline
+\bf{Foreign Key:} in $S$ points to a primary key in $R$. FK's need not be unique in $S$, but must
+be unique (by def.) in $R$. FK's are primarily used for referential integrity. Further, the FK
+$\in S$ need not have the same name as the PK $\in R$.
+\hfil \newline
+\vspace{-0.8em}
+\hrule
+\vspace{0.2em}
+
+\bf{Selection:} $\sigma_{\psi} (R) = \{t \in R : \psi(t)\}$. $\sigma_{\psi} (R) \approx$
+\tt{SELECT * FROM $R$ WHERE $\psi (t)$}. It filters on \ib{tuples} using: $=, \neq, <, >, \leq,
+\geq, \lnot, \lor, \land$.
+\hfil \newline
+\bf{Projection:} $\Pi_{a_i} (R) = \{t[a_i] : t \in R, i \leq n\}$. $\Pi \approx$ \tt{SELECT
+$a_1, \ldots, a_n$ FROM $R$}. Also, $\Pi_{f(a_i) \to a'}$ where $f$ is any reasonable
+function.
+\hfil \newline
+\bf{Cartesian Product:} $R \times S = \{ (r, s) :r \in R, s \in S\}$. They are very bad and
+inefficient.
+\hfil \newline
+\bf{Natural Join:} $R \bowtie S = \Pi_{R \cup S} (\sigma_{R.k = S.k} (R \times S)) = \{(r, s) :
+r \in R, s \in S, r[k] = s[k]\}$. Only to be used in relational algebra.
+\hfil \newline
+\bf{Natural Join Edge Cases:} \bf{If} $k = \emptyset$, $R \bowtie S = R \times S$. \bf{If}
+$\forall r \in R, s \in S, r[k] \neq s[k]$, $R \bowtie S = \emptyset$.
+\hfil \newline
+\bf{Join Key:} is the set of $k \leq n$ attributes that we join $R, S$ on. All conditions are
+equality $\implies$ equijoin. Otherwise, non-equijoin.
+\hfil \newline
+\bf{Theta Join:} $R \bowtie_{\theta} S = \sigma_{\theta} (R \times S) = \{(r, s) : r \in R,
+s \in S, \theta((r, s))\}$. Name clash $\to$ alias. We choose the join key.
+\hfil \newline
+\bf{Inner Join:} Include all rows that satisfy $\theta((r, s))$. Throw out all rows that don't
+satisfy $\theta((r, s))$.
+\hfil \newline
+\bf{Aggregation:} $_{\tt{group}}\gamma_{f(a_i)} (R)$ where $f$ is an aggregation function. Some
+include \tt{SUM, AVG, MIN, MAX, DISTINCT-COUNT}.
+\hfil \newline
+\bf{Rename:} $\rho_{S} (R)$ renames a \ib{relation} $R \to S$. $\rho_{a/b} (R)$ renames an
+\ib{attribute} $a \to b \in R$. Usually used in $rho_{S} (R) \times R$.
+\hfil \newline
+\bf{Union:} $R \cup S = \{r_1, \ldots, r_{|R|}, s_1, \ldots, s_{|S|} : r_i \in R, s_j \in S\}$.
+$R, S$ must have the same set of attributes for this to work.
+\hfil \newline
+\bf{Set Difference:} $R - S = \{t : t \in R, t \not \in S\}$. \bf{Note: Division $\div$ is not
+implemented in SQL}.
+\hfil \newline
+\bf{Intersection:} $R \cap S = \{t : t \in R, S\}$. $R, S$ must have the same set of attributes
+for this to work. Note: $R \cap S = R - (R - S)$.
+\hfil \newline
+\bf{Order of Operations:} $\sigma, \Pi, \rho \to \times, \bowtie \to \cap \to \cup, -$.
+\hfil \newline
+\vspace{-0.8em}
+\hrule
+\vspace{0.2em}
+
+\tt{ENUM:} Order of defined when type is constructed. Values are case sensitive, whitespace
+matters. \ib{Can:} add, rename values. \ib{Cannot:} delete, reorder values. 4 bytes.
+\hfil \newline
+\bf{Create Enum/Table:}
+\vspace{-1em}
+\begin{verbatim}
+CREATE TYPE enum_name AS ENUM ('value_1', ..., 'value_n');
+CREATE TABLE table_name (
+    column_1     type OPTIONS,
+    ...
+    column_n     type OPTIONS
+    );
+\end{verbatim}
+\vspace{-1em}
+where \tt{type} is a data type and \tt{OPTIONS} can be none or more of: \tt{NOT NULL, DEFAULT
+    [DEFAULT VALUE], UNIQUE, PRIMARY KEY, FOREIGN KEY REFERENCES other\_table(other\_table\_ukey) 
+ON DELETE/UPDATE CASCADE/RESTRICT/SET NULL}. We can set the PK/FK inline or at the bottom 
+using \tt{PRIMARY KEY (column\_i)} and \tt{FOREIGN KEY (column\_j) REFERENCES 
+other\_table(other\_table\_ukey)}.
+\hfil \newline
+\bf{Changing Schema:} Don't lmao. Use \tt{extra} (if you were smart enough to think ahead) or
+create another table with a join key.
+\hfil \newline
+\bf{Alter Table:} add/drop columns, constraints (e.g. PK/FK), rename tables/columns, change data
+types of columns.
+\vspace{-1em}
+\begin{verbatim}
+ALTER TABLE table_name
+    DROP col_i,                          -- delete column
+    ALTER COLUMN col_j TYPE new_type,    -- changes type of col_j to new_type
+    ADD col_k type,                      -- adds col_k
+    DROP CONSTRAINT table_name_pkey,     -- drops PK constraint
+    ADD PRIMARY KEY col_l,               -- adds PK constraint to col_l
+    RENAME COLUMN col_m TO new_col_name, -- renames col_m to new_col_name
+    RENAME TO new_table_name;            -- renames table_name to new_table_name
+\end{verbatim}
+\vspace{-1em}
+\bf{Drop, Truncate, Delete:} \tt{DROP [TABLE/SCHEMA/DATABASE] table\_name/schema\_name/db\_name;} 
+deletes the table/schema/db. If inside a script, use \tt{IF EXISTS}. \tt{TRUNCATE table\_name}
+will delete all of the data inside \tt{table\_name}, but will preserve the schema. This is the
+same as \tt{DELETE FROM table\_name WHERE 1=1}.
+\hfil \newline
+\bf{Select:} \tt{SELECT col\_1, ..., col\_n FROM table\_name WHERE condition;}. 
+\hfil \newline
+\bf{Where:} pre-filters \ib{rows} in a table. It acts on values in columns and transformation
+functions applied on rows independently (\ib{NOT} aggregation functions). Note: \tt{WHERE c
+BETWEEN x AND y} $\simeq$ \tt{WHERE c <= y AND c >= x}.
+\hfil \newline
+\bf{Query Order:} \tt{SELECT $\to$ FROM $\to$ JOIN $\to$ ON(s) $\to$ WHERE $\to$ GROUP BY $\to$
+HAVING $\to$ ORDER BY $\to$ LIMIT $\to$ OFFSET}
+\bf{Execution Order:} \tt{FROM $\to$ ON $\to$ JOIN $\to$ WHERE $\to$ GROUP BY $\to$ HAVING $\to$
+SELECT $\to$ DISTINCT $\to$ ORDER BY}
+\newpage
+\newgeometry{top=0.25cm,left=0.25cm,bottom=0.25cm,right=0.25cm}
+\bf{Aggregation/Group By:} Aggregations over a relation does not need a \tt{GROUP BY}.
+Aggregations over groups requires a \tt{GROUP BY}. For example:
+\tt{SELECT AVG(one) AS avg FROM table\_name;} and \tt{SELECT one, AVG(two) AS avg FROM
+table\_name GROUP BY one;}
+\hfil \newline
+\bf{Having:} post-filters result of an aggregation. \tt{SELECT one AVG(two) AS avg FROM
+r\_name GROUP BY one HAVING AVG(two) < 100;}
+\hfil \newline
+\bf{Outer Join:} keep rows that don't have a match, replacing the ``other side'' as \tt{null}.
+We use \tt{LEFT/RIGHT/FULL OUTER JOIN} where \tt{OUTER} is optional. 
+\hfil \newline
+\bf{Left Join:} keeps all rows in the LHS of the join. 
+\hfil \newline
+\bf{Right Join:} keeps all rows in the RHS of the join. 
+\hfil \newline
+\bf{Full Join:} keeps rows from both sides of the join.
+\hfil \newline
+\bf{Coalesce:} \tt{COALESCE(expr, replacement value)} where \tt{expr} may return \tt{null}. It can
+take multiple arguments and returns the first that is not \tt{null}.
+\hfil \newline
+\vspace{-0.8em}
+\hrule
+\vspace{0.2em}
+
+\bf{Nested Query/Subquery:} Innermost query gets evaluated first.
+\hfil \newline
+\bf{Derived Table Subquery:} returns a table.
+\vspace{-1em}
+\begin{verbatim}
+SELECT uid, last, first, mi, scores.career, midterm, (midterm - mean) / sd AS z_score
+FROM (
+    SELECT career, AVG(midterm) AS mean, STDDEV(midterm) AS sd
+    FROM midterm_scores
+    GROUP BY career
+) aggregated
+JOIN midterm_scores scores
+ON scores.career = aggregated.career;
+\end{verbatim}
+\vspace{-0.5em}
+\hrule
+\vspace{0.2em}
+
+\bf{Scalar Subquery:} returns a scalar.
+\vspace{-1.5em}
+\begin{multicols}{2}
+\begin{verbatim}
+SELECT uid, last, first, mi, midterm
+FROM midterm_scores
+WHERE midterm > (
+    SELECT AVG(midterm) + 0.5 * STDDEV(midterm)
+    FROM midterm_scores
+);
+\end{verbatim}
+\columnbreak
+\begin{verbatim}
+SELECT uid, last, first, mi, midterm, 
+  (midterm - (SELECT AVG(midterm) FROM midterm_scores))
+  / (SELECT STDDEV(midterm) FROM midterm_scores) 
+  AS zscore
+FROM midterm_scores;
+\end{verbatim}
+\end{multicols}
+\vspace{-0.5em}
+\hrule
+\vspace{0.2em}
+
+\bf{Filter Subquery:} using \tt{IN/NOT IN} is a semijoin if we project out all of the columns from 
+the \tt{flights} table.
+\vspace{-1em}
+\begin{verbatim}
+SELECT flights.*
+FROM flights
+    WHERE flights.tail IN (
+    SELECT tail FROM airtran_aircraft
+);
+\end{verbatim}
+\vspace{-0.5em}
+\hrule
+\vspace{0.2em}
+
+\bf{Correlated Subquery:} They suck, lol. This reexecutes the subquery for every row in the outer
+query.
+\vspace{-1em}
+\begin{verbatim}
+SELECT uid, last, first, mi, midterm
+FROM midterm_scores m1
+WHERE midterm > (
+    SELECT AVG(midterm) + 0.5 * STDDEV(midterm)
+    FROM midterm_scores m2
+    WHERE m1.career = m2.career
+);
+\end{verbatim}
+\vspace{-0.5em}
+\hrule
+\vspace{0.2em}
+
+\bf{Subqueries v. Joins:} Subqueries are typically faster. Joins are slow so we want to filter as
+much as possible before joining.
+\hfil \newline
+\bf{Adding Rows:} \tt{INSERT INTO table\_name VALUES ('val11', ..., 'val1n'), ('val21', ...,
+'val2n'),...;} requires us to know the schema. Order matters, and all values must be specified.
+Another way is:
+\hfil \newline
+\tt{INSERT INTO table\_name (col1\_name, ..., colk\_name) VALUES ('val11', ..., 'val1k'), ('val21',
+..., 'val2k'), ...;}
+\hfil \newline
+We just specify the names of the columns we insert into. Order doesn't matter but we need to be
+consistent.
+\hfil \newline
+\bf{Modifying Rows:} \tt{UPDATE table\_name SET column\_name = new\_value WHERE condition;}
+\hfil \newline
+\bf{Check Constraint:} \tt{CONSTRAINT Constraint\_Name CHECK (condition);} is put at the end of a
+\tt{CREATE TABLE}. They can be added using \tt{ALTER TABLE}. We can only use check constraints on
+rows.
+\hfil \newline
+\bf{Casting:} Cast with \tt{column\_name::new\_type}.
+\hfil \newline
+\bf{NullIf:} \tt{NULLIF(var, replacement)}. If \tt{var} is \tt{null}, replace with \tt{replacement}.
+\hfil \newline
+\bf{Control Flow:} Case and Searched Case statements:
+\vspace{-1em}
+\begin{multicols}{2}
+\begin{verbatim}
+SELECT ..., 
+    CASE column_name
+        WHEN condition_1 THEN result_1
+        ...
+        WHEN condition_n THEN result_n
+        ELSE default_result
+    END AS new_column_name
+FROM midterm_scores;
+\end{verbatim}
+\columnbreak
+\begin{verbatim}
+SELECT ..., 
+    CASE
+        WHEN column_name = condition_1 THEN result_1
+        ...
+        WHEN column_name = condition_n THEN result_n
+        ELSE default_result
+    END AS new_column_name
+FROM midterm_scores;
+\end{verbatim}
+\end{multicols}
+\vspace{-1em}
+\hrule
+\vspace{0.2em}
+
+\bf{SQL Injection:} If we don't use a prepared query, consider
+\tt{SELECT uid FROM bruinbase WHERE uid='\{\}'}. In place of ``\tt{\{\}}'', we can inject \tt{';
+DROP DATABASE students; --} to drop the \tt{students} database.
+\hfil \newline
+\bf{Caching:} Caching is fast and decreases the workload on the DB. We can either talk to the cache
+and DB directly or have a broker/proxy talk to the DB and cache.
+\hfil \newline
+\bf{Logging:} is important, so do it lmao. But, minimize the amount of private data.
+\newpage
+\bf{Salt and Pepper:} A string (salt) is randomly chosen to be affixed to the data before it is
+hashed. This hash and salt are stored. Peppering is similar, but is stored in a separate table. This
+makes it more difficult to steal than salting. Peppering is not widely implemented.
+\hfil \newline
+\vspace{-1em}
+\hrule
+\vspace{0.2em}
+
+\bf{Normalization:} Normalization is the process of refactoring tables to reduce redundancy in a
+relation. It involves splitting a table with redundant data into two or more non-redundant tables.
+Tables without redundancies are called \ib{normalized}. When there are redundancies, we can
+\ib{decompose} the table using \ib{functional dependencies}.
+\hfil \newline
+\bf{Problems with Deormalized Tables:} Redundancy, data integrity issues (update/insert), delay in
+creating new records. Normalized tables allow for separation of concerns.
+\hfil \newline
+\bf{Functional Dependency:} $X \to Y$: $X$ functionally determines $Y$ if every $x \in X$ is
+associated with exactly one $y \in Y$. If there exists $X \to Y$, we can decompose the table into
+two: $R(X, Y)$ and $R(X, Z)$ where $Z := R \setminus Y$. For example:
+\hfil \newline
+\begin{tabular}{c|c|c|c}
+    X & Y & A & B \\
+    \hline
+    $\alpha$ & $\beta$ & $\sigma$ & $\pi$ \\
+    $\alpha$ & $\beta$ & $\gamma$ & $\Delta$ \\
+    $\gamma$ & $\eta$ & $\pi$ & $\Delta$ \\
+\end{tabular}
+Here, $X \to Y$ since $\alpha \mapsto \beta, \gamma \mapsto \eta$, so we can decompose the
+relation into $R_1 :=$
+\begin{tabular}{c|c}
+    X & Y \\
+    \hline
+    $\alpha$ & $\beta$ \\ 
+    $\alpha$ & $\beta$ \\
+    $\gamma$ & $\eta$  \\
+\end{tabular}
+and $R_2 :=$
+\begin{tabular}{c|c|c}
+    X & A & B \\
+    \hline
+    $\alpha$ & $\sigma$ & $\pi$ \\
+    $\alpha$ & $\gamma$ & $\Delta$ \\
+    $\gamma$ & $\pi$ & $\Delta$ \\
+\end{tabular}
+\hfil \newline
+\hrule
+\vspace{0.2em}
+
+\bf{Functional Dependency Properties (Armstrong's Axioms [1-3] and Corollaries [4-7]):} $\alpha, \beta, \gamma \in r(R)$.
+\hfil \newline
+\bf{(1) Reflexivity:} If $\beta \subseteq \alpha$, then $\alpha \to \beta$. \bf{Ex:} 
+$A \subseteq A \implies A \to A, A \subseteq AB \implies AB \to A$.
+\hfil \newline
+\bf{(2) Augmentation:} If $\alpha \to \beta$, then $\alpha \gamma \to \beta \gamma$. \bf{Ex:}
+$\{uid\} \to \{name\} \implies \{uid, major\} \to \{name, major\}$.
+\hfil \newline
+\bf{(3) Transitivity:} If $\alpha \to \beta$ and $\beta \to \gamma$, then $\alpha \to \gamma$.
+\bf{Ex:} $\{uid\} \to \{room \ \#\}, \{room \ \#\} \to \{room \ type\} \implies \{uid\} \to
+\{room \ type\}$.
+\hfil \newline
+\bf{(4) Union:} If $\alpha \to \beta$ and $\alpha \to \gamma$, then $\alpha \to \beta \gamma$.
+\bf{Pf.} $(\alpha \to \gamma \implies \alpha \alpha \to \alpha \gamma \iff \alpha \to \alpha \gamma)$, 
+$(\alpha \to \beta \implies \alpha \gamma \to \beta \gamma) \implies \alpha \to \alpha \gamma \to
+\beta \gamma$.
+\hfil \newline
+\bf{(5) Composition:} If $\alpha \to \beta, \gamma \to \Delta$, then $\alpha \gamma \to \beta \Delta$. 
+\hfil \newline
+\bf{(6) Decomposition:} If $\alpha \to \beta \gamma$, then $\alpha \to \beta$ and $\alpha \to \gamma$.
+\hfil \newline
+\bf{(7) Pseudotransitivity:} If $\alpha \to beta$, $\Delta \beta \to \gamma$, then $\Delta \alpha \to
+\gamma$.
+\hfil \newline
+\vspace{-0.8em}
+\hrule
+\vspace{0.2em}
+
+\bf{Canonical Cover:} $F_c \subseteq F^+$ is the basis set of the set of all functional dependencies
+$F^+$. It is \ib{not} unique.
+\hfil \newline
+\bf{Finding $F_c$:} 
+\bf{(1)} Decompose RHS: ($X \to YZA$ becomes $X \to Y, X \to Z, X \to A$).
+\bf{(2)} Remove extraneous attributes: ($AB \to C, B \to C$, $AB \to C$ is extraneous).
+\bf{(3)} Remove trivial, duplicate, inferred FD's (by transitivity).
+\bf{(4)} Union and repeat until set doesn't change.
+\hfil \newline
+\bf{Example:} Given $\{B \to D, C \to D, AB \to C, B \to E, C \to F, A \to BCDEF, AB \to D, AB \to
+F\}$,
+\hfil \newline
+After \bf{(1)}, we get $\{A \to B, A \to C, A \to D, A \to E, A \to F, B \to D, C \to D, AB \to C, B
+\to E, C \to F, AB \to D, AB \to F\}$. 
+\hfil \newline
+After \bf{(2)}, we get $\{A \to B, A \to C, A \to D, A \to E, A \to F, B \to D, C \to D, B \to E, C
+\to F\}$. 
+\hfil \newline
+After \bf{(3)}, we get $\{A \to B, A \to C, B \to D, C \to D, B \to E, C \to F\}$.
+\hfil \newline
+After \bf{(4)}, we get $F_c := \{A \to BC, B \to DE, C \to DF\}$. Then we have $R_1(A, B, C), R_2(B,
+D, E), R_3(C, D, F)$.
+\hfil \newline
+\vspace{-0.8em}
+\hrule
+\vspace{0.2em}
+
+\bf{Normal Forms:} There are 8 normal forms, but we discuss 1NF, 2NF, 3NF, and BCNF (3.5NF).
+\hfil \newline
+\bf{First Normal Form (1NF):} Atomic attributes (flat, no nesting/collections), no repeated groups,
+there is a unique key, no \tt{null} values.
+\hfil \newline
+\bf{Second Normal Form (2NF):} $R$ is 1NF and does not contain any composite keys. More generally,
+$R$ is 2NF $\iff$ $\forall a \in R$, \ib{either} \bf{(1)} $a \in$ CK or \bf{(2)} $a \in R$ depends 
+on an \ib{entire} key; i.e. it is not partially dependent on \ib{any} composite candidate key.
+\hfil \newline
+\bf{Third Normal Form (3NF):} All non-prime $a \in R$ depend directly on a CK (no transitivity);
+i.e. if all $a \in R$ are part of a candidate key, $R$ is 3NF.
+\bf{Zaniolo's 3NF:} $\forall f \in F$, at least one is true: \bf{(1)} $a \to \beta$ is trivial.
+\bf{(2)} $\alpha \in R$ is SK. \bf{(3)} $\beta \in$ CK.
+\end{document}
