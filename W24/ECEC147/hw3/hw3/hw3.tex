@@ -1,0 +1,168 @@
+\documentclass{article}
+\usepackage{amsfonts}      
+\usepackage{amsmath}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bbm}
+\usepackage{enumitem}
+\usepackage{mdframed}
+\usepackage{stackengine}
+\usepackage{mathtools}
+\usepackage{tabularx}
+\usepackage{changepage}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, calc}
+\usepackage[margin=0.75in]{geometry}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\T}{\bf{T}}
+\newcommand{\QQ}{\bf{Q}}
+\newcommand{\QT}{\bf{Q$^{\bf{T}}$}}
+\newcommand{\QI}{\bf{Q$^{\bf{-1}}$}}
+\newcommand{\A}{\bf{A}}
+\newcommand{\AT}{\bf{A$^{\T}$}}
+\newcommand{\X}{\bf{X}}
+\newcommand{\Y}{\bf{Y}}
+\newcommand{\x}{\bf{x}}
+\newcommand{\w}{\bf{w}}
+\newcommand{\y}{\bf{y}}
+\renewcommand{\b}{\bf{b}}
+\newcommand{\B}{\bf{B}}
+\newcommand{\U}{\bf{U}}
+\newcommand{\V}{\bf{V}}
+\newcommand{\W}{\bf{W}}
+
+\newcommand{\pd}[2]{\frac{\partial{#1}}{\partial{#2}}}
+\newmdenv[
+topline=true,
+bottomline=true,
+leftline=true,
+rightline=true,
+skipabove=\medskipamount,
+skipbelow=\medskipamount
+]{responseframe}
+\newenvironment{proof}{\begin{responseframe}\vspace{-10pt}\paragraph{Proof:}}{\hfill$\square$\end{responseframe}}
+\newenvironment{response}{\begin{responseframe}\vspace{-10pt}\paragraph{Response:}}{\end{responseframe}}
+
+\setlength\parindent{0pt}
+
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\sm}{softmax}
+\DeclareMathOperator{\hinge}{hinge}
+
+\renewcommand{\it}[1]{\textit{{#1}}}
+\renewcommand{\bf}[1]{\textbf{{#1}}}
+\renewcommand{\tt}[1]{\texttt{{#1}}}
+\newcommand{\ib}[1]{\it{\bf{{#1}}}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\bf{ECE C147}}
+\fancyhead[C]{\it{Homework 3}}
+\fancyhead[R]{\bf{Warren Kim}}
+\setlength{\headsep}{11pt}
+
+\begin{document}
+\begin{enumerate}
+    \item \bf{Backpropagation for autoencoders.} Consider $\x \in \R^n$. Further, consider
+        $\W \in \R^{m \times n}$ where $m < n$. Then $\W \x$ is of lower dimensionality that $\x$.
+        One way to design $\W$ so that $\W \x$ still contains key features of $\x$ is to minimize
+        the following expression.
+        \[ \mathcal{L} = \frac{1}{2} \| \W^{\T} \W \x - \x \|^2 \]
+        \begin{enumerate}
+            \item In words, describe why this minimization finds a $\W$ that ought to preserve
+                information about $\x$.
+                \begin{response}
+                    By minimizing the loss, $\W$ is trained such that the hidden representation
+                    $\W \x$ preserves the information about $\x$.
+                \end{response}
+            \item Draw the computational graph for $\mathcal{L}$.
+                \begin{response}
+                    \hfil
+                    \vspace{10em}
+
+                \end{response}
+            \item In the computational graph, there should be two paths to $\W$. How do we account
+                for these two paths when calculating $\nabla_{\W} \mathcal{L}$?
+                \begin{response}
+                    We can use the law of total derivatives. Consider the following example:
+                    $a \to b \to d$ and $a \to c \to d$. Then, the total derivative of $d$ with
+                    respect to $a$ is given as:
+                    \[ \pd{d}{a} = \pd{d}{b} \cdot \pd{b}{a} + \pd{d}{c} \cdot \pd{c}{a} \]
+
+                \end{response}
+            \item Calculate the gradient: $\nabla_{\W} \mathcal{L}$.
+                \begin{response}
+                    Given the computational graph drawn in (b),
+                    \begin{align*}
+                        \pd{\mathcal{L}}{(\W^{\T} \W \x - \x)} 
+                        &= \W^{\T} \W \x - \x \\
+                    \pd{\mathcal{L}}{(\W^{\T})}
+                        &= (\W^{\T} \W \x - \x) (\W \x)^{\T} && (*) \\
+                    \pd{\mathcal{L}}{(\W \x)}
+                        &= \W (\W^{\T} \W \x - \x) \\
+                    \pd{\mathcal{L}}{\W}
+                        &= \W (\W^{\T} \W \x - \x) \x^{\T} && (**) \\
+                    \end{align*}
+                    so 
+                    $ 
+                    \nabla_{\W} \mathcal{L} = (*) + (**)
+                    = \W (\W^{\T} \W \x - \x) \x^{\T}
+                    + (\W^{\T} \W \x - \x) (\W \x)^{\T}
+                    $.
+                \end{response}
+        \end{enumerate}
+    \item \bf{Backpropagation for Gaussian-process latent variable model. (Optional for students in
+        C147: Please write 'I am a CS147 student' in the solution and you will get full credit for
+    this problem).}
+        \begin{response}
+            \ib{I am a CS147 student.}
+        \end{response}
+        \newpage
+    \item \bf{NNDL to the rescue!!}
+        The Swish activation function for any scalar input $K$ is defined as,
+        \[
+            \text{swish}(k) = \frac{k}{1 + e^{-k}} = k \sigma (k),
+        \]
+        where $\sigma(k)$ is the sigmoid activation function you have seen in lecture.
+        \begin{enumerate}
+            \item Draw the computational graph for the 2-layer FC net.
+                \begin{response}
+                    \hfil
+                    \vspace{10em}
+
+                \end{response}
+            \item Compute $\nabla_{W_2} L, \nabla_{b_2} L$.
+                \begin{response}
+                    Using the computational graph drawn in (a),
+                    \begin{align*}
+                        \pd{L}{b_2} &= \pd{L}{z_2} \\
+                        \pd{L}{(W_2 h_1)} &= \pd{L}{z_2} \\
+                        \pd{L}{W_2} &= \pd{L}{(W_2 h_1)} (h_1)^T
+                    \end{align*}
+                    so $\nabla_{W_2} L = \pd{L}{(W_2 h_1)} h_1^T, \nabla_{b_2} L = \pd{L}{z_2}$
+                \end{response}
+            \item Compute $\nabla_{W_1} L, \nabla_{b_1} L$.
+                \begin{response}
+                    Using the computational graph drawn in (a) and noting that
+                    \[ \pd{(\text{swish}(z))}{z} = \sigma(z) (z - z \sigma(z) + 1) \]
+                    we get
+                    \begin{align*}
+                        \pd{L}{b_1} &= \pd{(\text{swish}(z))}{z} \odot W_2^T \pd{L}{z_2}
+                                    = \sigma(z) (z - z \sigma(z) + 1) \odot W_2^T \pd{L}{z_2} \\
+                        \pd{L}{(W_1 x)} &= \pd{L}{b_1}
+                                    = \sigma(z) (z - z \sigma(z) + 1) \odot W_2^T \pd{L}{z_2} \\
+                        \pd{L}{W_1} &= \pd{L}{(W_1 x)} x^T
+                                    = \left( \sigma(z) (z - z \sigma(z) + 1) \odot W_2^T \pd{L}{z_2}
+                                        \right) x^T \\
+                    \end{align*}
+                    so 
+                    $
+                    \nabla_{W_1} L = \left( \sigma(z) (z - z \sigma(z) + 1) \odot W_2^T \pd{L}{z_2}
+                                        \right) x^T,
+                    \nabla_{b_1} L = \sigma(z) (z - z \sigma(z) + 1) \odot W_2^T \pd{L}{z_2}
+                    $
+                \end{response}
+        \end{enumerate}
+\end{enumerate}
+\end{document}
