@@ -108,7 +108,9 @@ skipbelow=\medskipamount
                     $ 
                     \nabla_{\W} \mathcal{L} = (*) + (**)
                     = \W (\W^{\T} \W \x - \x) \x^{\T}
-                    + (\W^{\T} \W \x - \x) (\W \x)^{\T}
+                    + \left( (\W^{\T} \W \x - \x) (\W \x)^{\T} \right)^{\T}
+                    = \W (\W^{\T} \W \x - \x) \x^{\T}
+                    + (\W \x)(\W^{\T} \W \x - \x)^{\T}
                     $.
                 \end{response}
         \end{enumerate}
