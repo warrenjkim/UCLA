@@ -80,9 +80,10 @@ class TwoLayerNet(object):
     #   use a for loop in your implementation.
     # ================================================================ #
 
-    h1 = np.maximum(0, W1.dot(X.T).T + b1)
-    scores = W2.dot(h1.T).T + b2
-    
+    h1 = np.maximum(0, X.dot(W1.T) + b1)
+    z = h1.dot(W2.T) + b2
+    scores = z
+
     # ================================================================ #
     # END YOUR CODE HERE
     # ================================================================ #
@@ -106,12 +107,11 @@ class TwoLayerNet(object):
     # scores is num_examples by num_classes
 
     l2_reg = 0.5 * reg * (np.sum(W1**2) + np.sum(W2**2))
-    scores -= np.max(scores, axis=1, keepdims=True)
+    scores = z - np.max(z, axis=1, keepdims=True)
     p = np.exp(scores)
-    p /= p.sum(axis=1, keepdims=True)
-    logp = np.log(p + np.finfo(float).eps)
-    loss = -np.sum(logp[np.arange(X.shape[0]), y]) / X.shape[0] + l2_reg
-  
+    p /= np.sum(p, axis=1, keepdims=True)
+    loss = -np.sum(np.log(p[range(N), y])) / N + l2_reg
+
     # ================================================================ #
     # END YOUR CODE HERE
     # ================================================================ #
@@ -127,8 +127,8 @@ class TwoLayerNet(object):
     # ================================================================ #
 
     one_hot = np.zeros_like(p)
-    one_hot[np.arange(X.shape[0]), y] = 1
-    dz = (1 / X.shape[0]) * (p - one_hot)
+    one_hot[range(N), y] = 1
+    dz = (1 / N) * (p - one_hot)
 
     grads['b2'] = np.sum(dz, axis=0)
     grads['W2'] = dz.T.dot(h1) + reg * W2
