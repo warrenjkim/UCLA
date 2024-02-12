@@ -1,0 +1,574 @@
+\documentclass [12pt] {article}
+\usepackage{amsfonts}      
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage[margin=1in]{geometry} 
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\setlength\parindent{0pt}
+
+\newenvironment{theorem}[1]{\begin{tcolorbox}[title={Theorem #1}]}{\end{tcolorbox}}
+\newenvironment{corollary}[1]{\begin{tcolorbox}[title={Corollary #1}]}{\end{tcolorbox}}
+\newenvironment{definition}[1]{\begin{tcolorbox}[title={Definition: #1},colback=green!5!white,colframe=black!75!green]}{\end{tcolorbox}}
+\renewcommand{\href}[2]{\hyperref[#1]{\bf{\underline{{#2}}}}}
+
+\renewcommand{\it}[1]{\textit{{#1}}}
+\renewcommand{\bf}[1]{\textbf{{#1}}}
+\newcommand{\ib}[1]{\textit{\textbf{{#1}}}}
+\newcommand{\ul}[1]{\underline{{#1}}}
+
+
+\title{110A HW3}
+\author{Warren Kim}
+\date{Winter 2024}
+
+\begin{document}
+\section{The Integers}
+\begin{theorem}{(Well-Ordering Principle)}
+Every nonempty set of non-negative integers contain a least element. 
+$\exists a \in S : \forall b \in S, a \leq b$
+\end{theorem}
+\begin{proof}
+    Let $S$ be a set of non-negative integers. Suppose $S$ has no smallest element. Then, 
+    $0 \not \in S$, because otherwise, $0$ would be the smallest element. By induction, suppose
+    $0, 1, \ldots, k \not \in S$. Then, $k + 1 \not \in S$ since otherwise, it would be the smallest
+    element. Therefore, $S = \emptyset$.
+\end{proof}
+
+\begin{definition}{Divides}
+    Let $a, b \in \Z$. $b$ \bf{divides} $a$ if $a = bc$ for some $c \in \Z$, written as $b \mid a$.
+\end{definition}
+\bf{Proposition:} Let $a, b \in \Z, a \neq 0$ such that $b \mid a$. Then $|b| \leq |a|$.
+\begin{proof}
+    Let $a, b \in \Z$ such that $b \mid a$ and $a \neq 0$. Then there exists some $c \in \Z$ such that
+    $a = bc$. Since $a \neq 0$, $b, c$ are necessarily nonzero. Applying the absolute value to both
+    sides of the equation, we get $|a| = |bc| = |b||c|$. Since $b, c \neq 0$, we have $|b|, |c| > 0$.
+    Then $|b| \leq |b||c| = |bc| = |a|$, so $|b| \leq |a|$.
+\end{proof}
+
+\begin{theorem}{(Division Algorithm)}
+    \label{thm:divalgo}
+    Let $a, b \in \Z$ such that $b > 0$. There exists unique $q, r \in \Z$ such that $a = bq + r$
+    where $0 \leq r < b$.
+\end{theorem}
+\begin{proof}
+    \bf{Existence:} 
+    Let $a, b \in \Z, b > 0$. Consider the set $S = \{ a - bx : x \in \Z \} \cap \Z_{\geq 0}$.
+    Consider $b = -|a|$. Then, $a - (-|a|)x \in S$. By the well-ordering principle, choose the 
+    smallest $a - bx \in S$ such that $q := x, r := a - bx$. Then, rearranging $r$ and substituting
+    $q$ for $x$, we get $a = bq + r \in S$. By construction of $S$, $0 \leq r$. Suppose $r \geq b$.
+    Then, $0 \leq r - b = (a - bx) - b = a - b(x - 1)$. This implies that $r - b < r$, a
+    contradiction, since $r \in S$ was the least element by choice. Therefore, $0 \leq r < b$.
+    \vspace{0.5em}
+
+    \bf{Uniqueness:}
+    Suppose we have $q_1, r_1, q_2, r_2 \in \Z$ such that $a = bq_1 + r_1 = bq_2 + r_2$, where 
+    $0 \leq r_1, r_2 < b$. Then, we have
+    \begin{align*}
+        bq_1 + r_1 &= bq_2 + r_2 \\
+        bq_1 + r_1 - (bq_2 + r_2) &= 0 \\
+        b(q_1 - q_2) + (r_1 - r_2) &= 0 \\
+        b(q_1 - q_2) &= -(r_1 - r_2) \\
+        b(q_1 - q_2) &= r_2 - r_1
+    \end{align*}
+    Since $0 \leq r_1 < b$, we can rewrite the inequality to be $-b < -r_1 \leq 0$. Then, addint $0
+    \leq r_2 < b$ to the inequality, we get $-b < r_2 - r_1 < b$. Because $b \mid (r_2 - r_1)$,
+    $(r_2 - r_1)$ must be a multiple of $b$, but since $-b < r_2 - r_1 < b$, we have that 
+    $(r_2 - r_1) = 0b = 0$. Then, $b(q_1 - q_2) = r_2 - r_1 = 0$. This implies that $q_1 = q_2$ and
+    $r_1 = r_2$. Therefore, $q_1, r_1 \in \Z$ are unique.
+\end{proof}
+
+\begin{definition}{Greatest Common Divisor (gcd)}
+    Let $a, b \in \Z$ and either $a \neq 0$ or $b \neq 0$, but not both. The \bf{greatest common
+    divisor} of $a$ and $b$ is the largest integer dividing $a$ and $b$. We write $\gcd(a, b)$ or
+    $(a, b)$. \vspace{1em}
+
+    $(a, b) \mid a$ and $(a, b) \mid b$. Further, if $c > 0$ divides $a$ and $b$, then $0 < c \leq (a, b)$.
+\end{definition}
+
+\begin{theorem}{(Bezout's Identity)}
+    Let $a, b \in \Z$ with $a \neq 0$ or $b \neq 0$, but not both. Suppose $d = (a, b)$. We can find
+    $x, y \in \Z$ such that $ax + by = d$.
+\end{theorem}
+\begin{proof}
+    Let $d = (a, b)$. Consider the set $S = \{ ax + by : x, y \in \Z\} \cap \Z_{\geq 0}$. Consider
+    $x = a, y = b$. Then $ax + by = a^2 + b^2 \geq 0 \in S$, so $S$ is not empty. By the
+    well-ordering principle, choose the least element $s = ax + by \in S$ and consider $a = sq + r$
+    where $0 \leq r < s$. Rearranging the second equation, we get
+    \begin{align*}
+        a &= sq + r \\
+        r &= a - sq \\
+          &= a - (ax + by)q \\
+        r &= a(1 - x) + b(-yq)
+    \end{align*}
+    This implies that $r \in S$ since $0 \leq r$ by definition. We also have that $r < s$, but since
+    $s$ was chosen to be the smallest element in $S$, this forces $r = 0$. Then, $a = sq + r = sq$,
+    so $s \mid a$. Similarly, $b = st$ for some $t \in \Z$, so $s \mid b$. Since $s \mid a$ and $s \mid b$,  $s
+    \leq d$. But $d \mid a$ and $d \mid b$ by definition, so $d \mid s$ which implies that $d \leq s$.
+    Therefore, $d = s = ax + by$.
+\end{proof}
+
+\begin{theorem}{}
+    Let $a, b \in \Z$ and suppose $a \mid bc$ and $(a, b) = 1$. Then $a \mid c$.
+\end{theorem}
+\begin{proof}
+    Because $(a, b) = 1$, we can write $1 = ax + by$. Also, since $a \mid bc$, there exists some 
+    $z \in \Z$ such that $bc = az$. Then 
+    \begin{align*}
+        c &= cax + cby \\
+          &= a(cx) + (bc)y \\ 
+          &= a(cx) + a(zy) \\ 
+        c &= a(cx + zy)
+    \end{align*}
+    Therefore, $a \mid c$.
+\end{proof}
+
+\newpage
+\begin{corollary}{}
+    Let $a, b, c \in \Z$ and $(a, b) = 1$. If $a \mid c$ and $b \mid c$, then $ab \mid c$.
+\end{corollary}
+\begin{proof}
+    Since $(a, b) = 1$, we have $ax + by = 1$. By definition, since $a \mid c$ and $b \mid c$, there exist
+    $n, m \in \Z$ such that $c = na$ and $c = mb$. Then, we have
+    \begin{align*}
+        1 &= ax + by \\ 
+        c &= cax + cby \\ 
+          &= (bm)ax + (an)by \\ 
+          &= (ba)mx + (ab)ny \\ 
+        c &= ab(mx + ny) 
+    \end{align*}
+    so $ab \mid c$.
+\end{proof}
+
+\subsection{Prime Numbers}
+\begin{definition}{Prime}
+    A nonzero non-unit integer $p$ is \bf{prime} if its only divisors are $\pm 1, \pm p$.
+\end{definition}
+ 
+\begin{theorem}{}
+    Let $p \in \Z \setminus \{0, \pm 1\}$. The following statements are equivalent.
+    \begin{enumerate}[label=(\arabic*)]
+        \item $p$ is prime.
+        \item If $p \mid bc$, then $p \mid b$ or $p \mid c$ where $b, c \in \Z$.
+    \end{enumerate}
+\end{theorem}
+\begin{proof}
+    (1) $\implies$ (2)
+    Suppose $p$ is prime and $p \mid bc$. If $p \mid b$, we are done, so suppose $p \nmid b$. Then,
+    $(p, b) = 1$, so we have
+    \begin{align*}
+        1 &= px + by \\ 
+        c &= cpx + cby \\
+          &= p(cx) + (bc)y \\
+          &= p(cx) + (pn)y && p \mid bc \implies bc = pn, n \in \Z \\
+          &= p(cx) + p(ny) \\
+        c &= p(cx + ny)
+    \end{align*}
+    so $p \mid c$.
+    \vspace{0.5em}
+
+    (2) $\implies$ (1) 
+    To prove the reverse implication, suppose the contrapositive: ``If $p$ is not prime, then there
+    exist some $b, c \in \Z$ such that $p \mid bc$ but $p \nmid b$ and $p \nmid c$''. Suppose 
+    $p \in \Z \setminus \{ 0, \pm 1 \}$ is not prime; i.e. $p$ is composite. Then, $p$ can be
+    written as its unique factorization $q_1 q_2 \cdots q_n$ where $n \geq 2$ and each $q_i$ is
+    prime. Choose $b = q_1$ and $c = q_2 \cdots q_n$. Then $p \mid bc$ because $bc = p$ and 
+    $p \mid p$, but $p \nmid b$ and $p \nmid c$ because $|p| > |b|$ and $|p| > |c|$ respectively.
+\end{proof}
+
+\begin{theorem}{}
+    Let $n \in \Z \setminus \{ 0, \pm 1 \}$. $n$ can be written as a product of primes.
+\end{theorem}
+\begin{proof}
+    Consider $n > 1$. Let $S$ be the set of positive integers greater than 1 that cannot be written
+    as a product of primes. Suppose for the sake of contradiction that $S$ is nonempty. Then by the
+    well-ordering principle, we can choose a least element $m \in S$. By definition, $m$ is not
+    prime or a product of primes. Because $m$ is not prime, we can find some divisor $a \in \Z$ such
+    that $a \neq \pm 1, \pm m$; i.e. we can find such an $a$ such that $a \mid m$. Then, we can
+    write $m = ab$ for some $b \in \Z$. By definition, $|a| \leq |m|$ and $|b| \leq |m|$. Without
+    loss of generality, assume $a, b > 0$. Note that $b \neq 1$ since otherwise, $a = m$. So, 
+    $1 < a, b < m$ and $a, b \not \in S$. Because $a, b \not \in S$, they are either prime or
+    products of primes. But $m = a \cdot b$, so $m$ is a product of primes, a contradiction.
+    Therefore, $S = \emptyset$, so $n$ can be written as a product of primes.
+\end{proof}
+
+\begin{theorem}{(Fundamental Theorem of Arithmetic}
+    Let $n \in \Z \setminus \{ 0, \pm 1 \}$. Suppose $n = p_1 \cdots p_r$ and $n = q_1 \cdots q_s$
+    where each $p_i, q_j$ is prime. Then,
+    \begin{enumerate}[label=(\arabic*)]
+        \item $r = s$.
+        \item There is a unique permutation $\sigma$ on $\{ 1, \ldots, r \}$ such that 
+            $p_i = \pm q_{\sigma(i)}$.
+    \end{enumerate}
+\end{theorem}
+\begin{proof}
+    Let $n \in \Z \setminus \{ 0, 1 \}$. Without loss of generality, suppose $n$ is positive and 
+    $n = p_1 \cdots p_r$ and $n = q_1 \cdots q_s$ where each $p_i, q_j$ is prime. Then $p_1 \mid q_1
+    \cdots q_s$. In particular, $p_1 \mid q_j$ for some $j \leq s$. Because $q_j$ is prime, we
+    necessarily have that $q_j = |p_1|$. Without loss of generality reindex  $j = 1$ to get 
+    $q_1 = |p_1|$. Then,
+    $
+    p_1 \cdot (p_2 \cdots p_r) = p_1 \cdot (q_2 \cdots q_s)
+    \implies 
+    p_2 \cdots p_r = q_2 \cdots q_s
+    $. By induction, we have that $p_r = q_r$. If $r < s$, by the above, we have that 
+    $1 = q_{r + 1} \cdots q_s$, which implies $q_j = 1$ for each $j$. A similar argument is said for
+    $s < r$. In either case, we have a contradiction. Therefore, $r = s$ and there is a unique
+    permutation $\sigma$ on $\{ 1, \ldots, r \}$ such that $p_i = q_{\sigma(i)}$.
+\end{proof}
+
+\newpage
+\subsection{Modular Arithmetic}
+\begin{definition}{Well-Defined Functions}
+    A function $f : X \to Y$ is \bf{well-defined} if, for all $a, b \in X$, we have $f(a) = f(b)$
+    whenever $a = b$.
+\end{definition}
+
+Pick $m \in \Z$ to be nonzero. The \href{thm:divalgo}{Division Algorithm} says that for any $a, b
+\in \Z$, we can write $a = q_1 m + r_1, b = q_2 m + r_2$ for unique $q_1, q_2, r_1, r_2 \in \Z$
+where $0 \leq r_1, r_2 < |m|$.
+\begin{definition}{Modulo}
+    Define a relation $R_m$ on $\Z$ by saying $(a, b) \in R_m$ if and only if $r_1 = r_2$
+    (alternatively written as $a \sim b$ if and only if $r_1 = r_2$). We write this as
+    $a \equiv b \pmod{m}$. 
+\end{definition}
+\bf{Proposition:} For any $m \in \Z$ nonzero, $R_m$ is an equivalence relation.
+\begin{proof}
+    Let $R_m$ be the relation defined above for $m \in \Z$ nonzero.
+    \begin{enumerate}[label=(\arabic*)]
+        \item For any $a \in \Z$, write $a = bq + r$. Then, since $r = r$, $a \equiv a
+            \pmod{m}$, $R_m$ is reflexive.
+        \item Take $a, b \in \Z$ and assume $a \equiv b \pmod{m}$. By the division algorithm,
+            we can write $a = q_1 m + r_1, b = q_2 m + r_2$. By assumption, $a \equiv b \pmod{m}$, 
+            so $r_1 = r_2$. Since equality is symmetric, $r_1 = r_2 \iff r_2 = r_1$, so
+            $b \equiv a \pmod{m}$. $R_m$ is symmetric.
+        \item Pick $a, b, c \in \Z$ and assume $a \equiv b \pmod{m}, b \equiv c \pmod{m}$.
+            By the division algorithm, we can write 
+            $a = q_1 m + r_1, b = q_2 m + r_2, c = q_3 m + r_3$. By assumption, $r_1 = r_2$ and
+            $r_2 = r_3$. Since equality is transitive, $r_1 = r_2, r_2 = r_3 \implies r_1 = r_3$,
+            so $a \equiv c \pmod{m}$. $R_m$ is transitive.
+    \end{enumerate}
+    Since $R_m$ satisfies $(1)-(3)$, $R_m$ is an equivalence relation.
+\end{proof}
+\begin{definition}{Equivalence Class}
+    If $R$ is an equivalence relation on a set $S$, then $S$ can be written as the union of
+    equivalence classes. The \bf{equivalence class} of $x$ is the set 
+    $[x] := \{ y \in S : (x, y) \in R \}$.
+\end{definition}
+\bf{Note:} The equivalence classes of $R_m$ are $[0], [1], \ldots, [m - 1]$.
+
+\begin{definition}{Equivalence Relation}
+    A relation $R$ on a set $S$ is any subset of $S \times S$.
+    An \ib{equivalence relation} is a relation with the following properties:
+    \begin{enumerate}
+        \item Reflexivity: For any $a \in S$, $(a, a) \in R$ (alternatively written as $a \sim a$).
+        \item Symmetry: For any $(a, b) \in S \times S$ , $(a, b) \in R$ implies $(b, a) \in R$
+            (alternatively written as $a \sim b \implies b \sim a$).
+        \item Transitivity: For any $a, b, c \in S$, if $(a, b), (b, c) \in R$, then $(a, c) \in R$ 
+            (alternatively written as $a \sim b, b \sim c \implies a \sim c$).
+    \end{enumerate}
+\end{definition}
+
+\begin{definition}{Congruent Modulo $n$}
+    Let $a, b \in \Z$ and $n \in \Z$ be positive. We say $a$ and $b$ are \bf{congruent} modulo $n$
+    if $n | (a - b)$, written as $a \equiv b \pmod{n}$.
+    \vspace{1em}
+
+    The \bf{integers modulo $n$} is the set of equivalence classes modulo $n$, written as
+    $\Z/n, \Z_n, \Z/n\Z, \Z/(n)$.
+\end{definition}
+
+\begin{definition}{Operations on $\Z/n$}
+    Let $n \in \Z$ and $[a], [b] \in \Z/n$. Define
+    \begin{itemize}[label=$\to$]
+        \item $[a] + [b] = [a + b]$
+        \item $[a][b] = [ab]$
+        \item For $k \geq 0$, $[a]^k = [a^k]$
+    \end{itemize}
+\end{definition}
+\bf{Proposition:} The operations above are well-defined.
+\begin{proof}
+    Let $n \in \Z$ and $[a], [a'], [b], [b'] \in \Z/n$ where $[a] = [a'], [b] = [b']$. Then
+    $([a] = [a']$ and $[b] = [b']$ implies $n \mid (a - a')$ and $n \mid (b - b')$, so 
+    $n \mid (a - a') + (b - b') = (a + b) - (a' + b')$. Therefore, $[a + b] = [a' + b']$. Similarly,
+    \begin{align*}
+        ab - a'b' &= ab + 0 - a'b' \\
+                  &= ab + (-ab' + ab') - a'b' \\ 
+                  &= (ab - ab') + (ab' - a'b') \\
+        ab - a'b' &= a(b - b') + b'(a - a')
+    \end{align*}
+    Since $n \mid (a - a')$ and $n \mid (b - b')$, $n \mid ab - a'b'$, so $[ab] = [a'b']$.
+\end{proof}
+\bf{Proposition:} Let $[a], [b], [c] \in \Z/n$. Then the following properties hold:
+\begin{enumerate}[label=(\arabic*)]
+    \item $[a] + [b] = [b] + [a]$
+    \item $[a] + ([b] + [c]) = ([a] + [b]) + [c]$
+    \item $[a] + [0] = [a]$
+    \item There exists $x \in \Z$ such that $[a] + x = [0]$
+    \item $[a][b] = [b][a]$
+    \item $[a] ([b][c]) = ([a][b]) [c]$
+    \item $[a][1] = [a]$
+    \item $[a] ([b] + [c]) = [a][b] + [a][c]$
+\end{enumerate}
+\newpage
+\begin{proof}
+    Let $[a], [b], [c] \in \Z/n$. Then the following properties hold:
+    \begin{enumerate}[label=(\arabic*)]
+        \item $\ul{[a] + [b]} = [a + b] = [b + a] = \ul{[b] + [a]}$
+        \item $\ul{[a] + ([b] + [c])} = [a] + [b + c] = [a + b + c] = [a + b] + [c] = \ul{([a] + [b]) + [c]}$
+        \item $\ul{[a] + [0]} = [a + 0] = \ul{[a]}$
+        \item Take $x \in \Z$ such that $x = n - a$. Then, $\ul{[a] + x} = [a] + [n - a] = [a - n - a]  = [n] = \ul{[0]}$.
+        \item $\ul{[a][b]} = [ab] = [ba] = \ul{[b][a]}$
+        \item $\ul{[a] ([b][c])} = [a][bc] = [abc] = [ab][c] = \ul{([a][b]) [c]}$
+        \item $\ul{[a][1]} = [a \cdot 1] = [a]$
+        \item $\ul{[a] ([b] + [c])} = [a][b + c] = [a \cdot (b + c)] = [ab + ac] = [ab] + ac] = \ul{[a][b] + [a][c]}$
+    \end{enumerate}
+\end{proof}
+
+\begin{definition}{Unit and Inverse}
+    Let $n > 1$ be an integer. Consider $[a] \in \Z/n$. If there exists $[b] \in \Z/n$ such that
+    $[a][b] = [1]$, then we say $[a]$ is a \bf{unit} and $[b]$ is the \bf{inverse} of $[a]$, written
+    as $[a]^{-1}$.
+\end{definition}
+
+\begin{theorem}{}
+    Let $p > 1$ be an integer. The following statements are equivalent:
+    \begin{enumerate}[label=(\arabic*)]
+        \item $p$ is prime.
+        \item Each nonzero $[a] \in \Z/p$ has an inverse.
+        \item If $[ab] = [0]$, then either $[a] = [0]$ or $[b] = [0]$
+    \end{enumerate}
+\end{theorem}
+\begin{proof}
+    Let $p > 1$ be an integer.
+    \newline
+    (1) $\implies$ (2)
+    Take $[a] \in \Z/p$ to be nonzero. Then $p \nmid a$ since $p$ is prime. That is, $(p, a) = 1$.
+    Then $px + ay = 1$, or 
+    $[1] = [px + ay]  = [px] + [ay]$. But $[px] = [p][x] = [0][x] = [0] \in \Z/p$, so 
+    $[1] = [0] + [ay] = [ay] = [a][y]$. Then, $[y]$ is the inverse of $[a]$. Since $[a]$ was
+    arbitrary, this holds for all $[a] \in \Z/p$.
+    % \begin{align*}
+    %     1 &= px + ay \\ 
+    %     [1] &= [px + ay] \\ 
+    %         &= [px] + [ay] \\ 
+    %         &= [0] + [ay] && [px] = [p][x] = [0][x] = [0] \in \Z/p \\
+    %         &= [ay] \\
+    %     [1] &= [a][y]
+    % \end{align*}
+    \vspace{0.5em}
+
+    (2) $\implies$ (3)
+    Let $[a], [b] \in \Z/p$ and suppose $[ab] = [0]$. If $[a] = 0$, we are done, so suppose 
+    $[a] \neq 0$. Then, $[a]$ has an inverse, so 
+    $[a]^{-1} [ab] = [a]^{-1}[a] [b] = [1][b] = [b] = [0]$. Therefore, either $[a] = [0]$ or 
+    $[b] = [0]$.
+    \vspace{0.5em}
+
+    (3) $\implies$ (1)
+    Suppose for the sake of contradiction that $p$ is not prime; i.e. $p$ is composite. Then we can
+    find a divisor $a > 0$ such that $a \neq \pm 1, \pm p$. That is, $|1| < a < |p|$. Let $p = ab$.
+    Then $1 < a, b < p$, but $[ab] = [p] = [0]$, a contradiction.
+\end{proof}
+
+\begin{theorem}{}
+    Let $n > 1$ be an integer and $[a] \in \Z/n$. Then $[a]$ has a multiplicative inverse if and
+    only if $(a, n) = 1$.
+\end{theorem}
+\begin{proof}
+    ($\implies$)
+    Suppose $[a]$ has a multiplicative inverse. Then there exists $[x] \in \Z/n$ such that 
+    $[a][x] = [1]$. Then
+    \begin{align*}
+        [1] &= [a][x] \\
+            &= [ax] + [0] \\ 
+            &= [ax] + [ny] && [ny] = [0] \in \Z/n, y \in \Z \\
+        [1] &= [ax + ny] 
+    \end{align*}
+    so $(a, n) = 1$.
+    \vspace{0.5em}
+
+    ($\impliedby$)
+    Suppose $(a, n) = 1$. Then $ax + ny = 1$ for some $x, y \in \Z$, but $[ny] = [0] \in \Z/p$, so 
+    $[ax] = [a][x] = [1]$, where $[x]$ is the multiplicative inverse of $[a]$.
+\end{proof}
+
+\begin{theorem}{Chinese Remainder Theorem}
+    Let $m, n \in \Z$ be coprime and positive. Let $a, b \in \Z$. We can find $x \in \Z$ such that
+    \begin{align*}
+        x &\equiv a \pmod{m} \\
+        x &\equiv b \pmod{n}
+    \end{align*}
+    Moreover, if $y$ is another solution, then $y \equiv x \pmod{mn}$.
+\end{theorem}
+\begin{proof}
+    Let $m, n \in \Z$ such that $(n, m) = 1$. Then we can write $na + mb = 1$ for some $a, b \in \Z$.
+    Set $x := c(na) + d(mb)$. Then
+    \begin{align*}
+        [x]_m &= [cna]_m + [dmb]_m \\ 
+              &= [n(cn)]_m + [m(db)]_m \\ 
+              &= [a(cn)]_m + [0] && [m(db)]_m = [0] \in \Z/m \\ 
+        [x]_m &= [a]_m 
+    \end{align*}
+    so $[x]_m = [a]_m$. Similarly, $[x]_n = [b]_n$. So we have
+    \begin{align*}
+        x &\equiv a \pmod{m} \\
+        x &\equiv b \pmod{n}
+    \end{align*}
+    Let $y$ be another solution. Then $[y]_m = [x]_m$ so $m \mid y - x$. Similarly, $n \mid y - x$.
+    But since $(n, m) = 1$, we have that $mn | y - x$, 
+    or $[y]_{mn} = [x]_{mn}$. So $y \equiv x \pmod{mn}$.
+\end{proof}
+
+\newpage
+\begin{theorem}{Chinese Remainder Theorem (General)}
+    Let $m_1, \ldots, m_n \in \Z$ be positive and pairwise relatively prime (i.e., $(m_i, m_j) = 1$
+    when $i \neq j$). Let $a_1, \ldots, a_n \in \Z$. We can find $x$ such that 
+    \begin{align*}
+        x &\equiv a_1 \pmod{m_1} \\
+        x &\equiv a_2 \pmod{m_2} \\
+          &\vdots \\
+        x &\equiv a_n \pmod{m_n}
+    \end{align*}
+    Moreover, if $y$ is another solution, then $y\equiv x\mod m_1m_2\cdots m_n$
+\end{theorem}
+\begin{proof}
+    We will induct on $n \in \N$. 
+    \newline
+    \bf{Base case:} At $n = 2$, we have $m_1, m_2 \in \Z$ where $(m_1, m_2) = 1$. Then, we can 
+    find $p, q \in \Z$ such that $m_1 p + m_2 q = 1$. Then, because $m_2 q \equiv 0 \pmod{m_2}$, we 
+    have $m_1 \equiv 1 \pmod{m_2}$. Similarly, $m_2 \equiv 1 \pmod{m_1}$. Consider 
+    $x = (m_2 q)r + (m_1 p)s$ for $r, s \in \Z$. Then, since $(m_2 q)r \equiv 0 \pmod{m_2}$, we have
+    $x \equiv (m_1 p)s \equiv s \pmod{m_2}$. Similarly, $x \equiv (m_2 q)r \equiv r \pmod{m_1}$.
+    So, $x \equiv r \pmod{m_1}$ and $x \equiv s \pmod{m_2}$. Now suppose $y$ is another solution.
+    Then, we have $y \equiv x \pmod{m}$, which implies that $m_1 | (y - x)$ and similarly, 
+    $m_2 | (y - x)$. Then because $(m_1, m_2) = 1$, we have that $m_1 m_2 | (y - x)$,
+    so $y \equiv x \pmod{m_1 m_2}$. \vspace{0.5em}
+
+    \bf{Inductive step:} At $n = n + 1$, we have $m_1, m_2 \in \Z$ where $(m_1, m_2) = 1$. Then
+    by the inductive hypothesis, we have a set of $n$ pairwise coprime integers $m_1, \cdots, m_n$
+    where $x' \equiv a_i \pmod{m_i}$ for each $i = 1, \cdots, n$. Define $M = \prod^{n}_{i = 1} m_i$ 
+    and consider $x = x' + sM$ for some $s \in \Z$. 
+    Then since $m_i | M$ implies $sM \equiv 0 \pmod{m_i}$ and from the inductive hypothesis, 
+    $x' \equiv a_i \pmod{m_i}$, we have $x \equiv x' + sM \equiv x' \equiv a_i \pmod{m_i}$ 
+    for $i = 1, \cdots, n$. At $m_{n + 1}$, because $m_{n + 1} \nmid M$, 
+    we can choose an $s \in \Z$ such that $x \equiv x' + sM \equiv a_{n + 1} \pmod{m_{n + 1}}$. Now 
+    suppose $y$ is another solution. Then $y \equiv x' \pmod{M}$ and $y \equiv a_{n + 1} \pmod{m_{n + 1}}$.
+    Since $(M, m_{n + 1}) = 1$, by the inductive hypothesis, we have that 
+    $y \equiv x \pmod{M m_{n + 1}}$, so $y \equiv x \pmod{m_1 m_2 \cdots m_{n + 1}}$.
+\end{proof}
+
+\newpage
+\section{Rings}
+\begin{definition}{Ring}
+    A \bf{ring} $R$ is a nonempty subset with two operations, addition $(+)$ and multiplication
+    $(\cdot)$ such that, for all $a, b, c \in R$, the following properties hold:
+    \begin{enumerate}[label=(\arabic*)]
+        \item $a + b \in R$ 
+        \item $a + (b + c) = (a + b) + c$
+        \item $a + b = b + a$ 
+        \item There exists $0 \in R$ such that $0 + a = a + 0 = a$ for all $a \in R$.
+        \item For all $a \in R$, there exists $-a$ such that $(-a) + a = a + (-a) = 0$.
+        \item $a \cdot b \in R$
+        \item $a \cdot (b \cdot c) = (a \cdot b) \cdot c$
+        \item $a \cdot (b + c) = a \cdot b + a \cdot c$
+        \item[(9)$^*$] There exists $1 \in R$ such that $1 \cdot a = a \cdot 1 = a$ for all $a \in R$.
+    \end{enumerate}
+    $^*$A set satisfying (1) - (8) is called a nonunital ring. If the set also satisfies (9), the
+    ring is called unital.
+
+    \vspace{-0.5em}
+    \begin{itemize}[label=$\to$, leftmargin=*, itemsep=0em]
+        \item A ring is \bf{commutative} if, for all $a, b \in R$, $a \cdot b = b \cdot a$.
+        \item An element $a \in R$ is a \bf{zero divisor} if there exists a nonzero $b \in R$ such 
+            that $a \cdot b = 0$ or $b \cdot a = 0$.
+        \item An element $a \in R$ is a \bf{unit} if there exists $b \in R$ such that 
+            $a \cdot b = b \cdot a = 1$, and is called the \it{inverse} of $a$, written as $a^{-1}$.
+    \end{itemize}
+\end{definition}
+\bf{Proposition:} Let $n > 1$, $a \in \Z$. If $(a, n) = 1$, $[a]$ is a unit. Otherwise, it is a 
+zero divisor.
+\begin{proof}
+    Let $n > 1$ and $a \in \Z$. There are two cases.
+    \begin{enumerate}[label=\it{Case \roman*}, leftmargin=*]
+        \item $(a, n) = 1$. Then $ax + ny = 1$ so $[ax] = [a][x] = [1]$ where $[x]$ is the inverse
+            of $[a]$, so $[a]$ is a unit.
+        \item $(a, n) \neq 1$. Then $(a, n) = d$ for $d > 1$. Then, $ax + ny = d$ so
+            $[ax] = [d]$. Since $d | n$, $n = dm$ for some $m \in \Z$. Then since $[d] = [dm] = [0]$, 
+            we get $[ax] = [a][x] = [0]$, where $[x]$ is nonzero, so $[a]$ is a zero divisor.
+    \end{enumerate}
+\end{proof}
+
+\newpage
+\bf{Proposition:} Let $R$ be a ring and $a, b, c \in R$. The following hold:
+\begin{enumerate}[label=(\arabic*)]
+    \item The additive identity is unique.
+    \item An additive inverse is unique.
+    \item If $a + b = a + c$, then $b = c$.
+    \item The multiplicative identity is unique.
+    \item If $a$ is a unit, then its inverse is unique.
+    \item $0 \cdot a = a \cdot 0 = 0$
+    \item $(a)(-b) = -ab = (-a)(b)$
+    \item $-(-a) = a$
+    \item $-(a + b) = -a - b$
+    \item $-(a - b) = -a + b$
+    \item $(-a)(-b) = ab$
+\end{enumerate}
+
+\begin{proof}
+    Let $R$ be a ring. Then
+    \begin{enumerate}[label=(\arabic*)]
+        \item Let $0, 0' \in R$ be two additive identities. Then 
+            $\ul{0} = 0 \cdot 0' = 0' \cdot 0 = \ul{0'}$.
+        \item Let $a \in R$ have two additive inverses $b, c \in R$. Then
+            \newline
+            $\ul{b} = 0 + b = (c + a) + b = c + (a + b) = c + 0 = \ul{c}$.
+        \item Let $a + b = a + c$. Then $(-a + a) + b = (-a + a) + c \to 0 + b = 0 + c \to b = c$.
+        \item $1, 1' \in R$ be two multiplicative identities. Then
+            $\ul{1} = 1 \cdot 1' = 1' \cdot 1 = \ul{1'}$.
+        \item Let $a \in R$ be a unit with two multiplicative inverses $b, c \in R$. Then
+            \newline
+            $\ul{b} = b \cdot 1 = b \cdot (ac) = (ba) \cdot c = 1 \cdot c = \ul{c}$.
+        \item Let $a \in R$. Then $0 = (a + a) \cdot 0 = a0 + a0 = a0$. Similarly, $0 = 0a$.
+        \item Let $a, b \in R$. Then $a0 = a(b + (-b)) = ab + (a)(-b) \implies (a)(-b) = -ab$.
+            Similarly, $(-a)(b) = -ab$.
+        \item Let $a \in R$. Then 
+            \begin{align*}
+                -(-a) &= 0 - (-a) \\
+                      &= (a + (-a)) + (-(-a)) \\
+                      &= a + ((-a) - (-a)) && a - b = a + (-b) \\
+                      &= a + 0 \\
+                -(-a) &= a
+            \end{align*}
+        \item Let $a, b \in R$. Then
+            \begin{align*}
+                -(a + b) &= 0 - (a + b)) \\
+                         &= 0 + 0 - (a + b)) \\
+                         &= (a - a) + (-b + b) - (a + b) \\
+                         &= a + (-a - b) + b - (a + b) && a - b = a + (-b) \\
+                         &= (-a - b) + (a + b) - (a + b) \\
+                         &= (-a - b) + 0 \\
+                -(a + b) &= -a - b
+            \end{align*}
+        \item Let $a, b \in R$. Then
+            \begin{align*}
+                -(a - b) &= -(a + (-b)) \\
+                         &= -a - (-b) && -(a + b) = -a - b \\
+                -(a - b) &= -a + b && -(-a) = a
+            \end{align*}
+        \item Let $a, b \in R$. Then
+            \begin{align*}
+                (-a)(-b) &= a(-(-b)) && (-a)(b) = a(-b) \\
+                (-a)(-b) &= ab && -(-a) = a
+            \end{align*}
+    \end{enumerate}
+\end{proof}
+
+\end{document}
