@@ -14,15 +14,16 @@
 \newcommand{\Q}{\mathbb{Q}}
 \setlength\parindent{0pt}
 
-\newenvironment{theorem}[1]{\begin{tcolorbox}[title={Theorem #1}]}{\end{tcolorbox}}
+\newenvironment{definition}[1]{\begin{tcolorbox}[title={Definition: #1},colback=blue!5!white,colframe=black!75!blue]}{\end{tcolorbox}}
+\newenvironment{theorem}[1]{\begin{tcolorbox}[title={Theorem #1},colback=green!5!white,colframe=black!75!green]}{\end{tcolorbox}}
 \newenvironment{corollary}[1]{\begin{tcolorbox}[title={Corollary #1}]}{\end{tcolorbox}}
-\newenvironment{definition}[1]{\begin{tcolorbox}[title={Definition: #1},colback=green!5!white,colframe=black!75!green]}{\end{tcolorbox}}
 \renewcommand{\href}[2]{\hyperref[#1]{\bf{\underline{{#2}}}}}
 
 \renewcommand{\it}[1]{\textit{{#1}}}
 \renewcommand{\bf}[1]{\textbf{{#1}}}
 \newcommand{\ib}[1]{\textit{\textbf{{#1}}}}
 \newcommand{\ul}[1]{\underline{{#1}}}
+\renewcommand{\Im}{\text{Im}}
 
 
 \title{110A HW3}
@@ -277,7 +278,7 @@ where $0 \leq r_1, r_2 < |m|$.
 \end{definition}
 
 \begin{definition}{Congruent Modulo $n$}
-    Let $a, b \in \Z$ and $n \in \Z$ be positive. We say $a$ and $b$ are \bf{congruent} modulo $n$
+    Let $a, b \in \Z$ and $n \in \Z$ be positive. We say $a$ and $b$ are \bf{congruent modulo $n$}
     if $n | (a - b)$, written as $a \equiv b \pmod{n}$.
     \vspace{1em}
 
@@ -481,8 +482,8 @@ where $0 \leq r_1, r_2 < |m|$.
         \item $a \cdot (b + c) = a \cdot b + a \cdot c$
         \item[(9)$^*$] There exists $1 \in R$ such that $1 \cdot a = a \cdot 1 = a$ for all $a \in R$.
     \end{enumerate}
-    $^*$A set satisfying (1) - (8) is called a nonunital ring. If the set also satisfies (9), the
-    ring is called unital.
+    $^*$A set satisfying (1) - (8) is called a \bf{nonunital ring}. If the set also satisfies (9), 
+    it is called a \bf{unital ring}.
 
     \vspace{-0.5em}
     \begin{itemize}[label=$\to$, leftmargin=*, itemsep=0em]
@@ -540,13 +541,8 @@ zero divisor.
         \item Let $a, b \in R$. Then $a0 = a(b + (-b)) = ab + (a)(-b) \implies (a)(-b) = -ab$.
             Similarly, $(-a)(b) = -ab$.
         \item Let $a \in R$. Then 
-            \begin{align*}
-                -(-a) &= 0 - (-a) \\
-                      &= (a + (-a)) + (-(-a)) \\
-                      &= a + ((-a) - (-a)) && a - b = a + (-b) \\
-                      &= a + 0 \\
-                -(-a) &= a
-            \end{align*}
+            \newline
+            $\ul{-(-a)} = 0 - (-a) = (a + (-a)) + (-(-a)) = a + ((-a) - (-a)) = a + 0 = \ul{a}$.
         \item Let $a, b \in R$. Then
             \begin{align*}
                 -(a + b) &= 0 - (a + b)) \\
@@ -557,18 +553,317 @@ zero divisor.
                          &= (-a - b) + 0 \\
                 -(a + b) &= -a - b
             \end{align*}
-        \item Let $a, b \in R$. Then
-            \begin{align*}
-                -(a - b) &= -(a + (-b)) \\
-                         &= -a - (-b) && -(a + b) = -a - b \\
-                -(a - b) &= -a + b && -(-a) = a
-            \end{align*}
-        \item Let $a, b \in R$. Then
-            \begin{align*}
-                (-a)(-b) &= a(-(-b)) && (-a)(b) = a(-b) \\
-                (-a)(-b) &= ab && -(-a) = a
-            \end{align*}
+        \item Let $a, b \in R$. Then $\ul{-(a - b)} = -(a + (-b)) = -a - (-b) = \ul{-a + b}$.
+        \item Let $a, b \in R$. Then $\ul{(-a)(-b)} = a(-(-b)) = \ul{ab}$.
     \end{enumerate}
+\end{proof}
+
+\subsection{Subrings}
+\begin{definition}{Subring}
+    Let $R$ be a ring. A \bf{subring} $S \subseteq R$ is a subset such that $S$ forms a ring with
+    the same operations and same identities as $R$. If $S$ forms a nonunital ring with the same
+    operations or forms a ring but $1_s \neq 1_R$, $S$ is a \bf{nonunital subring}. \vspace{0.5em}
+
+    Let $R$ be a ring. $S \subseteq R$ is a subring of $R$ if and only if it satisfies the following:
+    \begin{enumerate}[label=(\arabic*)]
+        \item $1_R \in S$
+        \item $S$ is closed under addition.
+        \item $S$ is closed under multiplication.
+        \item If $a \in S$, then $-a \in S$.
+    \end{enumerate}
+\end{definition}
+
+\begin{definition}{Integral Domain}
+    A commutative ring $R$ is an \bf{integral domain} if it has no nonzer zero divisors. That is, 
+    if $a, b \in R$ and $ab = 0$, then $a = 0$ or $b = 0$.
+\end{definition}
+\bf{Proposition:} Let $R$ be an integral domain and $a, b, c \in R$. If $ac = bc$ for $c \neq 0$,
+then $a = b$.
+\begin{proof}
+    Suppose $ac = bc$. Then $ac - bc = 0 \to (a - b) c = 0$. because $R$ is an integral domain,
+    $(a - b) = 0$ or $c = 0$. But since $c \neq 0$ by assumption, $(a - b) = 0$ which implies that
+    $a = b$.
+\end{proof}
+
+\begin{definition}{Field}
+    Let $R$ be a commutative ring. If all nonzero elements of $R$ are units, $R$ is a field.
+\end{definition}
+\bf{Proposition:} Every field is an integral domain.
+\begin{proof}
+    Let $R$ be a field. Since all nonzero elements of $R$ are units, they cannot be zero divisors.
+\end{proof}
+
+\begin{theorem}{}
+    Every finite integral domain is a field.
+\end{theorem}
+\begin{proof}
+    Let $R$ be a finite integral domain $R = \{  r_1, \ldots, r_n \}$. Take $r_i \in R$ to be 
+    nonzero. Consider $r_i R = \{ r_i r_1, \ldots, r_i r_n \} \subseteq R$. Then, $|r_i R| \leq |R|$
+    since $r_i R \subseteq R$. Take $r_i r_j, r_i r_k \in r_i R$ such that  $r_i r_j = r_i r_k$.
+    Then because $r_i \neq 0$, we have $r_i r_j - r_i r_k = 0$, or $(r_j - r_k) r_i = 0$. Since
+    $r_i \neq 0$ by assumption, $(r_j - r_k) = 0 \to r_j = r_k$. So $R \subseteq r_i R$ which
+    implies $|R| \leq |r_i R|$. Because $|r_i R| \leq |R|$ and $|r_i R| \geq |R|$, $|r_i R| = |R|$.
+\end{proof}
+
+\begin{definition}{Homomorphism}
+    Let $R, S$ be rings. A function $f : R \to S$ is a \bf{ring homomorphism} if
+    \begin{enumerate}[label=(\arabic*)]
+        \item $f(a + b) = f(a) + f(b)$
+        \item $f(a \cdot b) = f(a) \cdot f(b)$
+        \item[(3)$^*$] $f(1_R) = 1_S$
+    \end{enumerate}
+    $^*$A function satisfying (1), (2), but not (3) is a \bf{nonunital ring homomorphism}.
+\end{definition}
+\bf{Proposition:} Let $R, S$ be rings and $f : R \to S$ a ring homomorphism. Given $a, b \in R$, the
+following hold:
+\begin{enumerate}[label=(\arabic*)]
+    \item $f(0_R) = 0_S$
+    \item $f(-a) = -f(a)$
+    \item $f(a - b) = f(a) - f(b)$
+    \item If $a \in R$ is a unit, then $f(a)$ is a unit and $f(a^{-1}) = \left[ f(a) \right]^{-1}$.
+\end{enumerate}
+\begin{proof}
+    Let $R, S$ be rings and $f : R \to S$ a ring homomorphism.
+    \begin{enumerate}[label=(\arabic*)]
+        \item Take any $a \in R$. Then $\ul{f(a) + 0_S} = f(a + 0_R) = \ul{f(a) + f(0_R)}$, so
+            $f(0_R) = 0_S$.
+        \item $\ul{0_S} = f(0_R) = f(a + (-a)) = \ul{f(a) + f(-a)}$, so 
+            $f(a) + f(-a) = 0_S \implies f(-a) = -f(a)$.
+        \item $\ul{f(a - b)} = f(a + (-b)) = f(a) + f(-b) = f(a) + (-f(b)) = \ul{f(a) - f(b)}$.
+        \item Let $a \in R$ be a unit. Then there exists $a^{-1} \in R$ such that $aa^{-1} = 1$. 
+            Then 
+            \newline
+            $\ul{1_S} = f(1_R) = f(aa^{-1}) = \ul{f(a)f(a^{-1})}$ and
+            $\ul{1_S} = f(1_R) = f(a^{-1}a) = \ul{f(a^{-1})f(a)}$, so $f(a)$ is a unit and define 
+            $\left[ f(a) \right]^{-1} := f(a^{-1})$ to get $f(a^{-1}) = \left[ f(a) \right]^{-1}$.
+    \end{enumerate}
+\end{proof}
+\begin{definition}{Isomorphism}
+    Let $f : R \to S$ be a ring homomorphism. $f$ is an isomorphism if $f$ is a bijection. Then
+    $R$ and $S$ are isomorphic, written as $R \simeq S$.
+\end{definition}
+\begin{definition}{Kernel and Image}
+    Let $f : R \to S$ be a ring homomorphism. 
+    \begin{itemize}[label=$\to$, leftmargin=*, itemsep=0em]
+        \item The \bf{kernel} of $f$ is defined as $\ker(f) := \{ a \in R : f(a) = 0_S \}$.
+        \item The \bf{image} of $f$ is defined as $\Im(f) := \{ f(a) : a \in R \}$.
+    \end{itemize}
+\end{definition}
+\bf{Proposition:} Given a ring homomorphism $f : R \to S$, the image of $f$ is a subring of $S$
+and the kernel of $f$ is a nonunital subring of $R$.
+\begin{proof}
+    Let $f : R \to S$ be a ring homomorphism. Then
+    \newline
+    $\Im(f)$ \bf{is a subring of $S$:} 
+    Given $f(a), f(b) \in \Im(f)$, we have the following:
+    \begin{enumerate}[label=(\arabic*)]
+        \item $f(a) + f(b) = f(a + b) \in \Im(f)$.
+        \item $f(a)f(b) = f(ab) \in \Im(f)$.
+        \item $-f(a) = f(-a) \in \Im(f)$.
+        \item $f(1_R) = 1_S \in \Im(f)$.    
+    \end{enumerate}
+    so $\Im(f)$ is a subring of $S$.
+    \vspace{1em}
+
+    \bf{$\ker(f)$ is a nonunital subring of $R$:}
+    Given $a, b \in \ker(f)$, we have the following:
+    \begin{enumerate}[label=(\arabic*)]
+        \item $f(a + b) = f(a) + f(b) = 0_S + 0_S \in \ker(f)$.
+        \item $f(ab) = f(a)f(b) = 0_s \cdot 0_S \in \ker(f)$.
+        \item $f(-a) = -f(a) = -0_S = 0_S \in \ker(f)$. 
+        \item $f(0_R) = 0_S \in \ker(f)$.
+    \end{enumerate}
+    so $\ker(f)$ is a nonunital subring of $R$.
+\end{proof}
+\bf{Proposition:} Let $f : R \to S$ be a ring homomorphism. Then, for any $a \in \ker(f)$ and 
+$b \in R$, we have $ab, ba \in \ker(f)$.
+\begin{proof}
+    $\ul{f(ab)} = f(a)f(b) = 0_S \cdot f(b) = \ul{0_S} = f(b) \cdot 0_S = f(b)f(a) = \ul{f(ba)} \in \ker(f)$.
+\end{proof}
+
+\begin{definition}{Initial Object}
+    $\Z$ is the \bf{initial object}. Let $R$ be any ring. Then, there is a unique homomorphism 
+    $f : \Z \to R$. At $n = 1$, $1 \mapsto 1_R$. At $n = n + 1$, 
+    $n + 1 \mapsto \underbrace{1_R + \cdots + 1_R}_{n \text{ times}} + 1_R$. The same is true for 
+    $n < 0$. $f$ as defined above is a well-defined ring homomorphism.
+\end{definition}
+
+\begin{definition}{Ideal}
+    Let $R$ be a ring and $I \subseteq R$ a nonempty subset. $I$ is an \bf{ideal} of $R$ if $I$ is
+    a nonunital subring such that for all $a \in I$ and $x \in R$, $xa, ax \in I$. This is often 
+    called the ``absorbing property''.
+\end{definition}
+\bf{Remark:} The kernel of any ring homomorphism is an idea. Further, all ideal can be realized as
+the kernel of a ring homomorphism.
+
+\begin{definition}{Principal Ideal}
+    Let $R$ be a commutative ring and $a \in R$. The \bf{principal ideal} $(a)$ is an ideal where
+    $(a) := \{ ar : r \in R \}$. We say ``$a$ \it{generates} $I$''. Note that $(a) \iff aR$.
+\end{definition}
+
+\begin{theorem}{}
+    Let $R$ be a commutative ring and $a \in R$. Then the principal ideal $(a)$ is an ideal.
+\end{theorem}
+\begin{proof}
+    Suppose $(a)$ is the principal ideal. Then, $0 = a \cdot 0 \in (a)$. Given $ar_1, ar_2 \in (a)$, 
+    $ar_1 + ar_2 = a(r_1 + r_2) \in (a)$. Take $ar \in (a)$. Then $-ar = a(-r) \in (a)$. Take
+    $ar_1 \in (a), r \in R$. Then $(ar_1) r = a(r_1 r) \in (a)$. Because $(a)$ is a nonunital subring
+    with the absorbing property, it is an ideal.
+\end{proof}
+
+\begin{theorem}{}
+    Let $R$ be a ring and $I_1, \ldots, I_k$ be ideals. Then
+    \begin{enumerate}[label=(\arabic*)]
+        \item $I_1 + \cdots + I_k = \{ i_1 + \cdots + i_k : i_j \in I_j \}$ is an ideal.
+        \item $I_1 \cap \cdots \cap I_k$ is an ideal.
+    \end{enumerate}
+\end{theorem}
+\begin{proof}
+    Let $R$ be a ring, and $I_1, \cdots, I_k$ be ideals.
+    \vspace{0.5em}
+
+    \bf{$I_1 + \cdots + I_k = \{ i_1 + \cdots + i_k : i_j \in I_j \}$ is an ideal.}
+    \begin{enumerate}
+        \item Since $I_j$ is an ideal, $0 \in I_j$ so we get
+            $0 + \cdots 0 = 0 \in I_1 + \cdots + I_k$.
+        \item Take two elements $a, b \in I_1 + \cdots + I_k$. We can rewrite $a, b$ as,
+            $a = p_1 + \cdots + p_k$ and $b = q_1 + \cdots + q_k$ for $p_j, q_j \in I_j$. Then
+            $
+            a + b 
+            = (p_1 + \cdots + p_k) + (q_1 + \cdots + q_k)
+            = (p_1 + q_1) + \cdots + (p_k + q_k)
+            $, and since $p_j + q_j \in I_j$ for all $j \leq k$, we get 
+            $a + b \in I_1 + \cdots + I_k$.
+        \item Take any $a \in I_1 + \cdots + I_k$. We can
+            rewrite $a$ as, $a = p_1 + \cdots + p_k$ for $p_j \in I_j$. Consider an element $r \in R$. 
+            Then, $ar = (p_1 + \cdots + p_k) r = p_1 r + \cdots + p_k r$. Similarly,
+            $ar = r (p_1 + \cdots + p_k) = r p_1 + \cdots + r p_k$. Since $I_j$ is an ideal, 
+            $p_j r, r p_j \in I_j$. Then $ar, ra \in I_1 + \cdots + I_k$.
+        \item Let $a := a_1 + \cdots + a_k \in I_1 + \cdots + I_k$.
+            Since $I_j$ is an ideal, there exists $-a \in I_j$, so we get 
+            $-a_1 + \cdots + -a_k  = -(a_1 + \cdots + a_k)  = -a \in I_1 + \cdots + I_k$.
+    \end{enumerate}
+    Because $I_1 + \cdots + I_k$ satisfies (1) - (4), $I_1 + \cdots + I_k$ is an ideal.
+    \newpage
+    \bf{$I_1 \cap \cdots \cap I_k$ is an ideal.}
+    \begin{enumerate}
+        \item Since $I_j$ is an ideal, $0 \in I_j$, so 
+            $0 \in I_1 \cap \cdots \cap I_k$.
+        \item Take two elements $a, b \in I_1 \cap \cdots \cap I_k$. 
+            Then since each $I_j$ is an ideal, $a + b \in I_j$. So, 
+            $a + b \in I_1 \cap \cdots \cap I_k$.
+        \item Take any $a \in I_1 \cap \cdots \cap I_k$. Consider an element 
+            $r \in R$. Then, since each $I_j$ is an ideal, $ar, ra \in I_j$. Therefore, 
+            $ar, ra \in I_1 \cap \cdots \cap I_k$.
+        \item Take any $a \in I_1 \cap \cdots \cap I_k$. 
+            Then, since $I_j$ is an ideal, $-a \in I_j$, so $-a \in I_1 \cap \cdots \cap I_k$.
+    \end{enumerate}
+    Because $I_1 \cap \cdots \cap I_k$ satisfies (1) - (4), $I_1 \cap \cdots \cap I_k$ is an ideal.
+\end{proof}
+
+\begin{definition}{Multiple Generators}
+    Let $R$ be a commutative ring and $a_1, \ldots, a_k \in R$. The ideal generated by 
+    $a_1, \cdots a_k$ is geiven by $(a_1) + \cdots + (a_k)$ and is written as $(a_1, \ldots, a_k)$.
+\end{definition}
+\bf{Proposition:} Let $F$ be a field. The only ideal of $F$ are $\{ 0 \}$ and $F$.
+\begin{proof}
+    Let $I$ be a nonzero ideal of $F$ and take $a \in I$. Then, $1 = aa^{-1} \in I$. Because $1 \in I$, 
+    $F = (1) = I$.
+\end{proof}
+
+\subsection{Quotient Rings}
+\bf{Preface:} To generalize the construction of $\Z/n$ to general rings, consider the following:
+given an ideal $I \subseteq R$, define equivalence where $a \sim b$ if $a - b \in I$. We
+can then inherit $(+, \cdot)$ from $R$. Given two equivalence classes $[a], [b]$, define 
+$[a] + [b] = [a + b]$ and $[a] \cdot [b] = [ab]$.
+\begin{definition}{Congruent Modulo $I$}
+    Let $R$ be a ring, $I \subseteq R$ and ideal, and $a, b \in I$. $a$ and $b$ are \bf{congruent 
+    modulo $I$} if $a - b \in I$. We write $a \equiv b \pmod{I}$, or $a + I = b + I$.
+    \vspace{0.5em}
+
+    \bf{Remark:} The notation $a + I := \{ a + x : x \in I \}$ is precisely the congruence class modulo
+    $I$ containing $a$.
+\end{definition}
+\bf{Proposition:} Let $R$ be a ring and $I \subseteq R$ an ideal. Congruence modulo $I$ is an
+equivalence relation.
+\begin{proof}
+    Let $R$ be a ring and $I \subseteq R$ an ideal.
+    \begin{enumerate}[label=(\arabic*)]
+        \item For any $a \in R$, $a - a = 0 \in I$, so $a \equiv a \pmod{I}$.
+        \item Take $a, b \in R$ such that $a \equiv b \pmod{I}$. Then $a - b \in I$. Since $I$ is an
+            ideal, $-(a - b) = b - a \in I$, so $b \equiv a \pmod{I}$.
+        \item Let $a, b, c \in R$ such that $a \equiv b \pmod{I}$ and $b \equiv c \pmod{I}$. Then
+            $a - b, b - c \in I$. Then $(a - b) + (b - c) = a + (-b + b) - c = a - c \in I$, so
+            $a \equiv c \pmod{I}$.
+    \end{enumerate}
+    Since congruence modulo $I$ satisfies $(1)-(3)$, it is an equivalence relation.
+\end{proof}
+
+\newpage
+\begin{theorem}{}
+    Let $R$ be a ring, $a, b, c, d \in R$, and $I \subseteq R$ and ideal. Suppose 
+    $a \equiv c \pmod{I}$, $b \equiv d \pmod{I}$. Then $a + b \equiv c + d \pmod{I}$ and
+    $ab \equiv cd \pmod{I}$.
+\end{theorem}
+\begin{proof}
+    Since $a - c, b - d \in I$, we have that $(a - c) + (b - d) = (a + b) - (c + d) \in I$. Then by
+    definition, we have $a + b \equiv c + d \pmod{I}$. Now consider the following: 
+    \begin{align*}
+        ab - cd &= ab + 0 - cd \\
+                &= ab + (-bc + bc) - cd \\
+                &= (ab - bc) + (bc - cd) \\
+        ab - cd &= b(a - c) + c(b - d)
+    \end{align*}
+    Since $a - c, b - d \in I$, $ab - cd \in I$, so $ab \equiv cd \pmod{I}$.
+\end{proof}
+\bf{Notation:} $(a + I) + (b + I) = (a + b) + I$ and $(a + I)(b + I) = ab + I$.
+
+\begin{definition}{Quotient Ring}
+    Let $R$ be a ring, $a, b \in $, and $I \subseteq R$ and ideal. The \bf{quotient ring} $R/I$ is
+    the set of congruence classes modulo $I$ with $(+, \cdot)$ defined as 
+    $(a + I) + (b + I) = (a + b) + I$ and $(a + I)(b + I) = ab + I$ respectively.
+\end{definition}
+\bf{Proposition:} $R/I$ is a ring.
+\begin{proof}
+    I'm not checking all 9 axioms lol. 
+\end{proof}
+
+\begin{theorem}{}
+    Let $R$ be a ring and $I \subseteq R$ and ideal. If $R$ is commutative, then $R/I$ is
+    commutative.
+\end{theorem}
+\begin{proof}
+    Take $a + I, b + I \in R/I$. Then $(a + I)(b + I) = ab + I$ and $(a + I)(b + I) = ab + I$, so
+    $ab + I = ba + I \implies (a + I)(b + I) = (b + I)(a + I)$.
+\end{proof}
+\bf{Note:} If $R/I$ is commutative, it does \ib{not} imply that $R$ is commutative. For example, if
+$I = R$, then $R/I \simeq \{ 0 \}$.
+
+\begin{definition}{Canonical Projection}
+    Let $R$ be a ring, $I \subseteq R$ and ideal. Consider $\pi : R \to R/I$ such that 
+    $\pi(a) = a + I$. This map is the \bf{canonical projection}.
+\end{definition}
+
+\newpage
+\begin{theorem}{}
+    Let $R$ be a ring, $I \subseteq R$ and ideal. The canonical projection $\pi : R \to R/I$ is a
+    surjective ring homomorphism with $\ker(\pi) = I$.
+\end{theorem}
+\begin{proof}
+    Let $R$ be a ring, $I \subseteq R$ and ideal. Let $\pi : R \to R/I$ be the canonical projection
+    from $R$ to $R/I$. Then
+    \begin{enumerate}[label=(\arabic*)]
+        \item $\pi(a + b) = (a + b) + I = (a + I) + (b + I) = \pi(a) + \pi(b)$.
+        \item $\pi(a \cdot b) = (a \cdot b) \cdot I = (a \cdot I) \cdot (b \cdot I) = \pi(a) \cdot \pi(b)$.
+        \item $\pi(1_R) = 1 + I = 1_{R/I}$.
+    \end{enumerate}
+    so $\pi$ is a ring homomorphism. Take $a + I \in R/I$. Then $\pi(a) = a + I$. Moreover, if 
+    $b \in [a + I]$, then $\pi(b) = a + I$. So $\pi$ is surjective. Finally, let $a \in I$. Then 
+    $\pi(a) = a + I$ but $a \equiv 0 \pmod{I}$, so we have $\pi(a) = a + I = 0_R + I = I$. So, 
+    $\ker(\pi) \subseteq I$. Now suppose $\pi(a) = 0_R + I$. Then $[a + I] = [0_R + I]$, 
+    or $a \equiv 0_R \pmod{I}$. We can rewrite this to get $a - 0_R = a \in I$, so 
+    $I \subseteq \ker(\pi)$. Because $\ker(\pi) \subseteq I$ and $I \subseteq \ker(\pi)$, 
+    $\ker(\pi) = I$.
 \end{proof}
 
 \end{document}
