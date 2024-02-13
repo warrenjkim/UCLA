@@ -6,6 +6,8 @@
 \usepackage{tcolorbox}
 \usepackage{enumitem}
 \usepackage{hyperref}
+\usepackage{tikz-cd}
+\usepackage{bm}
 \usepackage[margin=1in]{geometry} 
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\Z}{\mathbb{Z}}
@@ -200,7 +202,7 @@ $\exists a \in S : \forall b \in S, a \leq b$
     Therefore, $S = \emptyset$, so $n$ can be written as a product of primes.
 \end{proof}
 
-\begin{theorem}{(Fundamental Theorem of Arithmetic}
+\begin{theorem}{(Fundamental Theorem of Arithmetic)}
     Let $n \in \Z \setminus \{ 0, \pm 1 \}$. Suppose $n = p_1 \cdots p_r$ and $n = q_1 \cdots q_s$
     where each $p_i, q_j$ is prime. Then,
     \begin{enumerate}[label=(\arabic*)]
@@ -224,6 +226,11 @@ $\exists a \in S : \forall b \in S, a \leq b$
     $s < r$. In either case, we have a contradiction. Therefore, $r = s$ and there is a unique
     permutation $\sigma$ on $\{ 1, \ldots, r \}$ such that $p_i = q_{\sigma(i)}$.
 \end{proof}
+
+\begin{center}
+    \vspace{5em}
+    \bf{The rest of this page is intentionally left blank}
+\end{center}
 
 \newpage
 \subsection{Modular Arithmetic}
@@ -466,6 +473,11 @@ where $0 \leq r_1, r_2 < |m|$.
     $y \equiv x \pmod{M m_{n + 1}}$, so $y \equiv x \pmod{m_1 m_2 \cdots m_{n + 1}}$.
 \end{proof}
 
+\begin{center}
+    \vspace{5em}
+    \bf{The rest of this page is intentionally left blank}
+\end{center}
+
 \newpage
 \section{Rings}
 \begin{definition}{Ring}
@@ -588,6 +600,7 @@ then $a = b$.
 \begin{definition}{Field}
     Let $R$ be a commutative ring. If all nonzero elements of $R$ are units, $R$ is a field.
 \end{definition}
+\newpage
 \bf{Proposition:} Every field is an integral domain.
 \begin{proof}
     Let $R$ be a field. Since all nonzero elements of $R$ are units, they cannot be zero divisors.
@@ -722,8 +735,8 @@ the kernel of a ring homomorphism.
     Let $R$ be a ring, and $I_1, \cdots, I_k$ be ideals.
     \vspace{0.5em}
 
-    \bf{$I_1 + \cdots + I_k = \{ i_1 + \cdots + i_k : i_j \in I_j \}$ is an ideal.}
-    \begin{enumerate}
+    \bf{$\bm{I_1 + \cdots + I_k = \{ i_1 + \cdots + i_k : i_j \in I_j \}}$ is an ideal.}
+    \begin{enumerate}[label=(\arabic*), itemsep=0em]
         \item Since $I_j$ is an ideal, $0 \in I_j$ so we get
             $0 + \cdots 0 = 0 \in I_1 + \cdots + I_k$.
         \item Take two elements $a, b \in I_1 + \cdots + I_k$. We can rewrite $a, b$ as,
@@ -744,9 +757,12 @@ the kernel of a ring homomorphism.
             $-a_1 + \cdots + -a_k  = -(a_1 + \cdots + a_k)  = -a \in I_1 + \cdots + I_k$.
     \end{enumerate}
     Because $I_1 + \cdots + I_k$ satisfies (1) - (4), $I_1 + \cdots + I_k$ is an ideal.
+    \begin{center}
+        \small{\it{Proof continues on the next page...}}
+    \end{center}
     \newpage
-    \bf{$I_1 \cap \cdots \cap I_k$ is an ideal.}
-    \begin{enumerate}
+    \bf{$\bm{I_1 \cap \cdots \cap I_k}$ is an ideal.}
+    \begin{enumerate}[label=(\arabic*), itemsep=0em]
         \item Since $I_j$ is an ideal, $0 \in I_j$, so 
             $0 \in I_1 \cap \cdots \cap I_k$.
         \item Take two elements $a, b \in I_1 \cap \cdots \cap I_k$. 
@@ -865,5 +881,201 @@ $I = R$, then $R/I \simeq \{ 0 \}$.
     $I \subseteq \ker(\pi)$. Because $\ker(\pi) \subseteq I$ and $I \subseteq \ker(\pi)$, 
     $\ker(\pi) = I$.
 \end{proof}
+
+\begin{center}
+    \vspace{5em}
+    \bf{The rest of this page is intentionally left blank}
+\end{center}
+
+\newpage
+\begin{theorem}{(First Isomorphism Theorem)}
+    \label{thm:isothm}
+    Let $f : R \to S$ be a ring homomorphism. The following hold:
+    \begin{itemize}[label=$\to$, leftmargin=*, itemsep=0em]
+        \item There exists a unique homomorphism $\overline{f} : R/\ker(f) \to S$ such that 
+            $f = \overline{f} \circ \pi$.
+        \item $R/\ker(f) \simeq \Im(f)$.
+    \end{itemize}
+    \begin{center}
+        \begin{tikzcd}
+            R \arrow[r, "f"] \arrow[d, "\pi"'] & S \\
+            R/\ker(f) \arrow[ru, "\overline{f}"', dashrightarrow] &
+        \end{tikzcd}
+    \end{center}
+\end{theorem}
+\begin{proof}
+    Let $f : R \to S$ be a ring homomorphism. Then
+    \vspace{0.5em}
+
+    \bf{$\bm{\overline{f}}$ is well-defined:} Suppose $a + \ker(f) = a' + \ker(f)$. Then 
+    $a - a' \in \ker(f)$, so $f(a - a') = 0 = f(a) - f(a')$. This implies $f(a) = f(a')$, so
+    $\overline{f}$ is well-defined.
+    \vspace{1em}
+
+    \bf{$\bm{\overline{f}}$ is a homomorphism:}
+    \begin{enumerate}[label=(\arabic*)]
+        \item $\overline{f}(1_R + \ker(f)) = f(1_R) = 1_S$.
+        \item Take $a + \ker(f), b + \ker(f) \in R/\ker(f)$. Then 
+            \vspace{-0.5em}
+            \[
+                \overline{f}((a + b) + \ker(f)) 
+                = f(a + b) = f(a) + f(b) 
+                = \overline{f}(a + \ker(f)) + \overline{f}(b + \ker(f))
+            \]
+        \item \vspace{-0.5em} Take $a + \ker(f), b + \ker(f) \in R/\ker(f)$. Then 
+            \vspace{-0.5em}
+            \[
+                \overline{f}((a \cdot b) +\ker(f))
+                = f(a \cdot b) = f(a) \cdot f(b) 
+                = \overline{f}(a + \ker(f)) \cdot \overline{f}(b + \ker(f))
+            \]
+    \end{enumerate}
+    \vspace{-0.5em}
+    so $\overline{f}$ is a homomorphism.
+    \vspace{1em}
+
+    \bf{$\bm{f = \overline{f} \circ \pi}$:} Take $a \in R$. Then, 
+    $\ul{\overline{f} \circ \pi (a)} = \overline{f}(\pi(a)) = \overline{f}(a + \ker(f)) = \ul{f(a)}$.
+    \vspace{1em}
+
+    \bf{$\bm{\overline{f}}$ is unique:} Suppose we have another function $g : R/\ker(f) \to S$ such that
+    $\overline{f} \neq g$. Then there exists $b \in R/\ker(f)$ such that $g(b + \ker(f) \neq
+    \overline{f}(b + \ker(f))$, so
+    \vspace{-0.5em}
+    \[g \circ \pi (a) = g(\pi(a)) = g(a + \ker(f)) 
+        \neq 
+        \overline{f}(a + \ker(f)) = f(a)
+    \] 
+    \vspace{-0.5em}
+    Therefore, $\overline{f}$ is unique.
+    \vspace{1em}
+
+    \bf{$\bm{R/\ker(f) \simeq \Im(f)}$:} Take $a + \ker(f) \in \ker(\overline{f})$. Then 
+    $\overline{f}(a + \ker(f)) = f(a) = 0$. Since $a + \ker(f)$ was arbitrary, this holds for all 
+    $a + \ker(f) \in \ker(\overline{f})$, so $\overline{f}$ is \bf{injective}. Now take any 
+    $y \in \Im(f)$. Then there is some $z \in R$ such that $f(z) = y$. Set 
+    $x := z + \ker(f) \in R/\ker(f)$. Then $\overline{f}(x) = \overline{f}(z + \ker(f)) = f(z) = y$,
+    so $\overline{f}$ is \bf{surjective}. Since $\overline{f}$ is injective and surjective, it is
+    \bf{bijective}, and therefore $R/\ker(f) \simeq \Im(f)$.
+\end{proof}
+
+\begin{center}
+    \vspace{5em}
+    \bf{The rest of this page is intentionally left blank}
+\end{center}
+
+\newpage
+\bf{FINISH THIS}
+\begin{theorem}{(Correspondence Theorem)}
+    Let $R$ be a ring, and $I \subseteq R$ an ideal. Consider the projection $\pi : R \to R/I$ and
+    let $\overline{R} := R/I$. Then
+    \begin{enumerate}[label=(\arabic*)]
+        \item There is a bijective correspondence between ideals in $R$ containing $I$ and ideals of
+            $\overline{R}$ given by $J \mapsto \pi(J) = \{ r + I : r \in J \}$ and 
+            $\overline{J} \mapsto \pi^{-1}(\overline{J})$ where $J \subseteq R$ and 
+            $\overline{J} \subseteq \overline{R}$ are ideals.
+        \item If an ideal $J \subseteq R$ corresponds to $\overline{J} \subseteq \overline{R}$, then
+            $R/J \simeq \overline{R}/\overline{J}$.
+    \end{enumerate}
+\end{theorem}
+\begin{proof}
+    \bf{(1)} To show that $\pi(J)$ is an ideal of $\overline{R}$, take $a \in \pi^{-1}(J)$ and
+    $r + I \in \overline{R}$. Then $(a + I)(r + I) = ar + I \in \pi(J)$. Similarly, 
+    $ra + I \in \pi(J)$.
+    \vspace{1em}
+
+    \bf{(2)} Consider the canonical projection $\phi : \overline{R} \to \overline{R}/\overline{J}$.
+    Since $\phi$ and $\pi$ are \bf{surjective}, the composition 
+    $\phi \circ \pi : \overline{R} \to \overline{R}/\overline{J}$ is as well.
+    By the \href{thm:isothm}{First Isomorphism Theorem}, we have
+    $\overline{R}/\ker(\phi \circ \pi) \simeq \overline{R}/\overline{J}$.
+\end{proof}
+
+\begin{center}
+    \vspace{5em}
+    \bf{The rest of this page is intentionally left blank}
+\end{center}
+
+\newpage
+\begin{theorem}{(Chinese Remainder Theorem (Rings))}
+    \label{thm:crtrings}
+    Let $R$ be a commutative ring, $a, b \in R$, and $I, J \subseteq R$ be ideals such that 
+    $I + J = R$. We can find $x \in R$ such that
+    \begin{align*}
+        x &\equiv a \pmod{I} \\
+        x &\equiv b \pmod{J} \\
+    \end{align*}
+    Moreover, if $y$ is another solution, then $y \equiv x \pmod{I \cap J}$.
+\end{theorem}
+\begin{proof}
+    Because $I + J = R$, we can find $i \in I$ and $j \in J$ such that $i + j = 1_R$. Then
+    $i \equiv 1 \pmod{J}$ and $j \equiv 1 \pmod{I}$. Consider $x := bi + aj$. Then
+    \begin{align*}
+        x &= bi + aj \\ 
+          &\equiv aj \pmod{I} \\ 
+          &\equiv a \cdot 1 \pmod{I} \\ 
+        x &\equiv a \pmod{I}
+    \end{align*}
+    and
+    \begin{align*}
+        x &= bi + aj \\ 
+          &\equiv bi \pmod{J} \\ 
+          &\equiv b \cdot 1 \pmod{J} \\ 
+        x &\equiv b \pmod{J}
+    \end{align*}
+    Now suppose that $y$ is another solution. Then $y \equiv x \pmod{I}$ and $y \equiv x \pmod{J}$.
+    By definition, this means that $y - x \in I$ and $y - x \in J$, so $y \equiv x \pmod{I \cap J}$.
+\end{proof}
+
+\begin{center}
+    \vspace{5em}
+    \bf{The rest of this page is intentionally left blank}
+\end{center}
+
+\newpage
+\begin{theorem}{(Chinese Remainder Theorem (Isomorphism))}
+    Let $R$ be a ring and $I, J \subseteq R$ be ideals such that $I + J = R$. The quotient rings
+    $(R/I) \times (R/J)$ and $R/(I \cap J)$ are isomorphic.
+\end{theorem}
+\begin{proof}
+    Consider $f : (R/I) \times (R/J)$ given by $a \mapsto (a + I, a + J)$. Then
+    \begin{enumerate}[label=(\arabic*)]
+        \item $f(1_R) = (1_R + I, 1_R + J)$
+        \item Take $a, b \in R$. Then
+            \vspace{-0.5em}
+            \[
+                f(a + b) 
+                = ((a + b) + I, (a + b) + J) 
+                = (a + I, a + J) + (b + I, b + J) 
+                = f(a) + f(b)
+            \]
+        \item \vspace{-0.5em} Take $a, b \in R$.
+            \vspace{-0.5em}
+            \[
+                f(a \cdot b) 
+                = ((a \cdot b) + I, (a \cdot b) + J) 
+                = (a + I, a + J) \cdot (b + I, b + J) 
+                = f(a) \cdot f(b)
+            \]
+    \end{enumerate}
+    so $f$ is a homomorphism. 
+    \vspace{1em}
+
+    Take $(a + I, b + J) \in (R/I) \times (R/J)$. By the
+    \href{thm:crtrings}{Chinese Remainder Theorem (Rings)}, we can find $x \in R$ such that
+    $x + I = a + I$ and $x + J = a + J$. Then, $f(x) = (a + I, b + J)$, so $f$ is \bf{surjective}.
+    Suppose $f(a) = 0$. Then $a \in I$ and $a \in J$, so $a \in I \cap J$. Now take 
+    $a \in I \cap J$. Then $a \in I$ and $a \in J$, so $a + I \in I$ and $a + J \in J$. 
+    By the \href{thm:isothm}{First Isomorphism Theorem}, we have 
+    $R/(I \cap J) = R/\ker(f) \simeq \Im(f) = (R/I) \cap (R/J)$.
+\end{proof}
+
+
+
+
+
+
+
+
 
 \end{document}
