@@ -1,0 +1,155 @@
+\documentclass [12pt] {article}
+
+\newtheorem{exercise}{Exercise}[section]
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{problem}{Problem}
+\newtheorem{solution}{Solution}
+\newtheorem{cor}{Corollary}[section]
+\newtheorem{prop}{Proposition}[section]
+\newtheorem{rmk}{Remark}[section]
+\newtheorem{conj}{Conjecture}[section]
+\usepackage{amsfonts}      
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage[margin=0.75in]{geometry} 
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newenvironment{proof}{\paragraph{Proof:}}{\hfill$\square$}
+\setlength\parindent{0pt}
+% \setcounter{section}{-1}
+
+
+\renewcommand{\bf}[1]{\textbf{{#1}}}
+\renewcommand{\Im}{\text{Im}}
+
+\title{110A HW4}
+\author{Warren Kim}
+\date{Winter 2024}
+
+
+\begin{document}
+
+\maketitle
+
+\section*{Question 1}
+Let $R$ be a ring and $I\subseteq R$ be an ideal. Let $J\subseteq R$ be an ideal such that
+    $I\subseteq J$, and let $\overline{J}\subseteq \overline{R}=R/I$ be an ideal. 
+
+\begin{enumerate}
+    \item Show that $\pi^{-1}(\pi(J))=J$ and $\pi(\pi^{-1}(\overline{J}))=\overline{J}$. [Recall $\pi:R\to R/I$ is the canonical projection.]
+
+    \item Let $\overline{J}=\pi(J)$. Let $\pi:R\to R/I$ and $\phi:\overline{R}\to \overline{R}/\overline{J}$ be canonical projections. 
+    Show that $\ker(\phi\circ\pi)=J$. 
+\end{enumerate}
+
+\subsection*{Response}
+\begin{proof}
+    Let $R$ be a ring and $I \subseteq R$ be an ideal. Let $J \subseteq R$ be an ideal such that $I
+    \subseteq J$, and let $\overline{J} \subseteq \overline{R} = R/I$ be an ideal. 
+    \vspace{0.5em}
+
+    \bf{(1)} \bf{$\bm{\pi^{-1}(\pi(J)) = J}$:}
+    Let $a \in \pi^{-1}(\pi(J))$. Then by definition of the pre-image under $\pi$, there
+    exists $x \in J$ such that $\pi(a) = \pi(x) \in \pi(J)$, or $a + I = x + I$, which implies that
+    $a - x \in I \subseteq J$, so $a \in J$. Since $a$ was arbitrary, $\pi^{-1}(\pi(J)) \subseteq
+    J$. Now let $b \in J$. Then by definition, $\pi(b) = b + I$. Then, $\pi^{-1}(\pi(b)) =
+    \pi^{-1}(b + I)$ but by definition of the pre-image, $\pi^{-1}(b + I) = b \in \pi^{-1}(\pi(J))$.
+    Since $b$ was arbitrary, $J \subseteq \pi^{-1}(\pi(J))$. Since we have $\pi^{-1}(\pi(J))
+    \subseteq J$ and $\pi^{-1}(\pi(J)) \supseteq J$, $\pi^{-1}(\pi(J)) = J$.
+    \vspace{0.5em}
+
+    \bf{$\bm{\pi(\pi^{-1}(\overline{J})) = \overline{J}}$:}
+    Let $a + I \in \pi(\pi^{-1}(\overline{J}))$. Then there exists $x \in R$ such that
+    $x \in \pi^{-1}(\overline{J})$ and $\pi(x) = a + I \in \overline{J}$. Since $a$ was arbitrary,
+    $\pi(\pi^{-1}(\overline{J})) \subseteq \overline{J}$. Now let $b + I \in \overline{J}$. 
+    Then by definition, $b + I$ is in the image of $J$ under $\pi$, so $b \in \pi^{-1}(\overline{J})$.
+    Then $\pi(\pi^{-1}(b + I)) = \pi(b) = b + I \in \pi(\pi^{-1}(\overline{J}))$.
+    Since $b + I$ was arbitrary, $\overline{J} \subseteq \pi(\pi^{-1}(\overline{J}))$. 
+    Since $\pi(\pi^{-1}(\overline{J})) \subseteq \overline{J}$ and 
+    $\pi(\pi^{-1}(\overline{J})) \supseteq \overline{J}$,
+    $\pi(\pi^{-1}(\overline{J})) = \overline{J}$.
+    \vspace{1.5em}
+
+    \bf{(2)} Let $\overline{J} = \pi(J)$. Let $\pi : R \to R/I$ and $\phi : \overline{R} \to
+    \overline{R}/\overline{J}$ be canonical projections. Take 
+    $a \in J$. Then 
+    $
+    \phi \circ \pi(a) 
+    = \phi(\pi(a)) 
+    = \phi(a + I) 
+    = (a + I) + \overline{J}
+    $, but since $a + I \in \overline{J}$, we have that
+    $(a + I) + \overline{J} = 0 + \overline{J} \in \ker(\phi \circ \pi)$.
+    Since $a$ was arbitrary, $J \subseteq \ker(\phi \circ \pi)$.
+    Now take any $b \in R$ such that $\phi \circ \pi(b) = 0 + \overline{J}$. Then, 
+    $(b + I) + \overline{J} = 0 + \overline{J}$. Then by definition, $b + I \in \overline{J} = \pi(J)$ 
+    by assumption. Then $b + I$ is the image of $J$ under $\pi$, so $b \in \pi^{-1}(\overline{J}) = 
+    \pi^{-1}(\pi(J)) = J$. Since $b$ was arbitrary, 
+    $\ker(\phi \circ \pi) \subseteq J$. Since 
+    $J \subseteq \ker(\phi \circ \pi)$ and
+    $J \supseteq \ker(\phi \circ \pi)$,
+    $J = \ker(\phi \circ \pi)$.
+\end{proof}
+
+\newpage
+\section*{Question 2}
+Let $m,n\in\Z$ be nonzero. Show that $(m,n)=1$ if and only if $\Z/mn\cong \Z/m \times \Z/n$.
+
+\subsection*{Response}
+($\implies$) Let $m, n \in \Z$ be nonzero such that $\gcd(m, n) = 1$. Let $R = \Z$, $I = (m)$, and 
+$J = (n)$. Then $I + J = R$ since we can represent $(1) := (m)x + (n)y$ for some $x, y \in Z$. Then
+$R/(I \cap J) \simeq (R/I) \times (R/J)$ but since $I + J = R$, $I \cap J = IJ$, so
+$R/IJ \simeq (R/I) \times (R/J)$. Substituting $I, J, R$, we get
+$\Z/mn \simeq \Z/m \times \Z/n$.
+\vspace{0.5em}
+
+($\impliedby$) Let $\Z/mn \simeq \Z/m \times \Z/n$. Let $d = \gcd(m, n)$. %Then we have that
+% $[d]_{mn} \mapsto ([d]_m, [d]_n)$, but since $d \mid m$ and $d \mid n$, we have that
+% $[0]_{mn} \mapsto ([0]_m, [0]_n)$. 
+
+
+
+% \item Let $R$ be a (commutative) ring and  $I_1,I_2,I_3\subseteq R$ be ideals such that $I_1+I_3=R$ and $I_2+I_3=R$. Show that $(I_1\cap I_2)+I_3=R$. 
+
+% \item Let $R$ be a (commutative) ring and let $I_1,I_2,I_3\subseteq R$ be ideals. Suppose that $I_i+I_j=R$ for $i\neq j$. Let $a_1,a_2,a_3$ be any ideals. Show that there is some $x\in R$ such that 
+% \begin{align*}
+%     x &\equiv a_1\mod I_1 \\
+%     x &\equiv a_2\mod I_2 \\ 
+%     x &\equiv a_3\mod I_3\,.
+% \end{align*}
+
+% \section{Midterm Review --- Do NOT turn this stuff in.}
+
+% Note: Just like all other homework problems, the problems above are fair game for the midterm! 
+
+% \begin{enumerate}
+
+% \item Let $R$ be a commutative ring. We say that $r\in R$ is \underline{nilpotent} if there is some $n>0$ such that $r^n=0$. 
+
+%     \begin{enumerate}
+%         \item Let $P\subseteq R$ be a prime ideal. Show that if $r\in R$ is nilpotent, then $r\in P$. 
+
+%         \item Let $N\subseteq R$ be the set of all nilpotent elements of $R$. Show that $N$ forms an ideal. 
+%     \end{enumerate}
+
+% \item Let $R$ be any nonzero ring. Show that $R$ has a subring that is isomorphic to $\Z$ or $\Z/n$ (for some positive integer $n>0$).
+
+% \item Let $R$ be a ring and let $I_1,I_2,I_3,\cdots $ be ideals such that the ideals are nested in an ascending manner: $I_1\subseteq I_2\subseteq I_3\subseteq\cdots$.
+
+% Show that $\bigcup\limits_{i=1}^\infty I_i$ is an ideal. 
+
+% \item Let $m,n,d\in \Z$. Show the following are equivalent: 
+% \begin{enumerate}
+%     \item There is a homomorphism $f:\Z/d\to \Z/m\times \Z/n$;
+%     \item We have $m|d$ and $n|d$.
+% \end{enumerate}
+% \end{enumerate}
+
+\end{document}
+
