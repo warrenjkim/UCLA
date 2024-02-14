@@ -74,7 +74,7 @@ We start by learning the logical abstraction.
 
 \section{Data Models}
 Data models define how we design databases and interact with data. We want to answer the following:
-\begin{enumerate}[label=\it{(\roman*)}]
+\begin{enumerate}[label=$\to$]
     \item How do we define data?
     \item How do we encode relationships among data?
     \item How do we impose constraints on data?
@@ -115,7 +115,7 @@ data typically lives in RAM as opposed to disk.
 
 \section{Database Languages}
 There are two main semantic systems when working with databases:
-\begin{enumerate}[label=\it{(\roman*)}]
+\begin{enumerate}[label=$\to$]
     \item Data Manipulation Language (DML)
     \item Data Definition Language (DDL)
 \end{enumerate}
@@ -138,7 +138,7 @@ DML's can either be procedural or declarative.
 \subsection{Data Definition Language}
 DDL's specify a schema: a collection of attribute names and data types, consistency constraints, and
 optionally storage structure and access methods. There are four types of consistency constraints:
-\begin{enumerate}[label=\it{(\roman*)}]
+\begin{enumerate}[label=$\to$]
     \item Domain constraints define the domain of an attribute (e.g. \tt{tinyint}, \tt{enum}, etc.).
     \item Assertions are business rules that must hold true (e.g. an enforced prerequisite for a 
         class must be present in your transcript before you can add a class to your study list).
@@ -390,8 +390,7 @@ The order of precedence from highest to lowest is as follows:
 
 
 
-\chapter{Week 3}
-\section{Join}
+\chapter{Joins}
 \begin{definition}{Join}
     A \bf{join} merges tuples from two relations $R, S$ based on some contextually related
     attribute(s) in both relations. The resulting relation contains tuples of the form $(r, s)$
@@ -501,45 +500,176 @@ The ANSI SQL standard defines the following data types:
 
 \section{Numbers}
 Numeric data types have the following forms:
-\begin{enumerate}[label=\textit{(\roman*)}]
-    \item int(eger) (4 bytes)
-    \item smallint (2 bytes)
-    \item bigint (8 bytes)
-    \item numeric($n$, $d$), where $n$ is the number of digits and $p$ is the number of digits that
-        appear after the decimal point.
-    \item real, double precision
-    \item float($n$), where $n$ is the precision.
-\end{enumerate}
+\begin{itemize}[label=$\to$]
+    \item \tt{int(eger)} (4 bytes)
+    \item \tt{smallint} (2 bytes)
+    \item \tt{bigint} (8 bytes)
+    \item \tt{decimal($n$, $d$)}, where $n$ is the number of digits and $p$ is the number of digits
+        that appear after the decimal point. \tt{numeric/decimal} is slow.
+    \item \tt{real}, \tt{double precision}
+    \item \tt{float($n$)}, where $n$ is the precision.
+    \item \tt{NaN} is specified with quotes, and \tt{NaN $==$ NaN} is true and \tt{NaN > x} for all
+        \tt{x $\neq$ NaN}. Further, operations on \tt{NaN} return \tt{NaN}.
+    \item \tt{Infinity} must be quoted.
+\end{itemize}
 
 
 \section{Strings}
 String data types have the following forms:
-\begin{enumerate}[label=\textit{(\roman*)}]
+\begin{enumerate}[label=$\to$]
     \item char($n$) is a fixed-length character array of length $n$.
     \item varchar($n$) is a variable-length character array of length $\leq n$.
 \end{enumerate}
 
 
-\section{Strings}
+\section{Binary Data and Booleans}
+\subsection{Binary Data}
+\tt{bytea} acceps either hex or escape format.
+\subsection{Boolean}
+The following are valid: 
+\begin{itemize}[label=$\to$]
+    \item \tt{TRUE}, \tt{'t'}, \tt{'true'}, \tt{'y'}, \tt{'yes'}, \tt{'on'}, \tt{'1'}
+    \item \tt{FALSE}, \tt{'f'}, \tt{'false'}, \tt{'n'}, \tt{'no'}, \tt{'off'}, \tt{'0'}
+\end{itemize}
+
+
+
+
+\section{Date/Time}
 String data types have the following forms:
-\begin{enumerate}[label=\textit{(\roman*)}]
+\begin{enumerate}[label=$\to$]
     \item date (YYYY-MM-DD)
     \item time (HH:MM:SS)
     \item timestamp (YY-MM-DD)
 \end{enumerate}
 
+\newpage
+\section{02/12/24}
+
+\subsection{From RDBS To Other Systems}
+We'll come back to RDBMS in the context of indexing, transactions, and join algorithms. PostgreSQL
+and other RDBMS are called OLTP systems: OnLine Transaction Processing. They are designed for
+frequent and \bf{random} interactive use. They are typically used in production\footnote{Production:
+power and app or a business. For example, a POS system.}. 
+
+\bf{OLTP}
+\begin{enumerate}
+    \item Good for simple queries (e.g. \tt{SELECT}, basic joins)
+    \item Typically used for quick reads/writes that follow no real pattern.
+    \item Based on \it{transactions} or individual events, and these events are stored as rows in
+        RDBMS.
+    \item Strives to minimize redundnacy and requires joins to exploit relationships in data; i.e.
+        normalization.
+    \item Designed for production use.
+    \item Abstracts data as a 2D representation (rows/columns) called a table.
+\end{enumerate}
+
+\subsection{OLAP and Data Warehousing}
+OnLine Analytical Processing is \bf{not} meant to be accessed in production. The data is meant to be
+used by internal users. OLAP is optimized for reads with low latency. Writes are a little slower.
+Typically, other automated systems write into an OLAP; e.g. ETL jobs, piping, etc.
+We typically do batch writes and do \it{ad hoc} writing.
+\vspace{1em}
+
+\bf{Note:} OLAP/DW are completely different systems from RDBMS/OLTP. But they both use SQL. The
+difference is how data is stored and how operations are optimized.
+
+\subsubsection{OLAP}
+OLAP is the concept, and Data Warehouses are an implementation of them. Pure OLAP systems aren't
+used very often anymore, but many of the concepts are used today in relational databases or data
+warehouses. 
+
+We work with \bf{cubes} in OLAP. But, flattened, it still looks like a table. e.g.
+\begin{center}
+\begin{tabular}{c|c|c|c}
+    location & product & shipping & revenue \\
+    \hline
+    USW & Android Tablet & 2017 & \$5M
+\end{tabular}
+\end{center}
+
+OLAP and DW are used for batch processing, and not for production systems. They are optimized for
+low latency reads of aggregated or precomputed data. Typically, we have a lot of redundancy and
+denormalized tables. Some use cases include:
+\begin{enumerate}
+    \item Reporting (Ledgering)
+    \item Dashboarding
+\end{enumerate}
+We typically write ad hoc into the system using something like an ETL job during a low usage period
+(e.g. overnight).
+\begin{center}
+    DB $\overset{extract}{\longrightarrow}$ Transform $\overset{load}{\longrightarrow}$ Data Warehouse.
+\end{center}
+
+\subsubsection{ETL Job}
+An ETL job has three steps:
+\begin{enumerate}
+    \item \bf{Extract:} Pull data form source, usually an RDBMS.
+    \item \bf{Transform:} Perform transformation on data.
+    \item \bf{Load:} Write the raw data into the data warehouse. Udner OLAP, aggregates or
+        denormalized tables will be computed.
+\end{enumerate}
+This ETL job is costly to the production database. We may lose some data if inserts/updates are
+being processed during the transfer. Since we typically work with a lot of data, and we are storing
+aggregates, this is \it{usually} okay.
+
+\paragraph{Addressing Performance:}
+To improve performance on the RDBMS, we can 
+
+\begin{enumerate}
+    \item Have a replica database, and run an ETL job against the replica.
+    \item Dual write: on each write, write to the production DB as well as to the replica.
+\end{enumerate}
+
+\begin{align*}
+    App \longrightarrow Multiplexer^* &\longrightarrow production \ DB \\
+                                      &\longrightarrow replica \overset{E}{\to} T \to
+                                      \overset{L}{\to} DW
+\end{align*}
+$^*$Multiplexer: Could be a load-balancer, message queue, etc.
+\vspace{1em}
+
+If we have $n$ grouping columns. we have $ \sum_{k = 0}^n \binom{n}{k} = 2^n $ dimensions.
+\vspace{1em}
+
+In addition to aggregates, data warehouses can also store ``exploded'' (denormalized) tables for
+fast reads. This join can be computed as the data is inserted, and then quickly retrieved by the
+user without waiting. The jooin condition can be pre-specified in the schema.
 
 
+\subsubsection{OLAP v. OLTP}
+\begin{itemize}[label=$\to$]
+    \item OLAP cubes are computationally expensive.
+    \item REads of exploded tables are \it{fast}.
+    \item Data is likely to be out of date.
+    \item Typically append-only: no modifying/deleting.
+    \item Read-only to internal users.
+\end{itemize}
+
+\subsubsection{OLAP Operations}
+\begin{enumerate}
+    \item slice
+    \item dice
+    \item rollup
+    \item drill down
+    \item pivot
+\end{enumerate}
+
+\paragraph{Slice:} A slice selects one predominant dimension $n$ from a cube and returns a new 
+sub-cube, producing a rectangular representation of the data contianing $n$. In SQL, we slicy by
+\tt{WHERE condition}.
+
+\paragraph{Dice} A dice selects multiple dimentions $n$ from a cube and returns a new 
+sub-cube, producing a rectangular representation of the data contianing $n$. In SQL, we slice by
+doing \tt{WHERE condition AND/OR ...}
+
+\bf{Note:} The distinction between slice and dice is usually only in theory. We usually slice.
 
 
-
-
-
-
-
-
-
-
+\paragraph{Rollup} A rollup computes aggregates across all levels of a hierarchical attribute.
+For example, $days \subseteq months \subseteq years \subseteq \cdots$. In SQL,
+\tt{ROLLUP(A1, ..., An)} where $A_n \subseteq \cdots \subseteq A_1$. Also,
+\tt{CUBE(A1, ..., An)} computes aggregates for all subsets of $A_1, \cdots, A_n$.
 
 
 \end{document}
