@@ -28,7 +28,7 @@
 \renewcommand{\bf}[1]{\textbf{{#1}}}
 \renewcommand{\Im}{\text{Im}}
 
-\title{110A HW4}
+\title{110A HW5}
 \author{Warren Kim}
 \date{Winter 2024}
 
@@ -109,47 +109,118 @@ $R/IJ \simeq (R/I) \times (R/J)$. Substituting $I, J, R$, we get
 $\Z/mn \simeq \Z/m \times \Z/n$.
 \vspace{0.5em}
 
-($\impliedby$) Let $\Z/mn \simeq \Z/m \times \Z/n$. Let $d = \gcd(m, n)$. %Then we have that
-% $[d]_{mn} \mapsto ([d]_m, [d]_n)$, but since $d \mid m$ and $d \mid n$, we have that
-% $[0]_{mn} \mapsto ([0]_m, [0]_n)$. 
+($\impliedby$) Let $\Z/mn \simeq \Z/m \times \Z/n$. Suppose for the sake of
+contradiction that $d = \gcd(m, n) > 1$. Since $\Z/mn \simeq \Z/m \times \Z/n$, there exists a
+bijection $f : \Z/mn \to \Z/m \times \Z/n$. Consider 
+$([m]_m, [n]_n) = ([0]_m, [0]_n) \in \Z/m \times \Z/n$. Then since $f$ is bijective, there exists 
+$x \in \Z/mn$ such that $f([x]_{mn}) = ([0]_m, [0]_n)$. Put $x := d \cdot \min\{ m, n \}$. 
+Without loss of generality, assume $n < m$. Then 
+$f([x]_{mn}) = f([dn]_{mn}) = ([dn]_m, [dn]_n) = ([0]_m, [0]_n)$ since $d \mid m$ and $d | n$ by 
+definition. Because $d < m$, $[dn]_{mn} = [x]_{mn} \neq [0]_{mn}$. Since
+$\ker(f) \neq \{ 0 \}$, $f$ is not injective and therefore not bijective, a contradiction.
 
 
 
-% \item Let $R$ be a (commutative) ring and  $I_1,I_2,I_3\subseteq R$ be ideals such that $I_1+I_3=R$ and $I_2+I_3=R$. Show that $(I_1\cap I_2)+I_3=R$. 
+\newpage
+\section*{Question 3}
+Let $R$ be a (commutative) ring and  $I_1,I_2,I_3\subseteq R$ be ideals such that $I_1+I_3=R$ and
+$I_2+I_3=R$. Show that $(I_1\cap I_2)+I_3=R$. 
 
-% \item Let $R$ be a (commutative) ring and let $I_1,I_2,I_3\subseteq R$ be ideals. Suppose that $I_i+I_j=R$ for $i\neq j$. Let $a_1,a_2,a_3$ be any ideals. Show that there is some $x\in R$ such that 
-% \begin{align*}
-%     x &\equiv a_1\mod I_1 \\
-%     x &\equiv a_2\mod I_2 \\ 
-%     x &\equiv a_3\mod I_3\,.
-% \end{align*}
+\subsection*{Response}
+Let $R$ be a commutative ring ant $I_1, I_2, I_3 \subseteq R$ be ideals such that $I_1 + I_3 = R$
+and $I_2 + I_3 = R$. 
+\bf{$\bm{(I_1 \cap I_2) + I_3 \subseteq R}$:}
+Take $a \in (I_1 \cap I_2) + I_3$. Then since $I_1 + I_3 = R$ and $I_2 + I_3 = R$, $a \in R$ since
+$a \in I_1 + I_3 = R$ and $a \in I_2 + I_3 = R$.
+\vspace{1em}
 
-% \section{Midterm Review --- Do NOT turn this stuff in.}
+\bf{$\bm{R \subseteq (I_1 \cap I_2) + I_3 }$:}
+Pick any $x \in R$. Since $I_1 + I_3 = R$ and $I_2 + I_3 = R$, there exist $a \in I_1$, $b \in I_2$, 
+$c, d \in I_3$ such that $a + c = 1$ and $b + d = 1$. Then
+\begin{align*}
+    1 &= (a + c)(b + d) \\
+      &= ab + ad + cb + cd \\
+    1 &= ab + ((ad + cb) + cd)
+\end{align*}
+Then $ab \in I_1 \cap I_2$ because $a \in I_1$, we have $ab \in I_1$, and similarly, $b \in I_2$. 
+Also, $(ad + cb) + cd \in I_3$ since $cd \in I_3$, so 
+$ab + ((ad + cb) + cd \in (I_1 \cap I_2) + I_3$. Then multiplying by $x$ on both sides,
+we get $x(ab) + x((ad + cb) + cd) = x \in (I_1 \cap I_2) + I_3$.
+\vspace{1em}
 
-% Note: Just like all other homework problems, the problems above are fair game for the midterm! 
+Since $(I_1 \cap I_2) + I_3 \subseteq R$ and $(I_1 \cap I_2) + I_3 \supseteq R$, 
+$(I_1 \cap I_2) + I_3 = R$.
 
-% \begin{enumerate}
+\newpage
+\section*{Question 4}
+Let $R$ be a (commutative) ring and let $I_1,I_2,I_3\subseteq R$ be ideals. Suppose that $I_i+I_j=R$
+for $i\neq j$. Let $a_1,a_2,a_3$ be any ideals. Show that there is some $x\in R$ such that 
+\begin{align*}
+    x &\equiv a_1\mod I_1 \\
+    x &\equiv a_2\mod I_2 \\ 
+    x &\equiv a_3\mod I_3\,.
+\end{align*}
 
-% \item Let $R$ be a commutative ring. We say that $r\in R$ is \underline{nilpotent} if there is some $n>0$ such that $r^n=0$. 
+\subsection*{Response}
+Let $R$ be a commutative ring and let $I_1, I_2, I_3 \subseteq R$ be ideals where 
+$I_i + I_j = R$ for $i \neq j$. Let $a_1, a_2, a_3 \in R$.
+Then $I_1 + I_2 = R$, $I_1 + I_3 = R$, and $I_2 + I_3 = R$, so 
+\begin{align*}
+    (I_2 \cap I_3) + I_1 &= R \\
+    (I_1 \cap I_3) + I_2 &= R \\
+    (I_1 \cap I_2) + I_3 &= R
+\end{align*}
+from (\bf{Question 3}).
+Then there exist 
+\begin{align*}
+    p \in I_1, q \in I_2 \cap I_3 \text{ such that } p + q = 1_R \\
+    r \in I_2, s \in I_1 \cap I_3 \text{ such that } r + s = 1_R \\
+    u \in I_3, v \in I_1 \cap I_2 \text{ such that } u + v = 1_R
+\end{align*}
+Define
+$x := a_1(qu) + a_2(ps) + a_3(rv)$. Then
+\begin{align*}
+    x &= a_1(qu) + a_2(ps) + a_3(rv) 
+    \equiv a_1(qu) \pmod{I_1} && ps \in I_1, rv \in I_1 \cap I_3 \subseteq I_1 \\
+    x &= a_1(qu) + a_2(ps) + a_3(rv) 
+    \equiv a_2(ps) \pmod{I_2} && r \in I_2, qu \in I_2 \cap I_3 \subseteq I_2 \\
+    x &= a_1(qu) + a_2(ps) + a_3(rv) 
+    \equiv a_3(ps) \pmod{I_3} && u \in I_3, ps \in I_1 \cap I_3 \subseteq I_3
+\end{align*}
+so
+\begin{align*}
+      x &\equiv a_1 \pmod{I_1} \\
+      x &\equiv a_2 \pmod{I_2} \\
+      x &\equiv a_3 \pmod{I_3}
+\end{align*}
 
-%     \begin{enumerate}
-%         \item Let $P\subseteq R$ be a prime ideal. Show that if $r\in R$ is nilpotent, then $r\in P$. 
+\newpage
+\section{Midterm Review --- Do NOT turn this stuff in.}
 
-%         \item Let $N\subseteq R$ be the set of all nilpotent elements of $R$. Show that $N$ forms an ideal. 
-%     \end{enumerate}
+Note: Just like all other homework problems, the problems above are fair game for the midterm! 
 
-% \item Let $R$ be any nonzero ring. Show that $R$ has a subring that is isomorphic to $\Z$ or $\Z/n$ (for some positive integer $n>0$).
+\begin{enumerate}
 
-% \item Let $R$ be a ring and let $I_1,I_2,I_3,\cdots $ be ideals such that the ideals are nested in an ascending manner: $I_1\subseteq I_2\subseteq I_3\subseteq\cdots$.
+\item Let $R$ be a commutative ring. We say that $r\in R$ is \underline{nilpotent} if there is some $n>0$ such that $r^n=0$. 
 
-% Show that $\bigcup\limits_{i=1}^\infty I_i$ is an ideal. 
+    \begin{enumerate}
+        \item Let $P\subseteq R$ be a prime ideal. Show that if $r\in R$ is nilpotent, then $r\in P$. 
 
-% \item Let $m,n,d\in \Z$. Show the following are equivalent: 
-% \begin{enumerate}
-%     \item There is a homomorphism $f:\Z/d\to \Z/m\times \Z/n$;
-%     \item We have $m|d$ and $n|d$.
-% \end{enumerate}
-% \end{enumerate}
+        \item Let $N\subseteq R$ be the set of all nilpotent elements of $R$. Show that $N$ forms an ideal. 
+    \end{enumerate}
+
+\item Let $R$ be any nonzero ring. Show that $R$ has a subring that is isomorphic to $\Z$ or $\Z/n$ (for some positive integer $n>0$).
+
+\item Let $R$ be a ring and let $I_1,I_2,I_3,\cdots $ be ideals such that the ideals are nested in an ascending manner: $I_1\subseteq I_2\subseteq I_3\subseteq\cdots$.
+
+Show that $\bigcup\limits_{i=1}^\infty I_i$ is an ideal. 
+
+\item Let $m,n,d\in \Z$. Show the following are equivalent: 
+\begin{enumerate}
+    \item There is a homomorphism $f:\Z/d\to \Z/m\times \Z/n$;
+    \item We have $m|d$ and $n|d$.
+\end{enumerate}
+\end{enumerate}
 
 \end{document}
 
