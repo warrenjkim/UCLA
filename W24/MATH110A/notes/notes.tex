@@ -8,6 +8,7 @@
 \usepackage{hyperref}
 \usepackage{tikz-cd}
 \usepackage{bm}
+\usepackage{fancyhdr}
 \usepackage[margin=1in]{geometry} 
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\Z}{\mathbb{Z}}
@@ -26,6 +27,11 @@
 \newcommand{\ib}[1]{\textit{\textbf{{#1}}}}
 \newcommand{\ul}[1]{\underline{{#1}}}
 \renewcommand{\Im}{\text{Im}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
 
 
 \title{110A HW3}
@@ -81,7 +87,7 @@ $\exists a \in S : \forall b \in S, a \leq b$
         b(q_1 - q_2) &= -(r_1 - r_2) \\
         b(q_1 - q_2) &= r_2 - r_1
     \end{align*}
-    Since $0 \leq r_1 < b$, we can rewrite the inequality to be $-b < -r_1 \leq 0$. Then, addint $0
+    Since $0 \leq r_1 < b$, we can rewrite the inequality to be $-b < -r_1 \leq 0$. Then, adding $0
     \leq r_2 < b$ to the inequality, we get $-b < r_2 - r_1 < b$. Because $b \mid (r_2 - r_1)$,
     $(r_2 - r_1)$ must be a multiple of $b$, but since $-b < r_2 - r_1 < b$, we have that 
     $(r_2 - r_1) = 0b = 0$. Then, $b(q_1 - q_2) = r_2 - r_1 = 0$. This implies that $q_1 = q_2$ and
@@ -163,7 +169,7 @@ $\exists a \in S : \forall b \in S, a \leq b$
     \end{enumerate}
 \end{theorem}
 \begin{proof}
-    (1) $\implies$ (2)
+    \bf{(1) $\bm{\implies}$ (2)}
     Suppose $p$ is prime and $p \mid bc$. If $p \mid b$, we are done, so suppose $p \nmid b$. Then,
     $(p, b) = 1$, so we have
     \begin{align*}
@@ -177,7 +183,7 @@ $\exists a \in S : \forall b \in S, a \leq b$
     so $p \mid c$.
     \vspace{0.5em}
 
-    (2) $\implies$ (1) 
+    \bf{(1) $\bm{\impliedby}$ (2)}
     To prove the reverse implication, suppose the contrapositive: ``If $p$ is not prime, then there
     exist some $b, c \in \Z$ such that $p \mid bc$ but $p \nmid b$ and $p \nmid c$''. Suppose 
     $p \in \Z \setminus \{ 0, \pm 1 \}$ is not prime; i.e. $p$ is composite. Then, $p$ can be
@@ -239,6 +245,18 @@ $\exists a \in S : \forall b \in S, a \leq b$
     whenever $a = b$.
 \end{definition}
 
+\begin{definition}{Equivalence Relation}
+    A relation $R$ on a set $S$ is any subset of $S \times S$.
+    An \bf{equivalence relation} is a relation with the following properties:
+    \begin{enumerate}
+        \item Reflexivity: For any $a \in S$, $(a, a) \in R$ (alternatively written as $a \sim a$).
+        \item Symmetry: For any $(a, b) \in S \times S$ , $(a, b) \in R$ implies $(b, a) \in R$
+            (alternatively written as $a \sim b \implies b \sim a$).
+        \item Transitivity: For any $a, b, c \in S$, if $(a, b), (b, c) \in R$, then $(a, c) \in R$ 
+            (alternatively written as $a \sim b, b \sim c \implies a \sim c$).
+    \end{enumerate}
+\end{definition}
+
 Pick $m \in \Z$ to be nonzero. The \href{thm:divalgo}{Division Algorithm} says that for any $a, b
 \in \Z$, we can write $a = q_1 m + r_1, b = q_2 m + r_2$ for unique $q_1, q_2, r_1, r_2 \in \Z$
 where $0 \leq r_1, r_2 < |m|$.
@@ -263,30 +281,21 @@ where $0 \leq r_1, r_2 < |m|$.
             $r_2 = r_3$. Since equality is transitive, $r_1 = r_2, r_2 = r_3 \implies r_1 = r_3$,
             so $a \equiv c \pmod{m}$. $R_m$ is transitive.
     \end{enumerate}
+    \vspace{-0.5em}
     Since $R_m$ satisfies $(1)-(3)$, $R_m$ is an equivalence relation.
 \end{proof}
 \begin{definition}{Equivalence Class}
     If $R$ is an equivalence relation on a set $S$, then $S$ can be written as the union of
     equivalence classes. The \bf{equivalence class} of $x$ is the set 
     $[x] := \{ y \in S : (x, y) \in R \}$.
-\end{definition}
-\bf{Note:} The equivalence classes of $R_m$ are $[0], [1], \ldots, [m - 1]$.
+    \vspace{0.1em}
 
-\begin{definition}{Equivalence Relation}
-    A relation $R$ on a set $S$ is any subset of $S \times S$.
-    An \ib{equivalence relation} is a relation with the following properties:
-    \begin{enumerate}
-        \item Reflexivity: For any $a \in S$, $(a, a) \in R$ (alternatively written as $a \sim a$).
-        \item Symmetry: For any $(a, b) \in S \times S$ , $(a, b) \in R$ implies $(b, a) \in R$
-            (alternatively written as $a \sim b \implies b \sim a$).
-        \item Transitivity: For any $a, b, c \in S$, if $(a, b), (b, c) \in R$, then $(a, c) \in R$ 
-            (alternatively written as $a \sim b, b \sim c \implies a \sim c$).
-    \end{enumerate}
+    \bf{Note:} The equivalence classes of $R_m$ are $[0], [1], \ldots, [m - 1]$.
 \end{definition}
 
 \begin{definition}{Congruent Modulo $n$}
     Let $a, b \in \Z$ and $n \in \Z$ be positive. We say $a$ and $b$ are \bf{congruent modulo $n$}
-    if $n | (a - b)$, written as $a \equiv b \pmod{n}$.
+    if $n \mid (a - b)$, written as $a \equiv b \pmod{n}$.
     \vspace{1em}
 
     The \bf{integers modulo $n$} is the set of equivalence classes modulo $n$, written as
@@ -357,7 +366,7 @@ where $0 \leq r_1, r_2 < |m|$.
 \begin{proof}
     Let $p > 1$ be an integer.
     \newline
-    (1) $\implies$ (2)
+    \bf{(1) $\bm{\implies}$ (2)}
     Take $[a] \in \Z/p$ to be nonzero. Then $p \nmid a$ since $p$ is prime. That is, $(p, a) = 1$.
     Then $px + ay = 1$, or 
     $[1] = [px + ay]  = [px] + [ay]$. But $[px] = [p][x] = [0][x] = [0] \in \Z/p$, so 
@@ -373,14 +382,14 @@ where $0 \leq r_1, r_2 < |m|$.
     % \end{align*}
     \vspace{0.5em}
 
-    (2) $\implies$ (3)
+    \bf{(2) $\bm{\implies}$ (3)}
     Let $[a], [b] \in \Z/p$ and suppose $[ab] = [0]$. If $[a] = 0$, we are done, so suppose 
     $[a] \neq 0$. Then, $[a]$ has an inverse, so 
     $[a]^{-1} [ab] = [a]^{-1}[a] [b] = [1][b] = [b] = [0]$. Therefore, either $[a] = [0]$ or 
     $[b] = [0]$.
     \vspace{0.5em}
 
-    (3) $\implies$ (1)
+    \bf{(3) $\bm{\implies}$ (1)}
     Suppose for the sake of contradiction that $p$ is not prime; i.e. $p$ is composite. Then we can
     find a divisor $a > 0$ such that $a \neq \pm 1, \pm p$. That is, $|1| < a < |p|$. Let $p = ab$.
     Then $1 < a, b < p$, but $[ab] = [p] = [0]$, a contradiction.
@@ -586,7 +595,7 @@ zero divisor.
 \end{definition}
 
 \begin{definition}{Integral Domain}
-    A commutative ring $R$ is an \bf{integral domain} if it has no nonzer zero divisors. That is, 
+    A commutative ring $R$ is an \bf{integral domain} if it has no nonzero zero divisors. That is, 
     if $a, b \in R$ and $ab = 0$, then $a = 0$ or $b = 0$.
 \end{definition}
 \bf{Proposition:} Let $R$ be an integral domain and $a, b, c \in R$. If $ac = bc$ for $c \neq 0$,
@@ -667,7 +676,7 @@ and the kernel of $f$ is a nonunital subring of $R$.
 \begin{proof}
     Let $f : R \to S$ be a ring homomorphism. Then
     \newline
-    $\Im(f)$ \bf{is a subring of $S$:} 
+    $\bm{\bf{\Im}(f)}$ \bf{is a subring of $\bm{S}$:} 
     Given $f(a), f(b) \in \Im(f)$, we have the following:
     \begin{enumerate}[label=(\arabic*)]
         \item $f(a) + f(b) = f(a + b) \in \Im(f)$.
@@ -678,7 +687,7 @@ and the kernel of $f$ is a nonunital subring of $R$.
     so $\Im(f)$ is a subring of $S$.
     \vspace{1em}
 
-    \bf{$\ker(f)$ is a nonunital subring of $R$:}
+    \bf{$\bm{\ker(f)}$ is a nonunital subring of $\bm{R}$:}
     Given $a, b \in \ker(f)$, we have the following:
     \begin{enumerate}[label=(\arabic*)]
         \item $f(a + b) = f(a) + f(b) = 0_S + 0_S \in \ker(f)$.
@@ -701,12 +710,13 @@ $b \in R$, we have $ab, ba \in \ker(f)$.
     $n < 0$. $f$ as defined above is a well-defined ring homomorphism.
 \end{definition}
 
+\subsection{Ideals}
 \begin{definition}{Ideal}
     Let $R$ be a ring and $I \subseteq R$ a nonempty subset. $I$ is an \bf{ideal} of $R$ if $I$ is
     a nonunital subring such that for all $a \in I$ and $x \in R$, $xa, ax \in I$. This is often 
-    called the ``absorbing property''.
+    called the ``\it{absorbing property}''.
 \end{definition}
-\bf{Remark:} The kernel of any ring homomorphism is an idea. Further, all ideal can be realized as
+\bf{Remark:} The kernel of any ring homomorphism is an ideal. Further, all ideal can be realized as
 the kernel of a ring homomorphism.
 
 \begin{definition}{Principal Ideal}
@@ -726,7 +736,8 @@ the kernel of a ring homomorphism.
 
 \begin{theorem}{}
     Let $R$ be a ring and $I_1, \ldots, I_k$ be ideals. Then
-    \begin{enumerate}[label=(\arabic*)]
+    \vspace{-0.5em}
+    \begin{enumerate}[label=(\arabic*), itemsep=0em]
         \item $I_1 + \cdots + I_k = \{ i_1 + \cdots + i_k : i_j \in I_j \}$ is an ideal.
         \item $I_1 \cap \cdots \cap I_k$ is an ideal.
     \end{enumerate}
@@ -757,9 +768,7 @@ the kernel of a ring homomorphism.
             $-a_1 + \cdots + -a_k  = -(a_1 + \cdots + a_k)  = -a \in I_1 + \cdots + I_k$.
     \end{enumerate}
     Because $I_1 + \cdots + I_k$ satisfies (1) - (4), $I_1 + \cdots + I_k$ is an ideal.
-    \begin{center}
-        \small{\it{Proof continues on the next page...}}
-    \end{center}
+    \rfoot{\footnotesize{\it{Proof continues on the next page...}}}
     \newpage
     \bf{$\bm{I_1 \cap \cdots \cap I_k}$ is an ideal.}
     \begin{enumerate}[label=(\arabic*), itemsep=0em]
@@ -965,7 +974,6 @@ $I = R$, then $R/I \simeq \{ 0 \}$.
 \end{center}
 
 \newpage
-\bf{FINISH THIS}
 \begin{theorem}{(Correspondence Theorem)}
     Let $R$ be a ring, and $I \subseteq R$ an ideal. Consider the projection $\pi : R \to R/I$ and
     let $\overline{R} := R/I$. Then
@@ -979,22 +987,75 @@ $I = R$, then $R/I \simeq \{ 0 \}$.
     \end{enumerate}
 \end{theorem}
 \begin{proof}
-    \bf{(1)} To show that $\pi(J)$ is an ideal of $\overline{R}$, take $a \in \pi^{-1}(J)$ and
-    $r + I \in \overline{R}$. Then $(a + I)(r + I) = ar + I \in \pi(J)$. Similarly, 
-    $ra + I \in \pi(J)$.
+    \bf{(1)} To show that $\pi(J)$ is an ideal of $\overline{R}$, take $a, b \in \pi(J)$ and
+    $r + I \in \overline{R}$. Then $\pi(a + b) = (a + b) + I = (a + I) + (b + I) = \pi(a) + \pi(b)$
+    and $(a + I)(r + I) = ar + I \in \pi(J)$. Similarly, $ra + I \in \pi(J)$. 
+    To show that $\pi^{-1}(J)$ is an ideal of $R$, take $a, b \in \pi^{-1}(\overline{J})$. Then
+    note that $\pi(a + b) = (a + b) + I = (a + I) + (b + I) = \pi(a) + \pi(b) \in \overline{J}$, so 
+    $a + b \in \pi^{-1}(\overline{J}$.
+    Also, note that
+    $\pi(ar) = ar + I = (a + I)(r + I) \in \overline{J}$, so $ar \in \pi^{-1}(\overline{J})$.
+    Similarly, $rb \in \pi^{-1}(\overline{J})$. So $\pi(J)$ is an ideal of $\overline{R}$ and
+    $\pi^{-1}(\overline{J})$ is an ideal in $R$.
+    \vspace{0.5em}
+
+    \bf{$\bm{\pi^{-1}(\pi(J)) = J}$:}
+    Let $a \in \pi^{-1}(\pi(J))$. Then by definition of the pre-image under $\pi$, there
+    exists $x \in J$ such that $\pi(a) = \pi(x) \in \pi(J)$, or $a + I = x + I$, which implies that
+    $a - x \in I \subseteq J$, so $a \in I \subseteq J$. Since $a$ was arbitrary, 
+    $\pi^{-1}(\pi(J)) \subseteq J$. Now let $b \in J$. Then by definition, $\pi(b) = b + I$. Then, 
+    $\pi^{-1}(\pi(b)) = \pi^{-1}(b + I)$ but by definition of the pre-image, 
+    $\pi^{-1}(b + I) = b \in \pi^{-1}(\pi(J))$.
+    Since $b$ was arbitrary, $J \subseteq \pi^{-1}(\pi(J))$. Since we have $\pi^{-1}(\pi(J))
+    \subseteq J$ and $\pi^{-1}(\pi(J)) \supseteq J$, $\pi^{-1}(\pi(J)) = J$.
+    \vspace{0.5em}
+
+    \bf{$\bm{\pi(\pi^{-1}(\overline{J})) = \overline{J}}$:}
+    Let $a + I \in \pi(\pi^{-1}(\overline{J}))$. Then there exists $x \in R$ such that
+    $x \in \pi^{-1}(\overline{J})$ and $\pi(x) = a + I \in \overline{J}$. Since $a$ was arbitrary,
+    $\pi(\pi^{-1}(\overline{J})) \subseteq \overline{J}$. Now let $b + I \in \overline{J}$. 
+    Then by definition, $b + I$ is in the image of $J$ under $\pi$, so $b \in \pi^{-1}(\overline{J})$.
+    Then $\pi(\pi^{-1}(b + I)) = \pi(b) = b + I \in \pi(\pi^{-1}(\overline{J}))$.
+    Since $b + I$ was arbitrary, $\overline{J} \subseteq \pi(\pi^{-1}(\overline{J}))$. 
+    Since $\pi(\pi^{-1}(\overline{J})) \subseteq \overline{J}$ and 
+    $\pi(\pi^{-1}(\overline{J})) \supseteq \overline{J}$,
+    $\pi(\pi^{-1}(\overline{J})) = \overline{J}$.
+    \vspace{0.5em}
+    
+    Therefore, there exists a bijective correspondence between the ideals $J \supseteq I$ in $R$ and
+    and the ideals $\overline{J} \subseteq \overline{R}$.
+
     \vspace{1em}
 
     \bf{(2)} Consider the canonical projection $\phi : \overline{R} \to \overline{R}/\overline{J}$.
     Since $\phi$ and $\pi$ are \bf{surjective}, the composition 
-    $\phi \circ \pi : \overline{R} \to \overline{R}/\overline{J}$ is as well.
+    $\phi \circ \pi : R \to \overline{R}/\overline{J}$ is as well.
     By the \href{thm:isothm}{First Isomorphism Theorem}, we have
     $\overline{R}/\ker(\phi \circ \pi) \simeq \overline{R}/\overline{J}$.
-\end{proof}
+    \vspace{0.5em}
 
-\begin{center}
-    \vspace{5em}
-    \bf{The rest of this page is intentionally left blank}
-\end{center}
+    \bf{$\bm{\ker(\phi \circ \pi) = J}$:}
+    Let $\overline{J} = \pi(J)$. Take $a \in J$. Then 
+    $
+    \phi \circ \pi(a) 
+    = \phi(\pi(a)) 
+    = \phi(a + I) 
+    = (a + I) + \overline{J}
+    $, but since $a + I \in \overline{J}$, we have that
+    $(a + I) + \overline{J} = 0 + \overline{J} \in \ker(\phi \circ \pi)$.
+    Since $a$ was arbitrary, $J \subseteq \ker(\phi \circ \pi)$.
+    Now take any $b \in R$ such that $\phi \circ \pi(b) = 0 + \overline{J}$. Then, 
+    $(b + I) + \overline{J} = 0 + \overline{J}$. By definition, $b + I \in \overline{J} = \pi(J)$. 
+    Then $b + I$ is the image of $J$ under $\pi$, so $b \in \pi^{-1}(\overline{J}) = 
+    \pi^{-1}(\pi(J)) = J$. Since $b$ was arbitrary, 
+    $\ker(\phi \circ \pi) \subseteq J$. Since 
+    $J \subseteq \ker(\phi \circ \pi)$ and
+    $J \supseteq \ker(\phi \circ \pi)$,
+    $J = \ker(\phi \circ \pi)$.
+    \vspace{0.5em}
+
+    Therefore, $R/J \simeq \overline{R}/\overline{J}$.
+\end{proof}
 
 \newpage
 \begin{theorem}{(Chinese Remainder Theorem (Rings))}
@@ -1067,15 +1128,6 @@ $I = R$, then $R/I \simeq \{ 0 \}$.
     Suppose $f(a) = 0$. Then $a \in I$ and $a \in J$, so $a \in I \cap J$. Now take 
     $a \in I \cap J$. Then $a \in I$ and $a \in J$, so $a + I \in I$ and $a + J \in J$. 
     By the \href{thm:isothm}{First Isomorphism Theorem}, we have 
-    $R/(I \cap J) = R/\ker(f) \simeq \Im(f) = (R/I) \cap (R/J)$.
+    $\ul{R/(I \cap J)} = R/\ker(f) \simeq \Im(f) = \ul{(R/I) \times (R/J)}$.
 \end{proof}
-
-
-
-
-
-
-
-
-
 \end{document}
