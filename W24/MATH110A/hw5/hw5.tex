@@ -115,7 +115,7 @@ bijection $f : \Z/mn \to \Z/m \times \Z/n$. Consider
 $([m]_m, [n]_n) = ([0]_m, [0]_n) \in \Z/m \times \Z/n$. Then since $f$ is bijective, there exists 
 $x \in \Z/mn$ such that $f([x]_{mn}) = ([0]_m, [0]_n)$. Put $x := d \cdot \min\{ m, n \}$. 
 Without loss of generality, assume $n < m$. Then 
-$f([x]_{mn}) = f([dn]_{mn}) = ([dn]_m, [dn]_n) = ([0]_m, [0]_n)$ since $d \mid m$ and $d | n$ by 
+$f([x]_{mn}) = f([dn]_{mn}) = ([dn]_m, [dn]_n) = ([0]_m, [0]_n)$ since $d \mid m$ and $d \mid n$ by 
 definition. Because $d < m$, $[dn]_{mn} = [x]_{mn} \neq [0]_{mn}$. Since
 $\ker(f) \neq \{ 0 \}$, $f$ is not injective and therefore not bijective, a contradiction.
 
@@ -183,9 +183,9 @@ $x := a_1(qu) + a_2(ps) + a_3(rv)$. Then
     x &= a_1(qu) + a_2(ps) + a_3(rv) 
     \equiv a_1(qu) \pmod{I_1} && ps \in I_1, rv \in I_1 \cap I_3 \subseteq I_1 \\
     x &= a_1(qu) + a_2(ps) + a_3(rv) 
-    \equiv a_2(ps) \pmod{I_2} && r \in I_2, qu \in I_2 \cap I_3 \subseteq I_2 \\
+    \equiv a_2(ps) \pmod{I_2} && rv \in I_2, qu \in I_2 \cap I_3 \subseteq I_2 \\
     x &= a_1(qu) + a_2(ps) + a_3(rv) 
-    \equiv a_3(ps) \pmod{I_3} && u \in I_3, ps \in I_1 \cap I_3 \subseteq I_3
+    \equiv a_3(rv) \pmod{I_3} && qu \in I_3, ps \in I_1 \cap I_3 \subseteq I_3
 \end{align*}
 so
 \begin{align*}
@@ -200,26 +200,77 @@ so
 Note: Just like all other homework problems, the problems above are fair game for the midterm! 
 
 \begin{enumerate}
+    \item Let $R$ be a commutative ring. We say that $r\in R$ is \underline{nilpotent} if there is some $n>0$ such that $r^n=0$. 
+        \begin{enumerate}
+            \item Let $P\subseteq R$ be a prime ideal. Show that if $r\in R$ is nilpotent, then $r\in P$. 
 
-\item Let $R$ be a commutative ring. We say that $r\in R$ is \underline{nilpotent} if there is some $n>0$ such that $r^n=0$. 
+            \item Let $N\subseteq R$ be the set of all nilpotent elements of $R$. Show that $N$ forms an ideal. 
+        \end{enumerate}
 
-    \begin{enumerate}
-        \item Let $P\subseteq R$ be a prime ideal. Show that if $r\in R$ is nilpotent, then $r\in P$. 
+    \item Let $R$ be any nonzero ring. Show that $R$ has a subring that is isomorphic to $\Z$ or $\Z/n$ (for some positive integer $n>0$).
 
-        \item Let $N\subseteq R$ be the set of all nilpotent elements of $R$. Show that $N$ forms an ideal. 
-    \end{enumerate}
+    \item Let $R$ be a ring and let $I_1,I_2,I_3,\cdots $ be ideals such that the ideals are nested in an ascending manner: $I_1\subseteq I_2\subseteq I_3\subseteq\cdots$.
+        Show that $\bigcup\limits_{i=1}^\infty I_i$ is an ideal. 
 
-\item Let $R$ be any nonzero ring. Show that $R$ has a subring that is isomorphic to $\Z$ or $\Z/n$ (for some positive integer $n>0$).
+        \begin{proof}
+            \begin{enumerate}
+                \item Since $I_i$ is an ideal, $0 \in I_i \subseteq \bigcup^{\infty}_{i = 1}$.
+                \item Take $a, b \in \bigcup^{\infty}_{i = 1}$. Then $a \in I_j$, $b \in I_k$ for 
+                    some $j, k$. Without loss of generality, let $j \leq k$. Then 
+                    $a + b \in I_k \subseteq \bigcup^{\infty}_{i = 1}$.
+                \item Take $a \in \bigcup^{\infty}_{i = 1}$, $r \in R$. Then $a \in I_j$ for some
+                    $j$ and since $I_j$ is an ideal, 
+                    $ar, ra \in I_j \subseteq \bigcup^{\infty}_{i = 1}$.
+            \end{enumerate}
+            Since (a) - (c) are satisfied, $\bigcup^{\infty}_{i = 1}$ is an ideal.
+        \end{proof}
 
-\item Let $R$ be a ring and let $I_1,I_2,I_3,\cdots $ be ideals such that the ideals are nested in an ascending manner: $I_1\subseteq I_2\subseteq I_3\subseteq\cdots$.
+    \item Let $m,n,d\in \Z$. Show the following are equivalent: 
+        \begin{enumerate}
+            \item There is a homomorphism $f:\Z/d\to \Z/m\times \Z/n$;
+            \item We have $m|d$ and $n|d$.
+        \end{enumerate}
 
-Show that $\bigcup\limits_{i=1}^\infty I_i$ is an ideal. 
-
-\item Let $m,n,d\in \Z$. Show the following are equivalent: 
-\begin{enumerate}
-    \item There is a homomorphism $f:\Z/d\to \Z/m\times \Z/n$;
-    \item We have $m|d$ and $n|d$.
-\end{enumerate}
+        \begin{proof}
+            ($\implies$) Let $f : \Z/d \to \Z/m \times \Z/n$ be a homomorphism defined by
+            \[f([x]_d) = ([x]_m, [x]_n)\] 
+            Then $f([0]_d) = ([0]_m, [0]_n)$. Take $k = k + 1$ to get
+            \[
+                f([k + 1]_d) 
+                = f([k]_d + [1]_d) 
+                = f([k]_d) + f([1]_d) 
+                = ([k]_n, [k]_m) + ([1]_n, [1]_m)
+                = ([k + 1]_m, [k + 1]_n)
+            \]
+            Then $f([d]_d) = f([0]_d) = ([0]_m, [0]_n)$, so $m \mid d$ and $n \mid d$.
+            \vspace{0.5em}
+            ($\impliedby$) Let $m \mid d, n \mid d$. Then define 
+            $f : \Z/d \to \Z/m \times \Z/n$ by 
+            \[f([x]_d) = ([x]_m, [x]_n)\]
+            \paragraph{Well-defined:} Suppose $[x]_d = [y]_d$. Then $x \equiv y \pmod{d}$. By 
+            definition, $d \mid x - y$. Then since $m \mid d$ and $n \mid d$, 
+            $m \mid x - y$ and $n \mid x - y$, or $x \equiv y \pmod{m}$ and $x \equiv y \pmod{n}$.
+            Then $f([x]_d) = ([x]_m, [x]_n) = ([y]_m, [y]_n) = f([y]_d)$, so $f$ is well-defined.
+            \paragraph{Homomorphism:}
+            \begin{enumerate}
+                \item Take $a, b \in \Z/d$. Then 
+                   \[
+                       f([a + b]_d) 
+                       = ([a + b]_m, [a + b]_n)
+                       = ([a]_m, [a]_n) + ([b]_m, [b]_n)
+                       = f([a]_d) + f([b]_d)
+                   \]
+               \item Take $a, b \in \Z/d$. Then
+                   \[
+                       f([a \cdot b]_d) 
+                       = ([a \cdot b]_m, [a \cdot b]_n)
+                       = ([a]_m, [a]_n) \cdot ([b]_m, [b]_n)
+                       = f([a]_d) \cdot f([b]_d)
+                   \]
+               \item $f([1]_d) = ([1]_m, [1]_n)$.
+            \end{enumerate}
+            so $f$ is a homomorphism.
+        \end{proof}
 \end{enumerate}
 
 \end{document}
