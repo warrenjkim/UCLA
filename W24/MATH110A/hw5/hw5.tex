@@ -102,22 +102,31 @@ Let $R$ be a ring and $I\subseteq R$ be an ideal. Let $J\subseteq R$ be an ideal
 Let $m,n\in\Z$ be nonzero. Show that $(m,n)=1$ if and only if $\Z/mn\cong \Z/m \times \Z/n$.
 
 \subsection*{Response}
-($\implies$) Let $m, n \in \Z$ be nonzero such that $\gcd(m, n) = 1$. Let $R = \Z$, $I = (m)$, and 
-$J = (n)$. Then $I + J = R$ since we can represent $(1) := (m)x + (n)y$ for some $x, y \in Z$. Then
-$R/(I \cap J) \simeq (R/I) \times (R/J)$ but since $I + J = R$, $I \cap J = IJ$, so
+\begin{proof}
+($\implies$) Let $m, n \in \Z$ be nonzero such that $\gcd(m, n) = 1$. 
+Then we can represent $mx + ny = 1$ for some $x, y \in \Z$.
+Pick $R = \Z$, $I = (m)$, and $J = (n)$. Then we can write $(m)x + (n)y = (1) = \Z$ for some $x, y \in \Z$.
+So, $I + J = R$, and by the Chinese Remainder Theorem
+for isomorphisms, we have
+$R/(I \cap J) \simeq (R/I) \times (R/J)$. But since $I + J = R$, we have $I \cap J = IJ$, so
 $R/IJ \simeq (R/I) \times (R/J)$. Substituting $I, J, R$, we get
 $\Z/mn \simeq \Z/m \times \Z/n$.
 \vspace{0.5em}
 
 ($\impliedby$) Let $\Z/mn \simeq \Z/m \times \Z/n$. Suppose for the sake of
 contradiction that $d = \gcd(m, n) > 1$. Since $\Z/mn \simeq \Z/m \times \Z/n$, there exists a
-bijection $f : \Z/mn \to \Z/m \times \Z/n$. Consider 
+bijection $f : \Z/mn \to \Z/m \times \Z/n$. Recall 
 $([m]_m, [n]_n) = ([0]_m, [0]_n) \in \Z/m \times \Z/n$. Then since $f$ is bijective, there exists 
 $x \in \Z/mn$ such that $f([x]_{mn}) = ([0]_m, [0]_n)$. Put $x := d \cdot \min\{ m, n \}$. 
 Without loss of generality, assume $n < m$. Then 
 $f([x]_{mn}) = f([dn]_{mn}) = ([dn]_m, [dn]_n) = ([0]_m, [0]_n)$ since $d \mid m$ and $d \mid n$ by 
 definition. Because $d < m$, $[dn]_{mn} = [x]_{mn} \neq [0]_{mn}$. Since
 $\ker(f) \neq \{ 0 \}$, $f$ is not injective and therefore not bijective, a contradiction.
+\vspace{1em}
+
+Since we showed ($\implies$) and ($\impliedby$), $(m,n)=1$ if and only if $\Z/mn\simeq \Z/m \times \Z/n$.
+\end{proof}
+ 
 
 
 
@@ -127,6 +136,7 @@ Let $R$ be a (commutative) ring and  $I_1,I_2,I_3\subseteq R$ be ideals such tha
 $I_2+I_3=R$. Show that $(I_1\cap I_2)+I_3=R$. 
 
 \subsection*{Response}
+\begin{proof}
 Let $R$ be a commutative ring ant $I_1, I_2, I_3 \subseteq R$ be ideals such that $I_1 + I_3 = R$
 and $I_2 + I_3 = R$. 
 \bf{$\bm{(I_1 \cap I_2) + I_3 \subseteq R}$:}
@@ -150,6 +160,7 @@ we get $x(ab) + x((ad + cb) + cd) = x \in (I_1 \cap I_2) + I_3$.
 
 Since $(I_1 \cap I_2) + I_3 \subseteq R$ and $(I_1 \cap I_2) + I_3 \supseteq R$, 
 $(I_1 \cap I_2) + I_3 = R$.
+\end{proof}
 
 \newpage
 \section*{Question 4}
@@ -162,6 +173,7 @@ for $i\neq j$. Let $a_1,a_2,a_3$ be any ideals. Show that there is some $x\in R$
 \end{align*}
 
 \subsection*{Response}
+\begin{proof}
 Let $R$ be a commutative ring and let $I_1, I_2, I_3 \subseteq R$ be ideals where 
 $I_i + I_j = R$ for $i \neq j$. Let $a_1, a_2, a_3 \in R$.
 Then $I_1 + I_2 = R$, $I_1 + I_3 = R$, and $I_2 + I_3 = R$, so 
@@ -187,91 +199,95 @@ $x := a_1(qu) + a_2(ps) + a_3(rv)$. Then
     x &= a_1(qu) + a_2(ps) + a_3(rv) 
     \equiv a_3(rv) \pmod{I_3} && qu \in I_3, ps \in I_1 \cap I_3 \subseteq I_3
 \end{align*}
-so
+Here, $q \equiv 1 \pmod{I_1}$ since $p \equiv 0 \pmod{I_1}$. Similarly, $u \equiv 1 \pmod{I_1}$ 
+since $v \equiv \pmod{I_1}$. So, $qu \equiv 1 \pmod{I_1}$. A simliar argument can be made for 
+$ps$ and $rv$. Then we get
 \begin{align*}
       x &\equiv a_1 \pmod{I_1} \\
       x &\equiv a_2 \pmod{I_2} \\
       x &\equiv a_3 \pmod{I_3}
 \end{align*}
-
-\newpage
-\section{Midterm Review --- Do NOT turn this stuff in.}
-
-Note: Just like all other homework problems, the problems above are fair game for the midterm! 
-
-\begin{enumerate}
-    \item Let $R$ be a commutative ring. We say that $r\in R$ is \underline{nilpotent} if there is some $n>0$ such that $r^n=0$. 
-        \begin{enumerate}
-            \item Let $P\subseteq R$ be a prime ideal. Show that if $r\in R$ is nilpotent, then $r\in P$. 
-
-            \item Let $N\subseteq R$ be the set of all nilpotent elements of $R$. Show that $N$ forms an ideal. 
-        \end{enumerate}
-
-    \item Let $R$ be any nonzero ring. Show that $R$ has a subring that is isomorphic to $\Z$ or $\Z/n$ (for some positive integer $n>0$).
-
-    \item Let $R$ be a ring and let $I_1,I_2,I_3,\cdots $ be ideals such that the ideals are nested in an ascending manner: $I_1\subseteq I_2\subseteq I_3\subseteq\cdots$.
-        Show that $\bigcup\limits_{i=1}^\infty I_i$ is an ideal. 
-
-        \begin{proof}
-            \begin{enumerate}
-                \item Since $I_i$ is an ideal, $0 \in I_i \subseteq \bigcup^{\infty}_{i = 1}$.
-                \item Take $a, b \in \bigcup^{\infty}_{i = 1}$. Then $a \in I_j$, $b \in I_k$ for 
-                    some $j, k$. Without loss of generality, let $j \leq k$. Then 
-                    $a + b \in I_k \subseteq \bigcup^{\infty}_{i = 1}$.
-                \item Take $a \in \bigcup^{\infty}_{i = 1}$, $r \in R$. Then $a \in I_j$ for some
-                    $j$ and since $I_j$ is an ideal, 
-                    $ar, ra \in I_j \subseteq \bigcup^{\infty}_{i = 1}$.
-            \end{enumerate}
-            Since (a) - (c) are satisfied, $\bigcup^{\infty}_{i = 1}$ is an ideal.
-        \end{proof}
-
-    \item Let $m,n,d\in \Z$. Show the following are equivalent: 
-        \begin{enumerate}
-            \item There is a homomorphism $f:\Z/d\to \Z/m\times \Z/n$;
-            \item We have $m|d$ and $n|d$.
-        \end{enumerate}
-
-        \begin{proof}
-            ($\implies$) Let $f : \Z/d \to \Z/m \times \Z/n$ be a homomorphism defined by
-            \[f([x]_d) = ([x]_m, [x]_n)\] 
-            Then $f([0]_d) = ([0]_m, [0]_n)$. Take $k = k + 1$ to get
-            \[
-                f([k + 1]_d) 
-                = f([k]_d + [1]_d) 
-                = f([k]_d) + f([1]_d) 
-                = ([k]_n, [k]_m) + ([1]_n, [1]_m)
-                = ([k + 1]_m, [k + 1]_n)
-            \]
-            Then $f([d]_d) = f([0]_d) = ([0]_m, [0]_n)$, so $m \mid d$ and $n \mid d$.
-            \vspace{0.5em}
-            ($\impliedby$) Let $m \mid d, n \mid d$. Then define 
-            $f : \Z/d \to \Z/m \times \Z/n$ by 
-            \[f([x]_d) = ([x]_m, [x]_n)\]
-            \paragraph{Well-defined:} Suppose $[x]_d = [y]_d$. Then $x \equiv y \pmod{d}$. By 
-            definition, $d \mid x - y$. Then since $m \mid d$ and $n \mid d$, 
-            $m \mid x - y$ and $n \mid x - y$, or $x \equiv y \pmod{m}$ and $x \equiv y \pmod{n}$.
-            Then $f([x]_d) = ([x]_m, [x]_n) = ([y]_m, [y]_n) = f([y]_d)$, so $f$ is well-defined.
-            \paragraph{Homomorphism:}
-            \begin{enumerate}
-                \item Take $a, b \in \Z/d$. Then 
-                   \[
-                       f([a + b]_d) 
-                       = ([a + b]_m, [a + b]_n)
-                       = ([a]_m, [a]_n) + ([b]_m, [b]_n)
-                       = f([a]_d) + f([b]_d)
-                   \]
-               \item Take $a, b \in \Z/d$. Then
-                   \[
-                       f([a \cdot b]_d) 
-                       = ([a \cdot b]_m, [a \cdot b]_n)
-                       = ([a]_m, [a]_n) \cdot ([b]_m, [b]_n)
-                       = f([a]_d) \cdot f([b]_d)
-                   \]
-               \item $f([1]_d) = ([1]_m, [1]_n)$.
-            \end{enumerate}
-            so $f$ is a homomorphism.
-        \end{proof}
-\end{enumerate}
+\end{proof}
 
 \end{document}
+% \newpage
+% \section{Midterm Review --- Do NOT turn this stuff in.}
+
+% Note: Just like all other homework problems, the problems above are fair game for the midterm! 
+
+% \begin{enumerate}
+%     \item Let $R$ be a commutative ring. We say that $r\in R$ is \underline{nilpotent} if there is some $n>0$ such that $r^n=0$. 
+%         \begin{enumerate}
+%             \item Let $P\subseteq R$ be a prime ideal. Show that if $r\in R$ is nilpotent, then $r\in P$. 
+
+%             \item Let $N\subseteq R$ be the set of all nilpotent elements of $R$. Show that $N$ forms an ideal. 
+%         \end{enumerate}
+
+%     \item Let $R$ be any nonzero ring. Show that $R$ has a subring that is isomorphic to $\Z$ or $\Z/n$ (for some positive integer $n>0$).
+
+%     \item Let $R$ be a ring and let $I_1,I_2,I_3,\cdots $ be ideals such that the ideals are nested in an ascending manner: $I_1\subseteq I_2\subseteq I_3\subseteq\cdots$.
+%         Show that $\bigcup\limits_{i=1}^\infty I_i$ is an ideal. 
+
+%         \begin{proof}
+%             \begin{enumerate}
+%                 \item Since $I_i$ is an ideal, $0 \in I_i \subseteq \bigcup^{\infty}_{i = 1}$.
+%                 \item Take $a, b \in \bigcup^{\infty}_{i = 1}$. Then $a \in I_j$, $b \in I_k$ for 
+%                     some $j, k$. Without loss of generality, let $j \leq k$. Then 
+%                     $a + b \in I_k \subseteq \bigcup^{\infty}_{i = 1}$.
+%                 \item Take $a \in \bigcup^{\infty}_{i = 1}$, $r \in R$. Then $a \in I_j$ for some
+%                     $j$ and since $I_j$ is an ideal, 
+%                     $ar, ra \in I_j \subseteq \bigcup^{\infty}_{i = 1}$.
+%             \end{enumerate}
+%             Since (a) - (c) are satisfied, $\bigcup^{\infty}_{i = 1}$ is an ideal.
+%         \end{proof}
+
+%     \item Let $m,n,d\in \Z$. Show the following are equivalent: 
+%         \begin{enumerate}
+%             \item There is a homomorphism $f:\Z/d\to \Z/m\times \Z/n$;
+%             \item We have $m|d$ and $n|d$.
+%         \end{enumerate}
+
+%         \begin{proof}
+%             ($\implies$) Let $f : \Z/d \to \Z/m \times \Z/n$ be a homomorphism defined by
+%             \[f([x]_d) = ([x]_m, [x]_n)\] 
+%             Then $f([0]_d) = ([0]_m, [0]_n)$. Take $k = k + 1$ to get
+%             \[
+%                 f([k + 1]_d) 
+%                 = f([k]_d + [1]_d) 
+%                 = f([k]_d) + f([1]_d) 
+%                 = ([k]_n, [k]_m) + ([1]_n, [1]_m)
+%                 = ([k + 1]_m, [k + 1]_n)
+%             \]
+%             Then $f([d]_d) = f([0]_d) = ([0]_m, [0]_n)$, so $m \mid d$ and $n \mid d$.
+%             \vspace{0.5em}
+%             ($\impliedby$) Let $m \mid d, n \mid d$. Then define 
+%             $f : \Z/d \to \Z/m \times \Z/n$ by 
+%             \[f([x]_d) = ([x]_m, [x]_n)\]
+%             \paragraph{Well-defined:} Suppose $[x]_d = [y]_d$. Then $x \equiv y \pmod{d}$. By 
+%             definition, $d \mid x - y$. Then since $m \mid d$ and $n \mid d$, 
+%             $m \mid x - y$ and $n \mid x - y$, or $x \equiv y \pmod{m}$ and $x \equiv y \pmod{n}$.
+%             Then $f([x]_d) = ([x]_m, [x]_n) = ([y]_m, [y]_n) = f([y]_d)$, so $f$ is well-defined.
+%             \paragraph{Homomorphism:}
+%             \begin{enumerate}
+%                 \item Take $a, b \in \Z/d$. Then 
+%                    \[
+%                        f([a + b]_d) 
+%                        = ([a + b]_m, [a + b]_n)
+%                        = ([a]_m, [a]_n) + ([b]_m, [b]_n)
+%                        = f([a]_d) + f([b]_d)
+%                    \]
+%                \item Take $a, b \in \Z/d$. Then
+%                    \[
+%                        f([a \cdot b]_d) 
+%                        = ([a \cdot b]_m, [a \cdot b]_n)
+%                        = ([a]_m, [a]_n) \cdot ([b]_m, [b]_n)
+%                        = f([a]_d) \cdot f([b]_d)
+%                    \]
+%                \item $f([1]_d) = ([1]_m, [1]_n)$.
+%             \end{enumerate}
+%             so $f$ is a homomorphism.
+%         \end{proof}
+% \end{enumerate}
+
+% \end{document}
 
