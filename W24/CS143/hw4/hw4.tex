@@ -1,0 +1,229 @@
+\documentclass{report}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{mathtools}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{mdframed}
+\usepackage{upquote}
+\usepackage{changepage}
+\usepackage{amssymb}
+\usetikzlibrary{calc,positioning,shapes.multipart,shapes}
+\usepackage[margin=0.5in]{geometry}
+
+\renewcommand{\it}[1]{\textit{{#1}}}
+\renewcommand{\bf}[1]{\textbf{{#1}}}
+\renewcommand{\tt}[1]{\texttt{{#1}}}
+
+\newcommand{\ib}[1]{\it{\bf{{#1}}}}
+
+\newmdenv[
+topline=true,
+bottomline=true,
+leftline=true,
+rightline=true,
+skipabove=\medskipamount,
+skipbelow=\medskipamount
+]{responseframe}
+\newenvironment{response}{\begin{responseframe}\vspace{-10pt}\paragraph{Response:}}{\end{responseframe}}
+
+% \pagestyle{fancy}
+% \fancyhf{}
+
+% \fancyhead[L]{\bf{Computer Science 143}}
+% \fancyhead[C]{\it{Homework 4}}
+% \fancyhead[R]{\bf{Warren Kim}}
+% \setlength{\headsep}{0.05in}
+
+\begin{document}
+\section*{Question 1}
+\begin{response}
+    Given $R(A, B, C, D, E, G)$ and the following decomposition: $R_1 = (A, B, C, G), R_2 = (A, D, E)$
+    with functional dependencies $F = \{ A \to B, A \to C, CD \to E, B \to D, E \to A \}$,
+    the decomposition is lossless if it satisfies the following:
+    \begin{enumerate}
+        \item $R_1 \cup R_2 = R:$ $R_1 \cup R_2 = (A, B, C, D, E, G) = R$ \checkmark
+        \item $R_1 \cap R_2 \neq \emptyset$: $R_1 \cap R_2 = (A) \neq \emptyset$ \checkmark
+        \item $(R_1 \cap R_2)^+$ forms a superkey for either $R_1$ or $R_2$:
+            Looking at $(R_1 \cap R_2)^+$, we have
+            $A^+ = ABCDE$, which forms a superkey for $R_2 = (A, D, E)$.
+            \newline
+            $B \in A^+$ by $A \to B$.
+            \newline
+            $C \in A^+$ by $A \to C$.
+            \newline
+            $D \in A^+$ by $A \to B \to D$.
+            \newline
+            $E \in A^+$ by $A \to C, A \to B \to D \implies A \to CD \to E$. \checkmark
+    \end{enumerate}
+    \noindent The decomposition is \bf{lossless}.
+\end{response}
+
+\newpage
+\section*{Question 2}
+\begin{response}
+    Given the following relation
+    \begin{center}
+        \begin{tabular}{c|c|c}
+            $A$ & $B$ & $C$ \\
+            \hline
+            $a_1$ & $b_1$ & $c_2$ \\
+            $a_1$ & $b_1$ & $c_1$ \\
+            $a_2$ & $b_1$ & $c_1$ \\
+            $a_2$ & $b_1$ & $c_3$ \\
+        \end{tabular}
+    \end{center}
+    \noindent The non-trivial functional dependencies satisfied by the relation are:
+    \newline
+    $A \to B$ since $a_1 \mapsto b_1$.
+    \newline
+    $C \to B$ since $c_1 \mapsto b_1, c_2 \mapsto b_1, c_3 \mapsto b_1$.
+    \newline
+    $AC \to B$ since $(a_1, c_1) \mapsto b_1, (a_1, c_2) \mapsto b_1, (a_2, c_1) \mapsto b_1, (a_2, c_3) \mapsto b_1$.
+\end{response}
+
+\newpage
+\section*{Question 3}
+\begin{response}
+    Given the following relation:
+    \begin{center}
+        \begin{tabular}{l|l|l|l}
+            $A$ & $B$ & $C$ & $D$ \\
+            \hline
+            Name & Class & Score & Grade \\
+            \hline
+            Ted E. Bear & CS111 & 65 & B \\
+            Ted E. Bear & CS143 & 78 & B \\
+            Wile E. Coyote & CS111 & 91 & A \\
+            Joe Bruin & CS118 & 31 & F \\
+            Josie Bruin & CS131 & 89 & A \\
+        \end{tabular}
+    \end{center}
+    \noindent The candidate key in the context of the problem is $AB$. The functional dependencies 
+    are
+    \newline
+    $AB \to C$, $AB \to D$ since $AB$ is a superkey.
+    \newline
+    $C \to D$ since there is only one score/grade per class.
+    \newline
+    $R$ is in $2NF$ if for every attribute in $R$, either (1) it is part of a candidate key or 
+    (2) the attribute depends on the entire candidate key. Clearly, $A, B$ are in the candidate key 
+    $AB$. The non-prime attributes $C, D$ both depend on the entire candidate key $AB$, so 
+    \bf{this relation is in 2NF}.
+    \newline
+    \bf{This relation is \ib{not} in 3NF} because $D$ can be determined through $C$, so there is 
+    a transitive dependency $AB \to C \to D$.
+\end{response}
+
+\newpage
+\section*{Question 4}
+\begin{response}
+    If we add another column called \tt{CourseName} that is determined by the \tt{Class} column,
+    it would no longer be 2NF since there would be a partial dependency $B \to E$, assuming
+    \tt{CourseName} column is named $E$.
+\end{response}
+
+\newpage
+\section*{Question 5}
+\begin{response}
+    $R(A, B, C, D, E, G)$ with functional dependencies $F = \{A \to B, A \to C, C \to E, B \to D\}$. \vspace{1em}
+
+    \noindent Note that $A^+ = ABCDE$, $B^+ = BD$, $C^+ = CE$.
+    By the union property, we have $F = \{A \to BC, C \to E, B \to D\}$.
+
+    \begin{itemize}[itemsep=0em]
+        \item $A \to BC$: \it{(i)} $A \to BC$ is not trivial. \it{(ii)} $A$ is not a superkey. \textsf{\bf{x}}
+        \item $C \to E$: \it{(i)} $C \to E$ is not trivial. \it{(ii)} $C$ is not a superkey. \textsf{\bf{x}}
+        \item $B \to D$: \it{(i)} $B \to D$ is not trivial. \it{(ii)} $B$ is not a superkey. \textsf{\bf{x}}
+    \end{itemize}
+    \noindent All three dependencies violate BCNF. Decomposing on $B \to D$, we get
+    $R_1(A, B, C, E, G), R_2(B, D)$.
+
+    \vspace{0.5em}
+
+    \noindent Looking at $R_1$:
+    \begin{itemize}[itemsep=0em]
+        \item $A \to BC$: \it{(i)} $A \to BC$ is not trivial. \it{(ii)} $A$ is not a superkey. \textsf{\bf{x}}
+        \item $C \to E$: \it{(i)} $C \to E$ is not trivial. \it{(ii)} $C$ is not a superkey. \textsf{\bf{x}}
+    \end{itemize}
+    \noindent Both dependencies violate BCNF. Decomposing on $C \to E$, we get
+    $R_3(A, B, C, G), R_4(C, E), R_2(B, D)$.
+
+    \vspace{0.5em}
+
+    \noindent Looking at $R_3$:
+    \begin{itemize}[itemsep=0em]
+        \item $A \to BC$: \it{(i)} $A \to BC$ is not trivial. \it{(ii)} $A$ is not a superkey. \textsf{\bf{x}}
+    \end{itemize}
+    \noindent $A \to BC$ violates BCNF. Decomposing on $A \to BC$, we get
+    $R_5(A, B, C), R_6(A, G), R_4(C, E), R_2(B, D)$.
+    \vspace{1em}
+    
+    \noindent Reindexing the decomposition, we get
+    $R_1(A, G), R_2(C, E), R_3(B, D), R_4(A, B, C)$. Recall the following attribute closures:
+    $A^+ = ABCDE, B^+ = BD, C^+ = CE, D^+ = D, E^+ = E, G^+ = G$. Then,
+    \vspace{-0.5em}
+    \begin{itemize}[itemsep=0em]
+        \item $B \to D$: 
+            \newline
+            \noindent Iteration 1:
+            \vspace{-1em}
+            \begin{align*}
+                result &= B \\
+                t &= (B \cap R_1)^+ \cap R_1
+                = (B \cap AG)^+ \cap AG
+                = \emptyset \to result = B \\
+                t &= (B \cap R_2)^+ \cap R_2
+                = (B \cap CE)^+ \cap CE
+                = \emptyset \to result = B \\
+                t &= (B \cap R_3)^+ \cap R_2
+                = (B \cap BD)^+ \cap BD
+                = BD \cap BD
+                = BD \to result = BD \ \checkmark \\
+                short \ circuit
+            \end{align*}
+            We derived $D$, so $B \to D$ is preserved.
+        \item $C \to E$: 
+            \newline
+            \noindent Iteration 1:
+            \vspace{-1em}
+            \begin{align*}
+                result &= C \\
+                t &= (C \cap R_1)^+ \cap R_1
+                = (C \cap AG)^+ \cap AG
+                = \emptyset \to result = C \\
+                t &= (C \cap R_2)^+ \cap R_2
+                = (C \cap CE)^+ \cap CE
+                = CE \cap CE = CE \to result = CE \ \checkmark \\
+                short \ circuit
+            \end{align*}
+            We derived $E$, so $C \to E$ is preserved.
+        \item $A \to BC$: 
+            \newline
+            \noindent Iteration 1:
+            \vspace{-1em}
+            \begin{align*}
+                result &= A \\
+                t &= (A \cap R_1)^+ \cap R_1
+                = (A \cap AG)^+ \cap AG
+                = ABCDE \cap AG = A \to result = A \\
+                t &= (A \cap R_2)^+ \cap R_2
+                = (A \cap CE)^+ \cap CE
+                = \emptyset \to result = A \\
+                t &= (A \cap R_3)^+ \cap R_3
+                = (A \cap BD)^+ \cap BD
+                = \emptyset \to result = A \\
+                t &= (A \cap R_4)^+ \cap R_4
+                = (A \cap ABC)^+ \cap ABC
+                = ABCDE \cap ABC = ABC \to result = ABC \\
+                short \ circuit
+            \end{align*}
+            We derived $BC$, so $A \to BC$ is preserved.
+    \end{itemize}
+    Because every functional dependency was preserved, this decomposition is dependency preserving.
+\end{response}
+
+\end{document}
