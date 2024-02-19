@@ -1,0 +1,92 @@
+\documentclass [12pt] {article}
+
+\newtheorem{exercise}{Exercise}[section]
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{problem}{Problem}
+\newtheorem{solution}{Solution}
+\newtheorem{cor}{Corollary}[section]
+\newtheorem{prop}{Proposition}[section]
+\newtheorem{rmk}{Remark}[section]
+\newtheorem{conj}{Conjecture}[section]
+\usepackage{amsfonts}      
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[margin=0.75in]{geometry} 
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newenvironment{proof}{\paragraph{Proof:}}{\hfill$\square$}
+\setlength\parindent{0pt}
+
+
+
+
+\title{110A HW6}
+\author{Warren Kim}
+\date{Winter 2024}
+
+\begin{document}
+
+\maketitle
+
+\section*{Question 1}
+Consider $\Z$, and let $p\in\Z$ be nonzero. Show that $(p)$ is a prime ideal if and only if $p$ is prime. 
+\subsection*{Response}
+\begin{proof}
+    Let $p \in \Z$ be nonzero. 
+    \newline
+    ($\implies$)
+    Suppose that $(p)$ is a prime ideal. Consider $ab \in (p)$. This means that $p \mid ab$ since
+    we can represent $ab = pr$ for some $r \in \Z$. If $ab \in (p)$, then by definition either 
+    $a \in (p)$ or $b \in (p)$. If $b \in (p)$, then we are done, so suppose not. Then $a \in (p)$;
+    that is, $p \mid a$. Since the following two statements
+    \begin{enumerate}
+        \item $p$ is prime.
+        \item If $p \mid ab$, then $p \mid a$ or $p \mid b$.
+    \end{enumerate}
+    are equivalent and $a, b \in \Z$ were arbitrary, $p$ is prime.
+    \vspace{0.5em}
+
+    ($\impliedby$)
+    Suppose that $p$ is prime. Suppose $p \mid ab$. Then by definition, either $p \mid a$ or $p \mid b$.
+    Without loss of generality, suppose $p \mid a$ and consider $(p) \subseteq \Z$. Then 
+    $ab \in (p)$ since $p \mid ab$. But since $p \mid a$, $a \in (p)$. Since $a, b \in \Z$ were
+    arbitrary, $(p)$ is a prime ideal.
+    \vspace{0.5em}
+
+    Since we proved both directions, $(p)$ is a prime ideal if and only if $p$ is prime.
+\end{proof}
+
+\newpage
+\section*{Question 2}
+Let $R=\Z/1024$, and consider the principal ideal $I=([2])\subseteq R$. Show that $I$ is maximal. 
+\subsection*{Response}
+\begin{proof}
+    Let $R = \Z/1024$ and consider the principal ideal $I = ([2]) \subseteq R$. Then $1 \not \in I$,
+    so $I \subsetneq R$ is a proper ideal. Note that $([2])$ contains all even elements of
+    $\Z/1024$. Suppose we have some ideal $J \subseteq R$ such that $J \supsetneq I$. Then there
+    exists $[a] \in J$ such that $a$ is odd. Since $J$ contains $I$, $[2] \in J$. 
+    Then $[a] - [2] \in J$ is also odd. Then we have that $[a] - [2q] \in J$ for 
+    $q \in \Z$. Since $a$ is odd, we can represent $a := 2k + 1$ for some $k \in \Z$. 
+    Put $k := q$. Then $[a] - [2q] = [2q + 1 - 2q] = [1] \in J$. Since 
+    $[1] \in J$, this implies that $J = R$. Thus, $I$ is maximal.
+\end{proof}
+
+\newpage
+\section*{Question 3}
+Let $f:R\to S$ be surjective, and let $P\subseteq S$ be a prime ideal. Show that $f^{-1}(P)\subseteq R$ is a prime ideal. 
+\subsection*{Response}
+
+\newpage
+\section*{Question 4}
+Let $f:R\to S$ be surjective, and let $M\subseteq S$ be a maximal ideal. Shw that $f^{-1}(M)\subseteq R$ is maximal. 
+\subsection*{Response}
+
+\newpage
+
+\end{document}
+
