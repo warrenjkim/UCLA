@@ -70,23 +70,67 @@ Let $R=\Z/1024$, and consider the principal ideal $I=([2])\subseteq R$. Show tha
     so $I \subsetneq R$ is a proper ideal. Note that $([2])$ contains all even elements of
     $\Z/1024$. Suppose we have some ideal $J \subseteq R$ such that $J \supsetneq I$. Then there
     exists $[a] \in J$ such that $a$ is odd. Since $J$ contains $I$, $[2] \in J$. 
-    Then $[a] - [2] \in J$ is also odd. Then we have that $[a] - [2q] \in J$ for 
-    $q \in \Z$. Since $a$ is odd, we can represent $a := 2k + 1$ for some $k \in \Z$. 
+    Then $[a] - [2] \in J$ is also odd$^*$. We also have that $[2q] \in I$ for 
+    $q \in \Z$, so $[a] - [2q] \in J$. Since $a$ is odd, we can represent $a := 2k + 1$ for some $k \in \Z$. 
     Put $k := q$. Then $[a] - [2q] = [2q + 1 - 2q] = [1] \in J$. Since 
-    $[1] \in J$, this implies that $J = R$. Thus, $I$ is maximal.
+    $[1] \in J$, this implies that $J = R$. Thus, $I$ is a maximal ideal.
 \end{proof}
+\vspace{2em}
+
+$^*$ $[a] - [2] \in J$ is also odd since we can write $a = 2k + 1$ for some $k \in \Z$, so
+$[2k + 1] - [2] = [2k + 1 - 2] = [2(k - 1) + 1]$ is an odd number by definition.
 
 \newpage
 \section*{Question 3}
+\newcommand{\finv}{f^{-1}}
 Let $f:R\to S$ be surjective, and let $P\subseteq S$ be a prime ideal. Show that $f^{-1}(P)\subseteq R$ is a prime ideal. 
 \subsection*{Response}
+\begin{proof}
+    Suppose $f : R \to S$ is a surjective ring homomorphism and $P \subseteq S$ is a prime ideal. Then 
+    define $\finv(P) \subseteq R$ to be the preimage of $S$ under $f$; i.e. $\finv(P) := \{ x \in R : f(x) \in S \}$.
+    Using the fact that ``\textit{if $J \subseteq S$ is any ideal, then $\finv(J) = \{x \in R \mid f(x) \in J\}$
+    is also an ideal of $R$}'' from class, we have that $\finv(P)$ is an ideal since $P$ is an ideal.
+    Pick $a, b \in R$ such that $ab \in \finv(P)$. Then either $a \in \finv(P)$ or $b \in \finv(P)$. 
+    Now since $ab \in \finv(P)$ by assumption, we have that $f(ab) = f(a)f(b)\in P$. 
+    Since $P$ is a prime ideal, we have that either $f(a) \in P$ or $f(b) \in P$; i.e. either 
+    $a \in \finv(P)$ or $b \in \finv(P)$ by definiton of the preimage. Since $a, b \in R$ were arbitrary,
+    $\finv(P)$ is a prime ideal.
+\end{proof}
+
 
 \newpage
 \section*{Question 4}
-Let $f:R\to S$ be surjective, and let $M\subseteq S$ be a maximal ideal. Shw that $f^{-1}(M)\subseteq R$ is maximal. 
+Let $f:R\to S$ be surjective, and let $M\subseteq S$ be a maximal ideal. Show that $f^{-1}(M)\subseteq R$ is maximal. 
 \subsection*{Response}
+\begin{proof}
+Let $f : R \to S$ be a surjective ring homomorphism, and let $M \subseteq S$ be a maximal ideal.
+Then define $\finv(M)$ to be the preimage of $M$ under $f$; i.e. $\finv(M) := \{x \in R : f(x) \in S\}$.
+Using the fact that ``\textit{if $J \subseteq S$ is any ideal, then $\finv(J) = \{x \in R \mid f(x) \in J\}$
+is also an ideal of $R$}'' from class, we have that $\finv(M)$ is an ideal since $M$ is an ideal. 
+Consider an ideal $N \subseteq R$ such that $\finv(M) \subsetneq N \subseteq R$. Then $f(N)$ is an 
+ideal of $S$ since
+\begin{enumerate}
+    \item Take $c, d \in f(N)$. Since $f$ is surjective, there exist $a, b \in R$ such that
+        $f(a) = c, f(b) = d$. Then since $N$ is an ideal, it is closed under subtraction so
+        $f(a - b) = f(a) - f(b) = c - d \in f(N)$.
+    \item Take $b \in f(N)$ and $s \in S$. Then since $f$ is surjective, there exists
+        $r, a \in R$ such that $f(r) = s, f(a) = b$. Since $N$ is an ideal, $ar, ra \in N$ so 
+        $f(ar) = f(a)f(r) = bs \in f(N)$ and $f(ra) = f(r)f(a) = sb \in f(N)$.
+    \item Since $N$ is an ideal, $0_R \in N$. Since $f$ is a ring homomorphism, $f(0_R) = f(0_S)$. Then
+        $0_S = f(0_R) \in f(N)$.
+\end{enumerate}
+(1) - (3) are satisfied. 
+\vspace{1em}
 
-\newpage
+Now, consider $f(\finv(M))$. Then $f(\finv(M)) \subseteq M$ since if we take
+$f(a) \in f(\finv(M))$, then $f(a) \in M$ because $a \in \finv(M)$. Now since $f$ is surjective,
+for all $y \in M$, there exists $x \in R$ such that $f(x) = y$. But $x \in \finv(M)$ since 
+$f(x) = y \in M$, so $f(\finv(M)) \supseteq M$. Thus, $f(\finv(M)) = M$.
+\vspace{1em}
 
+Since $M$ is maximal, either $f(N) = S$ or $f(N) = f(\finv(M)) = M$. If $f(N) = S$, then
+since $f$ is surjective, so there exists $a \in R$ such that $f(a) = 1_S$. This implies that $N = R$. 
+If $f(N) = f(\finv(M)) = M$, then $N \subseteq \finv(M)$, a contradiction. So, $\finv(M)$ is a maximal ideal.
+\end{proof}
 \end{document}
 
