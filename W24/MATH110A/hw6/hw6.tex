@@ -67,17 +67,22 @@ Let $R=\Z/1024$, and consider the principal ideal $I=([2])\subseteq R$. Show tha
 \subsection*{Response}
 \begin{proof}
     Let $R = \Z/1024$ and consider the principal ideal $I = ([2]) \subseteq R$. Then $1 \not \in I$,
-    so $I \subsetneq R$ is a proper ideal. Note that $([2])$ contains all even elements of
-    $\Z/1024$. Suppose we have some ideal $J \subseteq R$ such that $J \supsetneq I$. Then there
+    so $I \subsetneq R$ is a proper ideal. Note that $([2])$ contains all even$^1$ elements of
+    $\Z/1024$.
+    Suppose we have some ideal $J \subseteq R$ such that $J \supsetneq I$. Then there
     exists $[a] \in J$ such that $a$ is odd. Since $J$ contains $I$, $[2] \in J$. 
-    Then $[a] - [2] \in J$ is also odd$^*$. We also have that $[2q] \in I$ for 
+    Then $[a] - [2] \in J$ is also odd$^2$. We also have that $[2q] \in I$ for 
     $q \in \Z$, so $[a] - [2q] \in J$. Since $a$ is odd, we can represent $a := 2k + 1$ for some $k \in \Z$. 
     Put $k := q$. Then $[a] - [2q] = [2q + 1 - 2q] = [1] \in J$. Since 
     $[1] \in J$, this implies that $J = R$. Thus, $I$ is a maximal ideal.
 \end{proof}
 \vspace{2em}
 
-$^*$ $[a] - [2] \in J$ is also odd since we can write $a = 2k + 1$ for some $k \in \Z$, so
+$1$: Take $[a] \in ([2])$. Then $[a] = [2p] = [2][p] \in ([2])$ for some $p \in \Z$, so $a$ is an
+even number by definition.
+\vspace{0.5em}
+
+$2$: $[a] - [2] \in J$ is also odd since we can write $a = 2k + 1$ for some $k \in \Z$, so
 $[2k + 1] - [2] = [2k + 1 - 2] = [2(k - 1) + 1]$ is an odd number by definition.
 
 \newpage
@@ -129,7 +134,7 @@ $f(x) = y \in M$, so $f(\finv(M)) \supseteq M$. Thus, $f(\finv(M)) = M$.
 \vspace{1em}
 
 Since $M$ is maximal, either $f(N) = S$ or $f(N) = f(\finv(M)) = M$. If $f(N) = S$, then
-since $f$ is surjective, so there exists $a \in R$ such that $f(a) = 1_S$. This implies that $N = R$. 
+since $f$ is surjective, this means that $N$ maps onto all of $S$, so $N = R$.
 If $f(N) = f(\finv(M)) = M$, then $N \subseteq \finv(M)$, a contradiction. So, $\finv(M)$ is a maximal ideal.
 \end{proof}
 \end{document}
