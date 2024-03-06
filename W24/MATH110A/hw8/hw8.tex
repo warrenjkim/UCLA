@@ -1,0 +1,287 @@
+\documentclass [12pt] {article}
+
+\newtheorem{exercise}{Exercise}[section]
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{problem}{Problem}
+\newtheorem{solution}{Solution}
+\newtheorem{cor}{Corollary}[section]
+\newtheorem{prop}{Proposition}[section]
+\newtheorem{rmk}{Remark}[section]
+\newtheorem{conj}{Conjecture}[section]
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage{amssymb}
+\usepackage[margin=0.75in]{geometry}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newenvironment{proof}{\paragraph{Proof:}}{\hfill$\square$}
+\setlength\parindent{0pt}
+% \setcounter{section}{-1}
+
+
+
+
+\title{110A HW8}
+\author{Warren Kim}
+\date{Winter 2024}
+
+\begin{document}
+
+\maketitle
+
+Throughout this section, $F$ is a field and $F[x]$ is the ring of polynomials with $F$ coefficients.
+
+\section*{Question 1}
+\begin{enumerate}
+    \item Let $a\in F$. Show that $x-a\in F[x]$ is irreducible.
+    \item Let $f\in F[x]$, and suppose $\deg(f)=n>0$. Show that $f$ has at most $n$ roots.
+\end{enumerate}
+
+\subsection*{Response}
+\begin{enumerate}
+    \item Let $a\in F$. Show that $x-a\in F[x]$ is irreducible.
+        \begin{proof}
+            Let $a \in F$ and $x - a \in F[x]$. Since $\deg(x - a) = 1$, we have that the only
+            polynomials with degree less than 1 are constant polynomials with degree 0. Take any
+            $g \in F[x]$ with $\deg(g) = 0$ and $h \in F[x]$ such that $x - a = gh$. Then $g \in F$,
+            and since $F$ is a field, $g$ is a unit. Then, $h$ must be an associate of $x - a$.
+            Therefore, the only factors of $x - a$ are units an associates, so $x - a$ is
+            irreducible.
+        \end{proof}
+    \item Let $f\in F[x]$, and suppose $\deg(f)=n>0$. Show that $f$ has at most $n$ roots.
+        \begin{proof}
+            Let $f \in F[x]$ and suppose $\deg(f) = n > 0$. We will induct on
+            $n \in \N$. At $n = 1$, we have that $f = a_0 + a_1x = 0$ with $a_1 \neq 0$, so
+            $f$ has exactly one root. Suppose the base case holds for all $1 \leq k < n$. Then when
+            $k = n$, if $f$ has a root $r \in F$, we can uniquely factor $f$ to get
+            $f = (x - r)g$ for some $g \in F[x]$ where $\deg(g) = n - 1$. Then
+            by the inductive hypothesis, $g$ has at most $k$ roots, so $f$ has at most
+            $n - 1 + 1 = n$ roots since $r$ is a root by assumption. Therefore, this holds for all
+            $n \in \N$.
+        \end{proof}
+\end{enumerate}
+\newpage
+
+\section*{Question 2}
+Let $I\subseteq F[x]$ be an ideal. Show that $I$ is principal.
+
+\subsection*{Response}
+\begin{proof}
+    Let $I \subseteq F[x]$ be an ideal. If $I = \{ 0 \}$, then we are done since $F$ is a field
+    $\implies (0)$ is principal, so suppose not. Then take $f \in I$ to be the polynomial of least
+    degree, and consider $(f)$.
+    \newline
+    ($(f) \subseteq I$)
+    Since $f \in I$, $fa \in I$ for all $a \in F[x]$, so $(f) \subseteq I$.
+    \vspace{1em}
+
+    ($(f) \supseteq I$)
+    Take $a \in I$. Then we can write $a = fq + r$ for $q, r \in F[x]$ where
+    $0 \leq \deg(r) < \deg(f)$. Then we can rewrite the equation as $r = a - fq$. Because $f \in I$,
+    we have $fq \in I$ since $I$ is an ideal. Then $r = a - fq \in I$ since $a, fq \in I$. Then
+    it must be the case that $\deg(r) = 0$ since otherwise, we have that
+    $\deg(r) = \deg(a - fq) < \deg(f)$ which is a contradiction since $f$ was chosen to be the
+    polynomial with least degree. Therefore, $\deg(r) = 0$ so $a = fq$; i.e. $f \mid a$, so
+    $a \in (f)$. Since $a$ was arbitrary, $I \subseteq (f)$.
+    \vspace{1em}
+
+    Since we showed $(f) \subseteq I$ and $(f) \supseteq I$, we have that $(f) = I$ is principal.
+\end{proof}
+\newpage
+
+
+\section*{Question 3}
+Let $R$ be an integral domain (you can do this with any commutative ring). Show that the relation
+$a\sim b$ if $a$ and $b$ are associates forms an equivalence relation.
+
+\subsection*{Response}
+\begin{proof}
+    Note that $a, b$ are associates if $a = bc$ for some $c \in R$.
+    Let $R$ be an integral domain and $a, b, c \in R$. Then
+    \begin{enumerate}[label=\textit{(\roman*)}]
+        \item $a \sim a$. Pick $d = 1 \in R$. Then $a = ad = a \cdot 1 = a$; i.e. $a$ and
+            $a$ are associates, so $\sim$ is \textbf{reflexive}.
+        \item $a \sim b \implies b \sim a$. We have that $a = bd$ for some unit $d \in R$.
+            Since $d$ is a unit, there exists $d^{-1} \in R$. Multiplying both sides by $d^{-1}$,
+            we get $ad^{-1} = bd \cdot d^{-1} = b$; i.e. $b$ and $a$ are associates,
+            so $\sim$ is \textbf{symmetric}.
+        \item $a \sim b, b \sim c \implies a \sim c$. We have that $a = bd$ and $b = ce$
+            for some $d, e \in R$. Then $a = bd = (ce)d = c(ed)$. Setting $f := ed$, we get
+            $a = cf$; i.e. $a$ and $c$ are associates, so $\sim$ is \textbf{transitive}.
+    \end{enumerate}
+    Since (1) - (3) hold, $\sim$ is an equivalence relation on elements of $R$.
+\end{proof}
+\newpage
+
+
+\section*{Question 4}
+Let $R$ be an integral domain, and let $p\in R$. Show that $p$ is irreducible if and only if $p=bc$
+implies $b$ or $c$ is a unit.
+
+\subsection*{Response}
+\begin{proof}
+    Let $R$ be an integral domain, and let $p \in R$.
+    \newline
+    ($\implies$)
+    Suppose $p$ is irreducible. Let $p = bc$ for some $b, c \in R$. Then $p \mid p = bc$, so
+    $p \mid b$ or $p \mid c$. There are two cases:
+    \begin{enumerate}[label=\textbf{Case \arabic*:}, leftmargin=*]
+        \item  If $p \mid b$, then there exists $a \in R$ such that $b = ap$. So $b$ is an associate
+            of $p$, and since $p$ is irreducible, this implies that $c$ is a unit.
+        \item If $p \nmid b$, then $(p, b) = 1$ which implies that $p \mid c$. Then $c = pa$ for
+            some $a \in R$, so we have $p = bc = b(pa)$. Since $R$ is an integral domain, we cancel
+            $p$ to get $1 = ba$, so $b$ is a unit.
+    \end{enumerate}
+    In either case, either $b$ or $c$ is a unit.
+    \vspace{1em}
+
+    ($\impliedby$)
+    Suppose $p = bc$ implies that either $b$ or $c$ is a unit. Without loss of generality, let $b$
+    be a unit. Then there exists $a \in R$ such that $ab = 1$. Then
+    \begin{align*}
+        bc &= p \\
+        abc &= ap \\
+        1 \cdot c &= ap \\
+        c &= ap
+    \end{align*}
+    so $c$ is an associate of $p$. Since $c$ was arbitrary, we have that the only factors of $p$ are
+    units and associates, so $p$ is irreducible. Because we have proved both directions, we have
+    that $p$ is irreducible if and only if $p = bc$ implies $b$ or $c$ is a unit.
+\end{proof}
+\newpage
+
+
+\section*{Question 5}
+Let $R$ be an integral domain, and let $p\in R$. Show that the principal ideal $(p)$ is a prime
+ideal if and only if $p$ is prime.
+
+\subsection*{Response}
+\begin{proof}
+    Let $R$ be an integral domain and $p \in R$. Consider the principal ideal $(p) \subseteq R$.
+    \newline
+    ($\implies$)
+    Suppose $(p)$ is a prime ideal. Then, whenever $ab \in (p)$ for $a, b \in R$, we have either
+    $a \in (p)$ or $b \in (p)$. Take $a, b \in R$ such that $ab \in (p)$. Then $p \mid ab$ by definition
+    since we can represent $ab = pr$ for some $r \in R$. Since either $a \in (p)$ or $b \in (p)$,
+    we have that $p \mid a$ or $p \mid b$. Because the following statements:
+    \begin{enumerate}
+        \item $p$ is prime.
+        \item If $p \mid ab$, then $p \mid a$ or $p \mid b$.
+    \end{enumerate}
+    are equivalent, $p$ is prime.
+    \vspace{1em}
+
+    ($\impliedby$)
+    Suppose $p$ is prime; i.e. if $p \mid ab$ for $a, b \in R$, then eiher $p \mid a$ or $p \mid b$.
+    Then since $p \mid ab$, we can write $ab = pr$ for some $r \in R$, so $pr = ab \in (p)$. Without
+    loss of generality, suppose $p \mid a$. Then $a = pq$ for some $q \in R$, so $pq = a \in (p)$.
+    Since $a, b \in R$ were arbitrary, $(p)$ is a prime ideal. Because we have proven both
+    directions, we have that $(p)$ is a prime ideal if and only if $p$ is prime.
+\end{proof}
+\newpage
+
+
+\section*{Question 6}
+Let $R$ be an integral domain. We denote $S(R)=\{(a,b)|a,b\in R;b\neq 0\}$. Consider the relation
+$(a,b)\sim (a',b')$ if $ab'=a'b$.
+\begin{enumerate}
+    \item Show that the relation $\sim$ forms an equivalence relation on elements of $S(R)$.
+    \item Suppose $(a,b)\sim (a',b')$ and $(c,d)\sim (c',d')$. Show that
+        $(ad+bc,bd)\sim (a'd'+b'c',b'd')$
+\end{enumerate}
+
+\subsection*{Response}
+Let $R$ be an integral domain and define $S(R) = \{ (a, b) : a, b \in R; b \neq 0 \}$. Consider
+the relation $(a, b) \sim (a', b')$ if $ab' = a'b$.
+\begin{enumerate}
+    \item Show that the relation $\sim$ forms an equivalence relation on elements of $S(R)$.
+        \begin{proof}
+            Let $a, b, c, d, e, f \in R$. Then
+            \begin{enumerate}[label=\textit{(\roman*)}]
+                \item $(a, b) \sim (a, b)$. By definition, $(a, b) \sim (a, b) \iff ab = ba$. Since
+                    integral domains are commutative, this is true, so $\sim$ is \textbf{reflexive}.
+                \item $(a, b) \sim (c, d) \implies (c, d) \sim (a, b)$. By definition,
+                    $(a, b) \sim (c, d) \iff ac = bd$. Since equality is symmetric, we have that
+                    $bd = ac \iff (c, d) \sim (a, b)$, so $\sim$ is \textbf{symmetric}.
+                \item $(a, b) \sim (c, d), (c, d) \sim (e, f)$. By definition,
+                    $(a, b) \sim (c, d) \iff ad = bc$ and $(c, d) \sim (e, f) \iff cf = de$. Then
+                    \begin{align*}
+                        ad &= bc \\
+                        adf &= bcf \\
+                        afd &= bde && cf = de \\
+                        af &= be && \text{cancellation property}
+                    \end{align*}
+                    Therefore, $\sim$ is \textbf{transitive}.
+            \end{enumerate}
+            Since (1) - (3) hold, $\sim$ is an equivalence relation on elements of $S(R)$.
+        \end{proof}
+    \item Suppose $(a,b)\sim (a',b')$ and $(c,d)\sim (c',d')$. Show that
+        $(ad+bc,bd)\sim (a'd'+b'c',b'd')$
+        \begin{proof}
+            Suppose $(a, b) \sim (a', b')$ and $(c, d) \sim (c', d')$. By definition, $ab' = a'b$
+            and $cd' = c'd$. Note that $R$ is commutative since it is an integral domain. Then
+            \begin{align*}
+                (ad + bc) \cdot b'd' &= adb'd' + bcb'd' \\
+                                     &= (ab')dd' + cd'bb' && a'b = ab' \\
+                                     &= a'bdd' + (c'd)bb' && cd' = c'd \\
+                                     &= (a'd')bd + (b'c')bd \\
+                (ad + bc) \cdot b'd' &= (a'd' + b'c') \cdot bd
+            \end{align*}
+            so $(ad + bc, bd) \sim (a'd' + b'c', b'd')$.
+        \end{proof}
+\end{enumerate}
+\newpage
+
+
+\section*{Question 7}
+Let $F$ be a field, and consider its field of fractions $Frac(F)$. Show that $F\cong Frac(F)$.
+[Hint: what can you say about the homomorphism $f:F\to Frac(F)$ given by $f(a)=\frac{a}{1}$?]
+
+\subsection*{Response}
+\begin{proof}
+    Let $F$ be a field, and consider its field of fractions $Frac(F)$. Define $f : F \to Frac(F)$
+    given by $a \mapsto \frac{a}{1}$.
+    \begin{enumerate}
+        \item For any $a, b \in F$,
+            $
+            f(a + b)
+            = \frac{a + b}{1}
+            = \frac{a}{1} + \frac{b}{1}
+            = f(a) + f(b)
+            $,
+            so $f$ is closed under addition.
+        \item For any
+            $a, b \in F$,
+            $f(a \cdot b)
+            = \frac{a \cdot b}{1}
+            = \frac{a}{1} \cdot \frac{b}{1}
+            = f(a) \cdot f(b)
+            $,
+            so $f$ is closed under multiplication.
+        \item $f(1_F) = \frac{1}{1} = 1_{Frac(F)}$, so $1 \in Frac(F)$.
+    \end{enumerate}
+    so $f$ is a ring homomorphism. To show that $f$ is injective, note that since $F$ is a field,
+    it has two ideals: $(0)$ and $F$. Then since $f(1) = \frac{1}{1} = 1 \neq 0$, we have that
+    $1 \not \in \ker(f)$, so $\ker(f) = \{ 0 \}$ which implies that $f$ is injective. To show that
+    $f$ is surjective, consider an arbitrary $\frac{a}{b} \in Frac(F)$ where $a, b \in F$ and
+    $b \neq 0$. Since $F$ is a field and $b \neq 0$, $b$ is a unit, so there exists $b^{-1} \in F$.
+    Put $x \in F$ to be $x := ab^{-1}$. Then $f(x) = \frac{ab^{-1}}{1}$, so
+    \begin{align*}
+        (ab^{-1}) \cdot b &= a \cdot 1 \\
+        a \cdot 1 &= 1 \cdot a \\
+        a &= a
+    \end{align*}
+    Since $\frac{a}{b}$ was arbitrary, $f$ is surjective. Because $f$ is both injective and
+    surjective, $F \simeq Frac(F)$.
+\end{proof}
+\newpage
+
+
+\end{document}
+
