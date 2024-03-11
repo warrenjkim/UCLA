@@ -1,5 +1,5 @@
 \documentclass [12pt] {article}
-\usepackage{amsfonts}      
+\usepackage{amsfonts}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsthm}
@@ -9,7 +9,7 @@
 \usepackage{tikz-cd}
 \usepackage{bm}
 \usepackage{fancyhdr}
-\usepackage[margin=1in]{geometry} 
+\usepackage[margin=1in]{geometry}
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\Z}{\mathbb{Z}}
 \newcommand{\C}{\mathbb{C}}
@@ -20,6 +20,7 @@
 \newenvironment{definition}[1]{\begin{tcolorbox}[title={Definition: #1},colback=blue!5!white,colframe=black!75!blue]}{\end{tcolorbox}}
 \newenvironment{theorem}[1]{\begin{tcolorbox}[title={Theorem #1},colback=green!5!white,colframe=black!75!green]}{\end{tcolorbox}}
 \newenvironment{corollary}[1]{\begin{tcolorbox}[title={Corollary #1}]}{\end{tcolorbox}}
+\newenvironment{lemma}[1]{\begin{tcolorbox}[title={Lemma #1}]}{\end{tcolorbox}}
 \renewcommand{\href}[2]{\hyperref[#1]{\bf{\underline{{#2}}}}}
 
 \renewcommand{\it}[1]{\textit{{#1}}}
@@ -33,19 +34,21 @@
 \renewcommand{\headrulewidth}{0pt}
 \renewcommand{\footrulewidth}{0pt}
 
-
 \title{110A HW3}
 \author{Warren Kim}
 \date{Winter 2024}
 
 \begin{document}
+\tableofcontents
+\newpage
+
 \section{The Integers}
 \begin{theorem}{(Well-Ordering Principle)}
-Every nonempty set of non-negative integers contain a least element. 
-$\exists a \in S : \forall b \in S, a \leq b$
+Every nonempty set of non-negative integers contain a least element. Mathematically,
+$\exists a \in S : \forall b \in S, a \leq b$.
 \end{theorem}
 \begin{proof}
-    Let $S$ be a set of non-negative integers. Suppose $S$ has no smallest element. Then, 
+    Let $S$ be a set of non-negative integers. Suppose $S$ has no smallest element. Then,
     $0 \not \in S$, because otherwise, $0$ would be the smallest element. By induction, suppose
     $0, 1, \ldots, k \not \in S$. Then, $k + 1 \not \in S$ since otherwise, it would be the smallest
     element. Therefore, $S = \emptyset$.
@@ -68,9 +71,9 @@ $\exists a \in S : \forall b \in S, a \leq b$
     where $0 \leq r < b$.
 \end{theorem}
 \begin{proof}
-    \bf{Existence:} 
+    \bf{Existence:}
     Let $a, b \in \Z, b > 0$. Consider the set $S = \{ a - bx : x \in \Z \} \cap \Z_{\geq 0}$.
-    Consider $b = -|a|$. Then, $a - (-|a|)x \in S$. By the well-ordering principle, choose the 
+    Consider $b = -|a|$. Then, $a - (-|a|)x \in S$. By the well-ordering principle, choose the
     smallest $a - bx \in S$ such that $q := x, r := a - bx$. Then, rearranging $r$ and substituting
     $q$ for $x$, we get $a = bq + r \in S$. By construction of $S$, $0 \leq r$. Suppose $r \geq b$.
     Then, $0 \leq r - b = (a - bx) - b = a - b(x - 1)$. This implies that $r - b < r$, a
@@ -78,7 +81,7 @@ $\exists a \in S : \forall b \in S, a \leq b$
     \vspace{0.5em}
 
     \bf{Uniqueness:}
-    Suppose we have $q_1, r_1, q_2, r_2 \in \Z$ such that $a = bq_1 + r_1 = bq_2 + r_2$, where 
+    Suppose we have $q_1, r_1, q_2, r_2 \in \Z$ such that $a = bq_1 + r_1 = bq_2 + r_2$, where
     $0 \leq r_1, r_2 < b$. Then, we have
     \begin{align*}
         bq_1 + r_1 &= bq_2 + r_2 \\
@@ -89,7 +92,7 @@ $\exists a \in S : \forall b \in S, a \leq b$
     \end{align*}
     Since $0 \leq r_1 < b$, we can rewrite the inequality to be $-b < -r_1 \leq 0$. Then, adding $0
     \leq r_2 < b$ to the inequality, we get $-b < r_2 - r_1 < b$. Because $b \mid (r_2 - r_1)$,
-    $(r_2 - r_1)$ must be a multiple of $b$, but since $-b < r_2 - r_1 < b$, we have that 
+    $(r_2 - r_1)$ must be a multiple of $b$, but since $-b < r_2 - r_1 < b$, we have that
     $(r_2 - r_1) = 0b = 0$. Then, $b(q_1 - q_2) = r_2 - r_1 = 0$. This implies that $q_1 = q_2$ and
     $r_1 = r_2$. Therefore, $q_1, r_1 \in \Z$ are unique.
 \end{proof}
@@ -115,7 +118,7 @@ $\exists a \in S : \forall b \in S, a \leq b$
         a &= sq + r \\
         r &= a - sq \\
           &= a - (ax + by)q \\
-        r &= a(1 - x) + b(-yq)
+        r &= a(1 - xq) + b(-yq)
     \end{align*}
     This implies that $r \in S$ since $0 \leq r$ by definition. We also have that $r < s$, but since
     $s$ was chosen to be the smallest element in $S$, this forces $r = 0$. Then, $a = sq + r = sq$,
@@ -128,12 +131,12 @@ $\exists a \in S : \forall b \in S, a \leq b$
     Let $a, b \in \Z$ and suppose $a \mid bc$ and $(a, b) = 1$. Then $a \mid c$.
 \end{theorem}
 \begin{proof}
-    Because $(a, b) = 1$, we can write $1 = ax + by$. Also, since $a \mid bc$, there exists some 
-    $z \in \Z$ such that $bc = az$. Then 
+    Because $(a, b) = 1$, we can write $1 = ax + by$. Also, since $a \mid bc$, there exists some
+    $z \in \Z$ such that $bc = az$. Then
     \begin{align*}
         c &= cax + cby \\
-          &= a(cx) + (bc)y \\ 
-          &= a(cx) + a(zy) \\ 
+          &= a(cx) + (bc)y \\
+          &= a(cx) + a(zy) \\
         c &= a(cx + zy)
     \end{align*}
     Therefore, $a \mid c$.
@@ -147,11 +150,11 @@ $\exists a \in S : \forall b \in S, a \leq b$
     Since $(a, b) = 1$, we have $ax + by = 1$. By definition, since $a \mid c$ and $b \mid c$, there exist
     $n, m \in \Z$ such that $c = na$ and $c = mb$. Then, we have
     \begin{align*}
-        1 &= ax + by \\ 
-        c &= cax + cby \\ 
-          &= (bm)ax + (an)by \\ 
-          &= (ba)mx + (ab)ny \\ 
-        c &= ab(mx + ny) 
+        1 &= ax + by \\
+        c &= cax + cby \\
+          &= (bm)ax + (an)by \\
+          &= (ba)mx + (ab)ny \\
+        c &= ab(mx + ny)
     \end{align*}
     so $ab \mid c$.
 \end{proof}
@@ -160,7 +163,7 @@ $\exists a \in S : \forall b \in S, a \leq b$
 \begin{definition}{Prime}
     A nonzero non-unit integer $p$ is \bf{prime} if its only divisors are $\pm 1, \pm p$.
 \end{definition}
- 
+
 \begin{theorem}{}
     Let $p \in \Z \setminus \{0, \pm 1\}$. The following statements are equivalent.
     \begin{enumerate}[label=(\arabic*)]
@@ -173,7 +176,7 @@ $\exists a \in S : \forall b \in S, a \leq b$
     Suppose $p$ is prime and $p \mid bc$. If $p \mid b$, we are done, so suppose $p \nmid b$. Then,
     $(p, b) = 1$, so we have
     \begin{align*}
-        1 &= px + by \\ 
+        1 &= px + by \\
         c &= cpx + cby \\
           &= p(cx) + (bc)y \\
           &= p(cx) + (pn)y && p \mid bc \implies bc = pn, n \in \Z \\
@@ -185,10 +188,10 @@ $\exists a \in S : \forall b \in S, a \leq b$
 
     \bf{(1) $\bm{\impliedby}$ (2)}
     To prove the reverse implication, suppose the contrapositive: ``If $p$ is not prime, then there
-    exist some $b, c \in \Z$ such that $p \mid bc$ but $p \nmid b$ and $p \nmid c$''. Suppose 
+    exist some $b, c \in \Z$ such that $p \mid bc$ but $p \nmid b$ and $p \nmid c$''. Suppose
     $p \in \Z \setminus \{ 0, \pm 1 \}$ is not prime; i.e. $p$ is composite. Then, $p$ can be
     written as its unique factorization $q_1 q_2 \cdots q_n$ where $n \geq 2$ and each $q_i$ is
-    prime. Choose $b = q_1$ and $c = q_2 \cdots q_n$. Then $p \mid bc$ because $bc = p$ and 
+    prime. Choose $b = q_1$ and $c = q_2 \cdots q_n$. Then $p \mid bc$ because $bc = p$ and
     $p \mid p$, but $p \nmid b$ and $p \nmid c$ because $|p| > |b|$ and $|p| > |c|$ respectively.
 \end{proof}
 
@@ -196,49 +199,39 @@ $\exists a \in S : \forall b \in S, a \leq b$
     Let $n \in \Z \setminus \{ 0, \pm 1 \}$. $n$ can be written as a product of primes.
 \end{theorem}
 \begin{proof}
-    Consider $n > 1$. Let $S$ be the set of positive integers greater than 1 that cannot be written
+    Let $n > 1$. Let $S$ be the set of positive integers greater than 1 that cannot be written
     as a product of primes. Suppose for the sake of contradiction that $S$ is nonempty. Then by the
-    well-ordering principle, we can choose a least element $m \in S$. By definition, $m$ is not
-    prime or a product of primes. Because $m$ is not prime, we can find some divisor $a \in \Z$ such
-    that $a \neq \pm 1, \pm m$; i.e. we can find such an $a$ such that $a \mid m$. Then, we can
-    write $m = ab$ for some $b \in \Z$. By definition, $|a| \leq |m|$ and $|b| \leq |m|$. Without
-    loss of generality, assume $a, b > 0$. Note that $b \neq 1$ since otherwise, $a = m$. So, 
-    $1 < a, b < m$ and $a, b \not \in S$. Because $a, b \not \in S$, they are either prime or
+    well-ordering principle, pick a least element $m \in S$. By definition, $m$ is not
+    prime or a product of primes. Because $m$ is not prime, there exists $a \in \Z$ such
+    that $a \neq \pm 1, \pm m$ and $a \mid m$. Then,
+    $m = ab$ for some $b \in \Z$. By definition, $|a| \leq |m|$ and $|b| \leq |m|$. Without
+    loss of generality, assume $a, b > 0$. Note that $b \neq 1$ since otherwise, $a = m$. So,
+    $1 < a, b < m$ and $a, b \not \in S$. Because $a, b \not \in S$, they are
     products of primes. But $m = a \cdot b$, so $m$ is a product of primes, a contradiction.
     Therefore, $S = \emptyset$, so $n$ can be written as a product of primes.
 \end{proof}
 
 \begin{theorem}{(Fundamental Theorem of Arithmetic)}
     Let $n \in \Z \setminus \{ 0, \pm 1 \}$. Suppose $n = p_1 \cdots p_r$ and $n = q_1 \cdots q_s$
-    where each $p_i, q_j$ is prime. Then,
-    \begin{enumerate}[label=(\arabic*)]
-        \item $r = s$.
-        \item There is a unique permutation $\sigma$ on $\{ 1, \ldots, r \}$ such that 
-            $p_i = \pm q_{\sigma(i)}$.
-    \end{enumerate}
+    where each $p_i, q_j$ is prime. Then $r = s$ and there is a unique permutation $\sigma$ on
+    $\{ 1, \ldots, r \}$ such that $p_i = \pm q_{\sigma(i)}$.
 \end{theorem}
 \begin{proof}
-    Let $n \in \Z \setminus \{ 0, 1 \}$. Without loss of generality, suppose $n$ is positive and 
+    Let $n \in \Z \setminus \{ 0, 1 \}$. Without loss of generality, suppose $n$ is positive and
     $n = p_1 \cdots p_r$ and $n = q_1 \cdots q_s$ where each $p_i, q_j$ is prime. Then $p_1 \mid q_1
     \cdots q_s$. In particular, $p_1 \mid q_j$ for some $j \leq s$. Because $q_j$ is prime, we
-    necessarily have that $q_j = |p_1|$. Without loss of generality reindex  $j = 1$ to get 
+    necessarily have that $q_j = |p_1|$. Without loss of generality reindex  $j = 1$ to get
     $q_1 = |p_1|$. Then,
     $
     p_1 \cdot (p_2 \cdots p_r) = p_1 \cdot (q_2 \cdots q_s)
-    \implies 
+    \implies
     p_2 \cdots p_r = q_2 \cdots q_s
-    $. By induction, we have that $p_r = q_r$. If $r < s$, by the above, we have that 
+    $. By induction, we have that $p_r = q_r$. If $r < s$, by the above, we have that
     $1 = q_{r + 1} \cdots q_s$, which implies $q_j = 1$ for each $j$. A similar argument is said for
     $s < r$. In either case, we have a contradiction. Therefore, $r = s$ and there is a unique
     permutation $\sigma$ on $\{ 1, \ldots, r \}$ such that $p_i = q_{\sigma(i)}$.
 \end{proof}
 
-\begin{center}
-    \vspace{5em}
-    \bf{The rest of this page is intentionally left blank}
-\end{center}
-
-\newpage
 \subsection{Modular Arithmetic}
 \begin{definition}{Well-Defined Functions}
     A function $f : X \to Y$ is \bf{well-defined} if, for all $a, b \in X$, we have $f(a) = f(b)$
@@ -252,7 +245,7 @@ $\exists a \in S : \forall b \in S, a \leq b$
         \item Reflexivity: For any $a \in S$, $(a, a) \in R$ (alternatively written as $a \sim a$).
         \item Symmetry: For any $(a, b) \in S \times S$ , $(a, b) \in R$ implies $(b, a) \in R$
             (alternatively written as $a \sim b \implies b \sim a$).
-        \item Transitivity: For any $a, b, c \in S$, if $(a, b), (b, c) \in R$, then $(a, c) \in R$ 
+        \item Transitivity: For any $a, b, c \in S$, if $(a, b), (b, c) \in R$, then $(a, c) \in R$
             (alternatively written as $a \sim b, b \sim c \implies a \sim c$).
     \end{enumerate}
 \end{definition}
@@ -263,7 +256,7 @@ where $0 \leq r_1, r_2 < |m|$.
 \begin{definition}{Modulo}
     Define a relation $R_m$ on $\Z$ by saying $(a, b) \in R_m$ if and only if $r_1 = r_2$
     (alternatively written as $a \sim b$ if and only if $r_1 = r_2$). We write this as
-    $a \equiv b \pmod{m}$. 
+    $a \equiv b \pmod{m}$.
 \end{definition}
 \bf{Proposition:} For any $m \in \Z$ nonzero, $R_m$ is an equivalence relation.
 \begin{proof}
@@ -272,11 +265,11 @@ where $0 \leq r_1, r_2 < |m|$.
         \item For any $a \in \Z$, write $a = bq + r$. Then, since $r = r$, $a \equiv a
             \pmod{m}$, $R_m$ is reflexive.
         \item Take $a, b \in \Z$ and assume $a \equiv b \pmod{m}$. By the division algorithm,
-            we can write $a = q_1 m + r_1, b = q_2 m + r_2$. By assumption, $a \equiv b \pmod{m}$, 
+            we can write $a = q_1 m + r_1, b = q_2 m + r_2$. By assumption, $a \equiv b \pmod{m}$,
             so $r_1 = r_2$. Since equality is symmetric, $r_1 = r_2 \iff r_2 = r_1$, so
             $b \equiv a \pmod{m}$. $R_m$ is symmetric.
         \item Pick $a, b, c \in \Z$ and assume $a \equiv b \pmod{m}, b \equiv c \pmod{m}$.
-            By the division algorithm, we can write 
+            By the division algorithm, we can write
             $a = q_1 m + r_1, b = q_2 m + r_2, c = q_3 m + r_3$. By assumption, $r_1 = r_2$ and
             $r_2 = r_3$. Since equality is transitive, $r_1 = r_2, r_2 = r_3 \implies r_1 = r_3$,
             so $a \equiv c \pmod{m}$. $R_m$ is transitive.
@@ -286,7 +279,7 @@ where $0 \leq r_1, r_2 < |m|$.
 \end{proof}
 \begin{definition}{Equivalence Class}
     If $R$ is an equivalence relation on a set $S$, then $S$ can be written as the union of
-    equivalence classes. The \bf{equivalence class} of $x$ is the set 
+    equivalence classes. The \bf{equivalence class} of $x$ is the set
     $[x] := \{ y \in S : (x, y) \in R \}$.
     \vspace{0.1em}
 
@@ -313,11 +306,11 @@ where $0 \leq r_1, r_2 < |m|$.
 \bf{Proposition:} The operations above are well-defined.
 \begin{proof}
     Let $n \in \Z$ and $[a], [a'], [b], [b'] \in \Z/n$ where $[a] = [a'], [b] = [b']$. Then
-    $([a] = [a']$ and $[b] = [b']$ implies $n \mid (a - a')$ and $n \mid (b - b')$, so 
+    $([a] = [a']$ and $[b] = [b']$ implies $n \mid (a - a')$ and $n \mid (b - b')$, so
     $n \mid (a - a') + (b - b') = (a + b) - (a' + b')$. Therefore, $[a + b] = [a' + b']$. Similarly,
     \begin{align*}
         ab - a'b' &= ab + 0 - a'b' \\
-                  &= ab + (-ab' + ab') - a'b' \\ 
+                  &= ab + (-ab' + ab') - a'b' \\
                   &= (ab - ab') + (ab' - a'b') \\
         ab - a'b' &= a(b - b') + b'(a - a')
     \end{align*}
@@ -334,9 +327,8 @@ where $0 \leq r_1, r_2 < |m|$.
     \item $[a][1] = [a]$
     \item $[a] ([b] + [c]) = [a][b] + [a][c]$
 \end{enumerate}
-\newpage
 \begin{proof}
-    Let $[a], [b], [c] \in \Z/n$. Then the following properties hold:
+    Let $[a], [b], [c] \in \Z/n$. Then
     \begin{enumerate}[label=(\arabic*)]
         \item $\ul{[a] + [b]} = [a + b] = [b + a] = \ul{[b] + [a]}$
         \item $\ul{[a] + ([b] + [c])} = [a] + [b + c] = [a + b + c] = [a + b] + [c] = \ul{([a] + [b]) + [c]}$
@@ -368,14 +360,14 @@ where $0 \leq r_1, r_2 < |m|$.
     \newline
     \bf{(1) $\bm{\implies}$ (2)}
     Take $[a] \in \Z/p$ to be nonzero. Then $p \nmid a$ since $p$ is prime. That is, $(p, a) = 1$.
-    Then $px + ay = 1$, or 
-    $[1] = [px + ay]  = [px] + [ay]$. But $[px] = [p][x] = [0][x] = [0] \in \Z/p$, so 
+    Then $px + ay = 1$, or
+    $[1] = [px + ay]  = [px] + [ay]$. But $[px] = [p][x] = [0][x] = [0] \in \Z/p$, so
     $[1] = [0] + [ay] = [ay] = [a][y]$. Then, $[y]$ is the inverse of $[a]$. Since $[a]$ was
     arbitrary, this holds for all $[a] \in \Z/p$.
     % \begin{align*}
-    %     1 &= px + ay \\ 
-    %     [1] &= [px + ay] \\ 
-    %         &= [px] + [ay] \\ 
+    %     1 &= px + ay \\
+    %     [1] &= [px + ay] \\
+    %         &= [px] + [ay] \\
     %         &= [0] + [ay] && [px] = [p][x] = [0][x] = [0] \in \Z/p \\
     %         &= [ay] \\
     %     [1] &= [a][y]
@@ -383,9 +375,9 @@ where $0 \leq r_1, r_2 < |m|$.
     \vspace{0.5em}
 
     \bf{(2) $\bm{\implies}$ (3)}
-    Let $[a], [b] \in \Z/p$ and suppose $[ab] = [0]$. If $[a] = 0$, we are done, so suppose 
-    $[a] \neq 0$. Then, $[a]$ has an inverse, so 
-    $[a]^{-1} [ab] = [a]^{-1}[a] [b] = [1][b] = [b] = [0]$. Therefore, either $[a] = [0]$ or 
+    Let $[a], [b] \in \Z/p$ and suppose $[ab] = [0]$. If $[a] = 0$, we are done, so suppose
+    $[a] \neq 0$. Then, $[a]$ has an inverse, so
+    $[a]^{-1} [ab] = [a]^{-1}[a] [b] = [1][b] = [b] = [0]$. Therefore, either $[a] = [0]$ or
     $[b] = [0]$.
     \vspace{0.5em}
 
@@ -400,20 +392,20 @@ where $0 \leq r_1, r_2 < |m|$.
     only if $(a, n) = 1$.
 \end{theorem}
 \begin{proof}
-    ($\implies$)
-    Suppose $[a]$ has a multiplicative inverse. Then there exists $[x] \in \Z/n$ such that 
+    \bf{($\bm{\implies}$)}
+    Suppose $[a]$ has a multiplicative inverse. Then there exists $[x] \in \Z/n$ such that
     $[a][x] = [1]$. Then
     \begin{align*}
         [1] &= [a][x] \\
-            &= [ax] + [0] \\ 
+            &= [ax] + [0] \\
             &= [ax] + [ny] && [ny] = [0] \in \Z/n, y \in \Z \\
-        [1] &= [ax + ny] 
+        [1] &= [ax + ny]
     \end{align*}
     so $(a, n) = 1$.
     \vspace{0.5em}
 
-    ($\impliedby$)
-    Suppose $(a, n) = 1$. Then $ax + ny = 1$ for some $x, y \in \Z$, but $[ny] = [0] \in \Z/p$, so 
+    \bf{($\bm{\impliedby}$)}
+    Suppose $(a, n) = 1$. Then $ax + ny = 1$ for some $x, y \in \Z$, but $[ny] = [0] \in \Z/p$, so
     $[ax] = [a][x] = [1]$, where $[x]$ is the multiplicative inverse of $[a]$.
 \end{proof}
 
@@ -429,10 +421,10 @@ where $0 \leq r_1, r_2 < |m|$.
     Let $m, n \in \Z$ such that $(n, m) = 1$. Then we can write $na + mb = 1$ for some $a, b \in \Z$.
     Set $x := c(na) + d(mb)$. Then
     \begin{align*}
-        [x]_m &= [cna]_m + [dmb]_m \\ 
-              &= [n(cn)]_m + [m(db)]_m \\ 
-              &= [a(cn)]_m + [0] && [m(db)]_m = [0] \in \Z/m \\ 
-        [x]_m &= [a]_m 
+        [x]_m &= [cna]_m + [dmb]_m \\
+              &= [n(cn)]_m + [m(db)]_m \\
+              &= [a(cn)]_m + [0] && [m(db)]_m = [0] \in \Z/m \\
+        [x]_m &= [a]_m
     \end{align*}
     so $[x]_m = [a]_m$. Similarly, $[x]_n = [b]_n$. So we have
     \begin{align*}
@@ -440,14 +432,14 @@ where $0 \leq r_1, r_2 < |m|$.
         x &\equiv b \pmod{n}
     \end{align*}
     Let $y$ be another solution. Then $[y]_m = [x]_m$ so $m \mid y - x$. Similarly, $n \mid y - x$.
-    But since $(n, m) = 1$, we have that $mn | y - x$, 
+    But since $(n, m) = 1$, we have that $mn | y - x$,
     or $[y]_{mn} = [x]_{mn}$. So $y \equiv x \pmod{mn}$.
 \end{proof}
 
 \newpage
 \begin{theorem}{Chinese Remainder Theorem (General)}
     Let $m_1, \ldots, m_n \in \Z$ be positive and pairwise relatively prime (i.e., $(m_i, m_j) = 1$
-    when $i \neq j$). Let $a_1, \ldots, a_n \in \Z$. We can find $x$ such that 
+    when $i \neq j$). Let $a_1, \ldots, a_n \in \Z$. We can find $x$ such that
     \begin{align*}
         x &\equiv a_1 \pmod{m_1} \\
         x &\equiv a_2 \pmod{m_2} \\
@@ -457,28 +449,28 @@ where $0 \leq r_1, r_2 < |m|$.
     Moreover, if $y$ is another solution, then $y\equiv x\mod m_1m_2\cdots m_n$
 \end{theorem}
 \begin{proof}
-    We will induct on $n \in \N$. 
+    We will induct on $n \in \N$.
     \newline
-    \bf{Base case:} At $n = 2$, we have $m_1, m_2 \in \Z$ where $(m_1, m_2) = 1$. Then, we can 
-    find $p, q \in \Z$ such that $m_1 p + m_2 q = 1$. Then, because $m_2 q \equiv 0 \pmod{m_2}$, we 
-    have $m_1 \equiv 1 \pmod{m_2}$. Similarly, $m_2 \equiv 1 \pmod{m_1}$. Consider 
+    \bf{Base case:} At $n = 2$, we have $m_1, m_2 \in \Z$ where $(m_1, m_2) = 1$. Then, we can
+    find $p, q \in \Z$ such that $m_1 p + m_2 q = 1$. Then, because $m_2 q \equiv 0 \pmod{m_2}$, we
+    have $m_1 \equiv 1 \pmod{m_2}$. Similarly, $m_2 \equiv 1 \pmod{m_1}$. Consider
     $x = (m_2 q)r + (m_1 p)s$ for $r, s \in \Z$. Then, since $(m_2 q)r \equiv 0 \pmod{m_2}$, we have
     $x \equiv (m_1 p)s \equiv s \pmod{m_2}$. Similarly, $x \equiv (m_2 q)r \equiv r \pmod{m_1}$.
     So, $x \equiv r \pmod{m_1}$ and $x \equiv s \pmod{m_2}$. Now suppose $y$ is another solution.
-    Then, we have $y \equiv x \pmod{m}$, which implies that $m_1 | (y - x)$ and similarly, 
+    Then, we have $y \equiv x \pmod{m}$, which implies that $m_1 | (y - x)$ and similarly,
     $m_2 | (y - x)$. Then because $(m_1, m_2) = 1$, we have that $m_1 m_2 | (y - x)$,
     so $y \equiv x \pmod{m_1 m_2}$. \vspace{0.5em}
 
     \bf{Inductive step:} At $n = n + 1$, we have $m_1, m_2 \in \Z$ where $(m_1, m_2) = 1$. Then
     by the inductive hypothesis, we have a set of $n$ pairwise coprime integers $m_1, \cdots, m_n$
-    where $x' \equiv a_i \pmod{m_i}$ for each $i = 1, \cdots, n$. Define $M = \prod^{n}_{i = 1} m_i$ 
-    and consider $x = x' + sM$ for some $s \in \Z$. 
-    Then since $m_i | M$ implies $sM \equiv 0 \pmod{m_i}$ and from the inductive hypothesis, 
-    $x' \equiv a_i \pmod{m_i}$, we have $x \equiv x' + sM \equiv x' \equiv a_i \pmod{m_i}$ 
-    for $i = 1, \cdots, n$. At $m_{n + 1}$, because $m_{n + 1} \nmid M$, 
-    we can choose an $s \in \Z$ such that $x \equiv x' + sM \equiv a_{n + 1} \pmod{m_{n + 1}}$. Now 
+    where $x' \equiv a_i \pmod{m_i}$ for each $i = 1, \cdots, n$. Define $M = \prod^{n}_{i = 1} m_i$
+    and consider $x = x' + sM$ for some $s \in \Z$.
+    Then since $m_i | M$ implies $sM \equiv 0 \pmod{m_i}$ and from the inductive hypothesis,
+    $x' \equiv a_i \pmod{m_i}$, we have $x \equiv x' + sM \equiv x' \equiv a_i \pmod{m_i}$
+    for $i = 1, \cdots, n$. At $m_{n + 1}$, because $m_{n + 1} \nmid M$,
+    we can choose an $s \in \Z$ such that $x \equiv x' + sM \equiv a_{n + 1} \pmod{m_{n + 1}}$. Now
     suppose $y$ is another solution. Then $y \equiv x' \pmod{M}$ and $y \equiv a_{n + 1} \pmod{m_{n + 1}}$.
-    Since $(M, m_{n + 1}) = 1$, by the inductive hypothesis, we have that 
+    Since $(M, m_{n + 1}) = 1$, by the inductive hypothesis, we have that
     $y \equiv x \pmod{M m_{n + 1}}$, so $y \equiv x \pmod{m_1 m_2 \cdots m_{n + 1}}$.
 \end{proof}
 
@@ -493,9 +485,9 @@ where $0 \leq r_1, r_2 < |m|$.
     A \bf{ring} $R$ is a nonempty subset with two operations, addition $(+)$ and multiplication
     $(\cdot)$ such that, for all $a, b, c \in R$, the following properties hold:
     \begin{enumerate}[label=(\arabic*)]
-        \item $a + b \in R$ 
+        \item $a + b \in R$
         \item $a + (b + c) = (a + b) + c$
-        \item $a + b = b + a$ 
+        \item $a + b = b + a$
         \item There exists $0 \in R$ such that $0 + a = a + 0 = a$ for all $a \in R$.
         \item For all $a \in R$, there exists $-a$ such that $(-a) + a = a + (-a) = 0$.
         \item $a \cdot b \in R$
@@ -503,27 +495,27 @@ where $0 \leq r_1, r_2 < |m|$.
         \item $a \cdot (b + c) = a \cdot b + a \cdot c$
         \item[(9)$^*$] There exists $1 \in R$ such that $1 \cdot a = a \cdot 1 = a$ for all $a \in R$.
     \end{enumerate}
-    $^*$A set satisfying (1) - (8) is called a \bf{nonunital ring}. If the set also satisfies (9), 
+    $^*$A set satisfying (1) - (8) is called a \bf{nonunital ring}. If the set also satisfies (9),
     it is called a \bf{unital ring}.
 
     \vspace{-0.5em}
     \begin{itemize}[label=$\to$, leftmargin=*, itemsep=0em]
         \item A ring is \bf{commutative} if, for all $a, b \in R$, $a \cdot b = b \cdot a$.
-        \item An element $a \in R$ is a \bf{zero divisor} if there exists a nonzero $b \in R$ such 
+        \item An element $a \in R$ is a \bf{zero divisor} if there exists a nonzero $b \in R$ such
             that $a \cdot b = 0$ or $b \cdot a = 0$.
-        \item An element $a \in R$ is a \bf{unit} if there exists $b \in R$ such that 
+        \item An element $a \in R$ is a \bf{unit} if there exists $b \in R$ such that
             $a \cdot b = b \cdot a = 1$, and is called the \it{inverse} of $a$, written as $a^{-1}$.
     \end{itemize}
 \end{definition}
-\bf{Proposition:} Let $n > 1$, $a \in \Z$. If $(a, n) = 1$, $[a]$ is a unit. Otherwise, it is a 
+\bf{Proposition:} Let $n > 1$, $a \in \Z$. If $(a, n) = 1$, $[a]$ is a unit. Otherwise, it is a
 zero divisor.
 \begin{proof}
     Let $n > 1$ and $a \in \Z$. There are two cases.
-    \begin{enumerate}[label=\it{Case \roman*}, leftmargin=*]
+    \begin{enumerate}[label=\bf{Case (\arabic*):}, leftmargin=*]
         \item $(a, n) = 1$. Then $ax + ny = 1$ so $[ax] = [a][x] = [1]$ where $[x]$ is the inverse
             of $[a]$, so $[a]$ is a unit.
         \item $(a, n) \neq 1$. Then $(a, n) = d$ for $d > 1$. Then, $ax + ny = d$ so
-            $[ax] = [d]$. Since $d | n$, $n = dm$ for some $m \in \Z$. Then since $[d] = [dm] = [0]$, 
+            $[ax] = [d]$. Since $d | n$, $n = dm$ for some $m \in \Z$. Then since $[d] = [dm] = [0]$,
             we get $[ax] = [a][x] = [0]$, where $[x]$ is nonzero, so $[a]$ is a zero divisor.
     \end{enumerate}
 \end{proof}
@@ -547,7 +539,7 @@ zero divisor.
 \begin{proof}
     Let $R$ be a ring. Then
     \begin{enumerate}[label=(\arabic*)]
-        \item Let $0, 0' \in R$ be two additive identities. Then 
+        \item Let $0, 0' \in R$ be two additive identities. Then
             $\ul{0} = 0 \cdot 0' = 0' \cdot 0 = \ul{0'}$.
         \item Let $a \in R$ have two additive inverses $b, c \in R$. Then
             \newline
@@ -561,7 +553,7 @@ zero divisor.
         \item Let $a \in R$. Then $0 = (a + a) \cdot 0 = a0 + a0 = a0$. Similarly, $0 = 0a$.
         \item Let $a, b \in R$. Then $a0 = a(b + (-b)) = ab + (a)(-b) \implies (a)(-b) = -ab$.
             Similarly, $(-a)(b) = -ab$.
-        \item Let $a \in R$. Then 
+        \item Let $a \in R$. Then
             \newline
             $\ul{-(-a)} = 0 - (-a) = (a + (-a)) + (-(-a)) = a + ((-a) - (-a)) = a + 0 = \ul{a}$.
         \item Let $a, b \in R$. Then
@@ -595,7 +587,7 @@ zero divisor.
 \end{definition}
 
 \begin{definition}{Integral Domain}
-    A commutative ring $R$ is an \bf{integral domain} if it has no nonzero zero divisors. That is, 
+    A commutative ring $R$ is an \bf{integral domain} if it has no nonzero zero divisors. That is,
     if $a, b \in R$ and $ab = 0$, then $a = 0$ or $b = 0$.
 \end{definition}
 \bf{Proposition:} Let $R$ be an integral domain and $a, b, c \in R$. If $ac = bc$ for $c \neq 0$,
@@ -619,7 +611,7 @@ then $a = b$.
     Every finite integral domain is a field.
 \end{theorem}
 \begin{proof}
-    Let $R$ be a finite integral domain $R = \{  r_1, \ldots, r_n \}$. Take $r_i \in R$ to be 
+    Let $R$ be a finite integral domain $R = \{  r_1, \ldots, r_n \}$. Take $r_i \in R$ to be
     nonzero. Consider $r_i R = \{ r_i r_1, \ldots, r_i r_n \} \subseteq R$. Then, $|r_i R| \leq |R|$
     since $r_i R \subseteq R$. Take $r_i r_j, r_i r_k \in r_i R$ such that  $r_i r_j = r_i r_k$.
     Then because $r_i \neq 0$, we have $r_i r_j - r_i r_k = 0$, or $(r_j - r_k) r_i = 0$. Since
@@ -649,14 +641,14 @@ following hold:
     \begin{enumerate}[label=(\arabic*)]
         \item Take any $a \in R$. Then $\ul{f(a) + 0_S} = f(a + 0_R) = \ul{f(a) + f(0_R)}$, so
             $f(0_R) = 0_S$.
-        \item $\ul{0_S} = f(0_R) = f(a + (-a)) = \ul{f(a) + f(-a)}$, so 
+        \item $\ul{0_S} = f(0_R) = f(a + (-a)) = \ul{f(a) + f(-a)}$, so
             $f(a) + f(-a) = 0_S \implies f(-a) = -f(a)$.
         \item $\ul{f(a - b)} = f(a + (-b)) = f(a) + f(-b) = f(a) + (-f(b)) = \ul{f(a) - f(b)}$.
-        \item Let $a \in R$ be a unit. Then there exists $a^{-1} \in R$ such that $aa^{-1} = 1$. 
-            Then 
+        \item Let $a \in R$ be a unit. Then there exists $a^{-1} \in R$ such that $aa^{-1} = 1$.
+            Then
             \newline
             $\ul{1_S} = f(1_R) = f(aa^{-1}) = \ul{f(a)f(a^{-1})}$ and
-            $\ul{1_S} = f(1_R) = f(a^{-1}a) = \ul{f(a^{-1})f(a)}$, so $f(a)$ is a unit and define 
+            $\ul{1_S} = f(1_R) = f(a^{-1}a) = \ul{f(a^{-1})f(a)}$, so $f(a)$ is a unit and define
             $\left[ f(a) \right]^{-1} := f(a^{-1})$ to get $f(a^{-1}) = \left[ f(a) \right]^{-1}$.
     \end{enumerate}
 \end{proof}
@@ -665,7 +657,7 @@ following hold:
     $R$ and $S$ are isomorphic, written as $R \simeq S$.
 \end{definition}
 \begin{definition}{Kernel and Image}
-    Let $f : R \to S$ be a ring homomorphism. 
+    Let $f : R \to S$ be a ring homomorphism.
     \begin{itemize}[label=$\to$, leftmargin=*, itemsep=0em]
         \item The \bf{kernel} of $f$ is defined as $\ker(f) := \{ a \in R : f(a) = 0_S \}$.
         \item The \bf{image} of $f$ is defined as $\Im(f) := \{ f(a) : a \in R \}$.
@@ -676,13 +668,13 @@ and the kernel of $f$ is a nonunital subring of $R$.
 \begin{proof}
     Let $f : R \to S$ be a ring homomorphism. Then
     \newline
-    $\bm{\bf{\Im}(f)}$ \bf{is a subring of $\bm{S}$:} 
+    $\bm{\bf{\Im}(f)}$ \bf{is a subring of $\bm{S}$:}
     Given $f(a), f(b) \in \Im(f)$, we have the following:
     \begin{enumerate}[label=(\arabic*)]
         \item $f(a) + f(b) = f(a + b) \in \Im(f)$.
         \item $f(a)f(b) = f(ab) \in \Im(f)$.
         \item $-f(a) = f(-a) \in \Im(f)$.
-        \item $f(1_R) = 1_S \in \Im(f)$.    
+        \item $f(1_R) = 1_S \in \Im(f)$.
     \end{enumerate}
     so $\Im(f)$ is a subring of $S$.
     \vspace{1em}
@@ -692,28 +684,28 @@ and the kernel of $f$ is a nonunital subring of $R$.
     \begin{enumerate}[label=(\arabic*)]
         \item $f(a + b) = f(a) + f(b) = 0_S + 0_S \in \ker(f)$.
         \item $f(ab) = f(a)f(b) = 0_s \cdot 0_S \in \ker(f)$.
-        \item $f(-a) = -f(a) = -0_S = 0_S \in \ker(f)$. 
+        \item $f(-a) = -f(a) = -0_S = 0_S \in \ker(f)$.
         \item $f(0_R) = 0_S \in \ker(f)$.
     \end{enumerate}
     so $\ker(f)$ is a nonunital subring of $R$.
 \end{proof}
-\bf{Proposition:} Let $f : R \to S$ be a ring homomorphism. Then, for any $a \in \ker(f)$ and 
+\bf{Proposition:} Let $f : R \to S$ be a ring homomorphism. Then, for any $a \in \ker(f)$ and
 $b \in R$, we have $ab, ba \in \ker(f)$.
 \begin{proof}
     $\ul{f(ab)} = f(a)f(b) = 0_S \cdot f(b) = \ul{0_S} = f(b) \cdot 0_S = f(b)f(a) = \ul{f(ba)} \in \ker(f)$.
 \end{proof}
 
 \begin{definition}{Initial Object}
-    $\Z$ is the \bf{initial object}. Let $R$ be any ring. Then, there is a unique homomorphism 
-    $f : \Z \to R$. At $n = 1$, $1 \mapsto 1_R$. At $n = n + 1$, 
-    $n + 1 \mapsto \underbrace{1_R + \cdots + 1_R}_{n \text{ times}} + 1_R$. The same is true for 
+    $\Z$ is the \bf{initial object}. Let $R$ be any ring. Then, there is a unique homomorphism
+    $f : \Z \to R$. At $n = 1$, $1 \mapsto 1_R$. At $n = n + 1$,
+    $n + 1 \mapsto \underbrace{1_R + \cdots + 1_R}_{n \text{ times}} + 1_R$. The same is true for
     $n < 0$. $f$ as defined above is a well-defined ring homomorphism.
 \end{definition}
 
 \subsection{Ideals}
 \begin{definition}{Ideal}
     Let $R$ be a ring and $I \subseteq R$ a nonempty subset. $I$ is an \bf{ideal} of $R$ if $I$ is
-    a nonunital subring such that for all $a \in I$ and $x \in R$, $xa, ax \in I$. This is often 
+    a nonunital subring such that for all $a \in I$ and $x \in R$, $xa, ax \in I$. This is often
     called the ``\it{absorbing property}''.
 \end{definition}
 \bf{Remark:} The kernel of any ring homomorphism is an ideal. Further, all ideal can be realized as
@@ -728,7 +720,7 @@ the kernel of a ring homomorphism.
     Let $R$ be a commutative ring and $a \in R$. Then the principal ideal $(a)$ is an ideal.
 \end{theorem}
 \begin{proof}
-    Suppose $(a)$ is the principal ideal. Then, $0 = a \cdot 0 \in (a)$. Given $ar_1, ar_2 \in (a)$, 
+    Suppose $(a)$ is the principal ideal. Then, $0 = a \cdot 0 \in (a)$. Given $ar_1, ar_2 \in (a)$,
     $ar_1 + ar_2 = a(r_1 + r_2) \in (a)$. Take $ar \in (a)$. Then $-ar = a(-r) \in (a)$. Take
     $ar_1 \in (a), r \in R$. Then $(ar_1) r = a(r_1 r) \in (a)$. Because $(a)$ is a nonunital subring
     with the absorbing property, it is an ideal.
@@ -753,18 +745,18 @@ the kernel of a ring homomorphism.
         \item Take two elements $a, b \in I_1 + \cdots + I_k$. We can rewrite $a, b$ as,
             $a = p_1 + \cdots + p_k$ and $b = q_1 + \cdots + q_k$ for $p_j, q_j \in I_j$. Then
             $
-            a + b 
+            a + b
             = (p_1 + \cdots + p_k) + (q_1 + \cdots + q_k)
             = (p_1 + q_1) + \cdots + (p_k + q_k)
-            $, and since $p_j + q_j \in I_j$ for all $j \leq k$, we get 
+            $, and since $p_j + q_j \in I_j$ for all $j \leq k$, we get
             $a + b \in I_1 + \cdots + I_k$.
         \item Take any $a \in I_1 + \cdots + I_k$. We can
-            rewrite $a$ as, $a = p_1 + \cdots + p_k$ for $p_j \in I_j$. Consider an element $r \in R$. 
+            rewrite $a$ as, $a = p_1 + \cdots + p_k$ for $p_j \in I_j$. Consider an element $r \in R$.
             Then, $ar = (p_1 + \cdots + p_k) r = p_1 r + \cdots + p_k r$. Similarly,
-            $ar = r (p_1 + \cdots + p_k) = r p_1 + \cdots + r p_k$. Since $I_j$ is an ideal, 
+            $ar = r (p_1 + \cdots + p_k) = r p_1 + \cdots + r p_k$. Since $I_j$ is an ideal,
             $p_j r, r p_j \in I_j$. Then $ar, ra \in I_1 + \cdots + I_k$.
         \item Let $a := a_1 + \cdots + a_k \in I_1 + \cdots + I_k$.
-            Since $I_j$ is an ideal, there exists $-a \in I_j$, so we get 
+            Since $I_j$ is an ideal, there exists $-a \in I_j$, so we get
             $-a_1 + \cdots + -a_k  = -(a_1 + \cdots + a_k)  = -a \in I_1 + \cdots + I_k$.
     \end{enumerate}
     Because $I_1 + \cdots + I_k$ satisfies (1) - (4), $I_1 + \cdots + I_k$ is an ideal.
@@ -772,37 +764,37 @@ the kernel of a ring homomorphism.
     \newpage
     \bf{$\bm{I_1 \cap \cdots \cap I_k}$ is an ideal.}
     \begin{enumerate}[label=(\arabic*), itemsep=0em]
-        \item Since $I_j$ is an ideal, $0 \in I_j$, so 
+        \item Since $I_j$ is an ideal, $0 \in I_j$, so
             $0 \in I_1 \cap \cdots \cap I_k$.
-        \item Take two elements $a, b \in I_1 \cap \cdots \cap I_k$. 
-            Then since each $I_j$ is an ideal, $a + b \in I_j$. So, 
+        \item Take two elements $a, b \in I_1 \cap \cdots \cap I_k$.
+            Then since each $I_j$ is an ideal, $a + b \in I_j$. So,
             $a + b \in I_1 \cap \cdots \cap I_k$.
-        \item Take any $a \in I_1 \cap \cdots \cap I_k$. Consider an element 
-            $r \in R$. Then, since each $I_j$ is an ideal, $ar, ra \in I_j$. Therefore, 
+        \item Take any $a \in I_1 \cap \cdots \cap I_k$. Consider an element
+            $r \in R$. Then, since each $I_j$ is an ideal, $ar, ra \in I_j$. Therefore,
             $ar, ra \in I_1 \cap \cdots \cap I_k$.
-        \item Take any $a \in I_1 \cap \cdots \cap I_k$. 
+        \item Take any $a \in I_1 \cap \cdots \cap I_k$.
             Then, since $I_j$ is an ideal, $-a \in I_j$, so $-a \in I_1 \cap \cdots \cap I_k$.
     \end{enumerate}
     Because $I_1 \cap \cdots \cap I_k$ satisfies (1) - (4), $I_1 \cap \cdots \cap I_k$ is an ideal.
 \end{proof}
 
 \begin{definition}{Multiple Generators}
-    Let $R$ be a commutative ring and $a_1, \ldots, a_k \in R$. The ideal generated by 
+    Let $R$ be a commutative ring and $a_1, \ldots, a_k \in R$. The ideal generated by
     $a_1, \cdots a_k$ is geiven by $(a_1) + \cdots + (a_k)$ and is written as $(a_1, \ldots, a_k)$.
 \end{definition}
 \bf{Proposition:} Let $F$ be a field. The only ideal of $F$ are $\{ 0 \}$ and $F$.
 \begin{proof}
-    Let $I$ be a nonzero ideal of $F$ and take $a \in I$. Then, $1 = aa^{-1} \in I$. Because $1 \in I$, 
+    Let $I$ be a nonzero ideal of $F$ and take $a \in I$. Then, $1 = aa^{-1} \in I$. Because $1 \in I$,
     $F = (1) = I$.
 \end{proof}
 
 \subsection{Quotient Rings}
 \bf{Preface:} To generalize the construction of $\Z/n$ to general rings, consider the following:
 given an ideal $I \subseteq R$, define equivalence where $a \sim b$ if $a - b \in I$. We
-can then inherit $(+, \cdot)$ from $R$. Given two equivalence classes $[a], [b]$, define 
+can then inherit $(+, \cdot)$ from $R$. Given two equivalence classes $[a], [b]$, define
 $[a] + [b] = [a + b]$ and $[a] \cdot [b] = [ab]$.
 \begin{definition}{Congruent Modulo $I$}
-    Let $R$ be a ring, $I \subseteq R$ and ideal, and $a, b \in I$. $a$ and $b$ are \bf{congruent 
+    Let $R$ be a ring, $I \subseteq R$ and ideal, and $a, b \in I$. $a$ and $b$ are \bf{congruent
     modulo $I$} if $a - b \in I$. We write $a \equiv b \pmod{I}$, or $a + I = b + I$.
     \vspace{0.5em}
 
@@ -826,13 +818,13 @@ equivalence relation.
 
 \newpage
 \begin{theorem}{}
-    Let $R$ be a ring, $a, b, c, d \in R$, and $I \subseteq R$ and ideal. Suppose 
+    Let $R$ be a ring, $a, b, c, d \in R$, and $I \subseteq R$ and ideal. Suppose
     $a \equiv c \pmod{I}$, $b \equiv d \pmod{I}$. Then $a + b \equiv c + d \pmod{I}$ and
     $ab \equiv cd \pmod{I}$.
 \end{theorem}
 \begin{proof}
     Since $a - c, b - d \in I$, we have that $(a - c) + (b - d) = (a + b) - (c + d) \in I$. Then by
-    definition, we have $a + b \equiv c + d \pmod{I}$. Now consider the following: 
+    definition, we have $a + b \equiv c + d \pmod{I}$. Now consider the following:
     \begin{align*}
         ab - cd &= ab + 0 - cd \\
                 &= ab + (-bc + bc) - cd \\
@@ -845,12 +837,12 @@ equivalence relation.
 
 \begin{definition}{Quotient Ring}
     Let $R$ be a ring, $a, b \in $, and $I \subseteq R$ and ideal. The \bf{quotient ring} $R/I$ is
-    the set of congruence classes modulo $I$ with $(+, \cdot)$ defined as 
+    the set of congruence classes modulo $I$ with $(+, \cdot)$ defined as
     $(a + I) + (b + I) = (a + b) + I$ and $(a + I)(b + I) = ab + I$ respectively.
 \end{definition}
 \bf{Proposition:} $R/I$ is a ring.
 \begin{proof}
-    I'm not checking all 9 axioms lol. 
+    I'm not checking all 9 axioms lol.
 \end{proof}
 
 \begin{theorem}{}
@@ -865,7 +857,7 @@ equivalence relation.
 $I = R$, then $R/I \simeq \{ 0 \}$.
 
 \begin{definition}{Canonical Projection}
-    Let $R$ be a ring, $I \subseteq R$ and ideal. Consider $\pi : R \to R/I$ such that 
+    Let $R$ be a ring, $I \subseteq R$ and ideal. Consider $\pi : R \to R/I$ such that
     $\pi(a) = a + I$. This map is the \bf{canonical projection}.
 \end{definition}
 
@@ -882,12 +874,12 @@ $I = R$, then $R/I \simeq \{ 0 \}$.
         \item $\pi(a \cdot b) = (a \cdot b) \cdot I = (a \cdot I) \cdot (b \cdot I) = \pi(a) \cdot \pi(b)$.
         \item $\pi(1_R) = 1 + I = 1_{R/I}$.
     \end{enumerate}
-    so $\pi$ is a ring homomorphism. Take $a + I \in R/I$. Then $\pi(a) = a + I$. Moreover, if 
-    $b \in [a + I]$, then $\pi(b) = a + I$. So $\pi$ is surjective. Finally, let $a \in I$. Then 
-    $\pi(a) = a + I$ but $a \equiv 0 \pmod{I}$, so we have $\pi(a) = a + I = 0_R + I = I$. So, 
-    $\ker(\pi) \subseteq I$. Now suppose $\pi(a) = 0_R + I$. Then $[a + I] = [0_R + I]$, 
-    or $a \equiv 0_R \pmod{I}$. We can rewrite this to get $a - 0_R = a \in I$, so 
-    $I \subseteq \ker(\pi)$. Because $\ker(\pi) \subseteq I$ and $I \subseteq \ker(\pi)$, 
+    so $\pi$ is a ring homomorphism. Take $a + I \in R/I$. Then $\pi(a) = a + I$. Moreover, if
+    $b \in [a + I]$, then $\pi(b) = a + I$. So $\pi$ is surjective. Finally, let $a \in I$. Then
+    $\pi(a) = a + I$ but $a \equiv 0 \pmod{I}$, so we have $\pi(a) = a + I = 0_R + I = I$. So,
+    $\ker(\pi) \subseteq I$. Now suppose $\pi(a) = 0_R + I$. Then $[a + I] = [0_R + I]$,
+    or $a \equiv 0_R \pmod{I}$. We can rewrite this to get $a - 0_R = a \in I$, so
+    $I \subseteq \ker(\pi)$. Because $\ker(\pi) \subseteq I$ and $I \subseteq \ker(\pi)$,
     $\ker(\pi) = I$.
 \end{proof}
 
@@ -901,7 +893,7 @@ $I = R$, then $R/I \simeq \{ 0 \}$.
     \label{thm:isothm}
     Let $f : R \to S$ be a ring homomorphism. The following hold:
     \begin{itemize}[label=$\to$, leftmargin=*, itemsep=0em]
-        \item There exists a unique homomorphism $\overline{f} : R/\ker(f) \to S$ such that 
+        \item There exists a unique homomorphism $\overline{f} : R/\ker(f) \to S$ such that
             $f = \overline{f} \circ \pi$.
         \item $R/\ker(f) \simeq \Im(f)$.
     \end{itemize}
@@ -916,7 +908,7 @@ $I = R$, then $R/I \simeq \{ 0 \}$.
     Let $f : R \to S$ be a ring homomorphism. Then
     \vspace{0.5em}
 
-    \bf{$\bm{\overline{f}}$ is well-defined:} Suppose $a + \ker(f) = a' + \ker(f)$. Then 
+    \bf{$\bm{\overline{f}}$ is well-defined:} Suppose $a + \ker(f) = a' + \ker(f)$. Then
     $a - a' \in \ker(f)$, so $f(a - a') = 0 = f(a) - f(a')$. This implies $f(a) = f(a')$, so
     $\overline{f}$ is well-defined.
     \vspace{1em}
@@ -924,18 +916,18 @@ $I = R$, then $R/I \simeq \{ 0 \}$.
     \bf{$\bm{\overline{f}}$ is a homomorphism:}
     \begin{enumerate}[label=(\arabic*)]
         \item $\overline{f}(1_R + \ker(f)) = f(1_R) = 1_S$.
-        \item Take $a + \ker(f), b + \ker(f) \in R/\ker(f)$. Then 
+        \item Take $a + \ker(f), b + \ker(f) \in R/\ker(f)$. Then
             \vspace{-0.5em}
             \[
-                \overline{f}((a + b) + \ker(f)) 
-                = f(a + b) = f(a) + f(b) 
+                \overline{f}((a + b) + \ker(f))
+                = f(a + b) = f(a) + f(b)
                 = \overline{f}(a + \ker(f)) + \overline{f}(b + \ker(f))
             \]
-        \item \vspace{-0.5em} Take $a + \ker(f), b + \ker(f) \in R/\ker(f)$. Then 
+        \item \vspace{-0.5em} Take $a + \ker(f), b + \ker(f) \in R/\ker(f)$. Then
             \vspace{-0.5em}
             \[
                 \overline{f}((a \cdot b) +\ker(f))
-                = f(a \cdot b) = f(a) \cdot f(b) 
+                = f(a \cdot b) = f(a) \cdot f(b)
                 = \overline{f}(a + \ker(f)) \cdot \overline{f}(b + \ker(f))
             \]
     \end{enumerate}
@@ -943,7 +935,7 @@ $I = R$, then $R/I \simeq \{ 0 \}$.
     so $\overline{f}$ is a homomorphism.
     \vspace{1em}
 
-    \bf{$\bm{f = \overline{f} \circ \pi}$:} Take $a \in R$. Then, 
+    \bf{$\bm{f = \overline{f} \circ \pi}$:} Take $a \in R$. Then,
     $\ul{\overline{f} \circ \pi (a)} = \overline{f}(\pi(a)) = \overline{f}(a + \ker(f)) = \ul{f(a)}$.
     \vspace{1em}
 
@@ -951,18 +943,18 @@ $I = R$, then $R/I \simeq \{ 0 \}$.
     $\overline{f} \neq g$. Then there exists $b \in R/\ker(f)$ such that $g(b + \ker(f) \neq
     \overline{f}(b + \ker(f))$, so
     \vspace{-0.5em}
-    \[g \circ \pi (a) = g(\pi(a)) = g(a + \ker(f)) 
-        \neq 
+    \[g \circ \pi (a) = g(\pi(a)) = g(a + \ker(f))
+        \neq
         \overline{f}(a + \ker(f)) = f(a)
-    \] 
+    \]
     \vspace{-0.5em}
     Therefore, $\overline{f}$ is unique.
     \vspace{1em}
 
-    \bf{$\bm{R/\ker(f) \simeq \Im(f)}$:} Take $a + \ker(f) \in \ker(\overline{f})$. Then 
-    $\overline{f}(a + \ker(f)) = f(a) = 0$. Since $a + \ker(f)$ was arbitrary, this holds for all 
-    $a + \ker(f) \in \ker(\overline{f})$, so $\overline{f}$ is \bf{injective}. Now take any 
-    $y \in \Im(f)$. Then there is some $z \in R$ such that $f(z) = y$. Set 
+    \bf{$\bm{R/\ker(f) \simeq \Im(f)}$:} Take $a + \ker(f) \in \ker(\overline{f})$. Then
+    $\overline{f}(a + \ker(f)) = f(a) = 0$. Since $a + \ker(f)$ was arbitrary, this holds for all
+    $a + \ker(f) \in \ker(\overline{f})$, so $\overline{f}$ is \bf{injective}. Now take any
+    $y \in \Im(f)$. Then there is some $z \in R$ such that $f(z) = y$. Set
     $x := z + \ker(f) \in R/\ker(f)$. Then $\overline{f}(x) = \overline{f}(z + \ker(f)) = f(z) = y$,
     so $\overline{f}$ is \bf{surjective}. Since $\overline{f}$ is injective and surjective, it is
     \bf{bijective}, and therefore $R/\ker(f) \simeq \Im(f)$.
@@ -979,8 +971,8 @@ $I = R$, then $R/I \simeq \{ 0 \}$.
     let $\overline{R} := R/I$. Then
     \begin{enumerate}[label=(\arabic*)]
         \item There is a bijective correspondence between ideals in $R$ containing $I$ and ideals of
-            $\overline{R}$ given by $J \mapsto \pi(J) = \{ r + I : r \in J \}$ and 
-            $\overline{J} \mapsto \pi^{-1}(\overline{J})$ where $J \subseteq R$ and 
+            $\overline{R}$ given by $J \mapsto \pi(J) = \{ r + I : r \in J \}$ and
+            $\overline{J} \mapsto \pi^{-1}(\overline{J})$ where $J \subseteq R$ and
             $\overline{J} \subseteq \overline{R}$ are ideals.
         \item If an ideal $J \subseteq R$ corresponds to $\overline{J} \subseteq \overline{R}$, then
             $R/J \simeq \overline{R}/\overline{J}$.
@@ -989,9 +981,9 @@ $I = R$, then $R/I \simeq \{ 0 \}$.
 \begin{proof}
     \bf{(1)} To show that $\pi(J)$ is an ideal of $\overline{R}$, take $a, b \in \pi(J)$ and
     $r + I \in \overline{R}$. Then $\pi(a + b) = (a + b) + I = (a + I) + (b + I) = \pi(a) + \pi(b)$
-    and $(a + I)(r + I) = ar + I \in \pi(J)$. Similarly, $ra + I \in \pi(J)$. 
+    and $(a + I)(r + I) = ar + I \in \pi(J)$. Similarly, $ra + I \in \pi(J)$.
     To show that $\pi^{-1}(J)$ is an ideal of $R$, take $a, b \in \pi^{-1}(\overline{J})$. Then
-    note that $\pi(a + b) = (a + b) + I = (a + I) + (b + I) = \pi(a) + \pi(b) \in \overline{J}$, so 
+    note that $\pi(a + b) = (a + b) + I = (a + I) + (b + I) = \pi(a) + \pi(b) \in \overline{J}$, so
     $a + b \in \pi^{-1}(\overline{J}$.
     Also, note that
     $\pi(ar) = ar + I = (a + I)(r + I) \in \overline{J}$, so $ar \in \pi^{-1}(\overline{J})$.
@@ -1002,9 +994,9 @@ $I = R$, then $R/I \simeq \{ 0 \}$.
     \bf{$\bm{\pi^{-1}(\pi(J)) = J}$:}
     Let $a \in \pi^{-1}(\pi(J))$. Then by definition of the pre-image under $\pi$, there
     exists $x \in J$ such that $\pi(a) = \pi(x) \in \pi(J)$, or $a + I = x + I$, which implies that
-    $a - x \in I \subseteq J$, so $a \in I \subseteq J$. Since $a$ was arbitrary, 
-    $\pi^{-1}(\pi(J)) \subseteq J$. Now let $b \in J$. Then by definition, $\pi(b) = b + I$. Then, 
-    $\pi^{-1}(\pi(b)) = \pi^{-1}(b + I)$ but by definition of the pre-image, 
+    $a - x \in I \subseteq J$, so $a \in I \subseteq J$. Since $a$ was arbitrary,
+    $\pi^{-1}(\pi(J)) \subseteq J$. Now let $b \in J$. Then by definition, $\pi(b) = b + I$. Then,
+    $\pi^{-1}(\pi(b)) = \pi^{-1}(b + I)$ but by definition of the pre-image,
     $\pi^{-1}(b + I) = b \in \pi^{-1}(\pi(J))$.
     Since $b$ was arbitrary, $J \subseteq \pi^{-1}(\pi(J))$. Since we have $\pi^{-1}(\pi(J))
     \subseteq J$ and $\pi^{-1}(\pi(J)) \supseteq J$, $\pi^{-1}(\pi(J)) = J$.
@@ -1013,42 +1005,42 @@ $I = R$, then $R/I \simeq \{ 0 \}$.
     \bf{$\bm{\pi(\pi^{-1}(\overline{J})) = \overline{J}}$:}
     Let $a + I \in \pi(\pi^{-1}(\overline{J}))$. Then there exists $x \in R$ such that
     $x \in \pi^{-1}(\overline{J})$ and $\pi(x) = a + I \in \overline{J}$. Since $a$ was arbitrary,
-    $\pi(\pi^{-1}(\overline{J})) \subseteq \overline{J}$. Now let $b + I \in \overline{J}$. 
+    $\pi(\pi^{-1}(\overline{J})) \subseteq \overline{J}$. Now let $b + I \in \overline{J}$.
     Then by definition, $b + I$ is in the image of $J$ under $\pi$, so $b \in \pi^{-1}(\overline{J})$.
     Then $\pi(\pi^{-1}(b + I)) = \pi(b) = b + I \in \pi(\pi^{-1}(\overline{J}))$.
-    Since $b + I$ was arbitrary, $\overline{J} \subseteq \pi(\pi^{-1}(\overline{J}))$. 
-    Since $\pi(\pi^{-1}(\overline{J})) \subseteq \overline{J}$ and 
+    Since $b + I$ was arbitrary, $\overline{J} \subseteq \pi(\pi^{-1}(\overline{J}))$.
+    Since $\pi(\pi^{-1}(\overline{J})) \subseteq \overline{J}$ and
     $\pi(\pi^{-1}(\overline{J})) \supseteq \overline{J}$,
     $\pi(\pi^{-1}(\overline{J})) = \overline{J}$.
     \vspace{0.5em}
-    
+
     Therefore, there exists a bijective correspondence between the ideals $J \supseteq I$ in $R$ and
     and the ideals $\overline{J} \subseteq \overline{R}$.
 
     \vspace{1em}
 
     \bf{(2)} Consider the canonical projection $\phi : \overline{R} \to \overline{R}/\overline{J}$.
-    Since $\phi$ and $\pi$ are \bf{surjective}, the composition 
+    Since $\phi$ and $\pi$ are \bf{surjective}, the composition
     $\phi \circ \pi : R \to \overline{R}/\overline{J}$ is as well.
     By the \href{thm:isothm}{First Isomorphism Theorem}, we have
     $\overline{R}/\ker(\phi \circ \pi) \simeq \overline{R}/\overline{J}$.
     \vspace{0.5em}
 
     \bf{$\bm{\ker(\phi \circ \pi) = J}$:}
-    Let $\overline{J} = \pi(J)$. Take $a \in J$. Then 
+    Let $\overline{J} = \pi(J)$. Take $a \in J$. Then
     $
-    \phi \circ \pi(a) 
-    = \phi(\pi(a)) 
-    = \phi(a + I) 
+    \phi \circ \pi(a)
+    = \phi(\pi(a))
+    = \phi(a + I)
     = (a + I) + \overline{J}
     $, but since $a + I \in \overline{J}$, we have that
     $(a + I) + \overline{J} = 0 + \overline{J} \in \ker(\phi \circ \pi)$.
     Since $a$ was arbitrary, $J \subseteq \ker(\phi \circ \pi)$.
-    Now take any $b \in R$ such that $\phi \circ \pi(b) = 0 + \overline{J}$. Then, 
-    $(b + I) + \overline{J} = 0 + \overline{J}$. By definition, $b + I \in \overline{J} = \pi(J)$. 
-    Then $b + I$ is the image of $J$ under $\pi$, so $b \in \pi^{-1}(\overline{J}) = 
-    \pi^{-1}(\pi(J)) = J$. Since $b$ was arbitrary, 
-    $\ker(\phi \circ \pi) \subseteq J$. Since 
+    Now take any $b \in R$ such that $\phi \circ \pi(b) = 0 + \overline{J}$. Then,
+    $(b + I) + \overline{J} = 0 + \overline{J}$. By definition, $b + I \in \overline{J} = \pi(J)$.
+    Then $b + I$ is the image of $J$ under $\pi$, so $b \in \pi^{-1}(\overline{J}) =
+    \pi^{-1}(\pi(J)) = J$. Since $b$ was arbitrary,
+    $\ker(\phi \circ \pi) \subseteq J$. Since
     $J \subseteq \ker(\phi \circ \pi)$ and
     $J \supseteq \ker(\phi \circ \pi)$,
     $J = \ker(\phi \circ \pi)$.
@@ -1058,9 +1050,9 @@ $I = R$, then $R/I \simeq \{ 0 \}$.
 \end{proof}
 
 \newpage
-\begin{theorem}{(Chinese Remainder Theorem (Rings))}
+\begin{theorem}{(Chinese Remainder Theorem [Rings])}
     \label{thm:crtrings}
-    Let $R$ be a commutative ring, $a, b \in R$, and $I, J \subseteq R$ be ideals such that 
+    Let $R$ be a commutative ring, $a, b \in R$, and $I, J \subseteq R$ be ideals such that
     $I + J = R$. We can find $x \in R$ such that
     \begin{align*}
         x &\equiv a \pmod{I} \\
@@ -1072,16 +1064,16 @@ $I = R$, then $R/I \simeq \{ 0 \}$.
     Because $I + J = R$, we can find $i \in I$ and $j \in J$ such that $i + j = 1_R$. Then
     $i \equiv 1 \pmod{J}$ and $j \equiv 1 \pmod{I}$. Consider $x := bi + aj$. Then
     \begin{align*}
-        x &= bi + aj \\ 
-          &\equiv aj \pmod{I} \\ 
-          &\equiv a \cdot 1 \pmod{I} \\ 
+        x &= bi + aj \\
+          &\equiv aj \pmod{I} \\
+          &\equiv a \cdot 1 \pmod{I} \\
         x &\equiv a \pmod{I}
     \end{align*}
     and
     \begin{align*}
-        x &= bi + aj \\ 
-          &\equiv bi \pmod{J} \\ 
-          &\equiv b \cdot 1 \pmod{J} \\ 
+        x &= bi + aj \\
+          &\equiv bi \pmod{J} \\
+          &\equiv b \cdot 1 \pmod{J} \\
         x &\equiv b \pmod{J}
     \end{align*}
     Now suppose that $y$ is another solution. Then $y \equiv x \pmod{I}$ and $y \equiv x \pmod{J}$.
@@ -1094,7 +1086,7 @@ $I = R$, then $R/I \simeq \{ 0 \}$.
 \end{center}
 
 \newpage
-\begin{theorem}{(Chinese Remainder Theorem (Isomorphism))}
+\begin{theorem}{(Chinese Remainder Theorem [Isomorphism])}
     Let $R$ be a ring and $I, J \subseteq R$ be ideals such that $I + J = R$. The quotient rings
     $(R/I) \times (R/J)$ and $R/(I \cap J)$ are isomorphic.
 \end{theorem}
@@ -1105,29 +1097,667 @@ $I = R$, then $R/I \simeq \{ 0 \}$.
         \item Take $a, b \in R$. Then
             \vspace{-0.5em}
             \[
-                f(a + b) 
-                = ((a + b) + I, (a + b) + J) 
-                = (a + I, a + J) + (b + I, b + J) 
+                f(a + b)
+                = ((a + b) + I, (a + b) + J)
+                = (a + I, a + J) + (b + I, b + J)
                 = f(a) + f(b)
             \]
         \item \vspace{-0.5em} Take $a, b \in R$.
             \vspace{-0.5em}
             \[
-                f(a \cdot b) 
-                = ((a \cdot b) + I, (a \cdot b) + J) 
-                = (a + I, a + J) \cdot (b + I, b + J) 
+                f(a \cdot b)
+                = ((a \cdot b) + I, (a \cdot b) + J)
+                = (a + I, a + J) \cdot (b + I, b + J)
                 = f(a) \cdot f(b)
             \]
     \end{enumerate}
-    so $f$ is a homomorphism. 
-    \vspace{1em}
+    \vspace{-1em}
+    so $f$ is a homomorphism.
+    \vspace{0.5em}
 
     Take $(a + I, b + J) \in (R/I) \times (R/J)$. By the
     \href{thm:crtrings}{Chinese Remainder Theorem (Rings)}, we can find $x \in R$ such that
     $x + I = a + I$ and $x + J = a + J$. Then, $f(x) = (a + I, b + J)$, so $f$ is \bf{surjective}.
-    Suppose $f(a) = 0$. Then $a \in I$ and $a \in J$, so $a \in I \cap J$. Now take 
-    $a \in I \cap J$. Then $a \in I$ and $a \in J$, so $a + I \in I$ and $a + J \in J$. 
-    By the \href{thm:isothm}{First Isomorphism Theorem}, we have 
+    Suppose $f(a) = 0$. Then $a \in I$ and $a \in J$, so $a \in I \cap J$. Now take
+    $a \in I \cap J$. Then $a \in I$ and $a \in J$, so $a + I \in I$ and $a + J \in J$.
+    By the \href{thm:isothm}{First Isomorphism Theorem}, we have
     $\ul{R/(I \cap J)} = R/\ker(f) \simeq \Im(f) = \ul{(R/I) \times (R/J)}$.
 \end{proof}
+
+\subsection{Prime and Maximal Ideals}
+\bf{Preface:} All rings in this subsection are commutative rings.
+
+\begin{definition}{Prime Ideal}
+    Let $R$ be a commutative ring and let $I \subsetneq R$ be a proper ideal. $I$ is a
+    \bf{prime ideal} if, whenever $ab \in I$ for $a, b \in R$, we have either $a \in I$ or
+    $b \in I$.
+\end{definition}
+\bf{Example:} Let $R$ be an integral domain. Then $(0)$ is prime since whenever $ab \in (0)$, we
+have that either $a \in (0)$ or $b \in (0)$.
+\vspace{1em}
+
+\bf{Proposition:} $(p) \subsetneq \Z$ is a prime ideal if and only if $p \in Z$ is prime.
+\begin{proof}
+    Let $p \in \Z$ be nonzero.
+    \vspace{0.5em}
+
+    \bf{($\bm{\implies}$)}
+    Suppose $(p) \subsetneq \Z$ is a prime ideal. Consider $ab \in (p)$. Then either $a \in (p)$ or
+    $b \in (p)$. By definition, we can write $ab = pr$ for some $r \in \Z$, so $p \mid ab$. But we
+    also have that either $a = pq$ or $b = ps$ for some $q, s \in \Z$, so either $p \mid a$ or
+    $p \mid b$. Then, since these two statements:
+    \begin{enumerate}[label=(\arabic*)]
+        \item $p$ is prime.
+        \item If $p \mid ab$, then $p \mid a$ or $p \mid b$.
+    \end{enumerate}
+    are equivalent, $p \in \Z$ is prime.
+    \vspace{0.5em}
+
+    \bf{($\bm{\impliedby}$)}
+    Suppose $p \in \Z$ is prime and consider the ideal $(p) \subsetneq \Z$. Consider $ab \in \Z$
+    such that $p \mid ab$. Then either $p \mid a$ or $p \mid b$. Since $p \mid ab$, we have that
+    $ab = pr$ for some $r \in \Z$, so $ab \in (p)$. By a similar argument, either $a \in (p)$ or
+    $b \in (p)$, so $(p) \subsetneq \Z$ is a prime ideal.
+\end{proof}
+
+\begin{theorem}{}
+    Let $R$ be a commutative ring and let $I \subsetneq R$ be a proper ideal. The quotient ring
+    $R/I$ is an integral domain if and only if $I$ is prime.
+\end{theorem}
+\begin{proof}
+    Let $R$ be a commutative ring and let $I \subsetneq R$ be a proper ideal.
+    \vspace{0.5em}
+
+    \bf{($\bm{\implies}$)}
+    Suppose $R/I$ is an integral domain. Take $ab \in I$. Then $(a + I)(b + I) = ab + I = 0 + I$.
+    Since $R/I$ is an integral domain, we have that either $a + I = 0 + I$ or $b + I = 0 + I$. This
+    implies that either $a \in I$ or $b \in I$, so $I \subsetneq R$ is prime.
+    \vspace{0.5em}
+
+    \bf{($\bm{\impliedby}$)}
+    Suppose $I$ is a prime ideal. Take $ab + I \in R/I$. Then $ab + I = (a + I)(b + I) = 0 + I$.
+    Since $I$ is a prime ideal, either $a \in I$ or $b \in I$. This implies that either $a + I = I$ or
+    $b + I = I$, so $R/I$ has no zero divisors. This implies that $R/I$ is an integral domain.
+\end{proof}
+
+\begin{definition}{Maximal Ideal}
+    Let $R$ be a commutative ring and let $I \subsetneq R$ be a proper ideal. $I$ is a
+    \bf{maximal ideal} if, whenever there is an ideal $J$ such that $ I \subsetneq J \subseteq R$,
+    we must have $J = R$.
+\end{definition}
+
+\begin{theorem}{}
+    Let $R$ be a commutative ring and $I \subsetneq R$ be a maximal ideal. Then $I$ is a prime ideal.
+\end{theorem}
+\begin{proof}
+    Let $R$ be a commutative ring and suppose $I \subsetneq R$ is a maximal ideal. Take $ab \in I$.
+    If $a \in I$, then we are done, so suppose not. Then consider $I + (a) \supsetneq I$. Since $I$
+    is maximal, we have that $I + (a) = R$. Then $1 = x + ar$ for some $x \in I$, $ar \in (a)$.
+    Multiplying both sides by $b \in R$, we get $\ul{b} = b(x + ar) = \ul{bx + abr}$. Since
+    $ab \in I$, we have that $(ab)r \in I$. Further, since $x \in I$, $xb \in I$, so
+    $bx + abr = b \in I$. This implies that $I$ is a prime ideal.
+\end{proof}
+\bf{Note:} From now on, I will only state ``$I$ is prime/maximal'' instead of saying ``$I$ is a
+prime/maximal ideal''.
+
+\begin{theorem}{}
+    Let $R$ be a commutative ring and $I \subsetneq R$ be a proper ideal. $I$ is maximal if and only
+    if $R/I$ is a field.
+\end{theorem}
+\begin{proof}
+    Let $R$ be a commutative ring and suppose $I \subsetneq R$ is a proper ideal.
+    \vspace{0.5em}
+
+    \bf{($\bm{\implies}$)}
+    Suppose $I$ is maximal. Pick a nonzero $a + I \in R/I$. Since $a + I \neq 0 + I$, $a
+    \not \in I$. Consider $I + (a) \supsetneq I$. Since $I$ is maximal, we have that $I + (a) = R$.
+    Then $1 = x + ab$ for some $x \in I$, $ab \in (a)$, so we have
+    $(x + ab) + I = (x + I) + (ab + I) = 1 + I$. Since $x \in I$, we have that $x + I = 0 + I$.
+    This implies that $(x + I) + (ab + I) = (0 + I) + (ab + I) = (a + I)(b + I) = 1 + I$. So
+    $a + I \in R/I$ is a unit. Since $a + I \in R/I$ was arbitrary, $R/I$ is a field.
+    \vspace{0.5em}
+
+    \bf{($\bm{\impliedby}$)}
+    Suppose $R/I$ is a field. Pick $a \in R \setminus I$. Then $a + I \in R/I$ is nonzero, so there
+    exists $b + I \in R/I$ such that $(a + I)(b + I) = ab + I = 1 + I$. Then $ab - 1 \in I$, so
+    there exists $x \in I$ such that $x = ab - 1$, or $1 = ab - x$. Then since $-x \in I$ and
+    $ab \in (a)$, we have that $ab - x = 1 \in I + (a)$, so $I + (a) = R$. Therefore, $I$ is maximal.
+\end{proof}
+
+\newpage
+\section{Polynomial Rings over Fields}
+\bf{Preface:} Throughout this section, $F$ is a field and $F[x]$ are the polynomials with
+coefficients in $F$. Recall that given $f \in F[x]$, we can uniquely express $f(x)$ as
+$\sum\limits_{i = 0}^{n} a_i x^i$, where $a_n$ is nonzero.
+\newline
+\bf{Note:} The notation $f(x)$ and $f$ are interchangeable.
+
+\begin{definition}{Associate}
+    Let $f, g \in F[x]$. $f$ and $g$ are \bf{associates} if there is some nonzero $c \in F$ such
+    that $g = cf$.
+\end{definition}
+
+\begin{definition}{Degree}
+    Let $f \in F[x]$ be expressed as $f(x) = \sum\limits_{i = 0}^{n} a_i x^i$, where $a_n \neq 0$.
+    The \bf{degree} of $f$ is \vspace{-0.5em}
+
+    written as $\deg(f) = n$.
+    \vspace{0.5em}
+
+    Let $f, g \in F[x]$. The following hold:
+    \begin{enumerate}[label=(\arabic*)]
+        \item $\deg(f + g) \leq \max\{ \deg(f), \deg(g) \}$.
+        \item $\deg(fg) = \deg(f) + \deg(g)$.
+    \end{enumerate}
+    \bf{Note:} The zero polynomial has a degree of $-\infty$ by convention.
+\end{definition}
+
+\begin{definition}{Monic Polynomial}
+    Let $f \in F[x]$. $f$ is \bf{monic} if its leading term is $1$.
+\end{definition}
+
+\newpage
+\begin{theorem}{(Division Algorithm [Polynomials])}
+    Let $f, g \in F[x]$ such that $g \neq 0$. Then there are unique polynomials $q, r \in F[x]$ such
+    that $f = gq + r$, where $\deg(r) < \deg(g)$.
+\end{theorem}
+\begin{proof}
+    \bf{Existence:}
+    Let $f, g \in F[x]$ such that $g \neq 0$ and consider $S := \{ f - sg : s \in F[x] \}$. If $s$
+    is the zero polynomial, then $f - sg = f - 0g = f \in S$, so $S$ is not empty.
+    Choose $f - sg \in S$ to be of least degree, and define $q := s, r := f - sg$. Then
+    $r = f - sg = f - qg$, or $f = gq + r$. Since $g \neq 0$, we have that $\deg(g) \geq 0$. Suppose
+    for the sake of contradiction that $\deg(r) \geq \deg(g)$. Then
+    $r = \sum\limits_{i = 0}^{n} r_i x^i$ and $g = \sum\limits_{i = 0}^{m} g_i x^i$ where $n \geq m$.
+    Since $\deg(r) = n, \deg(g) = m$, we have that  $r_n \neq 0$ and $g_m \neq 0$;
+    i.e. they are units. Now consider
+    $t := r_n x^n \cdot (g_m x^m)^{-1} = r_n g_m^{-1} x^{n - m}$. Then
+    \[
+        tg = \left(r_n g_m^{-1} x^{n - m}\right) \cdot \left(\sum\limits_{i = 0}^{m} g_i x^i\right)
+        =
+        \left(\sum\limits_{i = 0}^{m - 1} r_n g_m^{-1} g_i x^{n - m + i}\right) +
+        r_n x^n
+    \]
+    so
+    \begin{align*}
+        r - tg &= \left(\sum\limits_{i = 0}^{n - 1} r_i x^i\right) + r_n x^n -
+        \left(\left(\sum\limits_{i = 0}^{m - 1} r_n g_m^{-1} g_i x^{n - m + i}\right) +
+        r_n x^n\right) \\
+               &= \left(\sum\limits_{i = 0}^{n - 1} r_i x^i\right) -
+               \sum\limits_{i = 0}^{m - 1} r_n g_m^{-1} g_i x^{n - m + i} \\
+    \end{align*}
+    so $\deg(r - tg) \leq n - 1 < n = \deg(r)$. But we have that
+    $r = f - gs$, so we get
+    \[
+        r - tg = (f - gs) - tg = f - g(s + t)
+    \]
+    Since $s + t \in F[x]$, we have that $r - tg \in S$, but $r$ was chosen to have the lowest
+    degree and $\deg(r - tg) < \deg(r)$, a contradiction. Therefore, $\deg(r) < \deg(g)$.
+    \vspace{0.5em}
+
+    \bf{Uniqueness:} Suppose $f = gq + r = gq' + r'$ for $q, q', r, r' \in F[x]$. Then
+    \begin{align*}
+        gq + r &= gq' + r' \\
+        g(q - q') &= r - r'
+    \end{align*}
+    so $g \mid (r - r')$. But $\deg(r - r') < \deg(g)$, so $r = r'$. Since $F$ is a field and $g
+    \neq 0$, this implies that $q = q'$. Therefore, $q, r \in F[x]$ are unique.
+\end{proof}
+
+\newpage
+\begin{definition}{Divides (Polynomials)}
+    Let $f, g \in F[x]$. $f$ \bf{divides} $g$ if there is a polynomial $s \in F[x]$ such that
+    $fs = g$. Then $f$ is a \bf{divisor} of $g$. We write $f \mid g$.
+\end{definition}
+\bf{Proposition:} Let $f, g \in F[x]$, $g \neq 0$, and suppose $f$ divides $g$. Then
+$\deg(f) \leq \deg(g)$.
+\begin{proof}
+    Let $f, g \in F[x], g \neq 0$ and suppose $f \mid g$. Then there exists $s \in F[x]$ such that
+    $fs = g$. Since $g \neq 0$, we have that $\deg(g) \geq 0$. Since $F$ is a field, we have that
+    $f \neq 0$ and $s \neq 0$, so $\deg(f) \geq 0$ and $\deg(s) \geq 0$. Then
+    $\deg(g) = \deg(fs) = \deg(f) + \deg(s)$. This implies that $\deg(f) \leq \deg(g)$.
+\end{proof}
+
+\begin{definition}{Greatest Common Divisor (gcd) (Polynomials)}
+    Let $f, g \in F[x]$ be polynomials such that either $f \neq 0$ or $g \neq 0$. The
+    \bf{greatest common divisor} of $f$ and $g$ is the monic polynomial of largest degree that
+    divides $f$ and $g$. That is, the greatest common divisor $d$ of $f$ and $g$ is the monic
+    polynomial that satisfies the following:
+    \begin{enumerate}[label=(\arabic*)]
+        \item $d \mid f$ and $d \mid g$.
+        \item If $a \mid f$ and $a \mid g$, then $a \mid d$.
+    \end{enumerate}
+    If $d$ is the greatest common divisor of $f$ and $g$, we write $d = \gcd(f, g) = (f, g)$.
+\end{definition}
+
+\begin{theorem}{(Bezout's Identity [Polynomials])}
+    Let $f, g \in F[x]$ such that either $f \neq 0$ or $g \neq 0$. There exist $m, n \in F[x]$ such
+    that $fm + gn = d$, where $d = (f, g)$.
+\end{theorem}
+\begin{proof}
+    Let $f, g \in F[x]$ such that either $f \neq 0$ or $g \neq 0$. Consider the set
+    $S = \{ fm + gn : m, n \in F[x] \}$. If $m = f, n = g$, then since at least one of $f, g$ is
+    nonzero, we have $0 \neq fm + gn = f^2 + g^2 \in S$, so $S$ is not empty. By the well-ordering
+    principle, choose the polynomial $s = fm + gn \in S$ of smallest degree, and consider
+    $f = sq + r$ for $\deg(r) < \deg(g)$. Rearranging the second equation, we get
+    \begin{align*}
+        f &= sq + r \\
+        r &= f - sq \\
+        &= f - (fm + gn)q \\
+        r &= f(1 - mq) + g(-nq)
+    \end{align*}
+    This implies that $r \in S$. We also have that $\deg(r) < \deg(g)$, but since $s$ was chosen to
+    be the smallest element in $S$, this forces $r = 0$. Then $f = sq + r = sq$, so $s \mid f$.
+    Similarly, $s \mid g$. Since $s \mid f$ and $s \mid g$, $s \leq d$. But $d \mid f$ and
+    $d \mid g$ by definition, so $d \mid s$ which implies that $d \leq s$. Therefore,
+    $d = s$, where $s$ is a linear combination of $f$ and $g$. So, there exist $m, n \in F[x]$
+    such that $d = fm + gn$, where $d = (f, g)$.
+\end{proof}
+
+\begin{theorem}{}
+    Let $a, b, c \in F[x]$. Suppose $a \mid bc$ such that $(a, b) = 1$. Then $a \mid c$.
+\end{theorem}
+\begin{proof}
+    Let $a, b, c \in F[x]$, and suppose $a \mid bc$ such that $(a, b) = 1$. Then we can write $1$ as
+    a linear combination of $a$ and $b$; i.e. $am + bn = 1$ for $m, n \in F[x]$. We also have that
+    $aq = bc$ for some $q \in F[x]$ Then
+    \begin{align*}
+        1 &= am + bn \\
+        c &= c(am + bn) \\
+          &= acm + (bc)n \\
+          &= acm + (aq)n \\
+        c &= a(cm + qn)
+    \end{align*}
+    which implies that $a \mid c$.
+\end{proof}
+
+\subsection{Irreducibility}
+\begin{definition}{Irreducible}
+    Let $f \in F[x]$ be nonzero and nonconstant. $f$ is \bf{irreducible} if its only factors are
+    units and associates. Otherwise, $f$ is \bf{reducible}. That is, $f$ is reducible if there exist
+    polynomials $a, b \in F[x]$ of lower degree such that $ab = f$.
+\end{definition}
+
+\begin{theorem}{}
+    Let $p \in F[x]$. The following are equivalent statements:
+    \begin{enumerate}[label=(\arabic*)]
+        \item $p$ is irreducible.
+        \item If $p \mid ab$, then $p \mid a$ or $p \mid b$.
+        \item If $p = ab$, then either $a$ or $b$ is a unit.
+    \end{enumerate}
+\end{theorem}
+\begin{proof}
+    Let $p \in F[x]$.
+    \vspace{0.5em}
+
+    \bf{(1) $\bm{\implies}$ (2)}
+    Suppose $p$ is irreducible and $p \mid ab$. If $p \mid a$, then we are done, so suppose not.
+    Then $p \mid ab$ and $(p, a) = 1$ which implies $p \mid b$.
+    \vspace{0.5em}
+
+    \bf{(2) $\bm{\implies}$ (3)}
+    Suppose that if $p \mid ab$, then $p \mid a$ or $p \mid b$. Let $p = ab$. Then $p \mid p = ab$,
+    so $p \mid a$ or $p \mid b$. Without loss of generality, suppose $p \mid a$. Then
+    $\deg(p) \leq \deg(a)$. But since $p = ab$, we have that $\deg(a), \deg(b) \leq \deg(p)$. So,
+    $\deg(p) = \deg(a)$, which implies that $b$ is a unit.
+
+    \vspace{0.5em}
+
+    \bf{(3) $\bm{\implies}$ (1)}
+    Suppose that if $p = ab$, then either $a$ or $b$ is a unit. Without loss of generality, suppose
+    $a$ is a unit. Then $\ul{\deg(a)} = 0$, so
+    $\deg(p) = \deg(ab) = \deg(a) + \deg(b) = \ul{\deg(b)}$. This
+    implies that $b$ is an associate of $p$. Therefore, the only factors of $p$ are units and
+    associates, so $p$ is irreducible.
+\end{proof}
+
+\begin{corollary}{}
+    Let $p \in F[x]$ be irreducible. If $p \mid a_1 \cdots a_n$, then $p \mid a_i$ for some $i$.
+\end{corollary}
+\begin{proof}
+    Let $p \in F[x]$ be irreducible. We will induct on $n \in \N$. At $n = 2$, if $p \mid a_1 a_2$,
+    then $p \mid a_1$ or $p \mid a_2$. Assume the base case holds for some $n \geq 2$. At $n = n + 1$,
+    consider $p \mid a_1 \cdots a_n \cdot a_{n + 1}$. Then  if $p \mid a_{n + 1}$, we are done.
+    Otherwise, by the inductive hypothesis, we have that $p \mid a_i$ for some $i \leq n$.
+    Therefore, if $p \mid a_1 \cdots a_n$, then $p \mid a_i$ for some $i$.
+\end{proof}
+
+\begin{theorem}{(Unique Factorization [Polynomials])}
+    Let $f \in F[x]$ be nonzero and nonconstant. $f$ can be written a a product of irreducible
+    polynomials. Moreover, if $f = p_1 p_2 \cdots p_n = q_1 q_2 \cdots q_m$ are two irreducible
+    factorizations, then $n = m$ and there is a permutation $\sigma$ on $\{1, \ldots, n\}$ such that
+    $p_i$ and $q_{\sigma(i)}$ are associates.
+\end{theorem}
+\begin{proof}
+    \bf{Existence:}
+    Suppose for the sake of contradiction that there exist polynomials that cannot be written as a
+    product of irreducible polynomials. Let $S$ contain such polynomials. Then since $S$ is not
+    empty, pick $f$ to be the polynomial of least degree. Then if $f = pq$, we have that
+    $\deg(p), \deg(q) \leq \deg(f)$. But $f$ was chosen to be the polynomial with smallest degree,
+    so $p, q \not \in S$. Then $p, q$ can be written as a product of irreducible polynomials which
+    implies that $f$ can be written as a product of irreducible polynomials, a contradiction.
+    Therefore, $S$ is empty which implies that all nonzero and nonconstant $f \in F[x]$ can be
+    written as a product of irreducible polynomials.
+    \vspace{0.5em}
+
+    \bf{Uniqueness:}
+    Suppose $p_1 \cdots p_n = q_1 \cdots q_m$. Without loss of generality, suppose $n \leq m$. Then
+    $p_1 \mid q_1 \cdots q_m$. Without loss of generality, let $p_1 \mid q_1$. Then $p_1$ and $q_1$
+    are associates since they are both irreducible. Then $q_1 = c_1 p_1$ for some unit $c_1 \in F$,
+    so we have that $p_1 \cdots p_n = c_1 p_1 \cdot q_2 \cdots q_m$. Since $F$ is a field, we can apply
+    the cancellation property to cancel $p_1$, which yields $p_2 \cdots p_n = c_1 q_2 \cdots q_m$.
+    Continuing this process inductively, we have that $p_{m + 1} \cdots p_n = c_1 \cdots c_m$.
+    Suppose for the sake of contradiction that $m < n$. Then
+    $0 < \deg(p_{m + 1} \cdots p_n) = \deg(c_1 \cdots c_m) = 0$, a contradiction. Therefore,
+    $m = n$ and there is a unique permuatation $\sigma$ on $\{ 1, \ldots, n \}$ such that
+    $p_i = q_{\sigma(i)}$.
+\end{proof}
+
+\newpage
+\subsection{Roots}
+\begin{definition}{Root}
+    Let $f \in F[x]$. $a \in F$ is a \bf{root} of $f$ if $f(a) = 0$.
+\end{definition}
+
+\begin{lemma}{}
+    Let $f \in F[x]$ and let $a \in F[x]$ be a root of $f$. The remainder of $f(x)$ divided by
+    $x - a$ is $f(a)$.
+\end{lemma}
+\begin{proof}
+    Let $f \in F[x]$. We can express $f$ as $f(x) = (x - a)q(x) + r(x)$ for unique $q, r \in F[x]$.
+    Then $\ul{f(a)} = (a - a) + q(a) + r = 0 + r = \ul{r}$.
+\end{proof}
+
+\begin{theorem}{}
+    Let $f \in F[x]$ and $a \in F$. $a$ is a root of $f$ if and only if $x - a$ is a factor of $f$.
+\end{theorem}
+\begin{proof}
+    Let $f \in F[x]$ and $a \in F$.
+    \vspace{0.5em}
+
+    ($\implies$)
+    Suppose $a$ is a root of $f$. We can express $f$ as $f(x) = (x - a)q(x) + r(x)$ for unique
+    $q, r \in F[x]$. Then from the \bf{Lemma} above, we have that $f(a) = r$, but since $a$ is a
+    root, $f(a) = 0$, so $r = 0$ which implies that $f(x) = (x - a)q(x)$, or $(x - a) \mid f$.
+    \vspace{0.5em}
+
+    ($\impliedby$)
+    Suppose $x - a$ is a factor of $f$. Then $(x - a) \mid f$, or $f(x) = (x - a)q(x)$. Then
+    $f(a) = (a - a)q(a) = 0$.
+\end{proof}
+
+\begin{corollary}{}
+    Let $f \in F[x]$ such that $\deg(f) = n > 0$. $f$ has at most $n$ roots.
+\end{corollary}
+\begin{proof}
+    Let $f \in F[x]$. such that $\deg(f) = n > 0$. We will induct on $n \in \N$. At $n = 1$, we have
+    $f(x) = a_0 + a_1x$. Clearly, $f$ has at most one root. Assume the base case holds for all
+    $1 \leq k < n$. At $k = n$, we can express $f$ as $f(x) = (x - r)q(x)$, where $r \in F$ is a root
+    of $f$. We have that $\deg(q) = n - 1$, so by the inductive hypothesis, $q$ has at most $n - 1$
+    roots. Then $f$ has at most $1 + (n - 1) = n$ roots. Since $k$ was arbitrary, this holds for all
+    $n \in \N$.
+\end{proof}
+
+\newpage
+\subsection{Quotienting by Irreduibles}
+\begin{theorem}{}
+    Let $p \in F[x]$ be a nonzero, nonconstant polynomial. The following are equivalent:
+    \begin{enumerate}[label=(\arabic*)]
+        \item $p$ is irreducible.
+        \item $(p)$ is maximal.
+        \item $(p)$ is prime.
+    \end{enumerate}
+\end{theorem}
+\begin{proof}
+    Let $p \in F[x]$.
+    \vspace{0.5em}
+
+    \bf{(1) $\bm{\implies}$ (2)}
+    Suppose $p$ is irreducible. Consider the ideal $(p) \subseteq F[x]$. Take
+    $a \in F[x] \setminus (p)$. If $a$ is a unit, then $(p) + (a) = F[x]$, so suppose not. Then we
+    have that $(p, a) = 1$, so we can write $pf + ag = 1$ for $f, g \in F[x]$, so
+    $(p) + (a) = (1) = F[x]$. Therefore, $(p)$ is maximal.
+    \vspace{0.5em}
+
+    \bf{(2) $\bm{\implies}$ (3)}
+    Suppose $(p)$ is maximal. Since all maximal ideals are prime, $(p)$ is prime.
+    \vspace{0.5em}
+
+    \bf{(3) $\bm{\implies}$ (1)}
+    Suppose $(p)$ is prime. Consider $ab \in (p)$. Then $ab = pr$ for some $r \in F[x]$, so
+    $p \mid ab$. Then since $p$ is prime, we have that either $a \in (p)$ or $b \in (p)$. Without
+    loss of generality, suppose $a \in (p)$. Then $a = ps$ for some $s \in F[x]$, so $p \mid a$.
+    Since the following statements:
+    \begin{enumerate}[label=(\arabic*)]
+        \item $p$ is irreducible.
+        \item If $p \mid ab$, then $p \mid a$ or $p \mid b$.
+        \item If $p = ab$, then either $a$ or $b$ is a unit.
+    \end{enumerate}
+    are equivalent, $p$ is irreducible.
+\end{proof}
+
+\begin{corollary}{}
+    Let $p \in F[x]$ be a nonzero, nonconstant polynomial. The following are equivalent:
+    \begin{enumerate}[label=(\arabic*)]
+        \item $p$ is irreducible.
+        \item $F[x]/(p)$ is a field.
+        \item $F[x]/(p)$ is prime.
+    \end{enumerate}
+\end{corollary}
+\bf{Note:} Let $p \in F[x]$ be an irreducible with
+$p(x) = \sum\limits_{i = 0}^{n} a_i x^i, a_n \neq 0$. The field $F[x]/(p)$ consists of elements that
+are of the form $(p) + \sum\limits_{i = 0}^{n} c_i x^i, c_n, c_i \in F$. Moreover,
+$\sum\limits_{i = 0}^{n} a_i x^i + (p)$ is the zero element. So, $F[x]/(p)$ is $F[x]$ rooted at $p$.
+
+\newpage
+\section{Integral Domains}
+\bf{Preface:} Recall that a commutative ring $R$ is an integral domain if, whenever $ab = 0$ for
+$a, b \in R$, we have either $a = 0$ or $b = 0$.
+
+\begin{definition}{Associate (Integral Domains)}
+    Let $R$ be an integral domain, and let $a, b \in R$. $a$ and $b$ are \bf{associates} if there
+    exists a unit $c$ such that $a = bc$.
+\end{definition}
+\bf{Proposition:} Let the relation that two elements are associates be defined above, and written as
+$a \sim b$. $\sim$ is an equivalence relation.
+\begin{proof}
+    Let $R$ be an integral domain, and let $a, b, c \in R$.
+    \begin{enumerate}[label=(\arabic*)]
+        \item Pick $d = 1$. Then $\ul{a} = a \cdot 1 = \ul{a}$, so $a$ and $a$ are associates. Therefore,
+            $\sim$ is \bf{reflexive}.
+        \item Suppose $a \sim b$. Then $a = bd$ for some unit $d \in R$, so there exists
+            $d^{-1} \in R$ such that $dd^{-1} = 1$. Multiplying both sides of the equation by
+            $d^{-1}$, we get $\ul{ad^{-1}} = bd \cdot d^{-1} = b \cdot 1 = \ul{b}$, so $b$ and $a$
+            are associates. Therefore, $\sim$ is \bf{symmetric}.
+        \item Suppose $a \sim b$ and $b \sim c$. Then $a = bd$, $b = ce$ for units $d, e \in R$.
+            Then $\ul{a} = bd = \ul{(ce)d}$. Since $d, e$ are units, there exist
+            $d^{-1}, e^{-1} \in R$. Consider $d^{-1} e^{-1}  \in R$. Multiplying $d^{-1} e^{-1}$ to
+            both sides of the equation, we get
+            $\ul{a \cdot d^{-1} e^{-1}} = c(ed) \cdot d^{-1} e^{-1} = ce \cdot 1 \cdot e^{-1} = c \cdot 1 = \ul{c}$,
+            so $a$ and $c$ are associates. Therefore, $\sim$ is \bf{transitive}.
+    \end{enumerate}
+    Because $\sim$ satisfies $(1)$ - $(3)$, $\sim$ is an equivalence relation.
+\end{proof}
+
+\begin{definition}{Divides (Integral Domains)}
+    Let $R$ be an integral domain, and let $a, b \in R$. $a$ \bf{divides} $b$ if we can find
+    $q \in R$ such that $aq = b$. We write $a \mid b$.
+\end{definition}
+
+\begin{definition}{Irreducible (Integral Domains)}
+    Let $R$ be an integral domain, and let $p \in R$ be a nonunit. $p$ is \bf{irreducible} if the
+    only divisors of $p$ are units and associates of $p$.
+\end{definition}
+\bf{Proposition:} Let $R$ be an integral domain. $p \in R$ is irreducible if and only if whenever
+$p = ab$, either $a$ or $b$ is a unit.
+\begin{proof}
+    Let $R$ be an integral domain and $p \in R$.
+
+    ($\implies$)
+    Suppose $p$ is irreducible. Then $p \mid p = ab$. If $a$ is a unit, then we are done, so suppose
+    not. Then $a$ is an asociate of $p$, so $b$ is a unit.
+    \vspace{0.5em}
+
+    ($\impliedby$)
+    Suppose ``p = ab implies that either $a$ or $b$ is a unit''. Let $a \in R$ such that $a \mid p$.
+    Then $p = ab$ for some $b \in R$. If $a$ is a unit, then $b$ is an associate of $p$. If $b$ is
+    a unit, then $a$ is an associate of $p$. In either case, the only factors of $p$ are units and
+    associates, so $p$ is irreducible.
+\end{proof}
+
+\begin{definition}{Prime (Integral Domains)}
+    Let $R$ be an integral domain and let $p \in R$ be a nonunit. $p$ is prime if, whenever
+    $p \mid ab$, then either $p \mid a$ or $p \mid b$.
+\end{definition}
+
+\begin{theorem}{}
+    Let $R$ be an integral domain, and let $p \in R$ be prime. Then $p$ is irreducible.
+\end{theorem}
+\begin{proof}
+    Let $R$ be an integral domain. Let $p \in R$ is prime and suppose $p = ab$. Then either
+    $p \mid a$ or $p \mid b$. Without loss of generality, suppose $p \mid a$. Then $a = pc$ for some
+    $c \in R$. Then $p = ab = (pc)b)$. Since $R$ is an integral domain, we apply the cancellation
+    property to get $1 = cb$. This implies that $b$ is a unit.
+\end{proof}
+\bf{Note:} Irreducibles need not be prime. Take, for example, this bullshit: $R = \Z[\sqrt{-5}]$.
+Here, $2$ and $3$ are irreducible but not prime since
+$2 \cdot 3 = 6 = (1 + \sqrt{-5})(1 - \sqrt{-5})$, and $2, 3 \mid (1 + \sqrt{-5})(1 - \sqrt{-5})$
+but $2, 3 \nmid (1 + \sqrt{-5})$ and $2, 3 \nmid (1 - \sqrt{-5})$.
+
+\begin{theorem}{}
+Let $R$ be an integral domain, and let $p \in R$. The principal ideal $(p)$ is prime if and only if
+$p$ is prime.
+\end{theorem}
+\begin{proof}
+    Let $R$ be an integral domain and $p \in R$ such that $(p) \subseteq R$ is principal.
+    \vspace{0.5em}
+
+    ($\implies$)
+    Suppose $(p)$ is prime. Take $ab \in (p)$. Then $ab = pr$ for some $r \in R$, so $p \mid ab$.
+    Since $(p)$ is prime, either $a \in (p)$ or $b \in (p)$. Then either $p \mid a$ or $p \mid b$,
+    so $p$ is prime.
+    \vspace{0.5em}
+
+    ($\impliedby$)
+    Suppose $p$ is prime. Let $a, b \in R$ such that  $ab \in (p)$. Then $ab = pr$ for some
+    $r \in R$, so $p \mid ab$. Since $p$ is prime, either $p \mid a$ or $p \mid b$; that is,
+    either $a \in (p)$ or $b \in (p)$. This implies that $(p)$ is prime.
+\end{proof}
+
+\bf{Notation:} Let $R$ be an integral domain. Define $R^*$ to be the nonzero elements of $R$.
+
+\newpage
+\begin{lemma}{}
+    Let $R$ be an integral domain. Consider $S(R) := \{ (a, b) : a, b \in R; b \neq 0 \}]$. The
+    relation $(a, b) \sim (a', b')$ if and only if $ab' = a'b$ forms an equivalence relation.
+\end{lemma}
+\begin{proof}
+    Let $R$ be an integral domain, and consider $S(R) := \{ (a, b) : a, b \in R; b \neq 0 \}]$. Let
+    $(a, b), (c, d), (e, f) \in S(R)$.
+    \begin{enumerate}[label=(\arabic*)]
+        \item $(a, b) \sim (a, b) \iff ab = ba \iff  ab = ab \iff (a, b) \sim (a, b)$. Therefore,
+            $\sim$ is \bf{reflexive}.
+        \item $(a, b) \sim (c, d) \iff ad = bc \iff ad = bc \iff bc = ad \iff (c, d) \sim (a, b)$.
+            Therefore, $\sim$ is \bf{symmetric}.
+        \item Suppose $(a, b) \sim (c, d) \iff ad = bc$ and $(c, d) \sim (e, f) \iff cf = de$.
+            Then
+            \begin{align*}
+                ad &= bc \\
+                (ad)f &= b(cf) \\
+                (bc)f &= b(de) \\
+                (af)d &= (be)d \\
+                af &= be \iff (a, b) \sim (e, f) && d \neq 0 \text{, so apply cancellation property}
+            \end{align*}
+            Therefore, $\sim$ is \bf{transitive}.
+    \end{enumerate}
+    Because $\sim$ satisfies $(1)$ - $(3)$, $\sim$ is an equivalence relation.
+\end{proof}
+
+\begin{definition}{Addition and Multiplication in $S(R)$}
+    Define $+$ and $\cdot$ in $S(R)$ by $(a, b) + (c, d) = (ad + bc, bd)$ and
+    $(a, b) \cdot (c, d) = (ab, cd)$.
+\end{definition}
+\begin{lemma}{}
+    Suppose $R$ is an integral domain. Suppose $(a, b) \sim (a', b')$ and $(c, d) \sim (c', d')$,
+    where $(a, b), (a', b'), (c, d), (c', d') \in S(R)$. Then $(ad, bc) \sim (a'd', b'c')$ and
+    $(ad + bc, bd) \sim (a'd + b'c', b'd')$.
+\end{lemma}
+\begin{proof}
+    Suppose $R$ is an integral domain and let $(a, b) \sim (a', b')$ and $(c, d) \sim (c', d')$,
+    where $(a, b), (a', b'), (c, d), (c', d') \in S(R)$. By definition, we have that $ab' = a'b$
+    and $cd' = c'd$. Then
+    \[
+        \ul{ad \cdot b'd'}
+        = (ab')(cd')
+        = (a'b)(c'd)
+        = \ul{a'd' \cdot b'c'}
+    \]
+    and
+    \begin{align*}
+        (ad + bc) \cdot b'd' &= adb'd' + bcb'd' \\
+                             &= (ab')dd' + (cd')bb' \\
+                             &= (a'b)dd' + (c'd)bb' && ab' = a'b, cd' = c'd \\
+                             &= (a'd')(bd) + (b'c')(bd) \\
+        (ad + bc) \cdot b'd' &= (a'd' + b'c') \cdot bd
+    \end{align*}
+    So $(ad, bc) \sim (a'd', b'c')$ and $(ad + bc, bd) \sim (a'd + b'c', b'd')$.
+\end{proof}
+
+\begin{definition}{Field of Fractions}
+    Let $R$ be an integral domain. Define $Frac(R) = S(R)/\sim$ as the \bf{field of fractions} for
+    $R$, where addition and multiplication are defined by $[(a, b)] + [(c, d)] = [(ad + bc, bd)]$ and
+    $[(a, b)] \cdot [(c, d)] = [(ac, bd)]$, respectively.
+    \bf{Notation:} We will refer to $[(a, b)]$ as $\frac{a}{b}$.
+\end{definition}
+
+\begin{theorem}{}
+    Let $R$ be an integral domain. $Frac(R)$ forms a field, and $R$ can be viewed as a subring.
+\end{theorem}
+\begin{proof}
+    I'm not checking the ring axioms for $Frac(R)$ lol.
+    \vspace{0.5em}
+
+    Let $R$ be an integral domain. Take $\frac{a}{b} \in Frac(R)$ to be nonzero. Then since
+    $a, b \neq 0$, the inverse of $\frac{a}{b}$ is $\frac{b}{a}$. Consider the function
+    $f : R \to Frac(R)$ with $r \mapsto \frac{r}{1}$. Then
+    \begin{enumerate}[label=(\arabic*)]
+        \item $f(a + b) = \frac{a + b}{1} = \frac{a}{1} + \frac{b}{1} = f(a) + f(b)$, so $f$ is
+            \bf{closed under addition}.
+        \item $f(a \cdot b) = \frac{a \cdot b}{1} = \frac{a}{1} \cdot \frac{b}{1} = f(a) \cdot f(b)$,
+            so $f$ is \bf{closed under multiplication}.
+        \item $f(1_R) = \frac{1_R}{1} = 1_{Frac(R)}$, so the \bf{multiplicative identity is preserved}.
+    \end{enumerate}
+    so $f$ is a ring homomorphism. Therefore, $R$ is a subring of $Frac(R)$.
+\end{proof}
+
+\begin{corollary}{}
+    Let $F$ be a field. $Frac(F) \simeq F$.
+\end{corollary}
+\begin{proof}
+    Let $F$ be a field. Consider the ring homomorphism $f : F \to Frac(F)$ with $r \mapsto \frac{r}{1}$.
+    Take a nonzero $r \in R$. Then $f(r) = \frac{r}{1} \neq 0$, so
+    $r \not \in \ker(f)$. This implies that $\ker(f) = \{ 0 \}$, so $f$ is \bf{injective}. Take any
+    $\frac{a}{b} \in Frac(R)$ for $a, b \in R$. Since $b \neq 0$, there exists $b^{-1} \in R$ such
+    that $bb^{-1} = 1$. Consider $x = ab^{-1} \in R$. Then
+    \begin{align*}
+        a &= a \cdot 1 \\
+          &= a \cdot bb^{-1} \\
+          &= ab^{-1} \cdot b \\
+        a \cdot 1 &= x \cdot b \iff (a, b) \sim (x, 1)
+    \end{align*}
+    so $\ul{f(x)} = \frac{x}{1} = \frac{ab^{-1}}{1} = \ul{\frac{a}{b}}$, which shows that $f$ is
+    \bf{surjective}. Since $f$ is injective and surjective, $f$ is a \bf{bijection}.
+\end{proof}
+
+\section{Euclidean Domains}
+
+
 \end{document}
+
+% PAGE BREAK COMMENT
+% \begin{center}
+%     \vspace{5em}
+%     \bf{The rest of this page is intentionally left blank}
+% \end{center}
+%
+% \newpage
