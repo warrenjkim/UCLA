@@ -1906,20 +1906,18 @@ maximal.
     principal ideal $(x) \subseteq R[x]$. Let $(y) \subseteq R[x]$ such that $(y) \supseteq (x)$.
     If $\deg(y) = 0$, then $y$ is a unit, so $(y) = R[x]$. If $\deg(y) > 0$, then since
     $x \in (x) \subseteq (y)$, we can write $x = fy$ for some $f \in R[x]$. This implies that
-    $x = fy \in (x)$, so $(x) = (y)$. Therefore, $\bm{(x)}$ \bf{is maximal}.
-    % Now consider $f : R[x] \to R$ with
-    % $f(p(x)) = a$. Then
-    % \begin{enumerate}[label=(\arabic*)]
-    %     \item $f(p(x) + q(x)) = p(0) + q(0) = f(p(x)) + f(q(x))$, so $f$ is \bf{closed under addition}.
-    %     \item $f(p(x) \cdot q(x)) = p(0) \cdot q(0) = f(p(x)) \cdot f(q(x))$, so $f$ is
-    %         \bf{closed under multiplication}.
-    %     \item $f(1, x) = 1$, so $f$ \bf{preserves the multiplicative identity}.
-    % \end{enumerate}
-    % so $f$ is a ring homomorphism. By the \href{thm:isothm}{First Isomorphism Theorem},
-    % $R[x]/(x) \simeq R$. Then, since $1 \not \in (x)$, $(x) \subsetneq R[x]$ is a
-    % proper ideal, and since $(x)$ is maximal, we have that $R[x]/(x) \simeq R$ is a field.
+    $x = fy \in (x)$, so $(x) = (y)$. Therefore, $\bm{(x)}$ \bf{is maximal}. Now consider
+    $f : R[x] \to R$ with $f(p(x)) = a$. Then
+    \begin{enumerate}[label=(\arabic*)]
+        \item $f(p(x) + q(x)) = p(0) + q(0) = f(p(x)) + f(q(x))$, so $f$ is \bf{closed under addition}.
+        \item $f(p(x) \cdot q(x)) = p(0) \cdot q(0) = f(p(x)) \cdot f(q(x))$, so $f$ is
+            \bf{closed under multiplication}.
+        \item $f(1, x) = 1$, so $f$ \bf{preserves the multiplicative identity}.
+    \end{enumerate}
+    so $f$ is a ring homomorphism. By the \href{thm:isothm}{First Isomorphism Theorem},
+    $R[x]/(x) \simeq R$. Then, since $1 \not \in (x)$, $(x) \subsetneq R[x]$ is a
+    proper ideal, and since $(x)$ is maximal, we have that $R[x]/(x) \simeq R$ is a field.
 \end{proof}
-
 \end{document}
 
 % PAGE BREAK COMMENT
