@@ -29,10 +29,10 @@
 \newcommand{\ul}[1]{\underline{{#1}}}
 \renewcommand{\Im}{\text{Im}}
 
-\pagestyle{fancy}
-\fancyhf{}
-\renewcommand{\headrulewidth}{0pt}
-\renewcommand{\footrulewidth}{0pt}
+% \pagestyle{fancy}
+% \fancyhf{}
+% \renewcommand{\headrulewidth}{0pt}
+% \renewcommand{\footrulewidth}{0pt}
 
 \title{110A HW3}
 \author{Warren Kim}
@@ -1136,7 +1136,7 @@ $I = R$, then $R/I \simeq \{ 0 \}$.
 have that either $a \in (0)$ or $b \in (0)$.
 \vspace{1em}
 
-\bf{Proposition:} $(p) \subsetneq \Z$ is a prime ideal if and only if $p \in Z$ is prime.
+\bf{Proposition:} $(p) \subsetneq \Z$ is a prime ideal if and only if $p \in \Z$ is prime.
 \begin{proof}
     Let $p \in \Z$ be nonzero.
     \vspace{0.5em}
@@ -1749,8 +1749,176 @@ $p$ is prime.
     \bf{surjective}. Since $f$ is injective and surjective, $f$ is a \bf{bijection}.
 \end{proof}
 
-\section{Euclidean Domains}
+\subsection{Euclidean Domains}
+\begin{definition}{Norm}
+    Let $R$ be an integral domain. A \bf{norm} is a non-negative function $N : R \to \Z$ such that
+    \begin{enumerate}[label=(\arabic*)]
+        \item $N(0_R) = 0$.
+        \item Given $a, b \in R$ with $b \neq 0$, there exists $q$ such that $a = bq + r$ where
+            $r = 0$ or $N(r) < N(b)$.
+    \end{enumerate}
+\end{definition}
+\begin{definition}{Euclidean Domain}
+    Let $R$ be an integral domain. $R$ is a \bf{Euclidean domain} if there exists a norm function
+    $N : R \to \Z$.
+\end{definition}
 
+\begin{theorem}{}
+    Let $R$ be a Euclidean domain, and let $I \subseteq R$ be an ideal. $I$ is principal.
+\end{theorem}
+\begin{proof}
+    If $I = \{ 0 \}$, then $I = (0)$ which is principal, so we are done. If $I \neq \{ 0 \}$, Then
+    pick a nonzero $d \in I$ to have the smallest nonzero norm.
+    \vspace{0.5em}
+
+    \bf{($\bm{(d) \subseteq I}$)}
+    Since $d \in I$, we have that $ad, da \in I$ for all $a \in R$ by definition, so $(d) \subseteq I$.
+    \vspace{0.5em}
+
+    \bf{($\bm{(d) \supseteq I}$)}
+    Take $a \in I$. Since $d \neq 0$, we can write $a = dq + r$ for some $q \in R$. Then since $a,
+    dq \in I$, we necessarily have that $r \in I$. Then $N(r) < N(d)$, but $d$ was chosen to have
+    the smallest norm, so $r$ is necessarily $0$. Then, $I \ni a = dq \in (d)$, so we have that
+    $I \subseteq (d)$.
+
+    \vspace{0.5em}
+    Therefore, $(d) = I$, so $I$ is principal.
+\end{proof}
+
+\begin{definition}{Greatest Common Divisor (Euclidean Domains)}
+    Let $R$ be a commutative ring, and $a, b \in R$ with $b \neq 0$. A \bf{greatest common divisor}
+    of $a$ and $b$ is an element of $d \in R$ such that
+    \begin{enumerate}[label=(\arabic*)]
+        \item $d \mid a$ and $d \mid b$.
+        \item Whenever there is another $c \in R$ such that $c \mid a$ and $c \mid b$, then
+            $c \mid d$.
+    \end{enumerate}
+\end{definition}
+
+\newpage
+\bf{Proposition:} Let $R$ be a Euclidean domain and let $a, b \in R$ such that $b \neq 0$, and let
+$d$ be a greatest common divisor of $a$ and $b$. Then $d' \in R$ is also a greatest common divisor
+of $a$ and $b$ if and only if $d'$ is an associate of $d$.
+\begin{proof}
+    Let $R$ be a Euclidean domain and let $a, b \in R$ such that $b \neq 0$, and let
+    $d$ be a greatest common divisor of $a$ and $b$. Consider $d' \in R$.
+    \vspace{0.5em}
+
+    \bf{($\bm{\implies}$)}
+    Suppose $d'$ is also a greatest common divisor of $a$ and $b$. Then since $d' \mid a$ and
+    $d' \mid b$, by definition, we have $d' \mid d$, so $d = d'p$ for some $p \in R$. But we also
+    have that $d \mid a$ and $d \mid b$, and by definition $d \mid d'$, so $d' = dq$ for some
+    $q \in R$. Then
+    \begin{align*}
+        d &= d'p \\
+        d &= (dq)p \\
+        1 &= qp && d \neq 0, R \text{ is an integral domain, so apply the cancellation property}
+    \end{align*}
+    so $d'$ and $d$ are associates.
+    \vspace{0.5em}
+
+    \bf{($\bm{\impliedby}$)}
+    Suppose $d'$ is an associate of $d$. Then there exists a unit $c \in R$ such that $d = d'c$,
+    so $d' \mid d$ by definition. Since $d$ is a greatest common divisor, we have that $d \mid a$
+    and $d \mid b$, so $a = dp$, $b = dq$ for $p, q \in R$. This implies that $d' \mid dp = a$ and
+    $d' \mid dq = b$, so $d' \mid a$ and $d' \mid b$, so $d'$ is also a greatest common divisor of
+    $a$ and $b$.
+    \vspace{0.5em}
+
+    Therefore, $d'$ is another greatest common divisor for $a$ and $b$ if and only if $d'$ is an
+    associate of $d$.
+\end{proof}
+
+\begin{theorem}{}
+    Let $R$ be a Euclidean domain, and let $a, b \in R$ such that $b \neq 0$. Suppose $d$ is such
+    that $(d) = (a, b)$. Then $d$ is a greatest common divisor of $a$ and $b$.
+\end{theorem}
+\begin{proof}
+    Let $R$ be a Euclidean domain, and let $a, b \in R$ such that $b \neq 0$. Suppose $d$ is a such
+    that $(d) = (a, b)$. Then $a, b \in (a, b) = (d)$, so we can express them as
+    $a = dp, b = dq$ for $p, q \in R$. This means $d \mid a$ and $d \mid b$. Now suppose that
+    we have $c \in R$ such that $c \mid a$ and $c \mid b$. Then $a = cr, b = cs$ for $r, s \in R$,
+    so we can write $d = ap + bq = (cr)p + (cs)q = c(rp + sq)$, which implies that $c \mid d$.
+    Therefore, $d$ is a greatest common divisor of $a$ and $b$.
+\end{proof}
+
+\newpage
+\subsection{Principal Ideal Domains}
+\begin{definition}{Principal Ideal Domain (PID)}
+    Let $R$ be an integral domain. $R$ is a \bf{principal ideal domain (PID)} if every ideal of $R$
+    is principal. That is, given an ideal $I \subseteq R$, we can find $a \in R$ such that $I = (a)$.
+\end{definition}
+\bf{Note:} Since all ideals in a Euclidean domain are principal, they are also PID's.
+
+\begin{theorem}{}
+    Let $R$ be a PID, and let $a, b \in R$ with $b \neq 0$. Let $d \in R$ be such that
+    $(d) = (a, b)$. Then $d$ is a greatest common divisor of $R$. Moreover, $d' \in R$ is a
+    greatest common divisor of $a$ and $b$ if and only if $d'$ is an associate of $d$.
+\end{theorem}
+\begin{proof}
+    Let $R$ be a principal ideal domain and let $a, b \in R$ such that $b \neq 0$, and let
+    $d$ be a greatest common divisor of $a$ and $b$. Consider $d' \in R$.
+    \vspace{0.5em}
+
+    \bf{($\bm{\implies}$)}
+    Suppose $d'$ is also a greatest common divisor of $a$ and $b$. Then since $d' \mid a$ and
+    $d' \mid b$, by definition, we have $d' \mid d$, so $d = d'p$ for some $p \in R$. But we also
+    have that $d \mid a$ and $d \mid b$, and by definition $d \mid d'$, so $d' = dq$ for some
+    $q \in R$. Then
+    \begin{align*}
+        d &= d'p \\
+        d &= (dq)p \\
+        1 &= qp && d \neq 0, R \text{ is an integral domain, so apply the cancellation property}
+    \end{align*}
+    so $d'$ and $d$ are associates.
+    \vspace{0.5em}
+
+    \bf{($\bm{\impliedby}$)}
+    Suppose $d'$ is an associate of $d$. Then there exists a unit $c \in R$ such that $d = d'c$,
+    so $d' \mid d$ by definition. Since $d$ is a greatest common divisor, we have that $d \mid a$
+    and $d \mid b$, so $a = dp$, $b = dq$ for $p, q \in R$. This implies that $d' \mid dp = a$ and
+    $d' \mid dq = b$, so $d' \mid a$ and $d' \mid b$, so $d'$ is also a greatest common divisor of
+    $a$ and $b$.
+    \vspace{0.5em}
+
+    Therefore, $d'$ is another greatest common divisor for $a$ and $b$ if and only if $d'$ is an
+    associate of $d$.
+\end{proof}
+
+\bf{Proposition:} Let $R$ be a PID and $P \subseteq R$ be a nonzero prime ideal. Then $P$ is
+maximal.
+\begin{proof}
+    Let $R$ be a PID and suppose that $(p) = P \subseteq R$ is a nonzero prime ideal. Suppose
+    $(p) = P \subsetneq M = (m)$. Since $p \in (p) \subsetneq (m)$, $p = mr$ for some $r \in R$.
+    But since $(p)$ is prime, either $m \in P$ or $r \in P$. If $m \in P$, then we are done since
+    $M = (m) \subseteq (p) = P$. If $r \in P$, then $r = ps$ for $s \in R$. Then
+    $p = mr = mps$. Since $R$ is an integral domain and $p \neq 0$, apply the cancellation property
+    to get $1 = ms$, which shows that $(m) = M = R$. Therefore, $P$ is maximal.
+\end{proof}
+
+\newpage
+\begin{corollary}{}
+    Let $R$ be a commutative ring and suppose the polynomial ring $R[x]$ is a PID. Then $R$ is a
+    field.
+\end{corollary}
+\begin{proof}
+    Let $R$ be a commutative ring and suppose the polynomial ring $R[x]$ is a PID. Consider the
+    principal ideal $(x) \subseteq R[x]$. Let $(y) \subseteq R[x]$ such that $(y) \supseteq (x)$.
+    If $\deg(y) = 0$, then $y$ is a unit, so $(y) = R[x]$. If $\deg(y) > 0$, then since
+    $x \in (x) \subseteq (y)$, we can write $x = fy$ for some $f \in R[x]$. This implies that
+    $x = fy \in (x)$, so $(x) = (y)$. Therefore, $\bm{(x)}$ \bf{is maximal}.
+    % Now consider $f : R[x] \to R$ with
+    % $f(p(x)) = a$. Then
+    % \begin{enumerate}[label=(\arabic*)]
+    %     \item $f(p(x) + q(x)) = p(0) + q(0) = f(p(x)) + f(q(x))$, so $f$ is \bf{closed under addition}.
+    %     \item $f(p(x) \cdot q(x)) = p(0) \cdot q(0) = f(p(x)) \cdot f(q(x))$, so $f$ is
+    %         \bf{closed under multiplication}.
+    %     \item $f(1, x) = 1$, so $f$ \bf{preserves the multiplicative identity}.
+    % \end{enumerate}
+    % so $f$ is a ring homomorphism. By the \href{thm:isothm}{First Isomorphism Theorem},
+    % $R[x]/(x) \simeq R$. Then, since $1 \not \in (x)$, $(x) \subsetneq R[x]$ is a
+    % proper ideal, and since $(x)$ is maximal, we have that $R[x]/(x) \simeq R$ is a field.
+\end{proof}
 
 \end{document}
 
