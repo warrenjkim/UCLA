@@ -1,0 +1,168 @@
+\documentclass [12pt] {article}
+
+\newtheorem{exercise}{Exercise}[section]
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{problem}{Problem}
+\newtheorem{solution}{Solution}
+\newtheorem{cor}{Corollary}[section]
+\newtheorem{prop}{Proposition}[section]
+\newtheorem{rmk}{Remark}[section]
+\newtheorem{conj}{Conjecture}[section]
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage[margin=0.75in]{geometry}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newenvironment{proof}{\paragraph{Proof:}}{\hfill$\square$}
+\setlength\parindent{0pt}
+
+
+
+
+\title{110A HW9}
+\author{Warren Kim}
+\date{Winter 2024}
+
+\begin{document}
+
+\maketitle
+
+\section*{Question 1}
+Let $R$ be a Euclidean domain, and let $a,b\in R$, such that $b\neq 0$, and let $d$ be a greatest
+common divisor of $a$ and $b$. Show that $d'\in R$ is also a greatest common divisor of $a$ and $b$
+if and only if $d'$ is an associate of $d$.
+
+[Hint: Your proof should also work for PIDs.]
+\subsection*{Response}
+\begin{proof}
+    Let $R$ be a Euclidean domain, $a, b \in R$ such that $b \neq 0$, and $d$ be a greatest common
+    divisor of $a$ and $b$.
+
+    ($\implies$)
+    Suppose $d'$ is another greatest common divisor of $a$ and $b$. Then $d' \mid a$ and
+    $d' \mid b$, so $d' \mid d$. Then $d = d'x$ for some $x \in R$. But since $d \mid a$ and
+    $d \mid b$, we have that $d \mid d'$, so $d' = dy$ for some $y \in R$. Then $d = d'x = (dy)x$.
+    Since $d \neq 0$, apply the cancellation property to get $1 = yx$, which shows that $x$ is a
+    unit. This means that $d'$ is an associate of $d$.
+    \vspace{0.5em}
+
+    ($\impliedby$)
+    Suppose $d'$ is an associate of $d'$. Then $d = d'x$ for some unit $x \in R$. Since $d$ is a
+    greatest common divisor of $a$ and $b$, we have that $d \mid a$ and $d \mid b$, which can be
+    written as $a = dp$, $b = dq$ for some $p, q \in R$. Then $a = dp = (d'x)p = d'(xp)$ and
+    $b = dq = (d'x)q = d'(xq)$. This shows that $d' \mid a$ and $d' \mid b$. Now suppose that
+    $c \mid a$ and $c \mid b$. Then $c \mid a = d'(xp)$ and $c \mid d'(xq)$, so $c \mid d'$.
+    Therefore, $d'$ is another greatest common divisor of $a$ and $b$.
+    \vspace{0.5em}
+
+    Therefore, $d' \in R$ is also a greatest common divisor of $a$ and $b$ if and only if $d'$ is an
+    associate of $d$.
+\end{proof}
+\newpage
+
+
+\section*{Question 2}
+Let $R$ be a Euclidean domain, and let $N$ be a norm. Show that $N':R\to\Z$ given by
+$N'(a) = \min_{r\neq 0} N(ar)$ forms a norm. Moreover, show that $N'(a)\leq N'(ab)$ for nonzero
+$a,b\in R$
+\subsection*{Response}
+\begin{proof}
+\end{proof}
+\newpage
+
+\section*{Question 3}
+Let $F$ be a field. Show that the function $N:F\to \Z$ given by $N(a)=0$ for all $a\in F$ gives a
+norm on $F$. Conclude that every field is a Euclidean domain.
+
+[we briefly discussed this in class.]
+\subsection*{Response}
+\newpage
+
+\section*{Question 4}
+Let $R$ be an integral domain. Suppose $R[x]$ is a principal ideal domain. Show that $R$ must be a
+field.
+
+[Hint: Think about $(x)$.]
+\subsection*{Response}
+\begin{proof}
+    Let $R$ be an integral domain and $R[x]$ a principal ideal domain. Consider the principal ideal
+    $(x) \subseteq R[x]$ and a function $f : R[x] \to R$ with $f(p(x)) = p(0)$. Then
+    \begin{itemize}
+        \item $f(p(x) + q(x)) = p(0) + q(0) = f(p(x)) + f(q(x))$, so $f$ is
+            \textbf{closed under addition}.
+        \item $f(p(x) \cdot q(x)) = p(0) \cdot q(0) = f(p(x)) \cdot f(q(x))$, so $f$ is
+            \textbf{closed under multiplication}.
+        \item $f(1(x)) = 1$, so $f$ \textbf{preserves the multiplicative identity}.
+    \end{itemize}
+    so $f$ is a ring homomorphism. We have that $\ker(f) = \{ p(x) : f(p(x)) = 0 \} = (x)$, so
+    $\ker(f) = (x)$. To show $\text{Im}(f) = R$, take $a \in R$. Then consider
+    $p \in R$ such that $p(0) = a$. Then $f(p(x)) = p(0) = a \in R$. Therefore,
+    $\text{Im}(f) = R$. Then by the \textbf{First Isomorphism Theorem}, we have that
+    $R[x]/(x) \simeq R$.
+    \vspace{0.5em}
+
+    Note that since $1 \not \in (x)$, $(x) \neq R[x]$, so $(x) \subsetneq R[x]$ is a proper ideal.
+    To show that $(x)$ is maximal, consider $(y) \subseteq R[x]$ such that $(y) \supseteq (x)$.
+    If $\deg(y) = 0$, then $y$ is a unit, so $(y) = R[x]$. If $\deg(y) > 0$, then since
+    $x \in (x) \subseteq (y)$, we can write $x = fy$ for some $f \in R[x]$. Then since
+    $\deg(x) = 1$, $\deg(y) \leq \deg(x) = 1$, which means we necessarily have $\deg(y) = 1$. Then
+    $x$ and $y$ are associates, so $(x) = (y)$. Therefore, $(x)$ is maximal, so $R[x]/(x)$ is a
+    field. But since $R[x]/(x) \simeq R$, we have that $R$ is a field.
+\end{proof}
+    % To show $\ker(f) = (x)$,
+    % \vspace{0.5em}
+
+    % \textbf{($\bm{\ker(f) \subseteq (x)}$)}
+    % Take $p \in \ker(f)$. Then $f(p(x)) = 0$, so $p = gx \in (x)$ for some $g \in R[x]$. So
+    % $\ker(f) \subseteq (x)$.
+
+    % \vspace{0.5em}
+
+
+    % \textbf{($\bm{\ker(f) \supseteq (x)}$)}
+    % Take $p \in (x)$. Then $p = xg$ for some $g \in R[x]$. Applying $f$, we get
+    % $f(p(x)) = f(g(x) \cdot x) = 0 \in \ker(f)$, so $(x) \subseteq \ker(f)$.
+
+    % \vspace{0.5em}
+
+\newpage
+
+\section*{Question 5}
+Let $R$ be a PID, and let $I\subseteq R$ be a prime ideal. Show that $R/I$ is a PID.
+\subsection*{Response}
+\newpage
+
+\section*{Question 6}
+Let $R$ be an integral domain. Prove that $R$ is a PID if and only if (i) every ideal of $R$ is
+finitely generated (i.e., every ideal $I\subseteq R$ can be written $I=(x_1,\cdots x_n)$ for
+$x_i\in R$) and (ii) whenever $a, b\in R$, the ideal $(a,b)$ is principal.
+\subsection*{Response}
+\newpage
+
+\section*{Question 7}
+Let $R$ be an integral domain, and let $I_1\subseteq I_2\subseteq\cdots$ be a chain of ideal in $R$.
+Show their union $\bigcup_j I_j$ is also an ideal.
+\subsection*{Response}
+\newpage
+
+\section*{Question 8}
+Let $R$ be a UFD, and let $a,b,c\in R$. Suppose $a|c$ and $b|c$, and that $1$ is a greatest common
+divisor of $a$ and $b$. Show that $ab|c$.
+\subsection*{Response}
+\newpage
+
+\section*{Question 9}
+Let $R$ be an integral domain. Show that $R$ is a UFD if and only if $R$ satisfies the ascending
+chain condition on principal ideals and irreducible elements of $R$ are prime.
+\subsection*{Response}
+\newpage
+
+\end{document}
+
