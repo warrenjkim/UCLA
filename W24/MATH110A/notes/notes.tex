@@ -1902,21 +1902,100 @@ maximal.
     field.
 \end{corollary}
 \begin{proof}
-    Let $R$ be a commutative ring and suppose the polynomial ring $R[x]$ is a PID. Consider the
-    principal ideal $(x) \subseteq R[x]$. Let $(y) \subseteq R[x]$ such that $(y) \supseteq (x)$.
-    If $\deg(y) = 0$, then $y$ is a unit, so $(y) = R[x]$. If $\deg(y) > 0$, then since
-    $x \in (x) \subseteq (y)$, we can write $x = fy$ for some $f \in R[x]$. This implies that
-    $x = fy \in (x)$, so $(x) = (y)$. Therefore, $\bm{(x)}$ \bf{is maximal}. Now consider
-    $f : R[x] \to R$ with $f(p(x)) = a$. Then
-    \begin{enumerate}[label=(\arabic*)]
-        \item $f(p(x) + q(x)) = p(0) + q(0) = f(p(x)) + f(q(x))$, so $f$ is \bf{closed under addition}.
+    Let $R$ be an integral domain and $R[x]$ a principal ideal domain. Consider the principal ideal
+    $(x) \subseteq R[x]$ and a function $f : R[x] \to R$ with $f(p(x)) = p(0)$. Then
+    \begin{itemize}
+        \item $f(p(x) + q(x)) = p(0) + q(0) = f(p(x)) + f(q(x))$, so $f$ is
+            \bf{closed under addition}.
         \item $f(p(x) \cdot q(x)) = p(0) \cdot q(0) = f(p(x)) \cdot f(q(x))$, so $f$ is
             \bf{closed under multiplication}.
-        \item $f(1, x) = 1$, so $f$ \bf{preserves the multiplicative identity}.
+        \item $f(1(x)) = 1$, so $f$ \bf{preserves the multiplicative identity}.
+    \end{itemize}
+    so $f$ is a ring homomorphism. We have that $\ker(f) = \{ p(x) : f(p(x)) = 0 \} = (x)$, so
+    $\ker(f) = (x)$. To show $\Im(f) = R$, take $a \in R$. Then consider
+    $p \in R$ such that $p(0) = a$. Then $f(p(x)) = p(0) = a \in R$. Therefore,
+    $\Im(f) = R$. Then we have that $R[x]/(x) \simeq R$ by the
+    \href{thm:isothm}{First Isomorphism Theorem}.
+    \vspace{0.5em}
+
+    Note that since $1 \not \in (x)$, $(x) \neq R[x]$, so $(x) \subsetneq R[x]$ is a proper ideal.
+    To show that $(x)$ is maximal, consider $(y) \subseteq R[x]$ such that $(y) \supseteq (x)$.
+    If $\deg(y) = 0$, then $y$ is a unit, so $(y) = R[x]$. If $\deg(y) > 0$, then since
+    $x \in (x) \subseteq (y)$, we can write $x = fy$ for some $f \in R[x]$. Then since
+    $\deg(x) = 1$, $\deg(y) \leq \deg(x) = 1$, which means we necessarily have $\deg(y) = 1$. Then
+    $x$ and $y$ are associates, so $(x) = (y)$. Therefore, $(x)$ is maximal, so $R[x]/(x)$ is a
+    field. But since $R[x]/(x) \simeq R$, we have that $R$ is a field.
+\end{proof}
+
+\bf{Proposition:} Let $R$ be a PID and $p \in R$ be irreducible. Then $p$ is prime.
+\begin{proof}
+    Suppose $p$ is irreducible and consider $(p) \subseteq I = (a)$. Because $p \in (a)$, we have
+    that $p = ab$ for some $b \in R$. Then $a$ or $b$ is a unit. If $a$ is a unit, then
+    $(a) = I = R$. If $b$ is a unit, then $a$ and $b$ are associates, so $(a) = (p)$. Then
+    either $I = R$ or $I = (p)$, so $(p)$ is maximal and therefore prime.
+\end{proof}
+
+\begin{definition}{Ascending Chain Condition}
+    Let $R$ be an integral domain. $R$ satisifes the \bf{ascending chain condition} on principal
+    ideals if, whenver we have a chain of inclusions of ideals given by
+    \[(a_1) \subseteq (a_2) \subseteq \cdots\]
+    where each $a_i \in R$, there exists a positive integer $n$ such that for all $m \geq n$, we
+    have $(a_m) = (a_n)$.
+\end{definition}
+
+\newpage
+\begin{lemma}{}
+    Let $R$ be an integral domain and $I_1 \subseteq I_2 \subseteq \cdots$ be a chain of ideals in
+    $R$. Their union $\bigcup_j I_j$ is also an ideal.
+\end{lemma}
+\begin{proof}
+    Let $R$ be an integral domain and $I_1 \subseteq I_2 \subseteq \cdots$ a chain of ideals in $R$.
+    \begin{enumerate}[label=(\arabic*)]
+        \item Since $I_1$ is an ideal, $0 \in I_1 \subseteq \bigcup_j I_j$, so $\bigcup_j I_j$
+            \bf{preserves the additive identity}.
+        \item Take $a \in I_n$ and $b \in I_m$. Without loss of generality, suppose $n \leq m$. Then
+            $a, b \in I_m$, so $a - b \in I_m \subseteq \bigcup_j I_j$, so $\bigcup_j I_j$ is
+            \bf{closed under subtraction}.
+        \item Take $a \in I_n$ and $r \in R$. Since $I_n$ is an ideal,
+            $ar, ra \in I_n \subseteq \bigcup_j I_j$, so $\bigcup_j I_j$ is
+            \bf{closed under absorption}.
     \end{enumerate}
-    so $f$ is a ring homomorphism. By the \href{thm:isothm}{First Isomorphism Theorem},
-    $R[x]/(x) \simeq R$. Then, since $1 \not \in (x)$, $(x) \subsetneq R[x]$ is a
-    proper ideal, and since $(x)$ is maximal, we have that $R[x]/(x) \simeq R$ is a field.
+    Since $\bigcup_j I_j$ satisfies (1)-(3), $\bigcup_j I_j$ is an ideal.
+\end{proof}
+
+\begin{theorem}{}
+    A PID satisfies the ascending chain condition on principal ideals.
+\end{theorem}
+\begin{proof}
+    Suppose we have an ascending chain of ideals given by
+    \[(a_1) \subseteq (a_2) \subseteq \cdots\]
+    Consider their union, $I = \bigcup_j (a_j)$. Because $I \subseteq R$ is principal, we can
+    represent $I = (a)$ for $a \in R$. Then $a \in (a_n)$ for some positive $n \in \N$. This implies
+    that $a \subseteq (a_m)$ for $m \geq n$, so $(a) \subseteq (a_m)$. But we also have that
+    $(a_m) \subseteq I = (a)$, so $(a_m) = (a)$ for every $m \geq n$. In particular, $(a_m) = (a_n)$
+    for all $m \geq n$.
+\end{proof}
+\bf{Note:} This tells us that we do not have ideals that are arbitrarily big but not the entire ring
+itself. More concretely, the ascending chain condition gives us prime factorizations a PID.
+
+\begin{theorem}{}
+    Let $R$ be an integral domain that satisfies the ascending chain condition on principal ideals.
+    Let $r \in R$ be nonzero and a nonunit. $r$ can be expressed as a product of irreducible
+    elements.
+\end{theorem}
+\begin{proof}
+    Let $R$ be an integral domain that satisfies the ascending chain condition on principal ideals.
+    Let $r \in R$ be nonzero and a nonunit. If $r$ is irreducible, we are done, so suppose not.
+    Suppose for the sake of contradiciton that $r$ cannot be written as a product of
+    irreducibles. Then since $r$ is not irreducible, we can express $r = r_1^1 r_2^1$ such that
+    neither $r_1^1$ nor $r_2^1$ are units. Then at least one of $r_1^1$ or $r_2^1$ cannot be a
+    product of irreducibles, since otherwise, $r$ would be a product of irreducibles. Without loss
+    of generality, suppose $r_1^1$ is not a product of irreducibles. Then $r_1^1$ can be written as
+    $r_1^2 r_2^2$ where neither $r_1^2$ nor $r_2^2$ are units. We continue this process inductively
+    to get $r_1^1, \cdots$ where $r_1^{i + 1}$ is a proper factor of $r_1^i$ for each $i$. This
+    gives us a chain  of principal ideals given by $(r_1^1) \subsetneq (r_1^2) \subsetneq \cdots$.
+    This is a contradiction to the claim that $R$ satisfies the ascending chain condition.
+    Therefore, $r$ can be expressed as a product of irreducibles.
 \end{proof}
 \end{document}
 
