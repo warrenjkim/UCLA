@@ -14,6 +14,7 @@
 \usepackage{bm}
 \usepackage{listings}
 \usepackage{tikz}
+\usepackage{hyperref}
 \usetikzlibrary{positioning,shadows,shapes,arrows}
 
 \usepackage{color}
@@ -56,7 +57,7 @@
 \newenvironment{aside}{\begin{tcolorbox}[title={Aside},colback=blue!5!white,colframe=black!75!blue]}{\end{tcolorbox}}
 
 
-% \newcommand{\refto}[2]{\textbf{\ref{#1:#2} \nameref{#1:#2}}}
+\newcommand{\refto}[2]{\textbf{\ref{#1:#2} \nameref{#1:#2}}}
 \renewcommand{\bf}[1]{\textbf{{#1}}}
 \renewcommand{\tt}[1]{\texttt{{#1}}}
 \renewcommand{\it}[1]{\textit{{#1}}}
@@ -216,12 +217,19 @@ year $\supseteq$ month $\supseteq$ day. Generally, \tt{ROLLUP(A, B, C)} where
 
 \begin{example}
     The output of the following query:
-    \begin{BVerbatim}
-        SELECT year, month, day, SUM(sales) AS total_sales
-        FROM hourly_sales
-        GROUP BY ROLLUP(year, month, day);
-    \end{BVerbatim}
+
+    {
+        \centering
+        \begin{BVerbatim}
+            SELECT year, month, day, SUM(sales) AS total_sales
+            FROM hourly_sales
+            GROUP BY ROLLUP(year, month, day);
+        \end{BVerbatim}
+        \par
+    }
+
     looks like
+
     \centering
     \begin{tabular}{c|c|c|c}
         year & month & day & total\_sales \\
@@ -351,7 +359,7 @@ multiple fact tables are connected via the dimension table(s) they share.
 
 \subsection{DuckDB}
 DuckDB is an OLAP data store. It can be used standalone. It is in memory and
-inprocess, optimized for analytics, uses teh \bf{columnar} data model, and
+inprocess, optimized for analytics, uses the \bf{columnar} data model, and
 doesn't require a server.
 
 \subsection{Summary}
@@ -454,7 +462,7 @@ highly available, but \it{mostly} consistent.
     \bf{gossip model}.
 \end{example}
 
-\paragraph{Sharding:} In \bf{shareded} systems, different nodes contain
+\paragraph{Sharding:} In \bf{sharded} systems, different nodes contain
 different data. Whether or not each node is disjoint from another is up to
 design. This is good for low latency (within your local node).
 \begin{example}
@@ -806,7 +814,7 @@ We can classify systems based on how they react to the following:
 
 \section{Message Broker}
 \begin{definition}{Message Broker}
-    The \bf{message broker} sits inside the messgae bus and has a \bf{message queue}.
+    The \bf{message broker} sits inside the message bus and has a \bf{message queue}.
     The producers and consumers interact with the message broker.
 \end{definition}
 
@@ -1175,7 +1183,7 @@ it. There is no concept of a \tt{JOIN} and no schema.
 \paragraph{CAP Theorem:} MongoDB ensures strong consistency by allowing writes
 only on the primary replica. The master is the single point of failure. We can
 improve availability using secondary replica sets or one or more copies of the
-exact same data. On each write, tehe secondaries must acknowledge the write or
+exact same data. On each write, the secondaries must acknowledge the write or
 else it fails. All reads are done on the primary replica by default. If it
 fails, we can defer to one of the secondary replicas. Therefore, by default
 Mongo is consistent and partition tolerant.
@@ -1258,7 +1266,7 @@ doesn't apply. It is not distributed due to clustering.
 
 \chapter{Lecture 14}
 \section{Disk}
-The storage engine/manager is responsible for managing teh data in memory and on
+The storage engine/manager is responsible for managing the data in memory and on
 disk. many systems optimize data storage for rows, but some optimize for
 columns. Some database systems store data entirely in RAM (e.g. Redis), while
 others use swapping. It is worth noting that disk is \it{very} slow.
@@ -1829,4 +1837,973 @@ or
 }
 
 
+\chapter{Lecture 17}
+\section{Auto Commit and Transactions}
+\begin{definition}{Transaction}
+    A \bf{transaction} is a series of SQL queries that are grouped into one
+    logical operation. Their syntax looks like
+    \begin{lstlisting}[language=SQL, style=colorEX]
+        START TRANSACTION
+        /* queries here */
+        COMMIT;
+        END TRANSACTION
+    \end{lstlisting}
+\end{definition}
+
+Auto-commit is a setting that allows queries to materialize as soon as they are
+executed. When they're turned off, we have to create a transaction. To the user,
+transactions are a single indivisible unit. Technically, even a single SQL query
+can be thought of as a transaction since we actually perform multiple data
+operations.
+\begin{example}
+    If we want to drop two students from a class and add 25 to everyonee else's
+    score, we'd wrap it up in a transaction like this:
+    \begin{lstlisting}[language=SQL, style=colorEX]
+        START TRANSACTION
+        DELETE FROM final WHERE uid IN ('222222222', '333333333');
+        UPDATE final SET score = score + 25;
+        COMMIT;
+        END TRANSACTION
+    \end{lstlisting}
+
+    Here, we may need a transaction since someone with access to the database
+    may try to update it in between the \tt{DELETE} and \tt{UPDATE} steps,
+    leading to unwanted behavior. Each of the statements are executed but the
+    results are \it{held in a buffer}.
+\end{example}
+
+\subsection{ACID Transactions}
+ACID stands for \bf{A}tomicity, \bf{C}onsistency, \bf{I}solation, and
+\bf{D}urability, and are discussed below.
+\begin{definition}{Atomic Operation}
+    An \bf{atomic operation} is one that either fully executes or doesn't
+    execute at all.
+\end{definition}
+
+Transactions satisfy atomicity. If an error occurs during the transaction, it
+aborts and all changes are \bf{rolled back}. During a transaction, we may run
+into any one (or more) of these failures:
+\begin{itemize}[label=$\to$]
+    \item Data integrity failure; i.e. corrupted data.
+    \item Constraint failure (on a primary/unique/foreign key, \tt{CHECK},
+        etc.).
+    \item Arithmetic errors (e.g. divide by zero).
+    \item Disk failure and system outages.
+\end{itemize}
+
+\begin{definition}{Consistency}
+    \bf{Consistency} maintains some constraint on the data such that we do not
+    end up with an unexpected amount of data before and after the transaction.
+\end{definition}
+
+If transactions are run \it{atomically} and in \it{isolation} starting with a
+\it{consistent} database, we must end up in a consistent state at the end of the
+transaction.
+
+\begin{example}
+    Let $A = 500$, $B = 200$. If $A$ transfers $100$ to $B$, we want
+    \[A + B = 700\]
+    before and after the transaction to maintain consistency.
+\end{example}
+
+\begin{definition}{Isolation}
+    Transactions must happen in \bf{isolation}; i.e. they operate independently
+    and transparently with one another. Isolation maximizes consistency in
+    concurrent operations.
+\end{definition}
+
+We may run into issues if our transactions are not isolated. This happens when
+we execute transactions concurrently on the same data.
+
+\begin{definition}{Durability}
+    \bf{Durability} implies that after a transaction completes
+    \it{successfully}, the changes are persisted to the database,
+    \it{even if there are system failures}.
+\end{definition}
+
+\paragraph{Life Cycle of a Transaction:} The life cycle of a transaction can be
+represented as the following graph:
+
+{
+    \centering
+    \begin{tikzpicture}[node distance=3cm, auto, every node/.style={circle, draw, align=center, minimum size=2cm, font=\small}, >=stealth]
+        \node[circle, draw] (active) {active};
+        \node[circle, draw, right of=active, xshift=2cm] (partially) {partially \\ committed};
+        \node[circle, draw, right of=partially, xshift=2cm] (committed) {committed};
+        \node[circle, draw, below of=partially] (failed) {failed};
+        \node[circle, draw, right of=failed, xshift=2cm] (aborted) {aborted};
+
+        \draw[->] (active) -- (partially);
+        \draw[->] (partially) -- (committed);
+        \draw[->] (active) -- (failed);
+        \draw[->] (failed) -- (aborted);
+        \draw[->] (partially) -- (failed);
+    \end{tikzpicture}
+    \par
+}
+
+Transactions are said to be ACID compliant if they guarantee the above
+definition. A \it{relational} database \it{must} maintain ACID transactions, but
+NoSQL databases \it{do not}.
+
+\paragraph{External Writes:} External writes are dangerous, and happen when the
+RDBMS commits a transaction, but the application doesn't complete its work. The
+application must then initiate a \bf{compensating transaction} to undo the
+actions of the original transaction.
+
+\begin{example}
+    If we buy something on Amazon but never receive the item, Amazon's
+    application must issue a \it{compensating transaction} to either refund the
+    money or send you the item you purchased.
+\end{example}
+
+\subsection{BASE Transactions}
+BASE stands for \bf{B}asically \bf{A}vailable \bf{S}oft-state \bf{E}ventually
+consistent. While ACID provides high consistency, BASE provides high
+availability and eventual consistency.
+\begin{definition}{Basically Available}
+    \bf{Basically availability} ensures that the data is highly available by
+    replicating it across nodes of a database cluster.
+\end{definition}
+
+\begin{definition}{Soft State}
+    \bf{Soft state} implies that, due to a lack of consistency, data values may
+    change over time and may not immediately be consistent.
+\end{definition}
+
+\begin{definition}{Eventually Consistent}
+    \bf{Eventual consistency} implies that, given enough time, the data will become
+    consistent.
+\end{definition}
+
+\subsection{Strict ACID Guarantees}
+For this section, we will abstract SQL operations into either a \tt{write(X)} or
+a \tt{read(X)}, where \tt{X} is a row.
+\begin{definition}{Read and Write}
+    A \bf{read} (\tt{read(X)}) transfers \tt{X} from the database into a
+    variable \tt{X} in the \it{transaction buffer}.
+    \vspace{1em}
+
+    A \bf{write} (\tt{write(X)}) transfers the value of \tt{X} from the
+    transaction buffer into the data item \tt{X} in the \it{database}.
+    Technically, it is written to a \it{shared memory buffer (NVRAM)}.
+\end{definition}
+
+\begin{example}
+    If we want to change a seat, we can either cancel our seat first and then book
+    a new seat, or we can first book a new seat and then cancel our old seat.
+    The second one is atomic, but the first one isn't. To guarantee atomicity,
+    we can wrap either in a transaction. In terms of ACID,
+    \begin{itemize}[label=$\to$]
+        \item Atomicity: We either swap seats successfully or don't.
+        \item Consistency: We occupy exactly one seat.
+        \item Isolation: Other passengers should not affect consistency.
+        \item Once the swap is complte, it is materialized.
+    \end{itemize}
+
+    If $S_1, S_2$ are the old and new seats respectively, the actual transaction
+    may look like one of the following, though there are many options.
+
+    {
+        \small
+        \centering
+        \begin{tabular}{l}
+            $T_1$ \\
+            \hline
+            \tt{read($S_1$)} \\
+            $S_1$ \tt{= false} \\
+            \tt{write($S_1$)} \\
+            \tt{read($S_2$)} \\
+            $S_2$ \tt{= true} \\
+            \tt{write($S_2$)} \\
+            \tt{COMMIT}
+        \end{tabular}
+        \hspace{1em}
+        \begin{tabular}{l}
+            $T_1$ \\
+            \hline
+            \tt{read($S_2$)} \\
+            $S_2$ \tt{= true} \\
+            \tt{write($S_2$)} \\
+            \tt{read($S_1$)} \\
+            $S_1$ \tt{= false} \\
+            \tt{write($S_1$)} \\
+            \tt{COMMIT}
+        \end{tabular}
+        \hspace{1em}
+        \begin{tabular}{l}
+            $T_1$ \\
+            \hline
+            \tt{read($S_1$)} \\
+            \tt{read($S_2$)} \\
+            $S_1$ \tt{= false} \\
+            \tt{write($S_1$)} \\
+            $S_2$ \tt{= true} \\
+            \tt{write($S_2$)} \\
+            \tt{COMMIT}
+        \end{tabular}
+        \hspace{1em}
+        \begin{tabular}{l}
+            $T_1$ \\
+            \hline
+            \tt{read($S_2$)} \\
+            \tt{read($S_1$)} \\
+            $S_2$ \tt{= true} \\
+            \tt{write($S_2$)} \\
+            $S_1$ \tt{= false} \\
+            \tt{write($S_1$)} \\
+            \tt{COMMIT}
+        \end{tabular}
+        \hspace{1em}
+        \begin{tabular}{l}
+            $T_1$ \\
+            \hline
+            \tt{read($S_1$)} \\
+            \tt{read($S_2$)} \\
+            $S_1$ \tt{= false} \\
+            $S_2$ \tt{= true} \\
+            \tt{write($S_1$)} \\
+            \tt{write($S_2$)} \\
+            \tt{COMMIT}
+        \end{tabular}
+        \hspace{1em}
+        \begin{tabular}{l}
+            $T_1$ \\
+            \hline
+            \tt{read($S_2$)} \\
+            \tt{read($S_1$)} \\
+            $S_2$ \tt{= true} \\
+            $S_1$ \tt{= false} \\
+            \tt{write($S_2$)} \\
+            \tt{write($S_1$)} \\
+            \tt{COMMIT}
+        \end{tabular}
+        \par
+    }
+\end{example}
+
+\section{Concurrency and Parallelism}
+Concurrency and parallelism are two different concepts. We will be discussing
+\it{concurrency}.
+\begin{definition}{Concurrency}
+    \bf{Concurrency} is when we execute two transactions that share a resource
+    and complete in overlapping time periods.
+\end{definition}
+\begin{example}
+    When there are multiple lines but only one cashier, we have
+    \it{concurrency}.
+\end{example}
+
+\begin{definition}{Parallelism}
+    \bf{Parallelism} is when two transactions execute at the exact same time.
+\end{definition}
+\begin{example}
+    When there are multiple lines and multiple cashiers, we have
+    \it{parallelism}.
+\end{example}
+
+\subsection{Isolation and Consistency}
+\label{subsec:iso}
+To remain consistent, one option is to execute transactions \bf{serially}; i.e.
+only one transaction is running at any given point. There is no interleaving of
+the events of transactions.
+\vspace{5em}
+
+\begin{center}
+    \bf{The rest of this page is intentionally left blank.}
+\end{center}
+
+\begin{example}
+    Below is an example of a serial and consistent schedule. Let
+    $A = 100, B = 200$.
+
+    {
+        \centering
+        \begin{tabular}{l|l}
+            $T_1$ & $T_2$ \\
+            \hline
+            \tt{read($A$);} & \\
+            \tt{$A$ := $A$ - 10;} & \\
+            \tt{write($A$);} & \\
+            \tt{read($B$);} & \\
+            \tt{$B$ := $B$ + 10;} & \\
+            \tt{write($B$);} & \\
+            \tt{COMMIT;} & \\
+                         & \tt{read($A$);} \\
+                         & \tt{tmp := $A$ * 0.1;} \\
+                         & \tt{$A$ := $A$ - temp;} \\
+                         & \tt{write($A$);} \\
+                         & \tt{read($B$);} \\
+                         & \tt{$B$ := $B$ + temp;} \\
+                         & \tt{write($B$);} \\
+                         & \tt{COMMIT;} \\
+        \end{tabular}
+        \par
+    }
+    $T_1 \to T_2$ yields $A = 81, B = 219$.
+
+    {
+        \centering
+        \begin{tabular}{l|l}
+            $T_1$ & $T_2$ \\
+            \hline
+                  & \tt{read($A$);} \\
+                  & \tt{tmp := $A$ * 0.1;} \\
+                  & \tt{$A$ := $A$ - temp;} \\
+                  & \tt{write($A$);} \\
+                  & \tt{read($B$);} \\
+                  & \tt{$B$ := $B$ + temp;} \\
+                  & \tt{write($B$);} \\
+                  & \tt{COMMIT;} \\
+            \tt{read($A$);} & \\
+            \tt{$A$ := $A$ - 10;} & \\
+            \tt{write($A$);} & \\
+            \tt{read($B$);} & \\
+            \tt{$B$ := $B$ + 10;} & \\
+            \tt{write($B$);} & \\
+            \tt{COMMIT;} & \\
+        \end{tabular}
+        \par
+    }
+    $T_2 \to T_1$ yields $A = 80, B = 220$.
+\end{example}
+
+\paragraph{Note:} In the example above, the results differed but the schedule is
+still consistent. Further, $T_1, T_2$ are serial since one executes entirely
+before the other.
+\begin{definition}{Conflict Serializable}
+    A \bf{conflict serializable} schedule is a concurrent schedule that yields
+    the same result as a serial schedule.
+\end{definition}
+\vspace{5em}
+
+\begin{center}
+    \bf{The rest of this page is intentionally left blank.}
+\end{center}
+\begin{example}
+    Below is an example of a conflict serializable schedule. Let
+    $A = 100, B = 200$.
+
+    {
+        \centering
+        \begin{tabular}{l|l}
+            $T_1$ & $T_2$ \\
+            \hline
+            \tt{read($A$);} & \\
+            \tt{$A$ := $A$ - 10;} & \\
+            \tt{write($A$);} & \\
+                             & \tt{read($A$);} \\
+                             & \tt{tmp := $A$ * 0.1;} \\
+                             & \tt{$A$ := $A$ - temp;} \\
+                             & \tt{write($A$);} \\
+            \tt{read($B$);} & \\
+            \tt{$B$ := $B$ + 10;} & \\
+            \tt{write($B$);} & \\
+            \tt{COMMIT;} & \\
+                         & \tt{read($B$);} \\
+                         & \tt{$B$ := $B$ + temp;} \\
+                         & \tt{write($B$);} \\
+                         & \tt{COMMIT;} \\
+        \end{tabular}
+        \par
+    }
+    This yields $A = 81, B = 219$, which is equivalent to $T_1 \to T_2$.
+\end{example}
+
+\begin{example}
+    Below is an example of a schedule that is \it{not} conflict serializable. Let
+    $A = 1000, B = 2000$.
+
+    {
+        \centering
+        \begin{tabular}{l|l}
+            $T_1$ & $T_2$ \\
+            \hline
+            \tt{read($A$);} & \\
+            \tt{$A$ := $A$ - 50;} & \\
+                                  & \tt{read($A$);} \\
+                                  & \tt{tmp := $A$ * 0.1;} \\
+                                  & \tt{$A$ := $A$ - temp;} \\
+                                  & \tt{write($A$);} \\
+                                  & \tt{read($B$);} \\
+            \tt{write($A$);} & \\
+            \tt{read($B$);} & \\
+            \tt{$B$ := $B$ + 10;} & \\
+            \tt{write($B$);} & \\
+            \tt{COMMIT;} & \\
+                         & \tt{$B$ := $B$ + temp;} \\
+                         & \tt{write($B$);} \\
+                         & \tt{COMMIT;} \\
+        \end{tabular}
+        \par
+    }
+    This yields $A = 950, B = 2100$, Since $3000 \neq 3050$, this is \it{not}
+    conflict serializable.
+\end{example}
+\vspace{5em}
+
+\begin{center}
+    \bf{The rest of this page is intentionally left blank.}
+\end{center}
+
+\newpage
+\subsection{Serializability: Swapping}
+If we can convert a concurrent schedule into a serial schedule, it is
+conflict serializable. To determine serializability, we look at
+cross-transaction operations.
+
+{
+    \centering
+    \begin{tabular}{l|l}
+        $T_1$ & $T_2$ \\
+        \hline
+        \tt{\textcolor{red}{read($A$);}} & \\
+        \tt{\textcolor{blue}{write($A$);}} & \\
+                                           & \tt{\textcolor{red}{read($A$);}} \\
+                                           & \tt{\textcolor{blue}{write($A$);}} \\
+        \tt{\textcolor{purple}{read($B$);}} & \\
+        \tt{write($B$);} & \\
+                     & \tt{\textcolor{purple}{read($B$);}} \\
+                     & \tt{write($B$);} \\
+    \end{tabular}
+    \par
+}
+
+If the two instructions act on different data points, then there is no issue.
+Otherwise, order matters.
+
+\paragraph{Read after Read:} There is no issue. Therefore, we \it{can} swap the
+order.
+
+\paragraph{Write after Read:} There may be an issue, since depending on when the
+data is \tt{read}, the answer may be different. This is called a
+\bf{non-repeatable read}. Therefore, we \it{cannot} swap the order.
+
+\paragraph{Read/Write after Write:} See above. Therefore, we \it{cannot} swap the
+order.
+
+\begin{example}
+    Below is an example of a schedule that is conflict serializable.
+
+    {
+        \centering
+        \begin{tabular}{l|l}
+            $T_1$ & $T_2$ \\
+            \hline
+            \tt{read($A$);} & \\
+            \tt{write($A$);} & \\
+                             & \tt{read($A$);} \\
+                             & \tt{write($A$);} \\
+            \tt{read($B$);} & \\
+            \tt{write($B$);} & \\
+                             & \tt{read($B$);} \\
+                             & \tt{write($B$);} \\
+        \end{tabular}
+        $\to$
+        \begin{tabular}{l|l}
+            $T_1$ & $T_2$ \\
+            \hline
+            \tt{read($A$);} & \\
+            \tt{write($A$);} & \\
+                             & \tt{\textcolor{red}{read($A$);}} \\
+            \tt{\textcolor{red}{read($B$);}} & \\
+                                             & \tt{write($A$);} \\
+            \tt{write($B$);} & \\
+                             & \tt{read($B$);} \\
+                             & \tt{write($B$);} \\
+        \end{tabular}
+        $\to$
+        \begin{tabular}{l|l}
+            $T_1$ & $T_2$ \\
+            \hline
+            \tt{read($A$);} & \\
+            \tt{write($A$);} & \\
+            \tt{read($B$);} & \\
+                            & \tt{read($A$);} \\
+                            & \tt{\textcolor{red}{write($A$);}} \\
+            \tt{\textcolor{red}{write($B$);}} & \\
+                                              & \tt{read($B$);} \\
+                             & \tt{write($B$);} \\
+        \end{tabular}
+        $\to$
+        \newline
+        $\to$
+        \begin{tabular}{l|l}
+            $T_1$ & $T_2$ \\
+            \hline
+            \tt{read($A$);} & \\
+            \tt{write($A$);} & \\
+            \tt{read($B$);} & \\
+                            & \tt{\textcolor{red}{read($A$);}} \\
+            \tt{\textcolor{red}{write($B$);}} & \\
+                             & \tt{write($A$);} \\
+                             & \tt{read($B$);} \\
+                             & \tt{write($B$);} \\
+        \end{tabular}
+        $\to$
+        \begin{tabular}{l|l}
+            $T_1$ & $T_2$ \\
+            \hline
+            \tt{read($A$);} & \\
+            \tt{write($A$);} & \\
+            \tt{read($B$);} & \\
+            \tt{write($B$);} & \\
+                         & \tt{read($A$);} \\
+                         & \tt{write($A$);} \\
+                         & \tt{read($B$);} \\
+                         & \tt{write($B$);} \\
+        \end{tabular}
+        \par
+    }
+\end{example}
+
+\begin{example}
+    Below is an example of a schedule that is \it{not} conflict serializable.
+
+    {
+        \centering
+        \begin{tabular}{l|l}
+            $T_1$ & $T_2$ \\
+            \hline
+            \tt{read($A$);} & \\
+            \tt{read($B$);} & \\
+                             & \tt{write($A$);} \\
+            \tt{write($A$);} & \\
+                             & \tt{read($B$);} \\
+        \end{tabular}
+        \par
+    }
+\end{example}
+
+\subsection{Serializability: Precedence Graph}
+Another way to determine serializability is to build a \bf{precedence graph}
+with vertices $T_i$. If the graph is a DAG, it is conflict serializable.
+Otherwise, it is not. The algorithm is as follows:
+\begin{itemize}[label=$\to$]
+    \item Draw an edge $T_i \to T_j$ if $T_i$ executes an incompatible operation
+        before $T_j$.
+    \item Check for cycles. If there is a cycle, the schedule is not conflict
+        serializable. Otherwise, run a topological sort to find a serial
+        ordering.
+\end{itemize}
+
+\begin{example}
+    Below is an example of a schedule that is \it{not} conflict serializable.
+
+    {
+        \centering
+        \begin{tabular}{l|l}
+            $T_1$ & $T_2$ \\
+            \hline
+            \tt{\textcolor{red}{read($A$);}} & \\
+            \tt{read($B$);} & \\
+                            & \tt{\textcolor{red}{write($A$);}} \\
+            \tt{\textcolor{red}{write($A$);}} & \\
+                             & \tt{read($B$);} \\
+        \end{tabular}
+        \par
+    }
+
+    Since \tt{read($A$)} in $T_1$ conflicts with \tt{write($A$)} in $T_2$, we
+    have $T_1 \to T_2$. But \tt{write($A$)} in $T_2$ conflicts with
+    \tt{write($A$)} in $T_1$, so $T_2 \to T_1$. The resulting graph is
+
+    {
+        \centering
+        \begin{tikzpicture}[>=stealth, node distance=2cm]
+            \node[circle, draw] (A) {$T_1$};
+            \node[circle, draw] (B) [right of=A] {$T_2$};
+
+            \draw[->, bend right] (A) to (B);
+            \draw[->, bend right] (B) to (A);
+        \end{tikzpicture}
+        \par
+    }
+
+    so there is a cycle which implies that this schedule is \it{not} conflict
+    serializable.
+\end{example}
+
+\begin{example}
+    Below is an example of a schedule that is conflict serializable.
+
+    {
+        \centering
+        \begin{tabular}{l|l|l}
+            $T_1$ & $T_2$ & $T_3$ \\
+            \hline
+            \tt{read($A$);} & & \\
+                            & & \tt{\textcolor{purple}{read($B$);}} \\
+            \tt{\textcolor{red}{write($A$);}} & & \\
+                                              & \tt{\textcolor{purple}{write($B$);}} & \\
+                                              & &
+                                              \tt{\textcolor{blue}{rea}\textcolor{red}{d($A$);}} \\
+                                              & \tt{\textcolor{blue}{wri}\textcolor{red}{te($A$);}} & \\
+        \end{tabular}
+        \par
+    }
+
+    We have $T_3 \to T_2$ and $T_1 \to T_2, T_3$, so the dependency graph is
+
+    {
+        \centering
+        \begin{tikzpicture}[>=stealth, node distance=2cm]
+            \node[circle, draw] (A) {$T_1$};
+            \node[circle, draw] (B) [right of=A] {$T_2$};
+            \node[circle, draw] (C) [right of=B] {$T_3$};
+
+            \draw[->] (A) to (B);
+            \draw[->, bend right] (A) to (C);
+            \draw[->] (C) to (B);
+        \end{tikzpicture}
+        \par
+    }
+
+    so $T_1 \to T_3 \to T_2$ is one topological ordering, so this schedule is
+    conflict serializable.
+\end{example}
+
+\section{Transaction Isolation Levels}
+\paragraph{Serializable:} In serializable isolation (discussed above), there is
+little concurrency, it's equivalent to a serial schedule, and it performs
+poorly, but we get maximum consistency and is the strongest form of isolation.
+
+\paragraph{Repeatable Read:} If $T_i$ reads $X$, no other transaction $T_j$ can
+update it. It will pull a shared (read) lock. Then, no other transaction $T_j$
+can write to $X$. This is the default isolation level in MySQL.
+
+\paragraph{Read Committed:} $T_i$ can only read data from another transaction
+$T_j$ if it was \it{committed}. This is the default in DB2, SQL Server, and
+PostgreSQL.
+
+\paragraph{Read Uncommitted:} $T_i$ can read from \it{any} transaction $T_j$
+even if it's not committed.
+
+\subsection{Dirty Read/Write}
+\begin{definition}{Dirty Read and Write}
+    A \bf{dirty read} is when a transaction \it{can} read uncommitted changes
+    from other transactions.
+    \vspace{1em}
+
+    A \bf{dirty write} is when $T_i$ updates a value, then another transaction
+    $T_j$ changes the same value before $T_i$ commits.
+\end{definition}
+
+\begin{example}
+    Consider the following scenario.
+
+    {
+        \centering
+        \begin{tabular}{l|l}
+            $T_1$ & $T_2$ \\
+            \hline
+            \tt{read($A$);} & \\
+            \tt{write($A$);} & \\
+                             & \tt{read($A$);} \\
+                             & \tt{write($B$);} \\
+                             & \tt{COMMIT;} \\
+                             & \it{\textcolor{red}{failure occurs here.}} \\
+            \tt{COMMIT;} & \\
+        \end{tabular}
+        \par
+    }
+    $T_1$ will roll back, but $T_2$ will have committed the changes already.
+    Therefore, $A$ is inconsistent.
+\end{example}
+
+\paragraph{Note:} Only \it{read uncommitted} allows for dirty reads.
+
+\paragraph{Note:} We can \it{never} have dirty writes in any of the isolation
+levels.
+
+\subsection{Non-Repeatable/Fuzzy Reads}
+\begin{definition}{Dirty Read and Write}
+    A \bf{non-repeatable (fuzzy) read} happens when one transaction $T_i$ reads
+    a value, then another transaction $T_j$ overwrites and commits the value.
+\end{definition}
+
+\begin{example}
+    Consider the following scenario.
+
+    {
+        \centering
+        \begin{tabular}{l|l}
+            $T_1$ & $T_2$ \\
+            \hline
+            \tt{read($A$);} & \\
+                             & \tt{read($A$);} \\
+                             & \tt{write($A$);} \\
+                             & \tt{read($B$);} \\
+                             & \tt{write($B$);} \\
+                             & \tt{COMMIT;} \\
+            \tt{read($A$);} & \\
+            \tt{COMMIT;} & \\
+        \end{tabular}
+        \par
+    }
+
+    $T_1$ reads two different values for $A$, which makes $A$ inconsistent.
+\end{example}
+\paragraph{Note:} Only \it{read committed/uncommitted} allow for fuzzy reads.
+
+\subsection{Phantom Read}
+\begin{definition}{Phantom Read}
+    A \bf{phantom read} happens when one transaction inserts/deletes rows on a
+    table between fetches in another transaction. They occur on a range of
+    records, not just one.
+\end{definition}
+
+\begin{example}
+    Consider the following scenario.
+
+    {
+        \centering
+        \begin{tabular}{l|l}
+            $T_1$ & $T_2$ \\
+            \hline
+            \tt{SELECT * FROM a WHERE b=c;} & \\
+                            & \tt{INSERT INTO b VALUES (x, c);} \\
+                            & \tt{COMMIT;} \\
+            \tt{SELECT * FROM a WHERE b=c;} & \\
+            \tt{COMMIT;} & \\
+        \end{tabular}
+        \par
+    }
+
+    $T_1$ reads two different values since the set has changed now.
+\end{example}
+\paragraph{Note:} \it{Repeatable read} and \it{read committed/uncommitted} allow
+for phantom reads.
+
+\paragraph{Note:} Phandom reads only apply to changes made to the \it{set} of
+records, \it{not} changes made to existing records.
+
+\paragraph{Anomalies Permitted by Isolation Levels:} Below is a table of the
+allowable anomalies discussed above at each isolation level.
+
+{
+    \centering
+    \begin{tabular}{l|c|c|c}
+        & Dirty Read & Non-Repeatable Read & Phandom Read \\
+        \hline
+        Serializable & No & No & No \\
+        Repeatable Read & No & No & Maybe \\
+        Read Committed & No & Maybe & Maybe \\
+        Read Uncommitted & Maybe & Maybe & Maybe \\
+    \end{tabular}
+    \par
+}
+
+
+\chapter{Lecture 18}
+\section{Locking}
+\begin{definition}{Shared and Exclusive Lock}
+    A \bf{shared lock} allows \it{read} access to $X$ for a transaction $T_i$. Other
+    transactions $T_j$ may hold a shared lock on $X$\footnote{This assumes that
+    all of the locks on $X$ are shared locks.}.
+    \vspace{1em}
+
+    An \bf{exclusive lock} allows \it{read/write} access to $X$ for a
+    transaction $T_i$. If $T_i$ holds an exclusive lock on $X$, no other
+    transactions are allowed to access $X$, and they will block.
+\end{definition}
+
+\bf{Locks} are used to implement various isolation levels and help to improve
+consistency while providing a high level of concurrency/performance.
+
+\subsection{Starvation}
+We will demonstrate starvation via example.
+\begin{example}
+    Suppose we have the following schedule and assume \tt{unlock} frees one
+    lock at a time.
+
+    {
+        \centering
+        \begin{tabular}{l|l|l|l}
+            $T_1$ & $T_2$ & $T_3$ & $T_4$ \\
+            \hline
+                  & \tt{lock-S($A$)} & & \\
+            \tt{lock-X($A$)} & & & \\
+                           & & \tt{lock-S($A$)} & \\
+                           & \tt{unlock-S($A$)} & & \\
+                           & & & \tt{lock-S($A$)} \\
+        \end{tabular}
+        \par
+    }
+    Here, $T_2$ acquires a shared lock, which forces $T_1$ to block. Then $T_3$
+    acquires a shared lock. Even when $T_2$ unlocks, since $T_3$ still holds a
+    shared lock, $T_1$ is still blocked. $T_4$ then acquires a shared lock, and
+    $T_1$ never got to run, so it is being \bf{starved}.
+\end{example}
+
+\paragraph{Granting Locks:} We can prevent starvation by using a pseudo-queuing
+system: We grant $T_i$ the lock if:
+\begin{enumerate}[label=(\arabic*)]
+    \item No other transaction holds a conflicting lock.
+    \item No other transactions are waiting (blocked) for the lock.
+\end{enumerate}
+
+Under this algorithm, the previous example will prevent $T_1$ from starving
+since $T_3$ will block since $T_1$ was waiting for the lock on $A$.
+
+\subsection{Releasing Locks}
+When a transaction completes, it will release the lock, but it may not release
+it immediately. If we unlock \it{too early}, we may lose serializability, and other
+transactions may be able to make clobbering writes. If we unlock \it{too late},
+we may end up with either a fully serial schedule, or deadlock.
+
+\begin{example}
+    This implements locking into the example from
+    \refto{subsec}{iso}
+
+    {
+        \centering
+        \begin{tabular}{l|l|l}
+            $T_1$ & $T_2$ & Lock Manager \\
+            \hline
+            \tt{lock-X($B$)} & & \\
+                             & & \tt{grant-X($B, T_1$)} \\
+            \tt{read($B$)} & & \\
+            \tt{$B$ := $B$ - 50} & & \\
+            \tt{write($B$)} & & \\
+            \tt{unlock($B$)} & & \\
+                             & \tt{lock-S($A$)} & \\
+                             & & \tt{grant-S($A, T_2$)} \\
+                             & \tt{read($A$)} & \\
+                             & \tt{unlock($A$)} & \\
+                             & \tt{lock-S($B$)} & \\
+                             & & \tt{grant-S($B, T_2$)} \\
+                             & \tt{read($B$)} & \\
+                             & \tt{unlock($B$)} & \\
+                             & \tt{do\_something($A, B$)} & \\
+            \tt{lock-X($A$)} & & \\
+                             & & \tt{grant-X($A, T_1$)} \\
+            \tt{$A$ := $A$ + 50} & & \\
+            \tt{write($A$)} & & \\
+            \tt{unlock($A$)} & & \\
+        \end{tabular}
+        \par
+    }
+\end{example}
+
+\subsection{Two-Phase Locking (2PL)}
+We make requests to lock and unlock in two phases.
+
+\paragraph{Growing Phase:} In the \bf{growing phase}, we \it{acquire} locks. We can
+\it{only} acquire locks in this phase.
+
+\paragraph{Shrinking Phase:} In the \bf{shrinking phase}, we \it{release} locks.
+We can \it{only} release locks in this phase. That is, as soon as a transaction
+releases one lock, it can no longer acquire new locks.
+
+\paragraph{Consistency and Serializability:} 2PL improves consistency since each
+transaction pulls locks on only the data. This implies that no other
+transactions can modify that value until the lock has been released. 2PL also
+guarantees serializability.
+\begin{example}
+    The left example uses 2PL. The right example does \it{not} use 2PL.
+
+    {
+        \centering
+        \begin{tabular}{l|l}
+            $T_1$ & $T_2$ \\
+            \hline
+            \tt{lock-S($B$)} & \\
+                     & \tt{lock-S($A$)} \\
+                     & \tt{lock-S($B$)} \\
+                     & \it{\textcolor{red}{switch/lock point.}} \\
+                     & \tt{unlock($A$)} \\
+                     & \tt{unlock($B$)} \\
+            \tt{lock-X($A$)} & \\
+            \it{\textcolor{red}{switch/lock point.}} & \\
+            \tt{unlock($A$)} & \\
+            \tt{unlock($B$)} & \\
+        \end{tabular}
+        \hspace{2em}
+        \begin{tabular}{l|l}
+            $T_1$ & $T_2$ \\
+            \hline
+            \tt{lock-S($B$)} & \\
+            \it{\textcolor{red}{switch/lock point.}} & \\
+            \tt{unlock($B$)} & \\
+                     & \tt{lock-S($A$)} \\
+                     & \tt{unlock($A$)} \\
+                     & \it{\textcolor{red}{``switch/lock point''.}} \\
+                     & \tt{lock-S($B$)} \\
+                     & \tt{unlock($B$)} \\
+            \tt{lock-X($A$)} & \\
+            \tt{unlock($A$)} & \\
+        \end{tabular}
+        \par
+    }
+\end{example}
+
+\subsection{Deadlock}
+\begin{definition}{Deadlock}
+    \bf{Deadlock} occurs when $T_1$ locks $P$ with an exclusive lock and
+    requests to lock $Q$. But $T_2$ has an exclusive lock on $Q$, so $T_1$
+    blocks. While $T_2$ holds $Q$, it requests to lock $P$. Therefore, both
+    transactions block.
+\end{definition}
+
+\paragraph{Note:} 2PL does \it{not} prevent deadlock.
+\begin{example}
+    This is an example of a deadlock while using 2PL.
+
+    {
+        \centering
+        \begin{tabular}{l|l}
+            $T_1$ & $T_2$ \\
+            \hline
+            \tt{lock-X($P$)} & \\
+                             & \tt{lock-X($Q$)} \\
+            \tt{lock-X($Q$)} & \\
+                             & \tt{lock-X($P$)} \\
+        \end{tabular}
+        \par
+    }
+\end{example}
+
+\subsection{Lock Manager}
+A \bf{lock manager} handles lock/unlock requests, and stores them in a hash
+table called a \bf{lock table}. It can \it{prevent} deadlocks or it can
+\it{detect} when deadlocks are about to occur and tell the transaction to
+rollback.
+
+\paragraph{Preventing Deadlocks:} There are various ways to prevent deadlocks:
+\begin{itemize}[label=$\to$]
+    \item Acquire all required locks at once.
+    \item Acquire locks in a certain order (e.g. topological sort) to prevent
+        cycles in a wait-for graph.
+    \item Use preemption; if $T_i$ request a lock that $T_j$ holds, we can
+        force $T_j$ to rollback and grant $T_i$ the lock based off priority.
+    \item Use timeouts: If a lock waits for $n$ time units and still doesn't
+        acquire the lock, we rollback and start the transaction over.
+\end{itemize}
+
+\paragraph{Detecting Deadlocks:} There are various ways to detect deadlocks:
+\begin{itemize}[label=$\to$]
+    \item Choose a victim. At least one transaction must be aborted and rolled
+        back. This depends on various things:
+        \begin{itemize}[label=$\to$]
+            \item How much longer the tranaction needs to finish.
+            \item How long the transaction has been running for.
+            \item How many data items the transaction is using.
+            \item How many more data items the transaction needs.
+            \item How many transactions will be rolled back.
+        \end{itemize}
+    \item Rollback
+    \item Repeat until there is no deadlock.
+\end{itemize}
+
+\paragraph{Note:} It is entirely possible to starve a transaction if we pick the
+same victim every time.
+
+\subsection{Summary}
+We want our RDBMS to satisfy ACID transactions. In particular, we need to
+maintain consistency during a transaction for data integrity. We also need
+concurrency for performance, but this can threaten database consistency. Pure
+serializability guarantees consistency but it is computationally intensive. We
+can weaken our isolation levels to guarantee a consistent result while using
+concurrency.
 \end{document}
