@@ -76,6 +76,346 @@
 \tableofcontents
 \newpage
 
+\chapter[Functional Dependencies and Normalization]{Functional Dependencies and \\ Normalization}
+\section{Normalization}
+\begin{definition}{Normalization}
+    \bf{Normalization} is the process of refactoring tables to reduce redundancy
+    in a relation. It involves splitting tables with redundant data into two or
+    more norn-redundant tables.
+\end{definition}
+
+Tables without redundancies are called ``\it{properly normalized}''. When there
+are redundancies in a tables, we can \it{decompose} them using
+\it{functional dependencies}.
+
+\subsection{Functional Dependencies}
+\begin{definition}{Functional Dependency}
+    Given a relation $R$ with sets of attributes $X, Y$, $X \to Y$ is true if
+    and only if each value of $X$ is associated with \it{exactly one} value of
+    $Y$.
+\end{definition}
+
+We say ``$X$ functionally determines $Y$''. Then, for all pairs of tuples $t_1,
+t_2 \in R$, if $X \to Y$, then if $t_1[X] = t_2[X]$, then $t_1[Y] = t_2[Y]$.
+\begin{example}
+    Given the following, determine if $B \to C$, $C \to A$, and $A \to C$.
+
+    {
+        \centering
+        \begin{tabular}{c|c|c|c}
+            $A$ & $B$ & $C$ & $D$ \\
+            \hline
+            $a_1$ & $b_1$ & $c_1$ & $d_1$ \\
+            $a_1$ & $b_2$ & $c_1$ & $d_2$ \\
+            $a_2$ & $b_2$ & $c_2$ & $d_2$ \\
+            $a_2$ & $b_3$ & $c_2$ & $d_3$ \\
+            $a_3$ & $b_3$ & $c_2$ & $d_4$ \\
+        \end{tabular}
+        \par
+    }
+
+    $B \nrightarrow C$ since $b_2 \to c_1, c_2$. $C \nrightarrow A$ since
+    $c_2 \to a_2, a_3$. $A \to C$ by inspection.
+\end{example}
+
+The existence of a functional dependency implies that we can split the table up
+into two tables.
+\begin{example}
+    If $R(X, Y, A, B)$ and $X \to Y$, then we have $R_1(X, Y)$, $R_2(X, A, B)$.
+\end{example}
+
+\renewcommand{\a}{\alpha}
+\renewcommand{\b}{\beta}
+\renewcommand{\d}{\delta}
+\newcommand{\g}{\gamma}
+\newcommand{\D}{\Delta}
+\newpage
+\subsection{Properties of Functional Dependencies}
+Let $\a, \b, \g$ be sets of attributes in a relation $R$. Then we have
+Armstrong's Axioms:
+\begin{itemize}[label=$\to$]
+    \item Reflexivity: If $\b \subseteq \a$, then $\a \to \b$.
+    \item Augmentation: If $\a \to \b$, then $\a\g \to \b\g$.
+    \item Transitivity: If $\a \to \b$ and $\b \to \g$, then $\a \to \g$.
+\end{itemize}
+From these, we have additional properties:
+\begin{itemize}[label=$\to$]
+    \item Union: If $\a \to \b$ and $\a \to \g$, then $\a \to \b \g$.
+    \item Composition: If $\a \to \b, \g \to \Delta$, then $\a \g \to \b \Delta$.
+    \item Decomposition: If $\a \to \b \g$, then $\a \to \b$ and $\a \to \g$.
+    \item Pseudotransitivity: If $\a \to b$, $\Delta \b \to \g$, then $\Delta \a \to \g$.
+\end{itemize}
+
+\subsection{Canonical Cover}
+\begin{definition}{Canonical Cover}
+    The \bf{canonical cover} $F_c \subseteq F^+$ is the basis set of the set of
+    all functional dependencies $F^+$. It is \it{not} unique.
+\end{definition}
+
+\paragraph{Finding the Canonical Cover:} The algorithm to find the canonical
+cover is given below:
+\begin{enumerate}[label=(\arabic*)]
+    \item Decompose RHS: ($X \to YZA$ becomes $X \to Y, X \to Z, X \to A$).
+    \item Remove extraneous attributes: ($AB \to C, B \to C$, $AB \to C$ is extraneous).
+    \item Remove trivial, duplicate, inferred FD's (by transitivity).
+    \item Union and repeat until set doesn't change.
+\end{enumerate}
+
+\paragraph{Attribute Closure:}
+$\alpha^+$ is the set of attributes inferred by $\alpha$. If, $\alpha^+ = R$,
+then $\alpha$ is an SK.
+
+\subsection{Normal Forms}
+There are 8 normal forms, but we discuss 1NF, 2NF, 3NF, and BCNF (3.5NF).
+\paragraph{First Normal Form (1NF):} Atomic attributes (flat, no
+nesting/collections), no repeated groups, there is a unique key, no \tt{null}
+values.
+
+\paragraph{Second Normal Form (2NF):} $R$ is 1NF and does not contain any
+composite keys. More generally, $R$ is 2NF $\iff$ $\forall a \in R$, \it{either}
+\bf{(1)} $a \in$ CK or \bf{(2)} $a \in R$ depends on an \it{entire} key; i.e. it
+is not partially dependent on \it{any} composite candidate key.
+
+\paragraph{Third Normal Form (3NF):} All non-prime $a \in R$ depend directly on
+a CK (no transitivity); i.e. if all $a \in R$ are part of a candidate key, $R$
+is 3NF.
+
+\paragraph{Zaniolo's 3NF:} $\forall f \in F$, at least one is true: \bf{(1)}
+$a \to \beta$ is trivial. \bf{(2)} $\alpha \in R$ is SK. \bf{(3)} $\beta \in$ CK.
+
+\paragraph{BCNF:} $\forall f : \alpha \to \beta \in F$, at least one is true:
+\bf{(1)} $f$ is trivial ($\beta \subseteq \alpha$) or \bf{(2)} $\alpha$ is a SK
+for $R$.
+
+\paragraph{Note:} As Normal Form $\uparrow$, Redundancy $\downarrow$, but Data
+Integrity may also $\downarrow$ in BCNF. Additionally, BCNF removes all
+redundancy due to functional dependencies only. There may be redundancy due to
+other causes.
+\begin{definition}{Losslessness}
+    A decomposition is \bf{lossless} if $R_1 \bowtie R_2 = R$. We can also check
+    \begin{enumerate}[label=(\arabic*)]
+        \item  $R_1 \cup R_2 = R$.
+        \item $R_1 \cap R_2 \neq \emptyset$.
+        \item $(R_1 \cap R_2)^+$ forms an SK for either $R_1$ or $R_2$.
+    \end{enumerate}
+    1NF, 2NF, 3NF, BCNF guarantee losslessness.
+\end{definition}
+
+\noindent\bf{BCNF Decomposition Algorithm}
+
+\begin{lstlisting}[mathescape, style=colorEX]
+for any $R_i$ in the schema
+    if ($\alpha \to \beta$ holds on $R_i$ and
+        $\alpha \to \beta$ is non-trivial and
+        $\alpha$ is not a superkey), then
+            Decompose $R_i$ into $R_{i_1} (\alpha^+)$ and $R_{i_2} (\alpha \cup (R_i - \alpha^+))$
+            // $\alpha$ is the common attriute(s)
+repeat until no more decompositions are necessary
+\end{lstlisting}
+
+\begin{example}
+    Determine if $R$ is BCNF. If not, decompose it into BCNF.
+    \[R(A, B, C), F = \{A \to B, B \to C\}\]
+    Note that $A^+ = ABC$. Then
+    \begin{itemize}[label=$\to$]
+        \item $A \to B$ (\checkmark): \it{(i)} not trivial \bf{\it{(ii)} $\bm{A}$ is SK}.
+        \item $B \to C$ (\bf{\textsf{x}}): \it{(i)} not trivial \it{(ii)} $B$ not SK.
+    \end{itemize}
+    $R \not \in$ BCNF. Decomposing, we get $R_1(B, C), R_2(A, B)$.
+\end{example}
+
+\begin{example}
+    Determine if $R$ is BCNF. If not, decompose it into BCNF.
+    \[R(A, B, C, D), F = \{C \to D, C \to A, B \to C\}\]
+    Note that $B^+ = BCDA = R$. Then
+    \begin{itemize}[label=$\to$]
+        \item $C \to AD$ (\bf{\textsf{x}}): \it{(i)} not trivial \it{(ii)} $C$ not SK.
+        \item $B \to C$ (\checkmark): \it{(i)} not trivial \bf{\it{(ii)} $\bm{B}$ is SK}.
+    \end{itemize}
+    $R \not \in$ BCNF. Decomposing, we get $R_1(A, C, D), R_2(B, C)$.
+\end{example}
+
+\paragraph{Functional Dependencies as Constraints:} By definition, a functional
+dependency is a constraint. When designing DB, we want BCNF/3NF, losslessness,
+and dependency preservation.
+
+\paragraph{Dependency Preservation:} 1NF, 2NF, 3NF guarantee dependency
+preservation. BCNF does \it{not}.
+
+\begin{example}
+    Determine if $R$ is in BCNF.
+    \[R(A, B, C, D, E, G), F = \{A \to B, A \to C, C \to E, B \to D\}\]
+    Note that $A^+ = ABCDE$, $B^+ = BD$, $C^+ = CE$.
+    By the union property, we have
+    \[F = \{A \to BC, C \to E, B \to D\}\]
+
+    \begin{itemize}[label=$\to$, itemsep=0em,]
+        \item $A \to BC$: \it{(i)} $A \to BC$ is not trivial. \it{(ii)} $A$ is not a superkey. \textsf{\bf{x}}
+        \item $C \to E$: \it{(i)} $C \to E$ is not trivial. \it{(ii)} $C$ is not a superkey. \textsf{\bf{x}}
+        \item $B \to D$: \it{(i)} $B \to D$ is not trivial. \it{(ii)} $B$ is not a superkey. \textsf{\bf{x}}
+    \end{itemize}
+
+    \noindent All three dependencies violate BCNF. Decomposing on $B \to D$, we get
+    \[R_1(A, B, C, E, G), R_2(B, D)\]
+    \bf{Looking at $\bm{R_1}$:}
+    \begin{itemize}[label=$\to$, itemsep=0em]
+        \item $A \to BC$: \it{(i)} $A \to BC$ is not trivial. \it{(ii)} $A$ is not a superkey. \textsf{\bf{x}}
+        \item $C \to E$: \it{(i)} $C \to E$ is not trivial. \it{(ii)} $C$ is not a superkey. \textsf{\bf{x}}
+    \end{itemize}
+
+    Both dependencies violate BCNF. Decomposing on $C \to E$, we get
+    \[R_3(A, B, C, G), R_4(C, E), R_2(B, D)\]
+    \bf{Looking at $\bm{R_3}$:}
+    \begin{itemize}[label=$\to$, itemsep=0em]
+        \item $A \to BC$: \it{(i)} $A \to BC$ is not trivial. \it{(ii)} $A$ is not a superkey. \textsf{\bf{x}}
+    \end{itemize}
+
+    \noindent $A \to BC$ violates BCNF. Decomposing on $A \to BC$, we get
+    \[R_5(A, B, C), R_6(A, G), R_4(C, E), R_2(B, D)\]
+
+    \noindent Reindexing the decomposition, we get
+    \[R_1(A, G), R_2(C, E), R_3(B, D), R_4(A, B, C)\]
+\end{example}
+\vspace{5em}
+
+\begin{center}
+    \bf{The rest of this page is intentionally left blank.}
+\end{center}
+
+\begin{example}
+    From the previous example, determine if the decomposition is dependency preserving.
+    \vspace{1em}
+
+    Recall the following attribute closures:
+    \[A^+ = ABCDE, B^+ = BD, C^+ = CE, D^+ = D, E^+ = E, G^+ = G\]
+    \begin{itemize}[label=, itemsep=0em, leftmargin=*]
+        \item $B \to D$:
+            \newline
+            \noindent Iteration 1:
+            \vspace{-1em}
+            \begin{align*}
+                result &= B \\
+                t &= (B \cap R_1)^+ \cap R_1
+                = (B \cap AG)^+ \cap AG
+                = \emptyset \to result = B \\
+                t &= (B \cap R_2)^+ \cap R_2
+                = (B \cap CE)^+ \cap CE
+                = \emptyset \to result = B \\
+                t &= (B \cap R_3)^+ \cap R_2
+                = (B \cap BD)^+ \cap BD
+                = BD \cap BD
+                = BD \to result = BD \ \checkmark \\
+                short &\ circuit
+            \end{align*}
+            We derived $D$, so $B \to D$ is preserved.
+        \item $C \to E$:
+            \newline
+            \noindent Iteration 1:
+            \vspace{-1em}
+            \begin{align*}
+                result &= C \\
+                t &= (C \cap R_1)^+ \cap R_1
+                = (C \cap AG)^+ \cap AG
+                = \emptyset \to result = C \\
+                t &= (C \cap R_2)^+ \cap R_2
+                = (C \cap CE)^+ \cap CE
+                = CE \cap CE = CE \to result = CE \ \checkmark \\
+                short &\ circuit
+            \end{align*}
+            We derived $E$, so $C \to E$ is preserved.
+        \item $A \to BC$:
+            \newline
+            \noindent Iteration 1:
+            \vspace{-1em}
+            \begin{align*}
+                result &= A \\
+                t = (A &\cap R_1)^+ \cap R_1
+                = (A \cap AG)^+ \cap AG
+                = ABCDE \cap AG = A \to result = A \\
+                t = (A &\cap R_2)^+ \cap R_2
+                = (A \cap CE)^+ \cap CE
+                = \emptyset \to result = A \\
+                t = (A &\cap R_3)^+ \cap R_3
+                = (A \cap BD)^+ \cap BD
+                = \emptyset \to result = A \\
+                t = (A &\cap R_4)^+ \cap R_4
+                = (A \cap ABC)^+ \cap ABC
+                = ABCDE \cap ABC = ABC \to result = ABC \ \checkmark \\
+                short &\ circuit
+            \end{align*}
+            We derived $BC$, so $A \to BC$ is preserved.
+    \end{itemize}
+    Because every functional dependency was preserved, this decomposition is dependency preserving.
+\end{example}
+\vspace{5em}
+
+\begin{center}
+    \bf{The rest of this page is intentionally left blank.}
+\end{center}
+
+\begin{example}
+    Given $R(A, B, C, D, E, G)$ and the following decomposition: $R_1 = (A, B, C, G), R_2 = (A, D, E)$
+    with functional dependencies $F = \{ A \to B, A \to C, CD \to E, B \to D, E \to A \}$,
+    the decomposition is lossless if it satisfies the following:
+    \begin{enumerate}
+        \item $R_1 \cup R_2 = R:$ $R_1 \cup R_2 = (A, B, C, D, E, G) = R$ \checkmark
+        \item $R_1 \cap R_2 \neq \emptyset$: $R_1 \cap R_2 = (A) \neq \emptyset$ \checkmark
+        \item $(R_1 \cap R_2)^+$ forms a superkey for either $R_1$ or $R_2$:
+            Looking at $(R_1 \cap R_2)^+$, we have
+            $A^+ = ABCDE$, which forms a superkey for $R_2 = (A, D, E)$.
+            \newline
+            $B \in A^+$ by $A \to B$.
+            \newline
+            $C \in A^+$ by $A \to C$.
+            \newline
+            $D \in A^+$ by $A \to B \to D$.
+            \newline
+            $E \in A^+$ by $A \to C, A \to B \to D \implies A \to CD \to E$. \checkmark
+    \end{enumerate}
+    \noindent The decomposition is \bf{lossless}.
+\end{example}
+
+\begin{example}
+    Given the following relation:
+    \begin{center}
+        \begin{tabular}{l|l|l|l}
+            $A$ & $B$ & $C$ & $D$ \\
+            \hline
+            Name & Class & Score & Grade \\
+            \hline
+            Ted E. Bear & CS111 & 65 & B \\
+            Ted E. Bear & CS143 & 78 & B \\
+            Wile E. Coyote & CS111 & 91 & A \\
+            Joe Bruin & CS118 & 31 & F \\
+            Josie Bruin & CS131 & 89 & A \\
+        \end{tabular}
+    \end{center}
+    \noindent The candidate key in the context of the problem is $AB$. The functional dependencies
+    are
+    \begin{itemize}[label=$\to$]
+        \item $AB \to C$, $AB \to D$ since $AB$ is a superkey.
+        \item $C \to D$ since there is only one score/grade per class.
+        \item $R$ is in $2NF$ if for every attribute in $R$, at least one of the
+            following holds:
+            \begin{enumerate}[label=(\arabic*)]
+                \item it is part of a candidate key.
+                \item the attribute depends on the entire candidate key.
+            \end{enumerate}
+            Clearly, $A, B$ are in the candidate key $AB$. The non-prime
+            attributes $C, D$ both depend on the entire candidate key $AB$, so
+            \bf{this relation is in 2NF}.
+        \item \bf{This relation is \ib{not} in 3NF} because $D$ can be
+            determined through $C$, so there is a transitive dependency $AB \to
+            C \to D$.
+    \end{itemize}
+\end{example}
+\vspace{5em}
+
+\begin{center}
+    \bf{The rest of this page is intentionally left blank.}
+\end{center}
+
+
 \chapter{Lecture 10}
 \section{OnLine Transaction Processing}
 \begin{definition}{OnLine Transaction Processing (OLTP)}
@@ -1113,9 +1453,9 @@ interesting data types:
     \item Geospatial (geohash) including radius queries
 \end{itemize}
 
-Redis operates on a \it{single node} configuration. Therefore, the CAP theorem
-\it{does not apply}. Typical use cases include: session caching, message queues,
-leaderboards, fast lookup/indexing.
+\paragraph{CAP Theorem:} Redis operates on a \it{single node} configuration.
+Therefore, the CAP theorem \it{does not apply}. Typical use cases include:
+session caching, message queues, leaderboards, fast lookup/indexing.
 \begin{example}
     If we have a distributed cache, then our system would now be available and
     partition tolerant, since we are now a distributed system.
@@ -1262,6 +1602,11 @@ graph.
 
 \paragraph{CAP Theorem:} Neo4j is not distributed or sharded, so CAP theorem
 doesn't apply. It is not distributed due to clustering.
+\vspace{5em}
+
+\begin{center}
+    \bf{The rest of this page is intentionally left blank.}
+\end{center}
 
 
 \chapter{Lecture 14}
@@ -2593,7 +2938,11 @@ allowable anomalies discussed above at each isolation level.
     \end{tabular}
     \par
 }
+\vspace{5em}
 
+\begin{center}
+    \bf{The rest of this page is intentionally left blank.}
+\end{center}
 
 \chapter{Lecture 18}
 \section{Locking}
@@ -2806,4 +3155,53 @@ concurrency for performance, but this can threaten database consistency. Pure
 serializability guarantees consistency but it is computationally intensive. We
 can weaken our isolation levels to guarantee a consistent result while using
 concurrency.
+
+\section{Transactions in NoSQL}
+\subsection{Redis}
+Transactions are subject to the following constraints:
+\begin{itemize}[label=$\to$]
+    \item All commands in a transaction are \it{serialized}. Therefore,
+        everything runs sequentially which implies that we have \it{pure
+        isolation}.
+    \item We have pure atomicity, \it{but} if a failure occurs, Redis will error
+        and restart. The user must then \it{manually} run a utility to recover
+        and undo the transaction.
+    \item If journal persistence is used (durability), Redis uses a single
+        atomic write call to write the transaction to disk.
+\end{itemize}
+\begin{example}
+    We can prevent inconsistencies in Redis using the \tt{WATCH} keyword. If
+    \it{anything} modifies the key other than the current transaction, the
+    transaction fails.
+    \lstset{ basicstyle=\small\ttfamily, mathescape=false }
+    \begin{lstlisting}[style=colorEX]
+        WATCH key
+        val = GET key
+        val = val + 1
+        MULTI
+        SET key $val
+        EXEC
+    \end{lstlisting}
+\end{example}
+
+\subsection{MongoDB}
+An update on a \it{single} document is atomic. As of v4.4, multi-documetn
+transactions are ACID compliant with restrictions.
+\begin{example}
+    \lstset{ basicstyle=\small\ttfamily, mathescape=false }
+    \begin{lstlisting}[language=C, style=colorEX]
+        $session.action()
+            db.users.insert({ _id: 6, name "Ibrahim" })
+            db.users.updateOne({ _id: 3, { $set:{ age:50 } } })
+        session.commit_transaction()
+    \end{lstlisting}
+\end{example}
+
+\subsection{Neo4j}
+All DB operations that access the graph, indices, or the schema must be
+performed in a transaction. Read commited is the defualt isolation level, so
+non-repeatable reads are possible. The user can manually acquire write locks on
+nodes and relationships to control isolation level. Locks can be acquired for
+nodes and relationships \it{separately}.
+
 \end{document}
