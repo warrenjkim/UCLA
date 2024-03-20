@@ -2105,11 +2105,16 @@ is not principal.
     \vspace{0.5em}
 
     \bf{($\bm{\implies}$)}
-    Suppose $R$ is a UFD. Let $r \in R$ and consider its unique factorization $r = p_1 \cdots p_n$,
-    where $p_i$ is a distinct irreducible. Since $R$ is a UFD, irreducible elements are prime.
+    Suppose $R$ is a UFD. Note that since $R$ is a UFD, irreducible elements are prime.
     Consider the ascending chain of ideals given by
-    \[(p_1) \subseteq (p_2) \subseteq \cdots\]
-    Consider  gt
+    \[(a_1) \subseteq (a_2) \subseteq \cdots\]
+    for $a_1, a_2, \cdots \in R$. Consider the unique factorization
+    $a_1 = p_1^{r_1} \cdots p_k^{r_k}$, where $p_i$ is a distinct prime. Then $a_n \mid a_1$, so
+    $a_n$ can be written as an associate of $p_1^{s_1} \cdots p_k^{s_k}$ where
+    $0 \leq s_i \leq r_i$. For all $m \geq n$, we have that $(a_n) \subseteq (a_m)$ by construction.
+    Then $a_m \mid a_n$, so we can represent $a_m = p_1^{t_1} \cdots p_k^{t_k}$ where
+    $0 \leq t_i \leq s_i$ for all $i$. Therefore, $R$ satisfies the ascending chain condition on
+    principal ideals.
     \vspace{0.5em}
 
     \bf{($\bm{\impliedby}$)}
