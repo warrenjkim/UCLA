@@ -57,9 +57,10 @@ if and only if $d'$ is an associate of $d$.
     ($\impliedby$)
     Suppose $d'$ is an associate of $d'$. Then $d = d'x$ for some unit $x \in R$. Since $d$ is a
     greatest common divisor of $a$ and $b$, we have that $d \mid a$ and $d \mid b$, which can be
-    written as $a = dp$, $b = dq$ for some $p, q \in R$. Then $a = dp = (d'x)p = d'(xp)$ and
-    $b = dq = (d'x)q = d'(xq)$. This shows that $d' \mid a$ and $d' \mid b$. Now suppose that
-    $c \mid a$ and $c \mid b$. Then $c \mid a = d'(xp)$ and $c \mid d'(xq)$, so $c \mid d'$.
+    written as $a = dp$, $b = dq$ for some $p, q \in R$. Then $a = dp = (d'x)p = d'(xp)$ and $b = dq
+    = (d'x)q = d'(xq)$. This shows that $d' \mid a$ and $d' \mid b$. Now suppose that $c \mid a$ and
+    $c \mid b$. Then $c \mid d$, so $d = cq$ but $d = d'x$, so we get that $d'x = cy$ for $y \in R$
+    but since $x$ is a unit, there exists $x^{-1} \in R$, so $d' = c(yx^{-1})$, so $c \mid d'$.
     Therefore, $d'$ is another greatest common divisor of $a$ and $b$.
     \vspace{0.5em}
 
@@ -75,12 +76,21 @@ $N'(a) = \min_{r\neq 0} N(ar)$ forms a norm. Moreover, show that $N'(a)\leq N'(a
 $a,b\in R$
 \subsection*{Response}
 \begin{proof}
-    % Let $R$ be a Euclidean domain and $N$ a norm. Consider $N' : R \to \Z$ given by
-    % $N'(a) = \min_{s \neq 0} N(as)$. Then $N'(0_R) = \min_{s \neq 0} N(0_R) = 0$. Take $a, b \in R$
-    % such that $b \neq 0$. Then there exists $q \in R$ such that $a = bq + r$ where $r = 0$ or
-    % $N(r) < N(b)$. If $r = 0$, then we are done, so suppose not. Then if $r \neq 0$, we
-    % have that $N'(r) = \min_{s \neq 0} N(rs)$ and $N'(b) = \min_{s \neq 0} N(bs)$. Since $N$
-    % is a norm of $R$, we have that $N(rs) < N(bs)$
+    Let $R$ be a Euclidean domain and $N$ a norm. Consider $N' : R \to \Z$ given by
+    $N'(a) = \min_{s \neq 0} N(as)$. Then $N'(0_R) = \min_{s \neq 0} N(0_R) = 0$. Take $a, b \in R$
+    such that $b \neq 0$. Then $N'(b) = \min_{s \neq 0} N(bs)$. Since $b \neq 0$, $s \neq 0$, and
+    $R$ is an integral domain, we necessarily have that $bs \neq 0$. Since $N$ is a norm, we have
+    that $a = (bs)q' + r$ for $q', r \in \Z$. such that $r = 0$ or $N(r) < N(bs)$.
+    If $r = 0$, then we are done, so suppose not. If $N(r) < N(bs)$, then
+    since $N'(r) = \min_{s \neq 0}N(rs)$, pick $s = 1$. Then
+    $N'(r) = N(r \cdot 1) < N(bs) = N'(b)$. Put $q := sq'$. Then $a = bq + r$ for
+    $q, r \in R$ such that $r = 0$ or $N'(r) < N'(b)$. Therefore, $N' : R \to \Z$ is a norm
+    of $R$.
+    \vspace{1em}
+
+    Let $a, b \in R$ where $a \neq 0$ and $b \neq 0$. Let $x, y \in R$ be nonzero such that
+    $N'(ab) = \min_{r \neq 0}N(abr)$ and $N'(a) = \min_{r \neq 0}N(ar)$. Choose $x, y \in R$ such that
+    $N(abx), N(ay)$ are minimal. Then Then $N'(a) = N(ay) \leq N(abx) = N'(ab)$.
 \end{proof}
 \newpage
 
@@ -92,8 +102,10 @@ norm on $F$. Conclude that every field is a Euclidean domain.
 \subsection*{Response}
 \begin{proof}
     Let $F$ be a field. Consider $N : F \to \Z$ given by $N(a) = 0$ for all $a \in F$. Then
-    $N(0_F) = 0$. Now take $a, b \in R$ for $b \neq 0$. Then we have that $a = bq + r$ where
-    $r = 0$ or $N(r) < N(b)$.
+    $N(0_F) = 0$. Now take $a, b \in R$ for $b \neq 0$. Then we have that $a = bq + r$. Since
+    $b \neq 0$ and since $F$ is a field, there exists $b^{-1} \in F$, so define $q := ab^{-1}$ to
+    get $a = b(ab^{-1}) + r = a \cdot 1 + r$. This implies that $r = 0$, so we are done. Therefore,
+    $N$ is a norm on $F$. Since we can do this for any field, every field is a Euclidean domain.
 \end{proof}
 \newpage
 
@@ -210,10 +222,10 @@ Show their union $\bigcup_j I_j$ is also an ideal.
         \item Take $a \in I_n, b \in I_m$ and suppose without loss of generality that $n \leq m$.
             Then we have $a - b \in I_m \subseteq \bigcup_j I_j$, so $\bigcup_j I_j$ is closed under
             subtraction.
-        \item Take $a \in I_n$, $r \in R$. Then we have $a \cdot r \in I_n \subseteq \bigcup_j I_j$,
-            so $\bigcup_j I_j$ is closed under multiplication.
+        \item Take $a \in I_n$, $r \in R$. Then we have $ra, ar \in I_n \subseteq \bigcup_j I_j$,
+            so $\bigcup_j I_j$ satisfies the absorption property.
     \end{enumerate}
-    Since $\bigcup_j I_j$ satisfies (1)-(3), $\bigcup_j I_j$ is an ideal.
+    Since $\bigcup_j I_j$ satisfies $(1)-(3)$, $\bigcup_j I_j$ is an ideal.
 \end{proof}
 \newpage
 
@@ -229,10 +241,12 @@ divisor of $a$ and $b$. Show that $ab|c$.
     Since the greatest common divisor of $a$ and $b$ is $1$, they share no irreducible factors, so
     the exponent at $p_i$ is $\min\{ r_i, s_i \} = 0$ for $1 \leq i \leq m$. Express $c$ as its
     unique factorization $c = p_1^{t_1} \cdots p_m^{t_m}$. Since $a \mid c$, we have that
-    $r_i \leq t_i$ for some $1 \leq i \leq n$. Similarly since $b \mid c$, $s_j \leq t_j$ for some
-    $1 \leq j \leq m$. Then $ab = p_1^{r_1 + s_1} \cdots p_m^{r_m + s_m}$, where
-    $r_i + s_i = \max_{p_i = p_j} \{ r_i, s_i \}$ since either $r_i = 0$ or $s_i = 0$. Then
-    $ab \mid c$ since for every $p_i$, $\max\{r_i, s_i\} \leq t_i$ for $1 \leq i \leq m$.
+    $r_i \leq t_i$ for at least one $1 \leq i \leq n$. Similarly since $b \mid c$, $s_j \leq t_j$
+    for at least one $1 \leq j \leq m$. Then
+    $ab = p_1^{r_1 + s_1} \cdots p_n^{r_n + s_n} \cdot p_{n + 1}^{s_{n + 1}} \cdots p_m^{s_m}$,
+    where $r_i + s_i = \max \{ r_i, s_i \}$ for $1 \leq i \leq n$ and $s_i$ for $n < i \leq m$ since
+    either $r_i = 0$ or $s_i = 0$. Then $ab \mid c$ since for every $p_i$,
+    $\max\{r_i, s_i\} \leq t_i$ for $1 \leq i \leq n$ and $s_i \leq t_i$ for $n < i \leq m$.
 \end{proof}
 \newpage
 
@@ -240,7 +254,35 @@ divisor of $a$ and $b$. Show that $ab|c$.
 Let $R$ be an integral domain. Show that $R$ is a UFD if and only if $R$ satisfies the ascending
 chain condition on principal ideals and irreducible elements of $R$ are prime.
 \subsection*{Response}
-\newpage
+\begin{proof}
+    Let $R$ be an integral domain.
+    \vspace{0.5em}
 
+    ($\implies$)
+    Let $R$ be a UFD. Consider $(a_1) \subseteq (a_2) \subseteq \cdots$ be an ascending chain of
+    principal ideals in $R$. Then we can write $a_1$ as its unique factorization
+    $a_1 = p_1^{r_1} \cdots p_n^{r_n}$ where $p_i$ is prime. Then $a_n \mid a_1$ so $a_n$ can be
+    written as an associate of $p_1^{s_1} \cdots p_n^{s_n}$ where $0 \leq s_i \leq r_i$. Then for
+    all $m \geq n$, we have that $(a_n) \subseteq (a_m)$. Then $a_m \mid a_n$ or its associates, so
+    we can represent $a_m$ as the unique factorization $a_m = p_1^{t_1} \cdots p_n^{t_n}$ where
+    $0 \leq t_i \leq s_i$ for all $i$. Therefore, $R$ satisfies the ascending chain condition.
+    From class, we showed that if $R$ is a UFD, then $p \in R$ is irreducible if and only if it is
+    prime.
+    \vspace{0.5em}
+
+    ($\impliedby$)
+    Suppose $R$ satisfies the ascending chain condition on principal ideals and irreducible elements
+    of $R$ are prime. Then from class, $R$ can be written as a product of irreducibles. To show that
+    it is unique, suppose for the sake of contradiction that $a$ has two different factorizations
+    $a = p_1 \cdots p_n = q_1 \cdots q_m$ where $p_i, q_j$ are irreducible. Then $p_1$ is prime
+    since it is irreducible, so it must divide some $q_j$. Without loss of generality, suppose $p_1 \mid q_1$. Then $p_1, q_1$
+    are associates so we have that $p_1 \cdots p_n = ap_1 q_2 \cdots q_m$ where $a \in R$ is a unit.
+    Since we are over an integral domain, apply the cancellation property to get $p_2 \cdots p_n =
+    aq_2 \cdots q_m$. Without loss of generality, suppose $n \leq m$. Then applying the previous
+    steps iteratively, we are left with $1 = a_1 \cdots a_n q_{n + 1} \cdots q_m$. But this implies
+    that $q_{n + 1}, \cdots, q_m$ are units, a contradiction. Therefore, $m = n$ so $a$ has a unique
+    factorization. Therefore, $R$ is a UFD.
+
+\end{proof}
 \end{document}
 
