@@ -1997,6 +1997,130 @@ itself. More concretely, the ascending chain condition gives us prime factorizat
     This is a contradiction to the claim that $R$ satisfies the ascending chain condition.
     Therefore, $r$ can be expressed as a product of irreducibles.
 \end{proof}
+
+\begin{corollary}{}
+    Because PID's satisfy the ascending chain condition on principal ideals, every nonzero and
+    nonunit decomposes as a product of irreducibles. Further, since irreducibles are prime in a PID,
+    every nonzero and nonunit decomposes as a product of primes.
+\end{corollary}
+
+\begin{theorem}{}
+    Let $R$ be a PID and $r \in R$. $r$ has a unique prime factorization. That is, if
+    $p_1 \cdots p_n = q_1 \cdots q_m$ are both prime factorizations of $r$, then $n = m$ and there
+    is a permutation $\sigma$ on $1, \ldots, n$ such that for every $i$, we have that $p_i$ and
+    $q_{\sigma(i)}$ are associates.
+\end{theorem}
+\begin{proof}
+    Let $R$ be a PID and $r \in R$. Suppose for the sake of contradiction that we have two
+    factorizations $p_1 \cdots p_n, q_1 \cdots q_m$ of $r$, where $p_i, q_j$ are prime. Then
+    $p_1 \mid q_1 \cdots q_m$. This implies that $p_1 \mid q_i$ for some $i$. Without loss of
+    generality, suppose $p_1 \mid q_1$. Since $p_1, q_1$ are irreducible, they are associates, so
+    $q_1 = ap_1$ for $a \in R$ a unit. Then $p_1 \cdots p_n = ap_1 \cdot q_2 \cdots q_m$. Because
+    $R$ is an integral domain, we apply the cancellation property to get
+    $p_2 \cdots p_n = aq_2 \cdots q_m$. Without loss of generality, suppose $n < m$. Continuing
+    this process iteratively, we eventually get $1 = a_1 \cdots a_n \cdot q_{n + 1} \cdots q_m$.
+    This implies that $q_{n + 1} \cdots q_m$ are units, a contradiction. Therefore, $r$ has a unique
+    factorization and there is a permutation $\sigma$ on $\{1, \ldots, n\}$ such that
+    $p_i = q_{\sigma(i)}$.
+\end{proof}
+
+
+\section{Unique Factorization Domain}
+
+\begin{definition}{Unique Factorization Domain}
+    Let $R$ be an integral domain. $R$ is a \bf{unique factorization domain} if, given a nonzero and
+    nonunit $r \in R$, the following hold:
+
+    \begin{enumerate}[label=(\arabic*)]
+        \item $r$ can be factored as a product of irreducibles. That is, we can express
+            $r = p_1 \cdots p_n$ where $p_i$ is irreducible.
+        \item The factorization of $r$ is unique. That is, if $p_1 \cdots p_n = q_1 \cdots q_m$ are
+            both factorizations of $r$, then $n = m$ and there is a permutation $\sigma$ on
+            $1, \ldots n$ such that for every $i$, we have that $p_i$ and $q_{\sigma(i)}$ are
+            associates.
+    \end{enumerate}
+\end{definition}
+\bf{Remark:} Any PID is a UFD.
+\vspace{1em}
+
+\bf{Example:} Let $F$ be a field. $F[x_1, \ldots, x_n]$ is a UFD, but not a PID since $(x_1, x_2)$
+is not principal.
+\vspace{1em}
+
+\bf{Example:} $\Z[x]$ is a UFD, but not a PID since $(2, x)$ is not principal.
+\vspace{1em}
+
+\bf{Example:} If $R$ is a UFD, then $R[x]$ is a UFD.
+
+\newpage
+\begin{theorem}{}
+    Let $R$ be a UFD and let $r \in R$. $r$ is prime if and only if it is irreducible.
+\end{theorem}
+\begin{proof}
+    Let $R$ be a UFD and let $r \in R$.
+    \vspace{0.5em}
+
+    \bf{($\bm{\implies}$)}
+    Since $R$ is an integral domain, primes are irreducible.
+    \vspace{0.5em}
+
+    \bf{($\bm{\impliedby}$)}
+    Suppose $r \in R$ is irreducible and $r \mid ab$ for $a, b \in R$. We can write $ab = rc$ for
+    some $c \in R$. If $a$ is a unit, then there exists $a^{-1} \in R$, so we have $rca^{-1} = b$.
+    This implies that $r \mid b$. If neither $a$ or $b$ is a unit, then consider their unique
+    factorizations $a = p_1 \cdots p_n$ and $b = q_1 \cdots q_m$. Note that $c$ cannot be a unit
+    since otherwise, we have $r = c^{-1}ab$, which implies that $r$ is reducible. Then
+    $c = t_1 \cdots t_s$ for $p_i, q_j, t_k$ all irreducible. We now have that $p_1 \cdots p_n$,
+    $q_1 \cdots q_m$, and $r \cdot t_1 \cdots t_s$ are all factorizations of $ab$. Therefore, since
+    $r$ is irreducible by assumption, it must be associates with some $p_i$ or $q_j$. If $r$ and
+    $p_i$ are associates, then $r \mid a$. Similarly, if $r$ and $q_j$ are associates, then
+    $r \mid b$. Therefore, $r$ is prime.
+    \vspace{0.5em}
+\end{proof}
+
+\begin{theorem}{}
+    Let $R$ be a UFD and suppose $a, b \in R$. Let $a = up_1^{e_1} \cdots p_n^{e_n}$ and
+    $b = vp_1^{f_1} \cdots p_n^{f_n}$ be prime factorizations where $u, v$ are units and each $p_i$
+    is a distinct prime. For each $n$, let $m_i = \min\{ e_i, f_i \}$. Then
+    $d = up_1^{m_1} \cdots p_n^{m_n}$ is a greatest common divisor of $a$ and $b$.
+\end{theorem}
+\begin{proof}
+    Let $R$ be a UFD and suppose $a, b \in R$. Let $a = up_1^{e_1} \cdots p_n^{e_n}$ and
+    $b = vp_1^{f_1} \cdots p_n^{f_n}$ be prime factorizations where $u, v$ are units and each $p_i$
+    is a distinct prime. For each $n$, let $m_i = \min\{ e_i, f_i \}$. Consider
+    $d = up_1^{m_1} \cdots p_n^{m_n}$. Clearly, $d \mid a$ and $d \mid b$ since $m_i \leq e_i, f_i$.
+    Suppose we have $c \in R$ such that $c \mid a$ and $c \mid b$. Then consider the prime
+    factorization $c = wq_1^{g_1} \cdots q_n^{g_n}$, where $w$ is a unit and $q_i$ is a distinct
+    prime. Since $q_i \mid c$, we also have $q_i \mid a$ and $q_i \mid b$, which implies
+    $q_i \mid p_j$ for some $p_j$. Without loss of generality, suppose $q_i \mid p_i$. Then
+    $g_i \leq \min\{ e_i, f_i \} = m_i$, which implies that $c \mid d$.
+\end{proof}
+
+\begin{theorem}{}
+    Let $R$ be an integral domain. $R$ is a UFD if and only if $R$ satisfies the ascending chain
+    condition on principal ideals and irreducible elements of $R$ are prime.
+\end{theorem}
+\begin{proof}
+    Let $R$ be an integral domain.
+    \vspace{0.5em}
+
+    \bf{($\bm{\implies}$)}
+    Suppose $R$ is a UFD. Note that since $R$ is a UFD, irreducible elements are prime.
+    Consider the ascending chain of ideals given by
+    \[(a_1) \subseteq (a_2) \subseteq \cdots\]
+    for $a_1, a_2, \cdots \in R$. Consider the unique factorization
+    $a_1 = p_1^{r_1} \cdots p_k^{r_k}$, where $p_i$ is a distinct prime. Then $a_n \mid a_1$, so
+    $a_n$ can be written as an associate of $p_1^{s_1} \cdots p_k^{s_k}$ where
+    $0 \leq s_i \leq r_i$. For all $m \geq n$, we have that $(a_n) \subseteq (a_m)$ by construction.
+    Then $a_m \mid a_n$, so we can represent $a_m = p_1^{t_1} \cdots p_k^{t_k}$ where
+    $0 \leq t_i \leq s_i$ for all $i$. Therefore, $R$ satisfies the ascending chain condition on
+    principal ideals.
+    \vspace{0.5em}
+
+    \bf{($\bm{\impliedby}$)}
+
+\end{proof}
+
 \end{document}
 
 % PAGE BREAK COMMENT
