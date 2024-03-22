@@ -249,15 +249,81 @@ skipbelow=\medskipamount
     Let $f:R\to S$ be surjective, and let $P\subseteq S$ be a prime ideal. Show
     that $f^{-1}(P)\subseteq R$ is a prime ideal.
 \end{problem}
-\subsection*{Response}
-\begin{proof}
+\begin{response}
     Suppose $f : R\to S$ is a surjective ring homomorphism and $P\subseteq S$ is
     prime. Consider the ideal $\finv(P)\subseteq R$. Take $a,b\in R$ such that
     $ab\in \finv(P)$. Then $f(ab)=f(a)f(b)\in P$. Since $P$ is prime, either
     $f(a)\in P$ or $f(b)\in P$. Then by definition of the preimage, either
     $\finv(f(a))=a\in \finv(P)$ or $\finv(f(b))=b\in \finv(P)$, which shows that
     $\finv(P)$ is prime.
-\end{proof}
+\end{response}
+
+\begin{problem}
+    Let $f:R\to S$ be surjective, and let $M\subseteq S$ be a maximal ideal. Show
+    that $f^{-1}(M)\subseteq R$ is a maximal ideal.
+\end{problem}
+\begin{response}
+    Suppose $f : R\to S$ is a surjective ring homomorphism and $M\subseteq S$ is
+    maximal. Consider the ideal $\finv(M)\subseteq R$. Let $N\supseteq \finv(M)$.
+    Then $f(N)$ is an ideal since
+    \begin{enumerate}[label=(\arabic*)]
+        \item $N$ is an ideal so $0\in N$. Then $f(0_R)=0_S\in f(N)$.
+        \item Take $c,d\in f(N)$. Then sine $f$ is surjective, there exist,
+            $a,b\in N\subseteq R$ such that $f(a)=c,f(b)=d$. Then since $N$ is
+            an ideal, it is closed under subtraction so $a-b\in N$ which implies
+            that $f(a-b)=f(a)-f(b)=c-d\in f(N)$.
+        \item Take $c\in f(N)$, $s\in S$. Since $f$ is surjective, there exist
+            $a\in N,r\in R$ such that $f(a)=c,f(r)=s$. Then since $N$ is an
+            ideal, $ar\in N$ so $f(ar)=f(a)f(r)=cs\in f(N)$.
+    \end{enumerate}
+    Now we claim that $f(\finv(M))=M$. To see $f(\finv(M))\subseteq M$, take
+    $f(x)\in f(\finv(M))$. Then by definition of the preimage, $x\in \finv(M)$
+    which implies that $f(x)\in M$. To see $f(\finv(M))\supseteq M$, take
+    $y\in M$. Since $f$ is surjective, there exists $x\in R$ such that
+    $f(x)=y\in M$. This implies that $x\in \finv(M)$, so $f(x)\in f(\finv(M))$.
+    Thus, $f(\finv(M))=M$.
+    \vspace{1em}
+
+    Since $M$ is maximal, either $f(N)=S$ or $f(N)=M$. If $f(N)=S$, then since
+    $f$ is surjective, $N$ maps onto all of $S$, which is only true when $N=R$.
+    If $f(N)=M$, then $N=\finv(M)$. Therefore, $\finv(M)$ is maximal.
+\end{response}
+
+\newpage
+\begin{problem}
+    Let $R$ be an integral domain. Suppose $R[x]$ is a principal ideal domain. Show that $R$ must be a
+    field.
+
+    [Hint: Think about $(x)$.]
+\end{problem}
+\begin{response}
+    Let $R$ be an integral domain and $R[x]$ a principal ideal domain. Consider the principal ideal
+    $(x) \subseteq R[x]$ and a function $f : R[x] \to R$ with $f(p(x)) = p(0)$. Then
+    \begin{itemize}
+        \item $f(p(x) + q(x)) = p(0) + q(0) = f(p(x)) + f(q(x))$, so $f$ is
+            \textbf{closed under addition}.
+        \item $f(p(x) \cdot q(x)) = p(0) \cdot q(0) = f(p(x)) \cdot f(q(x))$, so $f$ is
+            \textbf{closed under multiplication}.
+        \item $f(1(x)) = 1$, so $f$ \textbf{preserves the multiplicative identity}.
+    \end{itemize}
+    so $f$ is a ring homomorphism. We have that $\ker(f) = \{ p(x) : f(p(x)) = 0 \} = (x)$, so
+    $\ker(f) = (x)$. To show $\text{Im}(f) = R$, take $a \in R$. Then consider
+    $p \in R$ such that $p(0) = a$. Then $f(p(x)) = p(0) = a \in R$. Therefore,
+    $\text{Im}(f) = R$. Then by the \textbf{First Isomorphism Theorem}, we have that
+    $R[x]/(x) \simeq R$.
+    \vspace{0.5em}
+
+    To show $(x)$ is maximal, we will show that $x$ is irreducible. Consider
+    $x=ab$. Then $\deg(x)=\deg(a)+\deg(b)$. Without loss of generality,
+    suppose $\deg(a)=0$. Then $b=cx+d$ for $c,d\in R$, so we have
+    $x=ab=a(cx+d)=acx+ad$, but $x+0=acx+ad$ which implies that $ad=0$, so
+    $x=acx$. Since $R[x]$ is an integral domain, apply the cancellation property
+    to get $1=ac$. This shows that $a$ is a unit. Therefore, $x$ is irreducible.
+    Since $R[x]$ is a PID, irreducibles are prime, so $(x)$ is a prime ideal.
+    Further, since $R[x]$ is a PID, prime ideals are maximal, so $(x)$ is
+    maximal. This shows that $R[x]/(x)$ is a field, which is isomorphic to $R$,
+    so $R$ is a field.
+\end{response}
 \end{document}
 
 % PAGE BREAK COMMENT
