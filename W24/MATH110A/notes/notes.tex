@@ -18,36 +18,36 @@
 \setlength\parindent{0pt}
 
 
-\newcounter{defcounter}[section]
-\renewcommand{\thedefcounter}{\thesection.\arabic{defcounter}}
+\newcounter{defcounter}[subsection]
+\renewcommand{\thedefcounter}{\thesubsection.\arabic{defcounter}}
 
-\newcounter{thmcounter}[section]
-\renewcommand{\thethmcounter}{\thesection.\arabic{thmcounter}}
+\newcounter{thmcounter}[subsection]
+\renewcommand{\thethmcounter}{\thesubsection.\arabic{thmcounter}}
 
-\newcounter{corcounter}[section]
-\renewcommand{\thecorcounter}{\thesection.\arabic{corcounter}}
+\newcounter{corcounter}[subsection]
+\renewcommand{\thecorcounter}{\thesubsection.\arabic{corcounter}}
 
-\newcounter{lemcounter}[section]
-\renewcommand{\thelemcounter}{\thesection.\arabic{lemcounter}}
+\newcounter{lemcounter}[subsection]
+\renewcommand{\thelemcounter}{\thesubsection.\arabic{lemcounter}}
 
 \newenvironment{definition}[1]{
 \refstepcounter{defcounter}
-\begin{tcolorbox}[title={Definition \thedefcounter: #1}, colback=blue!5!white, colframe=black!75!blue]
+\begin{tcolorbox}[title={Definition \thedefcounter: \text{ #1}}, colback=blue!5!white, colframe=black!75!blue]
 }{ \end{tcolorbox} }
 
 \newenvironment{theorem}[1]{
   \refstepcounter{thmcounter}
-  \begin{tcolorbox}[title={Theorem \thethmcounter: #1}, colback=green!5!white, colframe=black!75!green]
+  \begin{tcolorbox}[title={Theorem \thethmcounter \text{ #1}}, colback=green!5!white, colframe=black!75!green]
 }{ \end{tcolorbox} }
 
 \newenvironment{corollary}[1]{
   \refstepcounter{corcounter}
-  \begin{tcolorbox}[title={Corollary \thecorcounter: #1}]
+  \begin{tcolorbox}[title={Corollary \thecorcounter \text{ #1}}]
 }{ \end{tcolorbox} }
 
 \newenvironment{lemma}[1]{
   \refstepcounter{lemcounter}
-  \begin{tcolorbox}[title={Lemma \thelemcounter: #1}]
+  \begin{tcolorbox}[title={Lemma \thelemcounter \text{ #1}}]
 }{ \end{tcolorbox} }
 
 \hypersetup{ colorlinks=false, pdfborder={0 0 0} }
@@ -440,7 +440,7 @@ where $0 \leq r_1, r_2 < |m|$.
     $[ax] = [a][x] = [1]$, where $[x]$ is the multiplicative inverse of $[a]$.
 \end{proof}
 
-\begin{theorem}{Chinese Remainder Theorem}
+\begin{theorem}{(Chinese Remainder Theorem)}
     Let $m, n \in \Z$ be coprime and positive. Let $a, b \in \Z$. We can find $x \in \Z$ such that
     \begin{align*}
         x &\equiv a \pmod{m} \\
@@ -472,7 +472,7 @@ where $0 \leq r_1, r_2 < |m|$.
 \end{center}
 
 \newpage
-\begin{theorem}{Chinese Remainder Theorem (General)}
+\begin{theorem}{(Chinese Remainder Theorem [General])}
     Let $m_1, \ldots, m_n \in \Z$ be positive and pairwise relatively prime (i.e., $(m_i, m_j) = 1$
     when $i \neq j$). Let $a_1, \ldots, a_n \in \Z$. We can find $x$ such that
     \begin{align*}
@@ -1523,13 +1523,13 @@ $\deg(f) \leq \deg(g)$.
     Let $f \in F[x]$ and $a \in F$.
     \vspace{0.5em}
 
-    ($\implies$)
+    \bf{($\bm{\implies}$)}
     Suppose $a$ is a root of $f$. We can express $f$ as $f(x) = (x - a)q(x) + r(x)$ for unique
     $q, r \in F[x]$. Then from the \bf{Lemma} above, we have that $f(a) = r$, but since $a$ is a
     root, $f(a) = 0$, so $r = 0$ which implies that $f(x) = (x - a)q(x)$, or $(x - a) \mid f$.
     \vspace{0.5em}
 
-    ($\impliedby$)
+    \bf{($\bm{\impliedby}$)}
     Suppose $x - a$ is a factor of $f$. Then $(x - a) \mid f$, or $f(x) = (x - a)q(x)$. Then
     $f(a) = (a - a)q(a) = 0$.
 \end{proof}
@@ -1644,12 +1644,12 @@ $p = ab$, either $a$ or $b$ is a unit.
 \begin{proof}
     Let $R$ be an integral domain and $p \in R$.
 
-    ($\implies$)
+    \bf{($\bm{\implies}$)}
     Suppose $p$ is irreducible. Then $p \mid p = ab$. If $a$ is a unit, then we are done, so suppose
     not. Then $a$ is an asociate of $p$, so $b$ is a unit.
     \vspace{0.5em}
 
-    ($\impliedby$)
+    \bf{($\bm{\impliedby}$)}
     Suppose ``p = ab implies that either $a$ or $b$ is a unit''. Let $a \in R$ such that $a \mid p$.
     Then $p = ab$ for some $b \in R$. If $a$ is a unit, then $b$ is an associate of $p$. If $b$ is
     a unit, then $a$ is an associate of $p$. In either case, the only factors of $p$ are units and
@@ -1683,13 +1683,13 @@ $p$ is prime.
     Let $R$ be an integral domain and $p \in R$ such that $(p) \subseteq R$ is principal.
     \vspace{0.5em}
 
-    ($\implies$)
+    \bf{($\bm{\implies}$)}
     Suppose $(p)$ is prime. Take $ab \in (p)$. Then $ab = pr$ for some $r \in R$, so $p \mid ab$.
     Since $(p)$ is prime, either $a \in (p)$ or $b \in (p)$. Then either $p \mid a$ or $p \mid b$,
     so $p$ is prime.
     \vspace{0.5em}
 
-    ($\impliedby$)
+    \bf{($\bm{\impliedby}$)}
     Suppose $p$ is prime. Let $a, b \in R$ such that  $ab \in (p)$. Then $ab = pr$ for some
     $r \in R$, so $p \mid ab$. Since $p$ is prime, either $p \mid a$ or $p \mid b$; that is,
     either $a \in (p)$ or $b \in (p)$. This implies that $(p)$ is prime.
@@ -1801,7 +1801,8 @@ $p$ is prime.
         a \cdot 1 &= x \cdot b \iff (a, b) \sim (x, 1)
     \end{align*}
     so $\ul{f(x)} = \frac{x}{1} = \frac{ab^{-1}}{1} = \ul{\frac{a}{b}}$, which shows that $f$ is
-    \bf{surjective}. Since $f$ is injective and surjective, $f$ is a \bf{bijection}.
+    \bf{surjective}. Since $f$ is injective and surjective, $f$ is a \bf{bijection}. Therefore,
+    $Frac(F) \simeq F$.
 \end{proof}
 \begin{center}
     \vspace{5em}
