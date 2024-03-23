@@ -1,4 +1,4 @@
-\documentclass [12pt] {article}
+\documentclass [12pt]{article}
 \usepackage{amsfonts}
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -17,10 +17,40 @@
 \newcommand{\Q}{\mathbb{Q}}
 \setlength\parindent{0pt}
 
-\newenvironment{definition}[1]{\begin{tcolorbox}[title={Definition: #1},colback=blue!5!white,colframe=black!75!blue]}{\end{tcolorbox}}
-\newenvironment{theorem}[1]{\begin{tcolorbox}[title={Theorem #1},colback=green!5!white,colframe=black!75!green]}{\end{tcolorbox}}
-\newenvironment{corollary}[1]{\begin{tcolorbox}[title={Corollary #1}]}{\end{tcolorbox}}
-\newenvironment{lemma}[1]{\begin{tcolorbox}[title={Lemma #1}]}{\end{tcolorbox}}
+
+\newcounter{defcounter}[section]
+\renewcommand{\thedefcounter}{\thesection.\arabic{defcounter}}
+
+\newcounter{thmcounter}[section]
+\renewcommand{\thethmcounter}{\thesection.\arabic{thmcounter}}
+
+\newcounter{corcounter}[section]
+\renewcommand{\thecorcounter}{\thesection.\arabic{corcounter}}
+
+\newcounter{lemcounter}[section]
+\renewcommand{\thelemcounter}{\thesection.\arabic{lemcounter}}
+
+\newenvironment{definition}[1]{
+\refstepcounter{defcounter}
+\begin{tcolorbox}[title={Definition \thedefcounter: #1}, colback=blue!5!white, colframe=black!75!blue]
+}{ \end{tcolorbox} }
+
+\newenvironment{theorem}[1]{
+  \refstepcounter{thmcounter}
+  \begin{tcolorbox}[title={Theorem \thethmcounter: #1}, colback=green!5!white, colframe=black!75!green]
+}{ \end{tcolorbox} }
+
+\newenvironment{corollary}[1]{
+  \refstepcounter{corcounter}
+  \begin{tcolorbox}[title={Corollary \thecorcounter: #1}]
+}{ \end{tcolorbox} }
+
+\newenvironment{lemma}[1]{
+  \refstepcounter{lemcounter}
+  \begin{tcolorbox}[title={Lemma \thelemcounter: #1}]
+}{ \end{tcolorbox} }
+
+\hypersetup{ colorlinks=false, pdfborder={0 0 0} }
 \renewcommand{\href}[2]{\hyperref[#1]{\bf{\underline{{#2}}}}}
 
 \renewcommand{\it}[1]{\textit{{#1}}}
@@ -29,16 +59,17 @@
 \newcommand{\ul}[1]{\underline{{#1}}}
 \renewcommand{\Im}{\text{Im}}
 
-% \pagestyle{fancy}
-% \fancyhf{}
-% \renewcommand{\headrulewidth}{0pt}
-% \renewcommand{\footrulewidth}{0pt}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\cfoot{\thepage}
 
-\title{110A HW3}
+\title{MATH 110A}
 \author{Warren Kim}
-\date{Winter 2024}
 
 \begin{document}
+
 \tableofcontents
 \newpage
 
@@ -435,6 +466,10 @@ where $0 \leq r_1, r_2 < |m|$.
     But since $(n, m) = 1$, we have that $mn | y - x$,
     or $[y]_{mn} = [x]_{mn}$. So $y \equiv x \pmod{mn}$.
 \end{proof}
+\begin{center}
+    \vspace{5em}
+    \bf{The rest of this page is intentionally left blank.}
+\end{center}
 
 \newpage
 \begin{theorem}{Chinese Remainder Theorem (General)}
@@ -476,7 +511,7 @@ where $0 \leq r_1, r_2 < |m|$.
 
 \begin{center}
     \vspace{5em}
-    \bf{The rest of this page is intentionally left blank}
+    \bf{The rest of this page is intentionally left blank.}
 \end{center}
 
 \newpage
@@ -556,6 +591,7 @@ zero divisor.
         \item Let $a \in R$. Then
             \newline
             $\ul{-(-a)} = 0 - (-a) = (a + (-a)) + (-(-a)) = a + ((-a) - (-a)) = a + 0 = \ul{a}$.
+            \rfoot{\footnotesize{\it{Proof continues on the next page...}}}
         \item Let $a, b \in R$. Then
             \begin{align*}
                 -(a + b) &= 0 - (a + b)) \\
@@ -885,7 +921,7 @@ $I = R$, then $R/I \simeq \{ 0 \}$.
 
 \begin{center}
     \vspace{5em}
-    \bf{The rest of this page is intentionally left blank}
+    \bf{The rest of this page is intentionally left blank.}
 \end{center}
 
 \newpage
@@ -962,7 +998,7 @@ $I = R$, then $R/I \simeq \{ 0 \}$.
 
 \begin{center}
     \vspace{5em}
-    \bf{The rest of this page is intentionally left blank}
+    \bf{The rest of this page is intentionally left blank.}
 \end{center}
 
 \newpage
@@ -1082,7 +1118,7 @@ $I = R$, then $R/I \simeq \{ 0 \}$.
 
 \begin{center}
     \vspace{5em}
-    \bf{The rest of this page is intentionally left blank}
+    \bf{The rest of this page is intentionally left blank.}
 \end{center}
 
 \newpage
@@ -1255,6 +1291,10 @@ $\sum\limits_{i = 0}^{n} a_i x^i$, where $a_n$ is nonzero.
 \begin{definition}{Monic Polynomial}
     Let $f \in F[x]$. $f$ is \bf{monic} if its leading term is $1$.
 \end{definition}
+\begin{center}
+    \vspace{5em}
+    \bf{The rest of this page is intentionally left blank.}
+\end{center}
 
 \newpage
 \begin{theorem}{(Division Algorithm [Polynomials])}
@@ -1303,6 +1343,10 @@ $\sum\limits_{i = 0}^{n} a_i x^i$, where $a_n$ is nonzero.
     so $g \mid (r - r')$. But $\deg(r - r') < \deg(g)$, so $r = r'$. Since $F$ is a field and $g
     \neq 0$, this implies that $q = q'$. Therefore, $q, r \in F[x]$ are unique.
 \end{proof}
+\begin{center}
+    \vspace{5em}
+    \bf{The rest of this page is intentionally left blank.}
+\end{center}
 
 \newpage
 \begin{definition}{Divides (Polynomials)}
@@ -1452,6 +1496,10 @@ $\deg(f) \leq \deg(g)$.
     $m = n$ and there is a unique permuatation $\sigma$ on $\{ 1, \ldots, n \}$ such that
     $p_i = q_{\sigma(i)}$.
 \end{proof}
+\begin{center}
+    \vspace{5em}
+    \bf{The rest of this page is intentionally left blank.}
+\end{center}
 
 \newpage
 \subsection{Roots}
@@ -1497,6 +1545,10 @@ $\deg(f) \leq \deg(g)$.
     roots. Then $f$ has at most $1 + (n - 1) = n$ roots. Since $k$ was arbitrary, this holds for all
     $n \in \N$.
 \end{proof}
+\begin{center}
+    \vspace{5em}
+    \bf{The rest of this page is intentionally left blank.}
+\end{center}
 
 \newpage
 \subsection{Quotienting by Irreduibles}
@@ -1549,7 +1601,6 @@ $p(x) = \sum\limits_{i = 0}^{n} a_i x^i, a_n \neq 0$. The field $F[x]/(p)$ consi
 are of the form $(p) + \sum\limits_{i = 0}^{n} c_i x^i, c_n, c_i \in F$. Moreover,
 $\sum\limits_{i = 0}^{n} a_i x^i + (p)$ is the zero element. So, $F[x]/(p)$ is $F[x]$ rooted at $p$.
 
-\newpage
 \section{Integral Domains}
 \bf{Preface:} Recall that a commutative ring $R$ is an integral domain if, whenever $ab = 0$ for
 $a, b \in R$, we have either $a = 0$ or $b = 0$.
@@ -1645,6 +1696,10 @@ $p$ is prime.
 \end{proof}
 
 \bf{Notation:} Let $R$ be an integral domain. Define $R^*$ to be the nonzero elements of $R$.
+\begin{center}
+    \vspace{5em}
+    \bf{The rest of this page is intentionally left blank.}
+\end{center}
 
 \newpage
 \begin{lemma}{}
@@ -1748,6 +1803,10 @@ $p$ is prime.
     so $\ul{f(x)} = \frac{x}{1} = \frac{ab^{-1}}{1} = \ul{\frac{a}{b}}$, which shows that $f$ is
     \bf{surjective}. Since $f$ is injective and surjective, $f$ is a \bf{bijection}.
 \end{proof}
+\begin{center}
+    \vspace{5em}
+    \bf{The rest of this page is intentionally left blank.}
+\end{center}
 
 \subsection{Euclidean Domains}
 \begin{definition}{Norm}
@@ -1794,6 +1853,10 @@ $p$ is prime.
             $c \mid d$.
     \end{enumerate}
 \end{definition}
+\begin{center}
+    \vspace{5em}
+    \bf{The rest of this page is intentionally left blank.}
+\end{center}
 
 \newpage
 \bf{Proposition:} Let $R$ be a Euclidean domain and let $a, b \in R$ such that $b \neq 0$, and let
@@ -1841,6 +1904,10 @@ of $a$ and $b$ if and only if $d'$ is an associate of $d$.
     so we can write $d = ap + bq = (cr)p + (cs)q = c(rp + sq)$, which implies that $c \mid d$.
     Therefore, $d$ is a greatest common divisor of $a$ and $b$.
 \end{proof}
+\begin{center}
+    \vspace{5em}
+    \bf{The rest of this page is intentionally left blank.}
+\end{center}
 
 \newpage
 \subsection{Principal Ideal Domains}
@@ -1895,6 +1962,10 @@ maximal.
     $p = mr = mps$. Since $R$ is an integral domain and $p \neq 0$, apply the cancellation property
     to get $1 = ms$, which shows that $(m) = M = R$. Therefore, $P$ is maximal.
 \end{proof}
+\begin{center}
+    \vspace{5em}
+    \bf{The rest of this page is intentionally left blank.}
+\end{center}
 
 \newpage
 \begin{corollary}{}
@@ -1942,6 +2013,10 @@ maximal.
     where each $a_i \in R$, there exists a positive integer $n$ such that for all $m \geq n$, we
     have $(a_m) = (a_n)$.
 \end{definition}
+\begin{center}
+    \vspace{5em}
+    \bf{The rest of this page is intentionally left blank.}
+\end{center}
 
 \newpage
 \begin{lemma}{}
@@ -1982,6 +2057,7 @@ itself. More concretely, the ascending chain condition gives us prime factorizat
     Let $R$ be an integral domain that satisfies the ascending chain condition on principal ideals.
     Let $r \in R$ be nonzero and a nonunit. $r$ can be expressed as a product of irreducible
     elements.
+    \label{thm:uni}
 \end{theorem}
 \begin{proof}
     Let $R$ be an integral domain that satisfies the ascending chain condition on principal ideals.
@@ -2024,8 +2100,7 @@ itself. More concretely, the ascending chain condition gives us prime factorizat
     $p_i = q_{\sigma(i)}$.
 \end{proof}
 
-
-\section{Unique Factorization Domain}
+\subsection{Unique Factorization Domain}
 
 \begin{definition}{Unique Factorization Domain}
     Let $R$ be an integral domain. $R$ is a \bf{unique factorization domain} if, given a nonzero and
@@ -2055,6 +2130,7 @@ is not principal.
 \newpage
 \begin{theorem}{}
     Let $R$ be a UFD and let $r \in R$. $r$ is prime if and only if it is irreducible.
+    \label{thm:pri}
 \end{theorem}
 \begin{proof}
     Let $R$ be a UFD and let $r \in R$.
@@ -2095,7 +2171,12 @@ is not principal.
     $q_i \mid p_j$ for some $p_j$. Without loss of generality, suppose $q_i \mid p_i$. Then
     $g_i \leq \min\{ e_i, f_i \} = m_i$, which implies that $c \mid d$.
 \end{proof}
+\begin{center}
+    \vspace{5em}
+    \bf{The rest of this page is intentionally left blank.}
+\end{center}
 
+\newpage
 \begin{theorem}{}
     Let $R$ be an integral domain. $R$ is a UFD if and only if $R$ satisfies the ascending chain
     condition on principal ideals and irreducible elements of $R$ are prime.
@@ -2114,19 +2195,45 @@ is not principal.
     $0 \leq s_i \leq r_i$. For all $m \geq n$, we have that $(a_n) \subseteq (a_m)$ by construction.
     Then $a_m \mid a_n$, so we can represent $a_m = p_1^{t_1} \cdots p_k^{t_k}$ where
     $0 \leq t_i \leq s_i$ for all $i$. Therefore, $R$ satisfies the ascending chain condition on
-    principal ideals.
+    principal ideals. By \href{thm:pri}{Theorem \ref{thm:pri}}, irreducible elements are prime in a
+    UFD.
     \vspace{0.5em}
 
     \bf{($\bm{\impliedby}$)}
-
+    Suppose $R$ satisfies the ascending chain condition on principal ideals and irreducible elements
+    of $R$ are prime. Take $r \in R$. By \href{thm:uni}{Theorem \ref{thm:uni}}, $r$ can be written
+    as a product of irreducibles. To show that it is unique, suppose for the sake of contradiction
+    that $r$ has two different factorizations $r = p_1 \cdots p_n = q_1 \cdots q_m$ where $p_i, q_j$
+    are irreducible. Then $p_1$ is prime since it is irreducible, so it must divide some $q_j$.
+    Without loss of generality, suppose $p_1 \mid q_1$. Then $p_1, q_1$ are associates so we have
+    that $p_1 \cdots p_n = ap_1 q_2 \cdots q_m$ where $a \in R$ is a unit. Since we are over an
+    integral domain, apply the cancellation property to get $p_2 \cdots p_n = aq_2 \cdots q_m$.
+    Without loss of generality, suppose $n \leq m$. Then applying the previous steps iteratively, we
+    are left with $1 = a_1 \cdots a_n q_{n + 1} \cdots q_m$. But this implies that
+    $q_{n + 1}, \cdots, q_m$ are units, a contradiction. Therefore, $m = n$ so $r$ has a unique
+    factorization. Therefore, $R$ is a UFD.
 \end{proof}
+\begin{center}
+    \vspace{5em}
+    \bf{$\bm{\sim}$ End of Course Material $\bm{\sim}$}
+\end{center}
+
+\newpage
+\section{Epilogue}
+\paragraph{Disclaimer:} Whatever your professor says goes! Don't take my word for it, I'm just a
+student lol.
+\vspace{1em}
+
+Thanks for reading my notes!
+\end{document}
+
 
 \end{document}
 
 % PAGE BREAK COMMENT
 % \begin{center}
 %     \vspace{5em}
-%     \bf{The rest of this page is intentionally left blank}
+%     \bf{The rest of this page is intentionally left blank.}
 % \end{center}
 %
 % \newpage
