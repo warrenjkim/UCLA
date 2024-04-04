@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/env bash
 
 # Welcome to the CS132 grading script
 # Author: Christian Kalhauge <kalhauge@cs.ucla.edu>
@@ -99,7 +99,7 @@ function grade () {
         OUT_FILE="tests/$(basename "$file").stdout"
         ERR_FILE="tests/$(basename "$file").stderr"
         DIFF_FILE="tests/$(basename "$file").diff"
-
+    
         $JAVA -Djava.security.manager -Djava.security.policy=="misc/JavaSecurityPolicy.policy" \
            -cp "$LIBRARIES" "$MAINCLASS" <"$file" >"$OUT_FILE" 2>"$ERR_FILE"
 
@@ -130,7 +130,7 @@ function grade () {
         fi
     done
     set -e
-    SUCC=$(wc -l <succeeded)
+    SUCC=$(wc -l <succeeded) 
     percent=$((200*$SUCC/$COUNT % 2 + 100*$SUCC/$COUNT))
     echo "$SUID" "$percent" "$SHA256"
 }
@@ -249,7 +249,7 @@ fi
 
 if command -v sha256sum >/dev/null 2>&1; then
     export SHA256SUM_CMD="sha256sum"
-else
+else 
     warn "Couldn't find 'sha256sum'. Install it for checksums of tars."
 fi
 
@@ -277,7 +277,7 @@ if [[ -f "$TAR_FOLDER" ]]; then
 
     # Throw away the results, as the final grade will have more test-cases
     grade "$TAR_FOLDER"
-else
+else 
     # Grade all items in the tar folder:
     find "$TAR_FOLDER" -name "*.tar" \
         | sort \

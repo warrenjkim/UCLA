@@ -48,5 +48,7 @@ public class ParseTest {
     @Test public void test08() { runTest("test08"); }
     @Test public void test09() { runTest("test09f"); }
     @Test public void test10() { runTest("test10f"); }
+    @Test public void test11() { runTest("test11"); }
+    @Test public void test12() { runTest("test12"); }
 }
 

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ParseTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2024-04-04T04:17:31" hostname="arch" time="0.09">
+  <properties/>
+  <testcase name="test01" classname="ParseTest" time="0.053"/>
+  <testcase name="test02" classname="ParseTest" time="0.002"/>
+  <testcase name="test03" classname="ParseTest" time="0.003"/>
+  <testcase name="test04" classname="ParseTest" time="0.003"/>
+  <testcase name="test05" classname="ParseTest" time="0.002"/>
+  <testcase name="test06" classname="ParseTest" time="0.005"/>
+  <testcase name="test07" classname="ParseTest" time="0.002"/>
+  <testcase name="test08" classname="ParseTest" time="0.002"/>
+  <testcase name="test09" classname="ParseTest" time="0.003"/>
+  <testcase name="test10" classname="ParseTest" time="0.002"/>
+  <testcase name="test11" classname="ParseTest" time="0.002"/>
+  <testcase name="test12" classname="ParseTest" time="0.006"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

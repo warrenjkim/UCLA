@@ -1,0 +1,27 @@
+{
+    {
+        {
+            {
+                while (true) {
+                    System.out.println(!!!true);
+                }
+            }
+            {
+                {
+                    if (!!!! false ) {
+                        System.out.println(true);
+                    }
+                    else {
+                        while (false) {
+                            {
+                                System.out.println(true);
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+        { }
+    }
+}

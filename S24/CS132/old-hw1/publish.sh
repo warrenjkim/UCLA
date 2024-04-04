@@ -16,8 +16,8 @@ git archive --format tar --prefix=$NAME/ HEAD | tar -xC /tmp/
 echo "git -C (use repository directory)"
 git -C $TESTCASES archive --format tar --prefix=$NAME/testcases/ master | tar -xC /tmp/
 
-echo "tar compress"
-tar zcf $NAME.tgz -C /tmp $NAME
+#echo "tar compress"
+#tar zcf $NAME.tgz -C /tmp $NAME
 
 echo "cleanup"
 rm -rf /tmp/$NAME

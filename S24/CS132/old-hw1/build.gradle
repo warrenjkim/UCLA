@@ -36,6 +36,7 @@ dependencies {
     implementation name: 'cs132'
 }
 
+
 sourceSets {
     main {
         java {
@@ -54,12 +55,14 @@ test {
 
     testLogging {
         events "passed", "failed"
+        outputs.upToDateWhen { false }
 
         exceptionFormat "full"
         showExceptions true
         showCauses true
         showStackTraces false
     }
+
 }
 
 task run (type: JavaExec) {
