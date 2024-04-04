@@ -1,3 +1,1 @@
-if (true) {
-    System.out.println(false);
-} else if (true) while (true) { } else {}
+Sys tem.out. println(false);

@@ -16,13 +16,13 @@ public class Parser {
 
     public void parseStmt(Enums.Token token) throws Error {
         switch (consume(token)) {
-            // [{] L } | System.out.println(E); | if (E) S else S | while (E) S
+            // [{]L} | System.out.println(E); | if (E) S else S | while (E) S
             case LBRAC:
-                parseList(next_token());            // { [L] }
-                consume(Enums.Token.RBRAC);         // { L [}]
+                parseList(next_token());            // {[L]}
+                consume(Enums.Token.RBRAC);         // {L[}]
                 return;
 
-            // { L } | [System.out.println](E); | if (E) S else S | while (E) S
+            // {L} | [System.out.println](E); | if (E) S else S | while (E) S
             case SYSOUT:
                 consume(Enums.Token.LPAREN);        // System.out.println[(]E);
                 parseExpr(next_token());            // System.out.println([E]);
@@ -30,7 +30,7 @@ public class Parser {
                 consume(Enums.Token.SEMICOLON);     // System.out.println(E)[;]
                 return;
 
-            // { L } | System.out.println(E); | [if] (E) S else S | while (E) S
+            // {L} | System.out.println(E); | [if] (E) S else S | while (E) S
             case IF:
                 consume(Enums.Token.LPAREN);        // if [(]E) S else S
                 parseExpr(next_token());            // if ([E]) S else S
@@ -40,7 +40,7 @@ public class Parser {
                 parseStmt(next_token());            // if (E) S else [S]
                 return;
 
-            // { L } | System.out.println(E); | if (E) S else S | [while] (E) S
+            // {L} | System.out.println(E); | if (E) S else S | [while] (E) S
             case WHILE:
                 consume(Enums.Token.LPAREN);        // while [(]E) S
                 parseExpr(next_token());            // while ([E]) S
@@ -69,12 +69,12 @@ public class Parser {
 
     public void parseExpr(Enums.Token token) throws Error {
         switch(consume(token)) {
-            // [true | false] | ! E
+            // [true | false] | !E
             case TRUE:
             case FALSE:
                 return;
 
-            // true | false | [!] E
+            // true | false | [!]E
             case NOT:
                 parseExpr(next_token());
                 return;
@@ -121,8 +121,9 @@ public class Parser {
             case TRUE:
             case FALSE:
                 return Enums.State.EXPR;
-        }
 
-        throw new Error("Parse error");
+            default:
+                throw new Error("Parse error");
+        }
     }
 }

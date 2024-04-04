@@ -2,7 +2,10 @@ package Tokenizer;
 
 import Enums.Enums;
 import java.util.Scanner;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Tokenizer {
     // tokenizes the entire file.
@@ -14,20 +17,25 @@ public class Tokenizer {
         }
         scanner.close();
 
-        file = file.replaceAll("\\s+", "");
+        // split by whitespace
+        String [] words = file.split("\\s+");
 
-        LinkedList<Enums.Token> tokens = new LinkedList<Enums.Token>();
-        String token = "";
-        int position = 0;
+        // (E), {L}, !E -> [(, E, )], [{, L, }], [!, E]
+        Pattern pattern = Pattern.compile("!\\B|[^\\s!(){}]+|[\\s(){}]");
 
-        while (position < file.length()) {
-            try {
-                token = parseToken(file, position);
-                position += token.length();
-                tokens.add(tokenize(token));
-            } catch (Error e) {
-                throw e;
+        // split by pattern
+        ArrayList<String> tokenStrs = new ArrayList<String>();
+        for (String word : words) {
+            Matcher matcher = pattern.matcher(word);
+            while (matcher.find()) {
+                tokenStrs.add(matcher.group());
             }
+        }
+
+        // tokenize input
+        LinkedList<Enums.Token> tokens = new LinkedList<Enums.Token>();
+        for (String token : tokenStrs) {
+            tokens.add(tokenize(token));
         }
 
         tokens.add(Enums.Token.EOF);
@@ -60,30 +68,6 @@ public class Tokenizer {
                 return Enums.Token.TRUE;
             case "false":
                 return Enums.Token.FALSE;
-        }
-
-        throw new Error("Parse error");
-    }
-
-    public String parseToken(String tokens, int position) throws Error {
-        String token = "";
-        while (position < tokens.length()) {
-            token += tokens.charAt(position++);
-            switch (token) {
-                case "{":
-                case "}":
-                case "(":
-                case ")":
-                case ";":
-                case "System.out.println":
-                case "if":
-                case "else":
-                case "while":
-                case "!":
-                case "true":
-                case "false":
-                    return token;
-            }
         }
 
         throw new Error("Parse error");
