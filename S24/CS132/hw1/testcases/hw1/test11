@@ -1,1 +1,3 @@
-{{{{while (true) {System.out.println(!!!true);}}}}}
+if (true) {
+    System.out.println(false);
+} else if (true) while (true) { } else {}
