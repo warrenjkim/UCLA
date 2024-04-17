@@ -2,9 +2,16 @@ import minijava.syntaxtree.*;
 
 public class TypeStruct {
     private String type;
+    private String superType;
 
     public TypeStruct(String type) {
         this.type = type;
+        this.superType = null;
+    }
+
+    public TypeStruct(String type, String superType) {
+        this.type = type;
+        this.superType = superType;
     }
 
     public TypeStruct(Node type) {
@@ -19,11 +26,16 @@ public class TypeStruct {
         return this.type;
     }
 
-    public boolean MatchType(Type type) {
-        return this.type.equals(type.f0.choice.getClass().getSimpleName());
+    public boolean MatchSubType(TypeStruct type) {
+        return type.GetType().equals(this.superType);
     }
 
-    public boolean MatchType(Identifier type) {
-        return this.type.equals(type.f0.tokenImage);
+    // fix this (subtype)
+    public boolean MatchType(TypeStruct type) {
+        return type.GetType().equals(this.type) || this.MatchSubType(type);
+    }
+
+    public boolean MatchType(String type) {
+        return type.equals(this.type);
     }
 }

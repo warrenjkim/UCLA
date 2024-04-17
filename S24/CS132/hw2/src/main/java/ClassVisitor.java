@@ -89,24 +89,34 @@ public class ClassVisitor extends GJDepthFirst<TypeStruct, Context> {
         }
 
         System.out.println("classTable:");
-        for (HashMap.Entry<String, ClassSymbol> x : this.classTable.entrySet()) {
-            System.out.println("  Class Name: " + x.getValue().ClassName());
-            for (HashMap.Entry<String, TypeStruct> field : x.getValue().Fields().Table().entrySet()) {
-                System.out.println("    Field: (" + field.getKey() + ", " + field.getValue().GetType() + ")");
+        for (HashMap.Entry<String, ClassSymbol> currClass : this.classTable.entrySet()) {
+            System.out.println("  Class Name: " + currClass.getValue().ClassName());
+            if (currClass.getValue().Fields().Table().isEmpty()) {
+                System.out.println("    No Fields..........");
             }
-            for (HashMap.Entry<String, MethodSymbol> method : x.getValue().Methods().entrySet()) {
-                System.out.println("    Method: (" + method.getValue().MethodName() + ", "
-                        + method.getValue().ReturnType().GetType() + ")");
+            for (Pair field : currClass.getValue().Fields().Table()) {
+                System.out.println("    " + field.Type().GetType() + " " + field.Name());
+                // System.out.println("    Field: (" + field.getKey() + ", " + field.getValue().GetType() + ")");
+            }
+            System.out.println();
+            for (HashMap.Entry<String, MethodSymbol> method : currClass.getValue().Methods().entrySet()) {
+                System.out.print("    " + method.getValue().ReturnType().GetType() + " " +
+                                   method.getValue().MethodName() + " (");
+                // System.out.println("    Method: (" + method.getValue().MethodName() + ", "
+                //         + method.getValue().ReturnType().GetType() + ")");
                 for (SymbolTable scope : method.getValue().VariableScopes()) {
                     if (scope.Table().isEmpty()) {
-                        System.out.println("        No Formal Parameters..........");
-                        break;
+                        // System.out.println("        No Formal Parameters..........");
+                        // break;
                     }
-                    System.out.println("        Formal Parameters..........");
-                    for (HashMap.Entry<String, TypeStruct> param : scope.Table().entrySet()) {
-                        System.out.println(
-                                "          Param: (" + param.getKey() + ", " + param.getValue().GetType() + ")");
+                    // System.out.println("        Formal Parameters..........");
+                    for (Pair param : scope.Table()) {
+                        System.out.print(param.Type().GetType() + " " +
+                                           param.Name() + ", ");
+                        // System.out.println("          Param: (" + param.getKey() + ", " +
+                        //                    param.getValue().GetType() + ")");
                     }
+                    System.out.println(")");
                 }
             }
             System.out.println();
@@ -144,7 +154,7 @@ public class ClassVisitor extends GJDepthFirst<TypeStruct, Context> {
         context.SetMethod(n.f6.tokenImage, new TypeStruct("void"));
         context.Method().AddVariable(n.f11, new TypeStruct("StringArrayType"));
 
-        context.SetClass(n.f1);
+        context.SetClass(n.f1, new Identifier(new NodeToken("main")));
         context.Class().AddMethod(context.Method());
 
         TypeStruct err = n.f14.accept(this, context); // build fields
@@ -335,9 +345,6 @@ public class ClassVisitor extends GJDepthFirst<TypeStruct, Context> {
     @Override
     public TypeStruct visit(BooleanType n, Context context) {
         return new TypeStruct("BooleanType");
-        // TypeStruct _ret = null;
-        // n.f0.accept(this, context);
-        // return _ret;
     }
 
     /**

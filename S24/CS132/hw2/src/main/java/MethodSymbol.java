@@ -75,4 +75,19 @@ public class MethodSymbol {
 
         return null;
     }
+
+    public TypeStruct FindVariable(TypeStruct key) {
+        for (SymbolTable scope : this.scopes) {
+            TypeStruct var = scope.GetType(key.GetType());
+            if (var != null) {
+                return var;
+            }
+        }
+
+        return null;
+    }
+
+    public SymbolTable FormalParameters() {
+        return this.scopes.peekLast();
+    }
 }

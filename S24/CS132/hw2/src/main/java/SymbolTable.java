@@ -1,5 +1,5 @@
 import java.util.HashMap;
-
+import java.util.ArrayList;
 import minijava.syntaxtree.*;
 
 
@@ -8,27 +8,38 @@ import minijava.syntaxtree.*;
  * <identifier, type>
  */
 public class SymbolTable {
-    private HashMap<String, TypeStruct> table;
+    private ArrayList<Pair> table;
 
     public SymbolTable() {
-        this.table = new HashMap<>();
+        this.table = new ArrayList<>();
     }
 
-    public TypeStruct GetType(Identifier key) {
-        return table.get(key.f0.toString());
-    }
-
-    public TypeStruct AddSymbol(Identifier key, TypeStruct value) {
-        if (this.table.containsKey(key.f0.toString())) {
-            return new TypeStruct("Type error");
+    public TypeStruct GetType(String key) {
+        for (Pair symbol : this.table) {
+            if (symbol.Name().equals(key)) {
+                return symbol.Type();
+            }
         }
-
-        this.table.put(key.f0.toString(), value);
 
         return null;
     }
 
-    public HashMap<String, TypeStruct> Table() {
+    public TypeStruct GetType(Identifier key) {
+        return this.GetType(key.f0.tokenImage);
+    }
+
+
+    public TypeStruct AddSymbol(Identifier key, TypeStruct value) {
+        if (this.GetType(key) != null) {
+            return new TypeStruct("Type error");
+        }
+
+        this.table.add(new Pair(key.f0.tokenImage, value));
+
+        return null;
+    }
+
+    public ArrayList<Pair> Table() {
         return this.table;
     }
 }
