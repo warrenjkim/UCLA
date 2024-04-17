@@ -8,6 +8,13 @@ public class ClassSymbol {
     private SymbolTable fields;
     private HashMap<String, MethodSymbol> methods;
 
+    public ClassSymbol(ClassSymbol other) {
+        this.name = other.name;
+        this.parent = other.parent;
+        this.fields = other.fields;
+        this.methods = other.methods;
+    }
+
     public ClassSymbol(Identifier name) {
         this.name = name.f0.tokenImage;
         this.parent = null;
@@ -56,6 +63,18 @@ public class ClassSymbol {
 
     public HashMap<String, MethodSymbol> Methods() {
         return this.methods;
+    }
+
+    public TypeStruct ClassType() {
+        return new TypeStruct(this.name);
+    }
+
+    public MethodSymbol FindMethod(Identifier methodName) {
+        return this.methods.get(methodName.f0.tokenImage);
+    }
+
+    public MethodSymbol FindMethod(String methodName) {
+        return this.methods.get(methodName);
     }
 }
 

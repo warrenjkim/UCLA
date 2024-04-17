@@ -1,5 +1,5 @@
 import java.util.HashMap;
-import java.util.ArrayList;
+import java.util.ArrayDeque;
 import minijava.syntaxtree.*;
 
 
@@ -8,10 +8,14 @@ import minijava.syntaxtree.*;
  * <identifier, type>
  */
 public class SymbolTable {
-    private ArrayList<Pair> table;
+    private ArrayDeque<Pair> table;
 
     public SymbolTable() {
-        this.table = new ArrayList<>();
+        this.table = new ArrayDeque<>();
+    }
+
+    public SymbolTable(SymbolTable other) {
+        this.table = other.table;
     }
 
     public TypeStruct GetType(String key) {
@@ -39,7 +43,16 @@ public class SymbolTable {
         return null;
     }
 
-    public ArrayList<Pair> Table() {
+    public ArrayDeque<Pair> Table() {
         return this.table;
+    }
+
+    // pops param from front
+    public Pair PopParameter() {
+        return this.table.poll();
+    }
+
+    public boolean Empty() {
+        return this.table.isEmpty();
     }
 }

@@ -8,8 +8,24 @@ public class Context {
         return this.currClass;
     }
 
+    public String ClassName() {
+        return this.currClass.ClassName();
+    }
+
     public MethodSymbol Method() {
         return this.currMethod;
+    }
+
+    public String MethodName() {
+        return this.currMethod.MethodName();
+    }
+
+    public void SetClass(ClassSymbol currClass) {
+        this.currClass = new ClassSymbol(currClass);
+    }
+
+    public void SetMethod(MethodSymbol currMethod) {
+        this.currMethod = new MethodSymbol(currMethod);
     }
 
     public void SetClass(Identifier name) {

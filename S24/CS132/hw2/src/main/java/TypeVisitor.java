@@ -8,6 +8,14 @@ import java.util.HashMap;
  * order. Your visitors may extend this class.
  */
 public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
+    public static final void DebugLogln(String msg) {
+        System.out.println(msg);
+    }
+
+    public static final void DebugLog(String msg) {
+        System.out.print(msg);
+    }
+
     HashMap<String, ClassSymbol> classTable;
 
     public TypeVisitor(HashMap<String, ClassSymbol> classTable) {
@@ -22,7 +30,8 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
         int _count = 0;
         for (Enumeration<Node> e = n.elements(); e.hasMoreElements();) {
             TypeStruct err = e.nextElement().accept(this, context);
-            if (err.MatchType(new TypeStruct("Type error"))) {
+            if (err != null  && err.MatchType(new TypeStruct("Type error"))) {
+                DebugLogln("(NodeList) " + err.GetType());
                 return err;
             }
 
@@ -38,7 +47,8 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
             int _count = 0;
             for (Enumeration<Node> e = n.elements(); e.hasMoreElements();) {
                 TypeStruct err = e.nextElement().accept(this, context);
-                if (err.MatchType(new TypeStruct("Type error"))) {
+                if (err != null && err.MatchType(new TypeStruct("Type error"))) {
+                    DebugLogln("(NodeListOptional) " + err.GetType());
                     return err;
                 }
                 _count++;
@@ -53,7 +63,8 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
         int _count = 0;
         for (Enumeration<Node> e = n.elements(); e.hasMoreElements();) {
             TypeStruct err = e.nextElement().accept(this, context);
-            if (err.MatchType(new TypeStruct("Type error"))) {
+            if (err != null && err.MatchType(new TypeStruct("Type error"))) {
+                DebugLogln("(NodeSequence) " + err.GetType());
                 return err;
             }
 
@@ -75,11 +86,13 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
     public TypeStruct visit(Goal n, Context context) {
         TypeStruct err = n.f0.accept(this, context);
         if (err != null) {
+            DebugLogln("Goal mainclass err");
             return new TypeStruct("Type error");
         }
 
         err = n.f1.accept(this, context);
         if (err != null) {
+            DebugLogln("Goal typedeclaration err");
             return new TypeStruct("Type error");
         }
 
@@ -111,8 +124,15 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
         context.SetClass(n.f1);
         context.SetMethod(n.f6.tokenImage, new TypeStruct("void"));
 
-        TypeStruct err = n.f15.accept(this, context);
+        TypeStruct err = n.f14.accept(this, context);
         if (err != null) {
+            DebugLogln("MainClass vars error");
+            return err;
+        }
+
+        err = n.f15.accept(this, context);
+        if (err != null) {
+            DebugLogln("MainClass stmt error");
             return err;
         }
 
@@ -138,7 +158,8 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
      */
     @Override
     public TypeStruct visit(ClassDeclaration n, Context context) {
-        context.SetClass(n.f1);
+        context.SetClass(this.classTable.get(n.f1.f0.tokenImage));
+        DebugLogln("\nClass: " + context.ClassName());
         return n.f4.accept(this, context);
     }
 
@@ -154,7 +175,8 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
      */
     @Override
     public TypeStruct visit(ClassExtendsDeclaration n, Context context) {
-        context.SetClass(n.f1, n.f3);
+        context.SetClass(this.classTable.get(n.f1.f0.tokenImage));
+        DebugLogln("\nClass: " + context.ClassName());
         return n.f6.accept(this, context);
     }
 
@@ -185,16 +207,27 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
      */
     @Override
     public TypeStruct visit(MethodDeclaration n, Context context) {
-        context.SetMethod(n.f2, n.f1.accept(this, context));
+        context.SetMethod(this.classTable.get(context.ClassName()).FindMethod(n.f2));
+        DebugLogln("    Method: " + context.MethodName());
+
+        context.Method().EnterScope();
+        // typecheck vars
+        TypeStruct err = n.f7.accept(this, context);
+        if (err != null) {
+            DebugLogln("MethodDeclaration vars error");
+            return err;
+        }
 
         // typecheck statements
-        TypeStruct err = n.f8.accept(this, context);
+        err = n.f8.accept(this, context);
         if (err != null) {
+            DebugLogln("MethodDeclaration stmt error");
             return err;
         }
 
         // make sure Expression() is a boolean
-        if (!n.f10.accept(this, context).MatchType("BooleanType")) {
+        if (!n.f10.accept(this, context).MatchType(context.Method().ReturnType())) {
+            DebugLogln("MethodDeclaration expr not method return type");
             return new TypeStruct("Type error");
         }
 
@@ -269,6 +302,7 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
      */
     @Override
     public TypeStruct visit(AssignmentStatement n, Context context) {
+        DebugLog("        (AssignmentStatement) Looking for: " + n.f0.f0.tokenImage + "... ");
         // still need to add subtyping.........................................
         TypeStruct id = context.Method().FindVariable(n.f0);
         if (id == null) {
@@ -276,11 +310,15 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
         }
 
         if (id == null) {
+            DebugLogln("AssignmentStatement nullid");
             return new TypeStruct("Type error");
         }
 
+        DebugLogln("Found " + n.f0.f0.tokenImage);
+
         TypeStruct expr = n.f2.accept(this, context);
         if (!id.MatchType(expr)) {
+            DebugLogln("AssignmentStatement id neq expr");
             return new TypeStruct("Type error");
         }
 
@@ -304,17 +342,20 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
         }
 
         if (!id.MatchType("ArrayType")) {
+            DebugLogln("AssignmentStatement id neq ArrayType");
             return new TypeStruct("Type error");
         }
 
 
         TypeStruct index = n.f2.accept(this, context);
         if (id == null || !index.MatchType("IntegerType")) {
+            DebugLogln("AssignmentStatement index neq IntegerType");
             return new TypeStruct("Type error");
         }
 
         TypeStruct expr = n.f5.accept(this, context);
-        if (expr.MatchType("IntegerType")) {
+        if (!expr.MatchType("IntegerType")) {
+            DebugLogln("AssignmentStatement expr " + expr.GetType() + " neq IntegerType");
             return new TypeStruct("Type error");
         }
 
@@ -334,18 +375,21 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
     public TypeStruct visit(IfStatement n, Context context) {
         TypeStruct expr = n.f2.accept(this, context);
         if (!expr.MatchType("BooleanType")) {
+            DebugLogln("IfStatement expr neq BooleanType");
             return new TypeStruct("Type error");
         }
 
         // statement inside if
         TypeStruct err = n.f4.accept(this, context);
         if (err != null) {
+            DebugLogln("IfStatement stmt error");
             return new TypeStruct("Type error");
         }
 
         // statement inside else
         err = n.f6.accept(this, context);
         if (err != null) {
+            DebugLogln("IfStatement stmt error");
             return new TypeStruct("Type error");
         }
 
@@ -363,12 +407,14 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
     public TypeStruct visit(WhileStatement n, Context context) {
         TypeStruct expr = n.f2.accept(this, context);
         if (!expr.MatchType("BooleanType")) {
+            DebugLogln("WhileStatement expr not boolean");
             return new TypeStruct("Type error");
         }
 
         // statement inside if
         TypeStruct err = n.f4.accept(this, context);
         if (err != null) {
+            DebugLogln("WhileStatement stmt error");
             return new TypeStruct("Type error");
         }
 
@@ -384,7 +430,9 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
      */
     @Override
     public TypeStruct visit(PrintStatement n, Context context) {
-        if (!n.f2.accept(this, context).MatchType("BooleanType")) {
+        TypeStruct expr = n.f2.accept(this, context);
+        if (!n.f2.accept(this, context).MatchType("IntegerType")) {
+            DebugLogln("PrintStatement expr not integer");
             return new TypeStruct("Type error");
         }
 
@@ -414,8 +462,15 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
      */
     @Override
     public TypeStruct visit(AndExpression n, Context context) {
-        if (!n.f0.accept(this, context).MatchType("BooleanType") ||
-            !n.f2.accept(this, context).MatchType("BooleanType")) {
+        TypeStruct lhs = n.f0.accept(this, context);
+        if (lhs == null || !lhs.MatchType("BooleanType")) {
+            DebugLogln("AndExpression rhs null or not BooleanType");
+            return new TypeStruct("Type error");
+        }
+
+        TypeStruct rhs = n.f2.accept(this, context);
+        if (rhs == null || !rhs.MatchType("BooleanType")) {
+            DebugLogln("AndExpression rhs null or not BooleanType");
             return new TypeStruct("Type error");
         }
 
@@ -429,8 +484,15 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
      */
     @Override
     public TypeStruct visit(CompareExpression n, Context context) {
-        if (!n.f0.accept(this, context).MatchType("IntegerType") ||
-            !n.f2.accept(this, context).MatchType("IntegerType")) {
+        TypeStruct lhs = n.f0.accept(this, context);
+        if (lhs == null || !lhs.MatchType("IntegerType")) {
+            DebugLogln("CompareExpression lhs null or not IntegerType");
+            return new TypeStruct("Type error");
+        }
+
+        TypeStruct rhs = n.f2.accept(this, context);
+        if (rhs == null || !rhs.MatchType("IntegerType")) {
+            DebugLogln("CompareExpression rhs null or not IntegerType");
             return new TypeStruct("Type error");
         }
 
@@ -444,8 +506,15 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
      */
     @Override
     public TypeStruct visit(PlusExpression n, Context context) {
-        if (!n.f0.accept(this, context).MatchType("IntegerType") ||
-            !n.f2.accept(this, context).MatchType("IntegerType")) {
+        TypeStruct lhs = n.f0.accept(this, context);
+        if (lhs == null || !lhs.MatchType("IntegerType")) {
+            DebugLogln("PlusExpression lhs null or not IntegerType");
+            return new TypeStruct("Type error");
+        }
+
+        TypeStruct rhs = n.f2.accept(this, context);
+        if (rhs == null || !rhs.MatchType("IntegerType")) {
+            DebugLogln("PlusExpression rhs null or not IntegerType");
             return new TypeStruct("Type error");
         }
 
@@ -459,8 +528,15 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
      */
     @Override
     public TypeStruct visit(MinusExpression n, Context context) {
-        if (!n.f0.accept(this, context).MatchType("IntegerType") ||
-            !n.f2.accept(this, context).MatchType("IntegerType")) {
+        TypeStruct lhs = n.f0.accept(this, context);
+        if (lhs == null || !lhs.MatchType("IntegerType")) {
+            DebugLogln("MinusExpression lhs null or not IntegerType");
+            return new TypeStruct("Type error");
+        }
+
+        TypeStruct rhs = n.f2.accept(this, context);
+        if (rhs == null || !rhs.MatchType("IntegerType")) {
+            DebugLogln("MinusExpression rhs null or not IntegerType");
             return new TypeStruct("Type error");
         }
 
@@ -474,8 +550,15 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
      */
     @Override
     public TypeStruct visit(TimesExpression n, Context context) {
-        if (!n.f0.accept(this, context).MatchType("IntegerType") ||
-            !n.f2.accept(this, context).MatchType("IntegerType")) {
+        TypeStruct lhs = n.f0.accept(this, context);
+        if (lhs == null || !lhs.MatchType("IntegerType")) {
+            DebugLogln("TimesExpression lhs null or not IntegerType");
+            return new TypeStruct("Type error");
+        }
+
+        TypeStruct rhs = n.f2.accept(this, context);
+        if (rhs == null || !rhs.MatchType("IntegerType")) {
+            DebugLogln("TimesExpression rhs null or not IntegerType");
             return new TypeStruct("Type error");
         }
 
@@ -490,8 +573,15 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
      */
     @Override
     public TypeStruct visit(ArrayLookup n, Context context) {
-        if (!n.f0.accept(this, context).MatchType("ArrayType") ||
-            !n.f2.accept(this, context).MatchType("IntegerType")) {
+        TypeStruct id = n.f0.accept(this, context);
+        if (id == null || !id.MatchType("ArrayType")) {
+            DebugLogln("TimesExpression lhs null or not ArrayType");
+            return new TypeStruct("Type error");
+        }
+
+        TypeStruct index = n.f2.accept(this, context);
+        if (index == null || !index.MatchType("IntegerType")) {
+            DebugLogln("TimesExpression rhs null or not IntegerType");
             return new TypeStruct("Type error");
         }
 
@@ -505,7 +595,9 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
      */
     @Override
     public TypeStruct visit(ArrayLength n, Context context) {
-        if (!n.f0.accept(this, context).MatchType("ArrayType")) {
+        TypeStruct id = n.f0.accept(this, context);
+        if (id == null || !id.MatchType("ArrayType")) {
+            DebugLogln("ArrayLength expr null or not ArrayType");
             return new TypeStruct("Type error");
         }
 
@@ -522,22 +614,40 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
      */
     @Override
     public TypeStruct visit(MessageSend n, Context context) {
-        TypeStruct id = context.Method().FindVariable(n.f0.accept(this, context));
-        if (id == null) {
-            id = context.Class().FieldType(n.f0.accept(this, context));
+        ClassSymbol targetClass = this.classTable.get(n.f0.accept(this, context).GetType());
+        if (targetClass == null) {
+            DebugLogln("MessageSend nullp");
+            return new TypeStruct("Type error");
         }
+        DebugLogln("Class: " + targetClass.ClassName());
 
-        if (id == null) {
+        MethodSymbol method = targetClass.FindMethod(n.f2);
+        if (method == null) {
+            DebugLogln("MessageSend methoddne");
             return new TypeStruct("Type error");
         }
 
-        TypeStruct returnType = context.Method().ReturnType();
-        SymbolTable formalParameters = context.Method().FormalParameters();
-        if (formalParameters == null) {
-            // return new TypeStruct("Type error");
+        DebugLog("    Method: " + method.MethodName() + "(");
+        for (Pair scope : method.FormalParameters().Table()) {
+            DebugLog(scope.Type().GetType() + " " + scope.Name() + ", ");
+        }
+        DebugLogln(")");
+
+        context.SetMethod(method);
+
+        TypeStruct err = n.f4.accept(this, context);
+        if (err != null) {
+            DebugLogln("MessageSend params don't match");
+            return new TypeStruct("Type error");
         }
 
-        return returnType;
+        DebugLog("    (After) Method: " + method.MethodName() + "(");
+        for (Pair scope : method.FormalParameters().Table()) {
+            DebugLog(scope.Type().GetType() + " " + scope.Name() + ", ");
+        }
+        DebugLogln(")");
+
+        return method.ReturnType();
     }
 
     /**
@@ -546,10 +656,31 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
      */
     @Override
     public TypeStruct visit(ExpressionList n, Context context) {
-        TypeStruct _ret = null;
-        n.f0.accept(this, context);
-        n.f1.accept(this, context);
-        return _ret;
+        DebugLogln("verifying params");
+        SymbolTable formalParameters = context.Method().FormalParameters();
+        if (formalParameters.Empty()) {
+            DebugLogln("ExpressionList provided params > formal params");
+            return new TypeStruct("Type error");
+        }
+
+        TypeStruct expr = n.f0.accept(this, context);
+        if (expr == null || expr.MatchType("Type error")) {
+            DebugLogln("ExpressionList expr error");
+            return expr;
+        }
+
+        Pair formal = formalParameters.PopParameter();
+        if (formal == null) {
+            DebugLogln("ExpressionList formal param is null");
+            return new TypeStruct("Type error");
+        }
+
+        if (!expr.MatchType(formal.Type())) {
+            DebugLogln("ExpressionList params don't match");
+            return new TypeStruct("Type error");
+        }
+
+        return n.f1.accept(this, context);
     }
 
     /**
@@ -558,10 +689,8 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
      */
     @Override
     public TypeStruct visit(ExpressionRest n, Context context) {
-        TypeStruct _ret = null;
-        n.f0.accept(this, context);
-        n.f1.accept(this, context);
-        return _ret;
+        DebugLogln("fix this");
+        return n.f1.accept(this, context);
     }
 
     /**
@@ -609,14 +738,28 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
      */
     @Override
     public TypeStruct visit(Identifier n, Context context) {
+        DebugLog("        (Identifier) Looking for: " + n.f0.tokenImage + "... ");
         TypeStruct id = context.Method().FindVariable(n);
         if (id == null) {
             id = context.Class().FieldType(n);
         }
 
         if (id == null) {
+            ClassSymbol targetClass = this.classTable.get(n.f0.tokenImage);
+            if (targetClass == null) {
+                DebugLogln("Identifier nullid");
+                return new TypeStruct("Type error");
+            }
+
+            id = targetClass.ClassType();
+        }
+
+        if (id == null) {
+            DebugLogln("Identifier nullid");
             return new TypeStruct("Type error");
         }
+
+        DebugLogln("Found " + n.f0.tokenImage);
 
         return id;
     }
@@ -627,10 +770,11 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
     @Override
     public TypeStruct visit(ThisExpression n, Context context) {
         if (context.Class().ParentName() == "main") {
+            DebugLogln("ThisExpression ref to main");
             return new TypeStruct("Type error");
         }
 
-        return new TypeStruct(context.Class().ClassName());
+        return new TypeStruct(context.ClassName());
     }
 
     /**
@@ -642,13 +786,13 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
      */
     @Override
     public TypeStruct visit(ArrayAllocationExpression n, Context context) {
-        TypeStruct _ret = null;
-        n.f0.accept(this, context);
-        n.f1.accept(this, context);
-        n.f2.accept(this, context);
-        n.f3.accept(this, context);
-        n.f4.accept(this, context);
-        return _ret;
+        TypeStruct expr = n.f3.accept(this, context);
+        if (expr == null || !expr.MatchType("IntegerType")) {
+            DebugLogln("ArrayAllocationExpression expr null or not integer");
+            return new TypeStruct("Type error");
+        }
+
+        return new TypeStruct("ArrayType");
     }
 
     /**
@@ -659,16 +803,13 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
      */
     @Override
     public TypeStruct visit(AllocationExpression n, Context context) {
-        TypeStruct id = context.Method().FindVariable(n.f1);
-        if (id == null) {
-            id = context.Class().FieldType(n.f1);
-        }
-
-        if (id == null) {
+        ClassSymbol classType = this.classTable.get(n.f1.f0.tokenImage);
+        if (classType == null) {
+            DebugLogln("AllocationExpression nullclass");
             return new TypeStruct("Type error");
         }
 
-        return id;
+        return classType.ClassType();
     }
 
     /**
@@ -677,7 +818,9 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
      */
     @Override
     public TypeStruct visit(NotExpression n, Context context) {
-        if (!n.f1.accept(this, context).MatchType("BooleanType")) {
+        TypeStruct expr = n.f1.accept(this, context);
+        if (expr == null || !expr.MatchType("BooleanType")) {
+            DebugLogln("NotExpression expr null or not BooleanType");
             return new TypeStruct("Type error");
         }
 
@@ -691,7 +834,7 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
      */
     @Override
     public TypeStruct visit(BracketExpression n, Context context) {
-        return n.f0.accept(this, context);
+        return n.f1.accept(this, context);
     }
 
 }

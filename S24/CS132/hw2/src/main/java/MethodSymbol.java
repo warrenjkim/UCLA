@@ -7,6 +7,12 @@ public class MethodSymbol {
     private TypeStruct returnType;
     private LinkedList<SymbolTable> scopes;
 
+    public MethodSymbol(MethodSymbol other) {
+        this.name = other.name;
+        this.returnType = other.returnType;
+        this.scopes = other.scopes;
+    }
+
     public MethodSymbol(Identifier name, Node returnType) {
         this.name = name.f0.tokenImage;
         this.returnType = new TypeStruct(returnType);
@@ -54,6 +60,10 @@ public class MethodSymbol {
     }
 
     public TypeStruct AddVariable(Identifier key, Node value) {
+        if (this.FindVariable(key) != null) {
+            return new TypeStruct("Type error");
+        }
+
         return this.scopes.peek().AddSymbol(key, new TypeStruct(value));
     }
 

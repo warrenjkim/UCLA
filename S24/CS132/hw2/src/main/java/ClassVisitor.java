@@ -8,6 +8,14 @@ import minijava.visitor.GJDepthFirst;
  * order. Your visitors may extend this class.
  */
 public class ClassVisitor extends GJDepthFirst<TypeStruct, Context> {
+    public static final void DebugLogln(String msg) {
+        System.out.println(msg);
+    }
+
+    public static final void DebugLog(String msg) {
+        System.out.print(msg);
+    }
+
     private HashMap<String, ClassSymbol> classTable;
 
     public HashMap<String, ClassSymbol> ClassTable() {
@@ -88,38 +96,38 @@ public class ClassVisitor extends GJDepthFirst<TypeStruct, Context> {
             return err;
         }
 
-        System.out.println("classTable:");
+        DebugLogln("classTable:");
         for (HashMap.Entry<String, ClassSymbol> currClass : this.classTable.entrySet()) {
-            System.out.println("  Class Name: " + currClass.getValue().ClassName());
+            DebugLogln("  Class Name: " + currClass.getValue().ClassName());
             if (currClass.getValue().Fields().Table().isEmpty()) {
-                System.out.println("    No Fields..........");
+                DebugLogln("    No Fields..........");
             }
             for (Pair field : currClass.getValue().Fields().Table()) {
-                System.out.println("    " + field.Type().GetType() + " " + field.Name());
-                // System.out.println("    Field: (" + field.getKey() + ", " + field.getValue().GetType() + ")");
+                DebugLogln("    " + field.Type().GetType() + " " + field.Name());
+                // DebugLogln("    Field: (" + field.getKey() + ", " + field.getValue().GetType() + ")");
             }
-            System.out.println();
+            DebugLogln("");
             for (HashMap.Entry<String, MethodSymbol> method : currClass.getValue().Methods().entrySet()) {
-                System.out.print("    " + method.getValue().ReturnType().GetType() + " " +
+                DebugLog("    " + method.getValue().ReturnType().GetType() + " " +
                                    method.getValue().MethodName() + " (");
-                // System.out.println("    Method: (" + method.getValue().MethodName() + ", "
+                // DebugLogln("    Method: (" + method.getValue().MethodName() + ", "
                 //         + method.getValue().ReturnType().GetType() + ")");
                 for (SymbolTable scope : method.getValue().VariableScopes()) {
                     if (scope.Table().isEmpty()) {
-                        // System.out.println("        No Formal Parameters..........");
+                        // DebugLogln("        No Formal Parameters..........");
                         // break;
                     }
-                    // System.out.println("        Formal Parameters..........");
+                    // DebugLogln("        Formal Parameters..........");
                     for (Pair param : scope.Table()) {
-                        System.out.print(param.Type().GetType() + " " +
+                        DebugLog(param.Type().GetType() + " " +
                                            param.Name() + ", ");
-                        // System.out.println("          Param: (" + param.getKey() + ", " +
+                        // DebugLogln("          Param: (" + param.getKey() + ", " +
                         //                    param.getValue().GetType() + ")");
                     }
-                    System.out.println(")");
+                    DebugLogln(")");
                 }
             }
-            System.out.println();
+            DebugLogln("");
         }
 
         return null;
