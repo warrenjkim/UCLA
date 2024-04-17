@@ -1,8 +1,72 @@
+import java.util.Enumeration;
+import java.util.HashMap;
 import minijava.syntaxtree.*;
-import minijava.visitor.GJVoidDepthFirst;
-import java.util.LinkedList;
+import minijava.visitor.GJDepthFirst;
 
-public class ClassVisitor extends GJVoidDepthFirst<LinkedList<ClassSymbol>> {
+/**
+ * Provides default methods which visit each node in the tree in depth-first
+ * order. Your visitors may extend this class.
+ */
+public class ClassVisitor extends GJDepthFirst<TypeStruct, Context> {
+    private HashMap<String, ClassSymbol> classTable;
+
+    public HashMap<String, ClassSymbol> ClassTable() {
+        return this.classTable;
+    }
+
+    public ClassVisitor() {
+        super();
+        this.classTable = new HashMap<>();
+    }
+
+    //
+    // Auto class visitors--probably don't need to be overridden.
+    //
+    @Override
+    public TypeStruct visit(NodeList n, Context context) {
+        int _count = 0;
+        for (Enumeration<Node> e = n.elements(); e.hasMoreElements();) {
+            TypeStruct err = e.nextElement().accept(this, context);
+            if (err != null) {
+                return err;
+            }
+
+            _count++;
+        }
+
+        return null;
+    }
+
+    @Override
+    public TypeStruct visit(NodeListOptional n, Context context) {
+        if (n.present()) {
+            int _count = 0;
+            for (Enumeration<Node> e = n.elements(); e.hasMoreElements();) {
+                TypeStruct err = e.nextElement().accept(this, context);
+                if (err != null) {
+                    return err;
+                }
+                _count++;
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public TypeStruct visit(NodeSequence n, Context context) {
+        int _count = 0;
+        for (Enumeration<Node> e = n.elements(); e.hasMoreElements();) {
+            TypeStruct err = e.nextElement().accept(this, context);
+            if (err != null) {
+                return err;
+            }
+
+            _count++;
+        }
+        return null;
+    }
+
     //
     // User-generated visitor methods below
     //
@@ -12,11 +76,43 @@ public class ClassVisitor extends GJVoidDepthFirst<LinkedList<ClassSymbol>> {
      * f1 -> ( TypeDeclaration() )*
      * f2 -> <EOF>
      */
-    public void visit(Goal n, LinkedList<ClassSymbol> argu) {
-        System.out.println("Goal");
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
-        n.f2.accept(this, argu);
+    @Override
+    public TypeStruct visit(Goal n, Context context) {
+        TypeStruct err = n.f0.accept(this, context);
+        if (err != null) {
+            return err;
+        }
+
+        err = n.f1.accept(this, context);
+        if (err != null) {
+            return err;
+        }
+
+        System.out.println("classTable:");
+        for (HashMap.Entry<String, ClassSymbol> x : this.classTable.entrySet()) {
+            System.out.println("  Class Name: " + x.getValue().ClassName());
+            for (HashMap.Entry<String, TypeStruct> field : x.getValue().Fields().Table().entrySet()) {
+                System.out.println("    Field: (" + field.getKey() + ", " + field.getValue().GetType() + ")");
+            }
+            for (HashMap.Entry<String, MethodSymbol> method : x.getValue().Methods().entrySet()) {
+                System.out.println("    Method: (" + method.getValue().MethodName() + ", "
+                        + method.getValue().ReturnType().GetType() + ")");
+                for (SymbolTable scope : method.getValue().VariableScopes()) {
+                    if (scope.Table().isEmpty()) {
+                        System.out.println("        No Formal Parameters..........");
+                        break;
+                    }
+                    System.out.println("        Formal Parameters..........");
+                    for (HashMap.Entry<String, TypeStruct> param : scope.Table().entrySet()) {
+                        System.out.println(
+                                "          Param: (" + param.getKey() + ", " + param.getValue().GetType() + ")");
+                    }
+                }
+            }
+            System.out.println();
+        }
+
+        return null;
     }
 
     /**
@@ -39,37 +135,35 @@ public class ClassVisitor extends GJVoidDepthFirst<LinkedList<ClassSymbol>> {
      * f16 -> "}"
      * f17 -> "}"
      */
-    public void visit(MainClass n, LinkedList<ClassSymbol> argu) {
-        System.out.println("MainClass");
-        ClassSymbol test = new ClassSymbol(new Identifier(n.f1.f0), new Type(new NodeChoice(n.f1.f0)));
-        argu.push(test);
-        System.out.println(argu.peek().GetType().f0.choice);
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
-        n.f2.accept(this, argu);
-        n.f3.accept(this, argu);
-        n.f4.accept(this, argu);
-        n.f5.accept(this, argu);
-        n.f6.accept(this, argu);
-        n.f7.accept(this, argu);
-        n.f8.accept(this, argu);
-        n.f9.accept(this, argu);
-        n.f10.accept(this, argu);
-        n.f11.accept(this, argu);
-        n.f12.accept(this, argu);
-        n.f13.accept(this, argu);
-        n.f14.accept(this, argu);
-        n.f15.accept(this, argu);
-        n.f16.accept(this, argu);
-        n.f17.accept(this, argu);
+    @Override
+    public TypeStruct visit(MainClass n, Context context) {
+        if (!this.classTable.isEmpty()) {
+            return new TypeStruct("Type error");
+        }
+
+        context.SetMethod(n.f6.tokenImage, new TypeStruct("void"));
+        context.Method().AddVariable(n.f11, new TypeStruct("StringArrayType"));
+
+        context.SetClass(n.f1);
+        context.Class().AddMethod(context.Method());
+
+        TypeStruct err = n.f14.accept(this, context); // build fields
+        if (err != null) {
+            return err;
+        }
+
+        this.classTable.put(context.Class().ClassName(), context.Class());
+
+        return null;
     }
 
     /**
      * f0 -> ClassDeclaration()
      * | ClassExtendsDeclaration()
      */
-    public void visit(TypeDeclaration n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
+    @Override
+    public TypeStruct visit(TypeDeclaration n, Context context) {
+        return n.f0.accept(this, context);
     }
 
     /**
@@ -80,17 +174,28 @@ public class ClassVisitor extends GJVoidDepthFirst<LinkedList<ClassSymbol>> {
      * f4 -> ( MethodDeclaration() )*
      * f5 -> "}"
      */
-    public void visit(ClassDeclaration n, LinkedList<ClassSymbol> argu) {
-        System.out.println("ClassDeclaration");
-        ClassSymbol test = new ClassSymbol(new Identifier(n.f1.f0), new Type(new NodeChoice(n.f1.f0)));
-        argu.push(test);
-        System.out.println(argu.peek().GetType().f0.choice);
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
-        n.f2.accept(this, argu);
-        n.f3.accept(this, argu);
-        n.f4.accept(this, argu);
-        n.f5.accept(this, argu);
+    @Override
+    public TypeStruct visit(ClassDeclaration n, Context context) {
+        context.SetClass(n.f1);
+
+        // duplicate class name
+        if (this.classTable.containsKey(context.Class().ClassName())) {
+            return new TypeStruct("Type error");
+        }
+
+        TypeStruct err = n.f3.accept(this, context); // build fields
+        if (err != null) {
+            return err;
+        }
+
+        err = n.f4.accept(this, context); // build methods
+        if (err != null) {
+            return err;
+        }
+
+        this.classTable.put(context.Class().ClassName(), context.Class());
+
+        return null;
     }
 
     /**
@@ -103,16 +208,28 @@ public class ClassVisitor extends GJVoidDepthFirst<LinkedList<ClassSymbol>> {
      * f6 -> ( MethodDeclaration() )*
      * f7 -> "}"
      */
-    public void visit(ClassExtendsDeclaration n, LinkedList<ClassSymbol> argu) {
-        System.out.println("ClassExtendsDeclaration");
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
-        n.f2.accept(this, argu);
-        n.f3.accept(this, argu);
-        n.f4.accept(this, argu);
-        n.f5.accept(this, argu);
-        n.f6.accept(this, argu);
-        n.f7.accept(this, argu);
+    @Override
+    public TypeStruct visit(ClassExtendsDeclaration n, Context context) {
+        context.SetClass(n.f1, n.f3);
+
+        // duplicate class name
+        if (this.classTable.containsKey(context.Class().ClassName())) {
+            return new TypeStruct("Type error");
+        }
+
+        TypeStruct err = n.f3.accept(this, context); // build fields
+        if (err != null) {
+            return err;
+        }
+
+        err = n.f5.accept(this, context); // build methods
+        if (err != null) {
+            return err;
+        }
+
+        this.classTable.put(context.Class().ClassName(), context.Class());
+
+        return null;
     }
 
     /**
@@ -120,10 +237,9 @@ public class ClassVisitor extends GJVoidDepthFirst<LinkedList<ClassSymbol>> {
      * f1 -> Identifier()
      * f2 -> ";"
      */
-    public void visit(VarDeclaration n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
-        n.f2.accept(this, argu);
+    @Override
+    public TypeStruct visit(VarDeclaration n, Context context) {
+        return context.Class().Fields().AddSymbol(n.f1, n.f0.accept(this, context));
     }
 
     /**
@@ -141,47 +257,55 @@ public class ClassVisitor extends GJVoidDepthFirst<LinkedList<ClassSymbol>> {
      * f11 -> ";"
      * f12 -> "}"
      */
-    public void visit(MethodDeclaration n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
-        n.f2.accept(this, argu);
-        n.f3.accept(this, argu);
-        n.f4.accept(this, argu);
-        n.f5.accept(this, argu);
-        n.f6.accept(this, argu);
-        n.f7.accept(this, argu);
-        n.f8.accept(this, argu);
-        n.f9.accept(this, argu);
-        n.f10.accept(this, argu);
-        n.f11.accept(this, argu);
-        n.f12.accept(this, argu);
+    @Override
+    public TypeStruct visit(MethodDeclaration n, Context context) {
+        context.SetMethod(n.f2, n.f1.accept(this, context));
+
+        // duplicate method name
+        if (context.Class().Methods().containsKey(context.Method().MethodName())) {
+            return new TypeStruct("Type error");
+        }
+
+        TypeStruct err = n.f4.accept(this, context); // build formal parameters
+        if (err != null) {
+            return err;
+        }
+
+        context.Class().AddMethod(context.Method());
+
+        return null;
     }
 
     /**
      * f0 -> FormalParameter()
      * f1 -> ( FormalParameterRest() )*
      */
-    public void visit(FormalParameterList n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
+    @Override
+    public TypeStruct visit(FormalParameterList n, Context context) {
+        TypeStruct err = n.f0.accept(this, context);
+        if (err != null) {
+            return err;
+        }
+
+        return n.f1.accept(this, context);
     }
 
     /**
      * f0 -> Type()
      * f1 -> Identifier()
      */
-    public void visit(FormalParameter n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
+    @Override
+    public TypeStruct visit(FormalParameter n, Context context) {
+        return context.Method().AddVariable(n.f1, n.f0.accept(this, context));
     }
 
     /**
      * f0 -> ","
      * f1 -> FormalParameter()
      */
-    public void visit(FormalParameterRest n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
+    @Override
+    public TypeStruct visit(FormalParameterRest n, Context context) {
+        return n.f1.accept(this, context);
     }
 
     /**
@@ -190,8 +314,9 @@ public class ClassVisitor extends GJVoidDepthFirst<LinkedList<ClassSymbol>> {
      * | IntegerType()
      * | Identifier()
      */
-    public void visit(Type n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
+    @Override
+    public TypeStruct visit(Type n, Context context) {
+        return n.f0.accept(this, context);
     }
 
     /**
@@ -199,355 +324,35 @@ public class ClassVisitor extends GJVoidDepthFirst<LinkedList<ClassSymbol>> {
      * f1 -> "["
      * f2 -> "]"
      */
-    public void visit(ArrayType n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
-        n.f2.accept(this, argu);
+    @Override
+    public TypeStruct visit(ArrayType n, Context context) {
+        return new TypeStruct("ArrayType");
     }
 
     /**
      * f0 -> "boolean"
      */
-    public void visit(BooleanType n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
+    @Override
+    public TypeStruct visit(BooleanType n, Context context) {
+        return new TypeStruct("BooleanType");
+        // TypeStruct _ret = null;
+        // n.f0.accept(this, context);
+        // return _ret;
     }
 
     /**
      * f0 -> "int"
      */
-    public void visit(IntegerType n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-    }
-
-    /**
-     * f0 -> Block()
-     * | AssignmentStatement()
-     * | ArrayAssignmentStatement()
-     * | IfStatement()
-     * | WhileStatement()
-     * | PrintStatement()
-     */
-    public void visit(Statement n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-    }
-
-    /**
-     * f0 -> "{"
-     * f1 -> ( Statement() )*
-     * f2 -> "}"
-     */
-    public void visit(Block n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
-        n.f2.accept(this, argu);
-    }
-
-    /**
-     * f0 -> Identifier()
-     * f1 -> "="
-     * f2 -> Expression()
-     * f3 -> ";"
-     */
-    public void visit(AssignmentStatement n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
-        n.f2.accept(this, argu);
-        n.f3.accept(this, argu);
-    }
-
-    /**
-     * f0 -> Identifier()
-     * f1 -> "["
-     * f2 -> Expression()
-     * f3 -> "]"
-     * f4 -> "="
-     * f5 -> Expression()
-     * f6 -> ";"
-     */
-    public void visit(ArrayAssignmentStatement n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
-        n.f2.accept(this, argu);
-        n.f3.accept(this, argu);
-        n.f4.accept(this, argu);
-        n.f5.accept(this, argu);
-        n.f6.accept(this, argu);
-    }
-
-    /**
-     * f0 -> "if"
-     * f1 -> "("
-     * f2 -> Expression()
-     * f3 -> ")"
-     * f4 -> Statement()
-     * f5 -> "else"
-     * f6 -> Statement()
-     */
-    public void visit(IfStatement n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
-        n.f2.accept(this, argu);
-        n.f3.accept(this, argu);
-        n.f4.accept(this, argu);
-        n.f5.accept(this, argu);
-        n.f6.accept(this, argu);
-    }
-
-    /**
-     * f0 -> "while"
-     * f1 -> "("
-     * f2 -> Expression()
-     * f3 -> ")"
-     * f4 -> Statement()
-     */
-    public void visit(WhileStatement n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
-        n.f2.accept(this, argu);
-        n.f3.accept(this, argu);
-        n.f4.accept(this, argu);
-    }
-
-    /**
-     * f0 -> "System.out.println"
-     * f1 -> "("
-     * f2 -> Expression()
-     * f3 -> ")"
-     * f4 -> ";"
-     */
-    public void visit(PrintStatement n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
-        n.f2.accept(this, argu);
-        n.f3.accept(this, argu);
-        n.f4.accept(this, argu);
-    }
-
-    /**
-     * f0 -> AndExpression()
-     * | CompareExpression()
-     * | PlusExpression()
-     * | MinusExpression()
-     * | TimesExpression()
-     * | ArrayLookup()
-     * | ArrayLength()
-     * | MessageSend()
-     * | PrimaryExpression()
-     */
-    public void visit(Expression n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-    }
-
-    /**
-     * f0 -> PrimaryExpression()
-     * f1 -> "&&"
-     * f2 -> PrimaryExpression()
-     */
-    public void visit(AndExpression n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
-        n.f2.accept(this, argu);
-    }
-
-    /**
-     * f0 -> PrimaryExpression()
-     * f1 -> "<"
-     * f2 -> PrimaryExpression()
-     */
-    public void visit(CompareExpression n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
-        n.f2.accept(this, argu);
-    }
-
-    /**
-     * f0 -> PrimaryExpression()
-     * f1 -> "+"
-     * f2 -> PrimaryExpression()
-     */
-    public void visit(PlusExpression n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
-        n.f2.accept(this, argu);
-    }
-
-    /**
-     * f0 -> PrimaryExpression()
-     * f1 -> "-"
-     * f2 -> PrimaryExpression()
-     */
-    public void visit(MinusExpression n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
-        n.f2.accept(this, argu);
-    }
-
-    /**
-     * f0 -> PrimaryExpression()
-     * f1 -> "*"
-     * f2 -> PrimaryExpression()
-     */
-    public void visit(TimesExpression n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
-        n.f2.accept(this, argu);
-    }
-
-    /**
-     * f0 -> PrimaryExpression()
-     * f1 -> "["
-     * f2 -> PrimaryExpression()
-     * f3 -> "]"
-     */
-    public void visit(ArrayLookup n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
-        n.f2.accept(this, argu);
-        n.f3.accept(this, argu);
-    }
-
-    /**
-     * f0 -> PrimaryExpression()
-     * f1 -> "."
-     * f2 -> "length"
-     */
-    public void visit(ArrayLength n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
-        n.f2.accept(this, argu);
-    }
-
-    /**
-     * f0 -> PrimaryExpression()
-     * f1 -> "."
-     * f2 -> Identifier()
-     * f3 -> "("
-     * f4 -> ( ExpressionList() )?
-     * f5 -> ")"
-     */
-    public void visit(MessageSend n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
-        n.f2.accept(this, argu);
-        n.f3.accept(this, argu);
-        n.f4.accept(this, argu);
-        n.f5.accept(this, argu);
-    }
-
-    /**
-     * f0 -> Expression()
-     * f1 -> ( ExpressionRest() )*
-     */
-    public void visit(ExpressionList n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
-    }
-
-    /**
-     * f0 -> ","
-     * f1 -> Expression()
-     */
-    public void visit(ExpressionRest n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
-    }
-
-    /**
-     * f0 -> IntegerLiteral()
-     * | TrueLiteral()
-     * | FalseLiteral()
-     * | Identifier()
-     * | ThisExpression()
-     * | ArrayAllocationExpression()
-     * | AllocationExpression()
-     * | NotExpression()
-     * | BracketExpression()
-     */
-    public void visit(PrimaryExpression n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-    }
-
-    /**
-     * f0 -> <INTEGER_LITERAL>
-     */
-    public void visit(IntegerLiteral n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-    }
-
-    /**
-     * f0 -> "true"
-     */
-    public void visit(TrueLiteral n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-    }
-
-    /**
-     * f0 -> "false"
-     */
-    public void visit(FalseLiteral n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
+    @Override
+    public TypeStruct visit(IntegerType n, Context context) {
+        return new TypeStruct("IntegerType");
     }
 
     /**
      * f0 -> <IDENTIFIER>
      */
-    public void visit(Identifier n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
+    @Override
+    public TypeStruct visit(Identifier n, Context context) {
+        return new TypeStruct(n);
     }
-
-    /**
-     * f0 -> "this"
-     */
-    public void visit(ThisExpression n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-    }
-
-    /**
-     * f0 -> "new"
-     * f1 -> "int"
-     * f2 -> "["
-     * f3 -> Expression()
-     * f4 -> "]"
-     */
-    public void visit(ArrayAllocationExpression n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
-        n.f2.accept(this, argu);
-        n.f3.accept(this, argu);
-        n.f4.accept(this, argu);
-    }
-
-    /**
-     * f0 -> "new"
-     * f1 -> Identifier()
-     * f2 -> "("
-     * f3 -> ")"
-     */
-    public void visit(AllocationExpression n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
-        n.f2.accept(this, argu);
-        n.f3.accept(this, argu);
-    }
-
-    /**
-     * f0 -> "!"
-     * f1 -> Expression()
-     */
-    public void visit(NotExpression n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
-    }
-
-    /**
-     * f0 -> "("
-     * f1 -> Expression()
-     * f2 -> ")"
-     */
-    public void visit(BracketExpression n, LinkedList<ClassSymbol> argu) {
-        n.f0.accept(this, argu);
-        n.f1.accept(this, argu);
-        n.f2.accept(this, argu);
-    }
-
 }

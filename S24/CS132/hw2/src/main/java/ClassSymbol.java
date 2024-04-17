@@ -1,49 +1,56 @@
-import minijava.syntaxtree.Identifier;
-import minijava.syntaxtree.Type;
+import minijava.syntaxtree.*;
+import java.util.HashMap;
 
-public class ClassSymbol implements Symbol {
-    private Identifier name;
-    private Type type;
-    private Type parent;
+public class ClassSymbol {
+    private String name;
+    private String parent;
+
     private SymbolTable fields;
-    private SymbolTable methods;
+    private HashMap<String, MethodSymbol> methods;
 
-    public ClassSymbol(Identifier name, Type type) {
-        this.name = name;
-        this.type = type;
+    public ClassSymbol(Identifier name) {
+        this.name = name.f0.tokenImage;
         this.parent = null;
         this.fields = new SymbolTable();
-        this.methods = new SymbolTable();
+        this.methods = new HashMap<>();
     }
 
-    public ClassSymbol(Identifier name, Type type, Type parent) {
-        this.name = name;
-        this.type = type;
-        this.parent = parent;
+    public ClassSymbol(Identifier name, Identifier parent) {
+        this.name = name.f0.tokenImage;
+        this.parent = parent.f0.tokenImage;
         this.fields = new SymbolTable();
-        this.methods = new SymbolTable();
+        this.methods = new HashMap<>();
     }
 
-    @Override
-    public Type GetType() {
-        return this.type;
-    }
-
-    @Override
-    public Identifier GetIdentifier() {
+    public String ClassName() {
         return this.name;
     }
 
-    public Type GetParent() {
+    public String ParentName() {
         return this.parent;
     }
 
-    public void AddField(Identifier key, Type value) {
-        this.fields.AddSymbol(key, value);
+    public TypeStruct GetFieldType(Identifier fieldName) {
+        return this.fields.GetType(fieldName);
+    }
+
+    public TypeStruct GetMethodType(Identifier methodName) {
+        return this.methods.get(methodName.f0.tokenImage).ReturnType();
+    }
+
+    public void AddField(Identifier key, Node value) {
+        this.fields.AddSymbol(key, new TypeStruct(value));
     }
 
     public void AddMethod(MethodSymbol method) {
-        this.methods.AddSymbol(method.GetIdentifier(), method.GetType());
+        this.methods.put(method.MethodName(), method);
+    }
+
+    public HashMap<String, MethodSymbol> Methods() {
+        return this.methods;
+    }
+
+    public SymbolTable Fields() {
+        return this.fields;
     }
 }
-
