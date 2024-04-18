@@ -1,3 +1,4 @@
+import java.util.ArrayDeque;
 import java.util.Enumeration;
 import java.util.HashMap;
 import minijava.syntaxtree.*;
@@ -99,18 +100,51 @@ public class ClassVisitor extends GJDepthFirst<TypeStruct, Context> {
             return err;
         }
 
-        DebugLogln("classTable:");
+        // cyclic dependency check
         for (HashMap.Entry<String, ClassSymbol> currClass : this.classTable.entrySet()) {
-            if (currClass.getValue().Parent() != null
-                && !currClass.getValue().Parent().equals("main")) {
-                DebugLogln("  Class Name: " + currClass.getValue().Name() + " extends " +
-                           currClass.getValue().Parent());
-            } else {
-                DebugLogln("  Class Name: " + currClass.getValue().Name());
-            }
+            ClassSymbol currSymbol = currClass.getValue();
+            TypeStruct currType = currSymbol.TypeStruct(); // get the actual reference to currClass.type
 
+            if (currSymbol.ParentTypeStruct() != null) {
+                ClassSymbol parentSymbol = this.classTable.get(currSymbol.Parent()); // actual reference to parent
+
+                while (parentSymbol != null) {
+                    TypeStruct parentType = parentSymbol.TypeStruct();
+                    DebugLogln(currType.Type() + "->" + parentType.Type());
+                    currType.SetSuperTypeStruct(parentType);
+                    parentSymbol = this.classTable.get(parentSymbol.Parent()); // actual reference to parent
+                    currType = parentType;
+                    if (currType.MatchType(currSymbol.Type())) {
+                        DebugLogln("cycle !!");
+                        return new TypeStruct("Type error");
+                    }
+                }
+            }
+        }
+
+        for (HashMap.Entry<String, ClassSymbol> currClass : this.classTable.entrySet()) {
+            ClassSymbol currSymbol = currClass.getValue();
+            TypeStruct currType = currSymbol.TypeStruct(); // get the actual reference to currClass.type
+
+            while (currSymbol != null) {
+                DebugLogln(currType.Type() + "->" + currType.SuperType());
+                currSymbol = this.classTable.get(currType.SuperType());
+                currType = currType.SuperTypeStruct();
+            }
+        }
+
+        DebugLogln("No cycles");
+
+        DebugLogln("\n\n\nclassTable:");
+        for (HashMap.Entry<String, ClassSymbol> currClass : this.classTable.entrySet()) {
+            DebugLog("  Class Name: " + currClass.getValue().Name());
+            TypeStruct parent = currClass.getValue().TypeStruct();
+            while (parent.SuperTypeStruct() != null) {
+                DebugLog(" -> " + currClass.getValue().Parent());
+                parent = parent.SuperTypeStruct();
+            }
             for (SymbolTable fieldScope : currClass.getValue().Fields()) {
-                DebugLogln("    Fields");
+                DebugLogln("\n    Fields");
                 for (Pair field : fieldScope.Table()) {
                     DebugLogln("      " + field.Type() + " " + field.Name());
                 }
@@ -225,6 +259,16 @@ public class ClassVisitor extends GJDepthFirst<TypeStruct, Context> {
     @Override
     public TypeStruct visit(ClassExtendsDeclaration n, Context context) {
         context.SetClass(n.f1, n.f3);
+
+        // // cyclic dependency
+        // TypeStruct parent = n.f3.accept(this, context);
+        // if (parent != null) {
+        //     ClassSymbol parentClass = this.classTable.get(parent.Type());
+        //     if (parentClass != null && parentClass.TypeStruct().MatchType(context.Class().TypeStruct())) {
+        //         DebugLogln("Cyclic dependency error");
+        //         return new TypeStruct("Type error");
+        //     }
+        // }
 
         // duplicate class name
         if (this.classTable.containsKey(context.Class().Name())) {

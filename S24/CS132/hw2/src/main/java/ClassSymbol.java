@@ -50,6 +50,10 @@ public class ClassSymbol extends Symbol {
         return super.type.SuperType();
     }
 
+    public TypeStruct ParentTypeStruct() {
+        return super.type.SuperTypeStruct();
+    }
+
     public LinkedList<SymbolTable> Fields() {
         return super.scopes;
     }

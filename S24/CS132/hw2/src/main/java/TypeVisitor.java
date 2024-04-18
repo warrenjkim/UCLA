@@ -313,7 +313,7 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
             id = context.Class().FieldTypeStruct(n.f0);
         }
 
-        if (id == null && context.Class().Parent() != null) {
+        if (id == null && context.Class().ParentTypeStruct() != null) {
             id = this.classTable.get(context.Class().Parent()).FieldTypeStruct(n.f0);
         }
 
@@ -735,6 +735,7 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
         }
 
         if (!expr.MatchType(formal.TypeStruct())) {
+            DebugLogln("expr: " + expr.Type() + "->" + formal.Type());
             DebugLogln("ExpressionList params don't match");
             return new TypeStruct("Type error");
         }
@@ -840,7 +841,7 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
             }
         }
 
-        if (id == null && context.Class().Parent() != null) {
+        if (id == null && context.Class().ParentTypeStruct() != null) {
             id = this.classTable.get(context.Class().Parent()).FieldTypeStruct(n);
         }
 
@@ -859,7 +860,7 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
      */
     @Override
     public TypeStruct visit(ThisExpression n, Context context) {
-        if (context.Class().Parent() != null &&  context.Class().Parent().equals("main")) {
+        if (context.Class().ParentTypeStruct() != null &&  context.Class().Parent().equals("main")) {
             DebugLogln("ThisExpression ref to main");
             return new TypeStruct("Type error");
         }

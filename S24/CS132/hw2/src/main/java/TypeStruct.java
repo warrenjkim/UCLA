@@ -2,21 +2,25 @@ import minijava.syntaxtree.*;
 
 public class TypeStruct {
     private String type;
-    private String superType;
+    private TypeStruct superTypeStruct;
 
     public TypeStruct(TypeStruct other) {
         this.type = other.type;
-        this.superType = other.superType;
+        if (other.superTypeStruct == null) {
+            this.superTypeStruct = null;
+        } else {
+            this.superTypeStruct = new TypeStruct(other.superTypeStruct);
+        }
     }
 
     public TypeStruct(String type) {
         this.type = type;
-        this.superType = null;
+        this.superTypeStruct = null;
     }
 
-    public TypeStruct(String type, String superType) {
+    public TypeStruct(String type, String superTypeStruct) {
         this.type = type;
-        this.superType = superType;
+        this.superTypeStruct = new TypeStruct(superTypeStruct);
     }
 
     public TypeStruct(Node type) {
@@ -32,15 +36,35 @@ public class TypeStruct {
     }
 
     public String SuperType() {
-        return this.superType;
+        if (this.superTypeStruct == null) {
+            return "";
+        }
+
+        return this.superTypeStruct.type;
+    }
+
+    public TypeStruct SuperTypeStruct() {
+        return this.superTypeStruct;
+    }
+
+    public void SetSuperTypeStruct(TypeStruct superTypeStruct) {
+        this.superTypeStruct = superTypeStruct;
     }
 
     // fix this (subtype)
-    public boolean MatchType(TypeStruct type) {
-        return this.MatchType(type.Type());
+    public boolean MatchType(TypeStruct other) {
+        return this.MatchSuperType(other);
     }
 
     public boolean MatchType(String type) {
-        return type.equals(this.type) || (!type.equals("main") && type.equals(this.superType));
+        return this.type.equals(type);
+    }
+
+    public boolean MatchSuperType(TypeStruct other) {
+        if (this.superTypeStruct == null) {
+            return this.MatchType(other.type);
+        }
+
+        return this.MatchType(other.type) || this.superTypeStruct.MatchSuperType(other);
     }
 }
