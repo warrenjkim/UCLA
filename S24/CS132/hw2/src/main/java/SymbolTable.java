@@ -1,12 +1,7 @@
-import java.util.HashMap;
 import java.util.ArrayDeque;
 import minijava.syntaxtree.*;
 
 
-/**
- * Symbol table that has the form:
- * <identifier, type>
- */
 public class SymbolTable {
     private ArrayDeque<Pair> table;
 
@@ -15,13 +10,13 @@ public class SymbolTable {
     }
 
     public SymbolTable(SymbolTable other) {
-        this.table = other.table;
+        this.table = new ArrayDeque<Pair>(other.table);
     }
 
     public TypeStruct GetType(String key) {
         for (Pair symbol : this.table) {
             if (symbol.Name().equals(key)) {
-                return symbol.Type();
+                return symbol.TypeStruct();
             }
         }
 
@@ -45,6 +40,10 @@ public class SymbolTable {
 
     public ArrayDeque<Pair> Table() {
         return this.table;
+    }
+
+    public void SetTable(ArrayDeque<Pair> table) {
+        this.table = table;
     }
 
     // pops param from front

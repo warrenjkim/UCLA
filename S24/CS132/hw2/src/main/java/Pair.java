@@ -2,6 +2,11 @@ public class Pair {
     private String name;
     private TypeStruct type;
 
+    public Pair(Pair other) {
+        this.name = other.name;
+        this.type = new TypeStruct(other.type);
+    }
+
     public Pair(String name, TypeStruct type) {
         this.name = name;
         this.type = type;
@@ -11,7 +16,11 @@ public class Pair {
         return this.name;
     }
 
-    public TypeStruct Type() {
+    public String Type() {
+        return this.type.Type();
+    }
+
+    public TypeStruct TypeStruct() {
         return this.type;
     }
 }

@@ -4,12 +4,22 @@ public class Context {
     private ClassSymbol currClass;
     private MethodSymbol currMethod;
 
+    public Context() {
+        this.currClass = new ClassSymbol();
+        this.currMethod = new MethodSymbol();
+    }
+
+    public Context(ClassSymbol currClass, MethodSymbol currMethod) {
+        this.currClass = new ClassSymbol(currClass);
+        this.currMethod = new MethodSymbol(currMethod);
+    }
+
     public ClassSymbol Class() {
         return this.currClass;
     }
 
     public String ClassName() {
-        return this.currClass.ClassName();
+        return this.currClass.Name();
     }
 
     public MethodSymbol Method() {
@@ -17,15 +27,15 @@ public class Context {
     }
 
     public String MethodName() {
-        return this.currMethod.MethodName();
+        return this.currMethod.Name();
     }
 
     public void SetClass(ClassSymbol currClass) {
-        this.currClass = new ClassSymbol(currClass);
+        this.currClass = currClass;
     }
 
     public void SetMethod(MethodSymbol currMethod) {
-        this.currMethod = new MethodSymbol(currMethod);
+        this.currMethod = currMethod;
     }
 
     public void SetClass(Identifier name) {

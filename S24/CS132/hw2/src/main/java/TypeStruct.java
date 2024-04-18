@@ -4,6 +4,11 @@ public class TypeStruct {
     private String type;
     private String superType;
 
+    public TypeStruct(TypeStruct other) {
+        this.type = other.type;
+        this.superType = other.superType;
+    }
+
     public TypeStruct(String type) {
         this.type = type;
         this.superType = null;
@@ -22,20 +27,20 @@ public class TypeStruct {
         }
     }
 
-    public String GetType() {
+    public String Type() {
         return this.type;
     }
 
-    public boolean MatchSubType(TypeStruct type) {
-        return type.GetType().equals(this.superType);
+    public String SuperType() {
+        return this.superType;
     }
 
     // fix this (subtype)
     public boolean MatchType(TypeStruct type) {
-        return type.GetType().equals(this.type) || this.MatchSubType(type);
+        return this.MatchType(type.Type());
     }
 
     public boolean MatchType(String type) {
-        return type.equals(this.type);
+        return type.equals(this.type) || (!type.equals("main") && type.equals(this.superType));
     }
 }

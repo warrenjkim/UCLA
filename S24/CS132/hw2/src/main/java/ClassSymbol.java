@@ -1,80 +1,122 @@
 import minijava.syntaxtree.*;
 import java.util.HashMap;
+import java.util.LinkedList;
 
-public class ClassSymbol {
-    private String name;
-    private String parent;
 
-    private SymbolTable fields;
-    private HashMap<String, MethodSymbol> methods;
+public class ClassSymbol extends Symbol {
+    private HashMap<String, MethodSymbol> methods = new HashMap<>();
+
+    public ClassSymbol() {
+        super();
+        this.methods = new HashMap<>();
+        super.EnterScope();
+    }
 
     public ClassSymbol(ClassSymbol other) {
-        this.name = other.name;
-        this.parent = other.parent;
-        this.fields = other.fields;
-        this.methods = other.methods;
+        super(other.name);
+        super.type = new TypeStruct(other.type);
+        for (HashMap.Entry<String, MethodSymbol> method : other.Methods().entrySet()) {
+            this.methods.put(method.getKey(), new MethodSymbol(method.getValue()));
+        }
+
+        for (SymbolTable scope : other.scopes) {
+            super.scopes.push(new SymbolTable(scope));
+        }
     }
 
     public ClassSymbol(Identifier name) {
-        this.name = name.f0.tokenImage;
-        this.parent = null;
-        this.fields = new SymbolTable();
+        super(name);
+        super.type = new TypeStruct(name.f0.tokenImage);
+        super.scopes = new LinkedList<>();
         this.methods = new HashMap<>();
+        super.EnterScope();
     }
 
     public ClassSymbol(Identifier name, Identifier parent) {
-        this.name = name.f0.tokenImage;
-        this.parent = parent.f0.tokenImage;
-        this.fields = new SymbolTable();
+        super(name);
+        super.type = new TypeStruct(name.f0.tokenImage, parent.f0.tokenImage);
         this.methods = new HashMap<>();
+        super.EnterScope();
     }
 
-    public String ClassName() {
-        return this.name;
+
+    // boilerplate
+    @Override
+    public String Type() {
+        return super.type.Type();
     }
 
-    public String ParentName() {
-        return this.parent;
+    public String Parent() {
+        return super.type.SuperType();
     }
 
-    public TypeStruct FieldType(Identifier fieldName) {
-        return this.fields.GetType(fieldName.f0.tokenImage);
-    }
-
-    public TypeStruct FieldType(TypeStruct fieldName) {
-        return this.fields.GetType(fieldName.GetType());
-    }
-
-    public TypeStruct MethodType(String methodName) {
-        return this.methods.get(methodName).ReturnType();
-    }
-
-    public void AddField(Identifier key, Node value) {
-        this.fields.AddSymbol(key, new TypeStruct(value));
-    }
-
-    public void AddMethod(MethodSymbol method) {
-        this.methods.put(method.MethodName(), method);
-    }
-
-    public SymbolTable Fields() {
-        return this.fields;
+    public LinkedList<SymbolTable> Fields() {
+        return super.scopes;
     }
 
     public HashMap<String, MethodSymbol> Methods() {
         return this.methods;
     }
 
-    public TypeStruct ClassType() {
-        return new TypeStruct(this.name);
+
+
+    // method stuff
+    public MethodSymbol FindMethod(String method) {
+        return this.methods.get(method);
     }
 
-    public MethodSymbol FindMethod(Identifier methodName) {
-        return this.methods.get(methodName.f0.tokenImage);
+    public MethodSymbol FindMethod(Identifier method) {
+        return this.FindMethod(method.f0.tokenImage);
     }
 
-    public MethodSymbol FindMethod(String methodName) {
-        return this.methods.get(methodName);
+    public TypeStruct AddMethod(MethodSymbol method) {
+        if (this.methods.containsKey(method.Name())) {
+            return new TypeStruct("Type error");
+        }
+
+        this.methods.put(method.Name(), method);
+        return null;
+    }
+
+
+
+    // field stuff
+    public TypeStruct FieldTypeStruct(String key) {
+        for (SymbolTable scope : super.scopes) {
+            TypeStruct field = scope.GetType(key);
+            if (field != null) {
+                return field;
+            }
+        }
+
+        return null;
+    }
+
+    public TypeStruct FieldTypeStruct(Identifier key) {
+        return this.FieldTypeStruct(key.f0.tokenImage);
+    }
+
+    public TypeStruct FieldTypeStruct(TypeStruct key) {
+        return this.FieldTypeStruct(key.Type());
+    }
+
+    public String FieldType(String key) {
+        return this.FieldTypeStruct(key).Type();
+    }
+
+    public String FieldType(Identifier key) {
+        return this.FieldTypeStruct(key).Type();
+    }
+
+    public String FieldType(TypeStruct key) {
+        return this.FieldTypeStruct(key).Type();
+    }
+
+    public TypeStruct AddField(Identifier key, TypeStruct value) {
+        if (this.FieldTypeStruct(key) != null) {
+            return new TypeStruct("Type error");
+        }
+
+        return super.PushSymbol(key, value);
     }
 }
-

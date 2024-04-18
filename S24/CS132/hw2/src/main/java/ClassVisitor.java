@@ -9,11 +9,11 @@ import minijava.visitor.GJDepthFirst;
  */
 public class ClassVisitor extends GJDepthFirst<TypeStruct, Context> {
     public static final void DebugLogln(String msg) {
-        System.out.println(msg);
+        // System.out.println(msg);
     }
 
     public static final void DebugLog(String msg) {
-        System.out.print(msg);
+        // System.out.print(msg);
     }
 
     private HashMap<String, ClassSymbol> classTable;
@@ -35,7 +35,8 @@ public class ClassVisitor extends GJDepthFirst<TypeStruct, Context> {
         int _count = 0;
         for (Enumeration<Node> e = n.elements(); e.hasMoreElements();) {
             TypeStruct err = e.nextElement().accept(this, context);
-            if (err != null) {
+            if (err != null  && err.MatchType(new TypeStruct("Type error"))) {
+                DebugLogln("(NodeList) " + err.Type());
                 return err;
             }
 
@@ -51,7 +52,8 @@ public class ClassVisitor extends GJDepthFirst<TypeStruct, Context> {
             int _count = 0;
             for (Enumeration<Node> e = n.elements(); e.hasMoreElements();) {
                 TypeStruct err = e.nextElement().accept(this, context);
-                if (err != null) {
+                if (err != null && err.MatchType(new TypeStruct("Type error"))) {
+                    DebugLogln("(NodeListOptional) " + err.Type());
                     return err;
                 }
                 _count++;
@@ -66,7 +68,8 @@ public class ClassVisitor extends GJDepthFirst<TypeStruct, Context> {
         int _count = 0;
         for (Enumeration<Node> e = n.elements(); e.hasMoreElements();) {
             TypeStruct err = e.nextElement().accept(this, context);
-            if (err != null) {
+            if (err != null && err.MatchType(new TypeStruct("Type error"))) {
+                DebugLogln("(NodeSequence) " + err.Type());
                 return err;
             }
 
@@ -98,37 +101,34 @@ public class ClassVisitor extends GJDepthFirst<TypeStruct, Context> {
 
         DebugLogln("classTable:");
         for (HashMap.Entry<String, ClassSymbol> currClass : this.classTable.entrySet()) {
-            DebugLogln("  Class Name: " + currClass.getValue().ClassName());
-            if (currClass.getValue().Fields().Table().isEmpty()) {
-                DebugLogln("    No Fields..........");
+            if (currClass.getValue().Parent() != null
+                && !currClass.getValue().Parent().equals("main")) {
+                DebugLogln("  Class Name: " + currClass.getValue().Name() + " extends " +
+                           currClass.getValue().Parent());
+            } else {
+                DebugLogln("  Class Name: " + currClass.getValue().Name());
             }
-            for (Pair field : currClass.getValue().Fields().Table()) {
-                DebugLogln("    " + field.Type().GetType() + " " + field.Name());
-                // DebugLogln("    Field: (" + field.getKey() + ", " + field.getValue().GetType() + ")");
+
+            for (SymbolTable fieldScope : currClass.getValue().Fields()) {
+                DebugLogln("    Fields");
+                for (Pair field : fieldScope.Table()) {
+                    DebugLogln("      " + field.Type() + " " + field.Name());
+                }
             }
-            DebugLogln("");
+
+            DebugLogln("\n    Methods");
             for (HashMap.Entry<String, MethodSymbol> method : currClass.getValue().Methods().entrySet()) {
-                DebugLog("    " + method.getValue().ReturnType().GetType() + " " +
-                                   method.getValue().MethodName() + " (");
-                // DebugLogln("    Method: (" + method.getValue().MethodName() + ", "
-                //         + method.getValue().ReturnType().GetType() + ")");
-                for (SymbolTable scope : method.getValue().VariableScopes()) {
-                    if (scope.Table().isEmpty()) {
-                        // DebugLogln("        No Formal Parameters..........");
-                        // break;
-                    }
-                    // DebugLogln("        Formal Parameters..........");
+                DebugLog("      " + method.getValue().Type() + " " + method.getValue().Name() + " (");
+                for (SymbolTable scope : method.getValue().Scopes()) {
                     for (Pair param : scope.Table()) {
-                        DebugLog(param.Type().GetType() + " " +
-                                           param.Name() + ", ");
-                        // DebugLogln("          Param: (" + param.getKey() + ", " +
-                        //                    param.getValue().GetType() + ")");
+                        DebugLog(param.Type() + " " + param.Name() + ", ");
                     }
                     DebugLogln(")");
                 }
             }
             DebugLogln("");
         }
+        DebugLogln("End of classTable\n\n");
 
         return null;
     }
@@ -155,10 +155,6 @@ public class ClassVisitor extends GJDepthFirst<TypeStruct, Context> {
      */
     @Override
     public TypeStruct visit(MainClass n, Context context) {
-        if (!this.classTable.isEmpty()) {
-            return new TypeStruct("Type error");
-        }
-
         context.SetMethod(n.f6.tokenImage, new TypeStruct("void"));
         context.Method().AddVariable(n.f11, new TypeStruct("StringArrayType"));
 
@@ -170,7 +166,7 @@ public class ClassVisitor extends GJDepthFirst<TypeStruct, Context> {
             return err;
         }
 
-        this.classTable.put(context.Class().ClassName(), context.Class());
+        this.classTable.put(context.Class().Name(), context.Class());
 
         return null;
     }
@@ -197,7 +193,7 @@ public class ClassVisitor extends GJDepthFirst<TypeStruct, Context> {
         context.SetClass(n.f1);
 
         // duplicate class name
-        if (this.classTable.containsKey(context.Class().ClassName())) {
+        if (this.classTable.containsKey(context.Class().Name())) {
             return new TypeStruct("Type error");
         }
 
@@ -211,7 +207,7 @@ public class ClassVisitor extends GJDepthFirst<TypeStruct, Context> {
             return err;
         }
 
-        this.classTable.put(context.Class().ClassName(), context.Class());
+        this.classTable.put(context.Class().Name(), context.Class());
 
         return null;
     }
@@ -231,21 +227,21 @@ public class ClassVisitor extends GJDepthFirst<TypeStruct, Context> {
         context.SetClass(n.f1, n.f3);
 
         // duplicate class name
-        if (this.classTable.containsKey(context.Class().ClassName())) {
+        if (this.classTable.containsKey(context.Class().Name())) {
             return new TypeStruct("Type error");
         }
 
-        TypeStruct err = n.f3.accept(this, context); // build fields
+        TypeStruct err = n.f5.accept(this, context); // build fields
         if (err != null) {
             return err;
         }
 
-        err = n.f5.accept(this, context); // build methods
+        err = n.f6.accept(this, context); // build methods
         if (err != null) {
             return err;
         }
 
-        this.classTable.put(context.Class().ClassName(), context.Class());
+        this.classTable.put(context.Class().Name(), context.Class());
 
         return null;
     }
@@ -257,7 +253,7 @@ public class ClassVisitor extends GJDepthFirst<TypeStruct, Context> {
      */
     @Override
     public TypeStruct visit(VarDeclaration n, Context context) {
-        return context.Class().Fields().AddSymbol(n.f1, n.f0.accept(this, context));
+        return context.Class().AddField(n.f1, n.f0.accept(this, context));
     }
 
     /**
@@ -280,7 +276,7 @@ public class ClassVisitor extends GJDepthFirst<TypeStruct, Context> {
         context.SetMethod(n.f2, n.f1.accept(this, context));
 
         // duplicate method name
-        if (context.Class().Methods().containsKey(context.Method().MethodName())) {
+        if (context.Class().Methods().containsKey(context.Method().Name())) {
             return new TypeStruct("Type error");
         }
 
@@ -314,7 +310,7 @@ public class ClassVisitor extends GJDepthFirst<TypeStruct, Context> {
      */
     @Override
     public TypeStruct visit(FormalParameter n, Context context) {
-        return context.Method().AddVariable(n.f1, n.f0.accept(this, context));
+        return context.Method().AddFormalParameter(n.f1, n.f0.accept(this, context));
     }
 
     /**

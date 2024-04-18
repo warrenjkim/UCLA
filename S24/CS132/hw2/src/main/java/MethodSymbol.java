@@ -1,103 +1,91 @@
 import minijava.syntaxtree.Identifier;
 import minijava.syntaxtree.Node;
-import java.util.LinkedList;
 
-public class MethodSymbol {
-    private String name;
-    private TypeStruct returnType;
-    private LinkedList<SymbolTable> scopes;
+public class MethodSymbol extends Symbol {
+    private SymbolTable formalParameters;
+
+    public MethodSymbol() {
+        super();
+        this.formalParameters = new SymbolTable();
+        super.EnterScope();
+    }
 
     public MethodSymbol(MethodSymbol other) {
-        this.name = other.name;
-        this.returnType = other.returnType;
-        this.scopes = other.scopes;
-    }
+        super(other.name);
+        super.type = new TypeStruct(other.type);
+        this.formalParameters = new SymbolTable(other.formalParameters);
 
-    public MethodSymbol(Identifier name, Node returnType) {
-        this.name = name.f0.tokenImage;
-        this.returnType = new TypeStruct(returnType);
-        this.scopes = new LinkedList<>();
-        this.EnterScope();
-    }
-
-    public MethodSymbol(String name, Node returnType) {
-        this.name = name;
-        this.returnType = new TypeStruct(returnType);
-        this.scopes = new LinkedList<>();
-        this.EnterScope();
-    }
-
-    public MethodSymbol(Identifier name, TypeStruct returnType) {
-        this.name = name.f0.tokenImage;
-        this.returnType = returnType;
-        this.scopes = new LinkedList<>();
-        this.EnterScope();
-    }
-
-    public MethodSymbol(String name, TypeStruct returnType) {
-        this.name = name;
-        this.returnType = returnType;
-        this.scopes = new LinkedList<>();
-        this.EnterScope();
-    }
-
-    public String MethodName() {
-        return this.name;
-    }
-
-    public TypeStruct ReturnType() {
-        return this.returnType;
-    }
-
-    public void EnterScope() {
-        this.scopes.push(new SymbolTable());
-    }
-
-    public void ExitScope() {
-        if (!this.scopes.isEmpty()) {
-            this.scopes.pop();
+        for (SymbolTable scope : other.scopes) {
+            super.scopes.push(new SymbolTable(scope));
         }
     }
 
-    public TypeStruct AddVariable(Identifier key, Node value) {
+     public MethodSymbol(Identifier name, Node type) {
+        super(name);
+        super.type = new TypeStruct(type);
+        this.formalParameters = new SymbolTable();
+        super.EnterScope();
+    }
+
+    public MethodSymbol(String name, Node type) {
+        super(name);
+        super.type = new TypeStruct(type);
+        this.formalParameters = new SymbolTable();
+        super.EnterScope();
+    }
+
+    public MethodSymbol(Identifier name, TypeStruct type) {
+        super(name);
+        super.type = new TypeStruct(type);
+        this.formalParameters = new SymbolTable();
+        super.EnterScope();
+    }
+
+    public MethodSymbol(String name, TypeStruct type) {
+        super(name);
+        super.type = new TypeStruct(type);
+        this.formalParameters = new SymbolTable();
+        super.EnterScope();
+    }
+
+
+    // boilerplate
+    public SymbolTable FormalParameters() {
+        return this.formalParameters;
+    }
+
+
+    // find
+    public TypeStruct FindVariable(String key) {
+        for (SymbolTable scope : super.scopes) {
+            TypeStruct variable = scope.GetType(key);
+            if (variable != null) {
+                return variable;
+            }
+        }
+
+        return this.formalParameters.GetType(key);
+    }
+
+    public TypeStruct FindVariable(Identifier key) {
+        return this.FindVariable(key.f0.tokenImage);
+    }
+
+    public TypeStruct FindVariable(TypeStruct key) {
+        return this.FindVariable(key.Type());
+    }
+
+
+    // set
+    public TypeStruct AddFormalParameter(Identifier key, TypeStruct value) {
+        return this.formalParameters.AddSymbol(key, value);
+    }
+
+    public TypeStruct AddVariable(Identifier key, TypeStruct value) {
         if (this.FindVariable(key) != null) {
             return new TypeStruct("Type error");
         }
 
-        return this.scopes.peek().AddSymbol(key, new TypeStruct(value));
-    }
-
-    public TypeStruct AddVariable(Identifier key, TypeStruct value) {
-        return this.scopes.peek().AddSymbol(key, value);
-    }
-
-    public LinkedList<SymbolTable> VariableScopes() {
-        return this.scopes;
-    }
-
-    public TypeStruct FindVariable(Identifier key) {
-        for (SymbolTable scope : this.scopes) {
-            TypeStruct var = scope.GetType(key);
-            if (var != null) {
-                return var;
-            }
-        }
-
-        return null;
-    }
-
-    public TypeStruct FindVariable(TypeStruct key) {
-        for (SymbolTable scope : this.scopes) {
-            TypeStruct var = scope.GetType(key.GetType());
-            if (var != null) {
-                return var;
-            }
-        }
-
-        return null;
-    }
-
-    public SymbolTable FormalParameters() {
-        return this.scopes.peekLast();
+        return super.PushSymbol(key, value);
     }
 }

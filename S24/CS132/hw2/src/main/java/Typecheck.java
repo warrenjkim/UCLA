@@ -1,6 +1,5 @@
 import minijava.*;
 import minijava.syntaxtree.*;
-import java.util.HashMap;
 
 public class Typecheck {
     public static void main(String [] args) {
@@ -9,13 +8,13 @@ public class Typecheck {
             ClassVisitor cv = new ClassVisitor();
             TypeStruct err = root.accept(cv, new Context());
             if (err != null) {
-                System.out.println(err.GetType());
+                System.out.println(err.Type());
                 return;
             }
 
             err = root.accept(new TypeVisitor(cv.ClassTable()), new Context());
             if (err != null) {
-                System.out.println(err.GetType());
+                System.out.println(err.Type());
                 return;
             }
 
