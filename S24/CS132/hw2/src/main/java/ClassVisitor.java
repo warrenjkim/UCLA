@@ -1,413 +1,346 @@
-import java.util.ArrayDeque;
 import java.util.Enumeration;
 import java.util.HashMap;
 import minijava.syntaxtree.*;
 import minijava.visitor.GJDepthFirst;
 
 /**
- * Provides default methods which visit each node in the tree in depth-first
- * order. Your visitors may extend this class.
+ * Visits the AST in a depth first manner, only visiting necessary nodes. This visitor will only
+ * build the class signatures and check for cyclic type hierarchies.
+ *
+ * The class table looks like:
+ * (Name, ClassSymbol), where ClassSymbol contains the class'
+ *   - field types,
+ *   - type hierarchy,
+ *   - method signatures,
  */
 public class ClassVisitor extends GJDepthFirst<TypeStruct, Context> {
-    public static final void DebugLogln(String msg) {
-        // System.out.println(msg);
+  private HashMap<String, ClassSymbol> classTable;
+
+  public HashMap<String, ClassSymbol> ClassTable() {
+    return this.classTable;
+  }
+
+  public ClassVisitor() {
+    super();
+    this.classTable = new HashMap<>();
+  }
+
+  //
+  // Auto class visitors--probably don't need to be overridden.                                     // these had to be overridden.
+  //
+  @Override
+  public TypeStruct visit(NodeList n, Context context) {
+    int _count = 0;
+    for (Enumeration<Node> e = n.elements(); e.hasMoreElements(); ) {
+      TypeStruct err = e.nextElement().accept(this, context);                                       // check for errors.
+      if (err != null && err.MatchType(new TypeStruct("Type error"))) {
+        return err;
+      }
+
+      _count++;
     }
 
-    public static final void DebugLog(String msg) {
-        // System.out.print(msg);
-    }
+    return null;                                                                                    // no error.
+  }
 
-    private HashMap<String, ClassSymbol> classTable;
-
-    public HashMap<String, ClassSymbol> ClassTable() {
-        return this.classTable;
-    }
-
-    public ClassVisitor() {
-        super();
-        this.classTable = new HashMap<>();
-    }
-
-    //
-    // Auto class visitors--probably don't need to be overridden.
-    //
-    @Override
-    public TypeStruct visit(NodeList n, Context context) {
-        int _count = 0;
-        for (Enumeration<Node> e = n.elements(); e.hasMoreElements();) {
-            TypeStruct err = e.nextElement().accept(this, context);
-            if (err != null  && err.MatchType(new TypeStruct("Type error"))) {
-                DebugLogln("(NodeList) " + err.Type());
-                return err;
-            }
-
-            _count++;
+  @Override
+  public TypeStruct visit(NodeListOptional n, Context context) {
+    if (n.present()) {
+      int _count = 0;
+      for (Enumeration<Node> e = n.elements(); e.hasMoreElements(); ) {
+        TypeStruct err = e.nextElement().accept(this, context);                                     // check for errors.
+        if (err != null && err.MatchType(new TypeStruct("Type error"))) {
+          return err;
         }
-
-        return null;
+        _count++;
+      }
     }
 
-    @Override
-    public TypeStruct visit(NodeListOptional n, Context context) {
-        if (n.present()) {
-            int _count = 0;
-            for (Enumeration<Node> e = n.elements(); e.hasMoreElements();) {
-                TypeStruct err = e.nextElement().accept(this, context);
-                if (err != null && err.MatchType(new TypeStruct("Type error"))) {
-                    DebugLogln("(NodeListOptional) " + err.Type());
-                    return err;
-                }
-                _count++;
-            }
-        }
+    return null;                                                                                    // no error.
+  }
 
-        return null;
+  @Override
+  public TypeStruct visit(NodeSequence n, Context context) {
+    int _count = 0;
+    for (Enumeration<Node> e = n.elements(); e.hasMoreElements(); ) {
+      TypeStruct err = e.nextElement().accept(this, context);                                       // check for errors.
+      if (err != null && err.MatchType(new TypeStruct("Type error"))) {
+        return err;
+      }
+
+      _count++;
     }
 
-    @Override
-    public TypeStruct visit(NodeSequence n, Context context) {
-        int _count = 0;
-        for (Enumeration<Node> e = n.elements(); e.hasMoreElements();) {
-            TypeStruct err = e.nextElement().accept(this, context);
-            if (err != null && err.MatchType(new TypeStruct("Type error"))) {
-                DebugLogln("(NodeSequence) " + err.Type());
-                return err;
-            }
+    return null;                                                                                    // no error.
+  }
 
-            _count++;
-        }
-        return null;
+
+  //
+  // User-generated visitor methods below
+  //
+
+  /**
+   * f0 -> MainClass()
+   * f1 -> ( TypeDeclaration() )*
+   * f2 -> <EOF>
+   */
+  @Override
+  public TypeStruct visit(Goal n, Context context) {
+    TypeStruct err = n.f0.accept(this, context);                                                    // typecheck the main class.
+    if (err != null) {
+      return err;
     }
 
-    //
-    // User-generated visitor methods below
-    //
-
-    /**
-     * f0 -> MainClass()
-     * f1 -> ( TypeDeclaration() )*
-     * f2 -> <EOF>
-     */
-    @Override
-    public TypeStruct visit(Goal n, Context context) {
-        TypeStruct err = n.f0.accept(this, context);
-        if (err != null) {
-            return err;
-        }
-
-        err = n.f1.accept(this, context);
-        if (err != null) {
-            return err;
-        }
-
-        // cyclic dependency check
-        for (HashMap.Entry<String, ClassSymbol> currClass : this.classTable.entrySet()) {
-            ClassSymbol currSymbol = currClass.getValue();
-            TypeStruct currType = currSymbol.TypeStruct(); // get the actual reference to currClass.type
-
-            if (currSymbol.ParentTypeStruct() != null) {
-                ClassSymbol parentSymbol = this.classTable.get(currSymbol.Parent()); // actual reference to parent
-
-                while (parentSymbol != null) {
-                    TypeStruct parentType = parentSymbol.TypeStruct();
-                    DebugLogln(currType.Type() + "->" + parentType.Type());
-                    currType.SetSuperTypeStruct(parentType);
-                    parentSymbol = this.classTable.get(parentSymbol.Parent()); // actual reference to parent
-                    currType = parentType;
-                    if (currType.MatchType(currSymbol.Type())) {
-                        DebugLogln("cycle !!");
-                        return new TypeStruct("Type error");
-                    }
-                }
-            }
-        }
-
-        for (HashMap.Entry<String, ClassSymbol> currClass : this.classTable.entrySet()) {
-            ClassSymbol currSymbol = currClass.getValue();
-            TypeStruct currType = currSymbol.TypeStruct(); // get the actual reference to currClass.type
-
-            while (currSymbol != null) {
-                DebugLogln(currType.Type() + "->" + currType.SuperType());
-                currSymbol = this.classTable.get(currType.SuperType());
-                currType = currType.SuperTypeStruct();
-            }
-        }
-
-        DebugLogln("No cycles");
-
-        DebugLogln("\n\n\nclassTable:");
-        for (HashMap.Entry<String, ClassSymbol> currClass : this.classTable.entrySet()) {
-            DebugLog("  Class Name: " + currClass.getValue().Name());
-            TypeStruct parent = currClass.getValue().TypeStruct();
-            while (parent.SuperTypeStruct() != null) {
-                DebugLog(" -> " + currClass.getValue().Parent());
-                parent = parent.SuperTypeStruct();
-            }
-            for (SymbolTable fieldScope : currClass.getValue().Fields()) {
-                DebugLogln("\n    Fields");
-                for (Pair field : fieldScope.Table()) {
-                    DebugLogln("      " + field.Type() + " " + field.Name());
-                }
-            }
-
-            DebugLogln("\n    Methods");
-            for (HashMap.Entry<String, MethodSymbol> method : currClass.getValue().Methods().entrySet()) {
-                DebugLog("      " + method.getValue().Type() + " " + method.getValue().Name() + " (");
-                for (SymbolTable scope : method.getValue().Scopes()) {
-                    for (Pair param : scope.Table()) {
-                        DebugLog(param.Type() + " " + param.Name() + ", ");
-                    }
-                    DebugLogln(")");
-                }
-            }
-            DebugLogln("");
-        }
-        DebugLogln("End of classTable\n\n");
-
-        return null;
+    err = n.f1.accept(this, context);                                                               // typecheck other classes.
+    if (err != null) {
+      return err;
     }
 
-    /**
-     * f0 -> "class"
-     * f1 -> Identifier()
-     * f2 -> "{"
-     * f3 -> "public"
-     * f4 -> "static"
-     * f5 -> "void"
-     * f6 -> "main"
-     * f7 -> "("
-     * f8 -> "String"
-     * f9 -> "["
-     * f10 -> "]"
-     * f11 -> Identifier()
-     * f12 -> ")"
-     * f13 -> "{"
-     * f14 -> ( VarDeclaration() )*
-     * f15 -> ( Statement() )*
-     * f16 -> "}"
-     * f17 -> "}"
-     */
-    @Override
-    public TypeStruct visit(MainClass n, Context context) {
-        context.SetMethod(n.f6.tokenImage, new TypeStruct("void"));
-        context.Method().AddVariable(n.f11, new TypeStruct("StringArrayType"));
+    for (HashMap.Entry<String, ClassSymbol> currClass : this.classTable.entrySet()) {               // cyclic dependency check.
+      ClassSymbol currSymbol = currClass.getValue();                                                // actual reference to the current class symbol.
+      TypeStruct currType = currSymbol.TypeStruct();                                                // actual reference to the current class type.
 
-        context.SetClass(n.f1, new Identifier(new NodeToken("main")));
-        context.Class().AddMethod(context.Method());
+      if (currSymbol.ParentTypeStruct() != null) {                                                  // check if we need to add a super type.
+        ClassSymbol parentSymbol = this.classTable.get(currSymbol.Parent());                        // actual reference to the parent class.
 
-        TypeStruct err = n.f14.accept(this, context); // build fields
-        if (err != null) {
-            return err;
-        }
-
-        this.classTable.put(context.Class().Name(), context.Class());
-
-        return null;
-    }
-
-    /**
-     * f0 -> ClassDeclaration()
-     * | ClassExtendsDeclaration()
-     */
-    @Override
-    public TypeStruct visit(TypeDeclaration n, Context context) {
-        return n.f0.accept(this, context);
-    }
-
-    /**
-     * f0 -> "class"
-     * f1 -> Identifier()
-     * f2 -> "{"
-     * f3 -> ( VarDeclaration() )*
-     * f4 -> ( MethodDeclaration() )*
-     * f5 -> "}"
-     */
-    @Override
-    public TypeStruct visit(ClassDeclaration n, Context context) {
-        context.SetClass(n.f1);
-
-        // duplicate class name
-        if (this.classTable.containsKey(context.Class().Name())) {
+        while (parentSymbol != null) {                                                              // traverse up the type hierarchy.
+          TypeStruct parentType = parentSymbol.TypeStruct();                                        // actual reference to the parent class type.
+          currType.SetSuperTypeStruct(parentType);                                                  // add the parent class type to the current class type hierarchy.
+          parentSymbol = this.classTable.get(parentSymbol.Parent());                                // actual reference to the parent class.
+          currType = parentType;                                                                    // set the current class type to the parent class type.
+          if (currType.MatchType(currSymbol.Type())) {                                              // there's a cycle.
             return new TypeStruct("Type error");
+          }
         }
-
-        TypeStruct err = n.f3.accept(this, context); // build fields
-        if (err != null) {
-            return err;
-        }
-
-        err = n.f4.accept(this, context); // build methods
-        if (err != null) {
-            return err;
-        }
-
-        this.classTable.put(context.Class().Name(), context.Class());
-
-        return null;
+      }
     }
 
-    /**
-     * f0 -> "class"
-     * f1 -> Identifier()
-     * f2 -> "extends"
-     * f3 -> Identifier()
-     * f4 -> "{"
-     * f5 -> ( VarDeclaration() )*
-     * f6 -> ( MethodDeclaration() )*
-     * f7 -> "}"
-     */
-    @Override
-    public TypeStruct visit(ClassExtendsDeclaration n, Context context) {
-        context.SetClass(n.f1, n.f3);
+    return null;                                                                                    // no error.
+  }
 
-        // // cyclic dependency
-        // TypeStruct parent = n.f3.accept(this, context);
-        // if (parent != null) {
-        //     ClassSymbol parentClass = this.classTable.get(parent.Type());
-        //     if (parentClass != null && parentClass.TypeStruct().MatchType(context.Class().TypeStruct())) {
-        //         DebugLogln("Cyclic dependency error");
-        //         return new TypeStruct("Type error");
-        //     }
-        // }
+  /**
+   * f0 -> "class"
+   * f1 -> Identifier()
+   * f2 -> "{"
+   * f3 -> "public"
+   * f4 -> "static"
+   * f5 -> "void"
+   * f6 -> "main"
+   * f7 -> "("
+   * f8 -> "String"
+   * f9 -> "["
+   * f10 -> "]"
+   * f11 -> Identifier()
+   * f12 -> ")"
+   * f13 -> "{"
+   * f14 -> ( VarDeclaration() )*
+   * f15 -> ( Statement() )*
+   * f16 -> "}"
+   * f17 -> "}"
+   */
+  @Override
+  public TypeStruct visit(MainClass n, Context context) {
+    context.SetMethod(n.f6.tokenImage, new TypeStruct("void"));                                     // build main method.
+    context.Method().AddFormalParameter(n.f11, new TypeStruct("StringArrayType"));                  // String [] isn't a part of MiniJava.
+    context.SetClass(n.f1, new Identifier(new NodeToken("main")));                                  // make it easy with ThisExpression, the main class has a "super type" of main.
+    context.Class().AddMethod(context.Method());                                                    // add the main method to the main class.
 
-        // duplicate class name
-        if (this.classTable.containsKey(context.Class().Name())) {
-            return new TypeStruct("Type error");
-        }
-
-        TypeStruct err = n.f5.accept(this, context); // build fields
-        if (err != null) {
-            return err;
-        }
-
-        err = n.f6.accept(this, context); // build methods
-        if (err != null) {
-            return err;
-        }
-
-        this.classTable.put(context.Class().Name(), context.Class());
-
-        return null;
+    TypeStruct err = n.f14.accept(this, context);                                                   // typecheck class fields.
+    if (err != null) {
+      return err;
     }
 
-    /**
-     * f0 -> Type()
-     * f1 -> Identifier()
-     * f2 -> ";"
-     */
-    @Override
-    public TypeStruct visit(VarDeclaration n, Context context) {
-        return context.Class().AddField(n.f1, n.f0.accept(this, context));
+    this.classTable.put(context.Class().Name(), context.Class());                                   // add class to the global class table.
+    return null;                                                                                    // no error.
+  }
+
+  /**
+   * f0 -> ClassDeclaration()
+   *     | ClassExtendsDeclaration()
+   */
+  @Override
+  public TypeStruct visit(TypeDeclaration n, Context context) {
+    return n.f0.accept(this, context);                                                              // typecheck classes.
+  }
+
+  /**
+   * f0 -> "class"
+   * f1 -> Identifier()
+   * f2 -> "{"
+   * f3 -> ( VarDeclaration() )*
+   * f4 -> ( MethodDeclaration() )*
+   * f5 -> "}"
+   */
+  @Override
+  public TypeStruct visit(ClassDeclaration n, Context context) {
+    context.SetClass(n.f1);                                                                         // build the current class.
+    if (this.classTable.containsKey(context.Class().Name())) {                                      // duplicate class name.
+      return new TypeStruct("Type error");
     }
 
-    /**
-     * f0 -> "public"
-     * f1 -> Type()
-     * f2 -> Identifier()
-     * f3 -> "("
-     * f4 -> ( FormalParameterList() )?
-     * f5 -> ")"
-     * f6 -> "{"
-     * f7 -> ( VarDeclaration() )*
-     * f8 -> ( Statement() )*
-     * f9 -> "return"
-     * f10 -> Expression()
-     * f11 -> ";"
-     * f12 -> "}"
-     */
-    @Override
-    public TypeStruct visit(MethodDeclaration n, Context context) {
-        context.SetMethod(n.f2, n.f1.accept(this, context));
-
-        // duplicate method name
-        if (context.Class().Methods().containsKey(context.Method().Name())) {
-            return new TypeStruct("Type error");
-        }
-
-        TypeStruct err = n.f4.accept(this, context); // build formal parameters
-        if (err != null) {
-            return err;
-        }
-
-        context.Class().AddMethod(context.Method());
-
-        return null;
+    TypeStruct err = n.f3.accept(this, context);                                                    // typecheck current class fields.
+    if (err != null) {
+      return err;
     }
 
-    /**
-     * f0 -> FormalParameter()
-     * f1 -> ( FormalParameterRest() )*
-     */
-    @Override
-    public TypeStruct visit(FormalParameterList n, Context context) {
-        TypeStruct err = n.f0.accept(this, context);
-        if (err != null) {
-            return err;
-        }
-
-        return n.f1.accept(this, context);
+    err = n.f4.accept(this, context);                                                               // typecheck current class methods.
+    if (err != null) {
+      return err;
     }
 
-    /**
-     * f0 -> Type()
-     * f1 -> Identifier()
-     */
-    @Override
-    public TypeStruct visit(FormalParameter n, Context context) {
-        return context.Method().AddFormalParameter(n.f1, n.f0.accept(this, context));
+    this.classTable.put(context.Class().Name(), context.Class());                                   // add class to the global class table.
+    return null;                                                                                    // no error.
+  }
+
+  /**
+   *
+   * f0 -> "class"
+   * f1 -> Identifier()
+   * f2 -> "extends"
+   * f3 -> Identifier()
+   * f4 -> "{"
+   * f5 -> (
+   * VarDeclaration() )*
+   * f6 -> ( MethodDeclaration() )*
+   * f7 -> "}"
+   */
+  @Override
+  public TypeStruct visit(ClassExtendsDeclaration n, Context context) {
+    context.SetClass(n.f1, n.f3);                                                                   // build the current class (with parent type).
+    if (this.classTable.containsKey(context.Class().Name())) {                                      // duplicate class name.
+      return new TypeStruct("Type error");
     }
 
-    /**
-     * f0 -> ","
-     * f1 -> FormalParameter()
-     */
-    @Override
-    public TypeStruct visit(FormalParameterRest n, Context context) {
-        return n.f1.accept(this, context);
+    TypeStruct err = n.f5.accept(this, context);                                                    // typecheck current class fields.
+    if (err != null) {
+      return err;
     }
 
-    /**
-     * f0 -> ArrayType()
-     * | BooleanType()
-     * | IntegerType()
-     * | Identifier()
-     */
-    @Override
-    public TypeStruct visit(Type n, Context context) {
-        return n.f0.accept(this, context);
+    err = n.f6.accept(this, context);                                                               // typecheck current class methods.
+    if (err != null) {
+      return err;
     }
 
-    /**
-     * f0 -> "int"
-     * f1 -> "["
-     * f2 -> "]"
-     */
-    @Override
-    public TypeStruct visit(ArrayType n, Context context) {
-        return new TypeStruct("ArrayType");
+    this.classTable.put(context.Class().Name(), context.Class());                                   // add class to the global class table.
+    return null;                                                                                    // no error
+  }
+
+  /**
+   * f0 -> Type()
+   * f1 -> Identifier()
+   * f2 -> ";"
+   */
+  @Override
+  public TypeStruct visit(VarDeclaration n, Context context) {
+    return context.Class().AddField(n.f1, n.f0.accept(this, context));                              // check for duplicate class fields.
+  }
+
+  /**
+   * f0 -> "public"
+   * f1 -> Type()
+   * f2 -> Identifier()
+   * f3 -> "("
+   * f4 -> ( FormalParameterList() )?
+   * f5 -> ")"
+   * f6 -> "{"
+   * f7 -> ( VarDeclaration() )*
+   * f8 -> ( Statement() )*
+   * f9 -> "return"
+   * f10 ->
+   * Expression()
+   * f11 -> ";"
+   * f12 -> "}"
+   */
+  @Override
+  public TypeStruct visit(MethodDeclaration n, Context context) {
+    context.SetMethod(n.f2, n.f1.accept(this, context));                                            // build the current method.
+    if (context.Class().Methods().containsKey(context.Method().Name())) {                           // duplicate method name.
+      return new TypeStruct("Type error");
     }
 
-    /**
-     * f0 -> "boolean"
-     */
-    @Override
-    public TypeStruct visit(BooleanType n, Context context) {
-        return new TypeStruct("BooleanType");
+    TypeStruct err = n.f4.accept(this, context);                                                    // typecheck formal parameters
+    if (err != null) {
+      return err;
     }
 
-    /**
-     * f0 -> "int"
-     */
-    @Override
-    public TypeStruct visit(IntegerType n, Context context) {
-        return new TypeStruct("IntegerType");
+    context.Class().AddMethod(context.Method());                                                    // add the method to the current class.
+    return null;                                                                                    // no error.
+  }
+
+  /**
+   * f0 -> FormalParameter()
+   * f1 -> ( FormalParameterRest() )*
+   */
+  @Override
+  public TypeStruct visit(FormalParameterList n, Context context) {
+    TypeStruct err = n.f0.accept(this, context);                                                    // typecheck the formal parameter.
+    if (err != null) {
+      return err;
     }
 
-    /**
-     * f0 -> <IDENTIFIER>
-     */
-    @Override
-    public TypeStruct visit(Identifier n, Context context) {
-        return new TypeStruct(n);
-    }
+    return n.f1.accept(this, context);                                                              // typecheck formal parameters.
+  }
+
+  /**
+   * f0 -> Type()
+   * f1 -> Identifier()
+   */
+  @Override
+  public TypeStruct visit(FormalParameter n, Context context) {
+    return context.Method().AddFormalParameter(n.f1, n.f0.accept(this, context));                   // check for duplicate formal parameters.
+  }
+
+  /**
+   * f0 -> ","
+   * f1 -> FormalParameter()
+   */
+  @Override
+  public TypeStruct visit(FormalParameterRest n, Context context) {
+    return n.f1.accept(this, context);                                                              // typecheck formal parameter.
+  }
+
+  /**
+   * f0 -> ArrayType()
+   *     | BooleanType()
+   *     | IntegerType()
+   *     | Identifier()
+   */
+  @Override
+  public TypeStruct visit(Type n, Context context) {
+    return n.f0.accept(this, context);                                                              // get the type.
+  }
+
+  /**
+   * f0 -> "int"
+   * f1 -> "["
+   * f2 -> "]"
+   */
+  @Override
+  public TypeStruct visit(ArrayType n, Context context) {
+    return new TypeStruct("ArrayType");                                                             // ArrayType.
+  }
+
+  /**
+   * f0 -> "boolean"
+   */
+  @Override
+  public TypeStruct visit(BooleanType n, Context context) {
+    return new TypeStruct("BooleanType");                                                           // BooleanType.
+  }
+
+  /**
+   * f0 -> "int"
+   */
+  @Override
+  public TypeStruct visit(IntegerType n, Context context) {
+    return new TypeStruct("IntegerType");                                                           // IntegerType.
+  }
+
+  /**
+   * f0 -> <IDENTIFIER>
+   */
+  @Override
+  public TypeStruct visit(Identifier n, Context context) {
+    return new TypeStruct(n);                                                                       // Name of the identifier.
+  }
 }
