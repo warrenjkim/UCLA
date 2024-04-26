@@ -1,3 +1,6 @@
+package Visitors;
+
+import Utils.*;
 import java.util.Enumeration;
 import java.util.HashMap;
 import minijava.syntaxtree.*;
@@ -212,7 +215,7 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
     }
 
     TypeStruct returnType = n.f10.accept(this, context);                                            // typecheck the return type with the expected return type.
-    if (returnType == null || !returnType.MatchType(context.Method().Type())) {
+    if (returnType == null || !returnType.MatchType(context.Method().TypeStruct())) {
       return new TypeStruct("Type error");
     }
 
@@ -288,17 +291,8 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
    */
   @Override
   public TypeStruct visit(AssignmentStatement n, Context context) {
-    TypeStruct id = context.Method().FindVariable(n.f0);                                            // get the type of the identifier.
-        // // fix this part to recurse.
-    if (id == null) {
-      id = context.Class().FieldTypeStruct(n.f0);                                                   // if the id isn't in the local scope, recursively check class scope(s).
-    }
-
-    if (id == null && context.Class().ParentTypeStruct() != null) {                                 // id doesn't exist.
-      id = this.classTable.get(context.Class().Parent()).FieldTypeStruct(n.f0);
-    }
-
-    if (id == null) {
+    TypeStruct id = n.f0.accept(this, context);
+    if (id.MatchType("Type error")) {
       return new TypeStruct("Type error");
     }
 
@@ -307,7 +301,7 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
       return new TypeStruct("Type error");
     }
 
-    if (!id.MatchType(expr)) {                                                                      // id and expression types don't match.
+    if (!expr.MatchType(id)) {                                                                      // id and expression types don't match.
       return new TypeStruct("Type error");
     }
 
@@ -326,12 +320,8 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
    */
   @Override
   public TypeStruct visit(ArrayAssignmentStatement n, Context context) {
-    TypeStruct id = context.Method().FindVariable(n.f0);                                            // get the type of the identifier.
-    if (id == null) {
-      id = context.Class().FieldTypeStruct(n.f0);                                                   // if the id isn't in the local scope, recursively check class scope(s).
-    }
-
-    if (id == null || !id.MatchType("ArrayType")) {                                                 // id doesn't exist or isnt't an int[].
+    TypeStruct id = n.f0.accept(this, context);                                                     // find id.
+    if (!id.MatchType("ArrayType")) {                                                               // id doesn't exist or isnt't an int[].
       return new TypeStruct("Type error");
     }
 
@@ -561,7 +551,7 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
   @Override
   public TypeStruct visit(ArrayLength n, Context context) {
     TypeStruct id = n.f0.accept(this, context);                                                     // typecheck the expression.
-    if (id == null || !id.MatchType("ArrayType")) {                                                 // id doesn't exist or isn't an int[].
+    if (!id.MatchType("ArrayType")) {                                                               // id doesn't exist or isn't an int[].
       return new TypeStruct("Type error");
     }
 
@@ -585,13 +575,27 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
 
     MethodSymbol targetMethod = targetClass.FindMethod(n.f2);                                       // get the target method.
     if (targetMethod == null) {                                                                     // target method doesn't exist.
-      return new TypeStruct("Type error");
+      TypeStruct parentType = targetClass.ParentTypeStruct();
+      while (parentType != null) {
+        targetClass = this.classTable.get(parentType.Type());                                       // check parent.
+        targetMethod = targetClass.FindMethod(n.f2);
+        if (targetMethod != null) {                                                                 // stop at the earliest method.
+          break;
+        }
+
+        parentType = parentType.SuperTypeStruct();                                                  // recurse.
+      }
+
+      if (targetMethod == null) {                                                                   // method dne -> error.
+        return new TypeStruct("Type error");
+      }
     }
 
     Context targetContext = new Context(context.Class(), new MethodSymbol(targetMethod));           // a deep copy of the target method context.
     for (SymbolTable scope : context.Method().Scopes()) {                                           // push method scope onto the target method context.
       targetContext.Method().PushScope(scope);
     }
+
     targetContext.Method().PushScope(context.Method().FormalParameters());                          // push formal parameter scope onto the target method context..
 
     TypeStruct err = n.f4.accept(this, targetContext);                                              // typecheck the expression list using the target context.
@@ -711,8 +715,13 @@ public class TypeVisitor extends GJDepthFirst<TypeStruct, Context> {
       }
     }
 
-    if (id == null && context.Class().ParentTypeStruct() != null) {                                 // if the i
-      id = this.classTable.get(context.Class().Parent()).FieldTypeStruct(n);
+    if (id == null && context.Class().ParentTypeStruct() != null) {                                 // recurse upwards
+      Context targetContext = new Context(this.classTable.get(context.Class().Parent()),
+                context.Method());
+      id = this.visit(n, targetContext);
+      if (id.MatchType("Type error")) {
+        return new TypeStruct("Type error");
+      }
     }
 
     if (id == null) {                                                                               // id doesn't exist.

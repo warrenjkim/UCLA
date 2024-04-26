@@ -1,3 +1,6 @@
+package Visitors;
+
+import Utils.*;
 import java.util.Enumeration;
 import java.util.HashMap;
 import minijava.syntaxtree.*;
@@ -96,24 +99,12 @@ public class ClassVisitor extends GJDepthFirst<TypeStruct, Context> {
       return err;
     }
 
-    for (HashMap.Entry<String, ClassSymbol> currClass : this.classTable.entrySet()) {               // cyclic dependency check.
-      ClassSymbol currSymbol = currClass.getValue();                                                // actual reference to the current class symbol.
-      TypeStruct currType = currSymbol.TypeStruct();                                                // actual reference to the current class type.
-
-      if (currSymbol.ParentTypeStruct() != null) {                                                  // check if we need to add a super type.
-        ClassSymbol parentSymbol = this.classTable.get(currSymbol.Parent());                        // actual reference to the parent class.
-
-        while (parentSymbol != null) {                                                              // traverse up the type hierarchy.
-          TypeStruct parentType = parentSymbol.TypeStruct();                                        // actual reference to the parent class type.
-          currType.SetSuperTypeStruct(parentType);                                                  // add the parent class type to the current class type hierarchy.
-          parentSymbol = this.classTable.get(parentSymbol.Parent());                                // actual reference to the parent class.
-          currType = parentType;                                                                    // set the current class type to the parent class type.
-          if (currType.MatchType(currSymbol.Type())) {                                              // there's a cycle.
-            return new TypeStruct("Type error");
-          }
-        }
-      }
+    err = checkAcyclicityOverloading();
+    if (err != null) {
+        return err;
     }
+
+    buildFieldSubtypes();
 
     return null;                                                                                    // no error.
   }
@@ -342,5 +333,90 @@ public class ClassVisitor extends GJDepthFirst<TypeStruct, Context> {
   @Override
   public TypeStruct visit(Identifier n, Context context) {
     return new TypeStruct(n);                                                                       // Name of the identifier.
+  }
+
+  private TypeStruct checkFormalParameters(SymbolTable curr, SymbolTable parent) {
+    if (curr.Table().size() != parent.Table().size()) {                                             // overloading -> error.
+      return new TypeStruct("Type error");
+    }
+
+    while(!curr.Table().isEmpty()) {                                                                // while there are params to match.
+      Pair currParam = curr.Table().pollFirst();                                                    // pop the first element.
+      Pair parentParam = parent.Table().pollFirst();                                                // pop the first element.
+
+      if (!currParam.Type().equals(parentParam.Type())) {                                           // types don't match -> overloading -> error.
+        return new TypeStruct("Type error");
+      }
+    }
+
+    return null;                                                                                    // no error.
+  }
+
+  private TypeStruct checkOverloading(HashMap<String, MethodSymbol> curr,
+                                      HashMap<String, MethodSymbol> parent) {
+    for (HashMap.Entry<String, MethodSymbol> method : parent.entrySet()) {                          // for each method in parent class.
+      if (curr.containsKey(method.getKey())) {                                                      // child redefines method -> check for overloading.
+        if (!curr.get(method.getKey()).Type().equals(method.getValue().Type())) {                   // check exact type signatures.
+          return new TypeStruct("Type error");
+        }
+
+        TypeStruct err = checkFormalParameters(
+            new SymbolTable(curr.get(method.getKey()).FormalParameters()),
+            new SymbolTable(method.getValue().FormalParameters()));                                 // match deep copy of params.
+        if (err != null) {                                                                          // params don't match -> overloading -> error.
+          return new TypeStruct("Type error");
+        }
+      }
+    }
+
+    return null;                                                                                    // no error.
+  }
+
+  private TypeStruct checkAcyclicityOverloading() {
+    for (HashMap.Entry<String, ClassSymbol> currClass : this.classTable.entrySet()) {               // cyclic dependency check.
+      ClassSymbol currSymbol = currClass.getValue();                                                // actual reference to the current class symbol.
+      TypeStruct currType = currSymbol.TypeStruct();                                                // actual reference to the current class type.
+
+      if (currSymbol.ParentTypeStruct() != null) {                                                  // check if we need to add a super type.
+        ClassSymbol parentSymbol = this.classTable.get(currSymbol.Parent());                        // actual reference to the parent class.
+        if (parentSymbol == null && !currSymbol.Parent().equals("main")) {                          // parent does not exist -> error.
+              return new TypeStruct("Type error");
+        }
+
+        while (parentSymbol != null) {                                                              // traverse up the type hierarchy.
+          HashMap<String, MethodSymbol> currMethods =
+                                        new HashMap<String, MethodSymbol>(currSymbol.Methods());    // deep copy of current methods.
+          HashMap<String, MethodSymbol> parentMethods =
+                                        new HashMap<String, MethodSymbol>(parentSymbol.Methods());  // deep copy of parent methods.
+          TypeStruct err = checkOverloading(currMethods, parentMethods);                            // check for overloaded methods.
+          if (err != null) {                                                                        // overloaded -> error.
+            return new TypeStruct("Type error");
+          }
+
+          TypeStruct parentType = parentSymbol.TypeStruct();                                        // actual reference to the parent class type.
+          currType.SetSuperTypeStruct(parentType);                                                  // add the parent class type to the current class type hierarchy.
+          parentSymbol = this.classTable.get(parentSymbol.Parent());                                // actual reference to the parent class.
+          currType = parentType;                                                                    // set the current class type to the parent class type.
+          if (currType.MatchType(currSymbol.Type())) {                                              // there's a cycle -> error.
+            return new TypeStruct("Type error");
+          }
+        }
+      }
+    }
+
+    return null;                                                                                    // no error.
+  }
+
+  private void buildFieldSubtypes() {
+    for (HashMap.Entry<String, ClassSymbol> currClass : this.classTable.entrySet()) {
+      for (SymbolTable scope : currClass.getValue().Fields()) {
+        for (Pair field : scope.Table()) {
+          ClassSymbol classType = this.classTable.get(field.Type());
+          if (classType != null) {
+            field.SetTypeStruct(classType.TypeStruct());
+          }
+        }
+      }
+    }
   }
 }
