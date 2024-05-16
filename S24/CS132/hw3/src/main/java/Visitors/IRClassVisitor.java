@@ -1,9 +1,5 @@
 package Visitors;
 
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.Map;
-
 import Utils.*;
 import minijava.syntaxtree.*;
 import minijava.visitor.GJVoidDepthFirst;
@@ -82,8 +78,8 @@ public class IRClassVisitor extends GJVoidDepthFirst<Context> {
    */
   public void visit(ClassExtendsDeclaration n, Context context) {
     context.SetClass(n.f1.f0.tokenImage);
-    n.f5.accept(this, context); // fields
-    n.f6.accept(this, context); // method declarations
+    n.f5.accept(this, context);  // fields
+    n.f6.accept(this, context);  // method declarations
   }
 
   /**

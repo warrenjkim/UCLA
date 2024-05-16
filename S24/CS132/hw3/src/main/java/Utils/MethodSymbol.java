@@ -13,8 +13,8 @@ public class MethodSymbol {
   public MethodSymbol(String name, TypeStruct returnType) {
     this.name = name;
     this.returnType = returnType;
-    formalParams = new LinkedHashMap<>();
     localVariables = new LinkedList<>();
+    formalParams = new LinkedHashMap<>();
     EnterScope();
   }
 

@@ -195,23 +195,18 @@ public class IRTypeVisitor extends GJDepthFirst<TypeStruct, Context> {
    * f0 -> <IDENTIFIER>
    */
   public TypeStruct visit(Identifier n, Context context) {
-    // log("Id: " + n.f0.tokenImage);
     TypeStruct localType = context.Method().VariableTypeStruct(n.f0.tokenImage);
     if (localType != null) {
-      // log("Method: " + context.Method().Name());
-      // log("localType: " + localType.Type() + " " + n.f0.tokenImage);
       return localType;
     }
 
     TypeStruct fieldType = context.Class().FieldTypeStruct(n.f0.tokenImage);
     if (fieldType != null) {
-      // log("fieldType: " + fieldType.Type());
       return fieldType;
     }
 
     MethodSymbol method = context.Class().FindMethod(n.f0.tokenImage);
     if (method != null) {
-      // log("Method: " + method.TypeStruct().Type() + " " + method.Name());
       return method.TypeStruct();
     }
 
@@ -235,9 +230,10 @@ public class IRTypeVisitor extends GJDepthFirst<TypeStruct, Context> {
    */
   public TypeStruct visit(MessageSend n, Context context) {
     Context tmpContext = new Context();
-    TypeStruct cl = n.f0.accept(this, context);
+    TypeStruct objType = n.f0.accept(this, context);
+
     tmpContext.SetClassTable(context.ClassTable());
-    tmpContext.SetClass(cl.Type());
+    tmpContext.SetClass(objType.Type());
     tmpContext.SetMethod(context.Method());
     return n.f2.accept(this, tmpContext);
   }

@@ -1,8 +1,6 @@
 package Visitors;
 
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.Map;
 
 import Utils.*;
 import minijava.syntaxtree.*;
@@ -27,45 +25,6 @@ public class ClassVisitor extends GJVoidDepthFirst<Context> {
     n.f1.accept(this, context);
     context.ResolveClassHierarchies();
     this.classTable = context.ClassTable();
-
-    for (ClassSymbol currClass : classTable.values()) {
-      // log("\nClass: " + currClass.Name());
-      ClassSymbol tmp = currClass;
-      while (tmp.ParentSymbol() != null) {
-        // log(" -> " + tmp.ParentSymbol().Name());
-        tmp = tmp.ParentSymbol();
-      }
-      // logln();
-
-      // logln("  Fields:");
-      for (Map.Entry<String, TypeStruct> field : currClass.Fields().entrySet()) {
-        // logln("    " + field.getValue().Type() + " " + field.getKey());
-      }
-
-      for (MethodSymbol method : currClass.Methods().values()) {
-        // log("  Method: " + method.TypeStruct().Type() + " " + method.Name() + "(");
-        StringBuilder builder = new StringBuilder();
-        for (Map.Entry<String, TypeStruct> param : method.FormalParameters().entrySet()) {
-          if (0 < builder.length()) {
-            builder.append(", ");
-          }
-
-          builder.append(param.getValue().Type()).append(" ").append(param.getKey());
-        }
-        // log(builder.toString());
-        // logln(")");
-
-        if (0 < method.LocalVariables().peek().size()) {
-          // logln("    Local Variables:");
-          for (LinkedHashMap<String, TypeStruct> scope : method.LocalVariables()) {
-            for (Map.Entry<String, TypeStruct> var : scope.entrySet()) {
-              // logln("      " + var.getValue().Type() + " " + var.getKey());
-            }
-          }
-        }
-      }
-    }
-
   }
 
   /**
@@ -92,6 +51,7 @@ public class ClassVisitor extends GJVoidDepthFirst<Context> {
     String className = n.f1.f0.tokenImage;
     ClassSymbol mainClass = new ClassSymbol(className);
     MethodSymbol mainMethod = new MethodSymbol(n.f6.tokenImage, new TypeStruct("void"));
+
     mainClass.AddMethod(mainMethod);
     context.AddClass(className, mainClass);
     context.SetClass(mainClass);
@@ -119,6 +79,7 @@ public class ClassVisitor extends GJVoidDepthFirst<Context> {
   public void visit(ClassDeclaration n, Context context) {
     String className = n.f1.f0.tokenImage;
     ClassSymbol classSymbol = new ClassSymbol(className);
+
     context.AddClass(className, classSymbol);
     context.SetClass(classSymbol);
 
@@ -140,12 +101,13 @@ public class ClassVisitor extends GJVoidDepthFirst<Context> {
     String className = n.f1.f0.tokenImage;
     String parentName = n.f3.f0.tokenImage;
     ClassSymbol classSymbol = new ClassSymbol(className);
+
     context.DeferResolution(className, parentName);
     context.AddClass(className, classSymbol);
     context.SetClass(classSymbol);
 
-    n.f5.accept(this, context); // fields
-    n.f6.accept(this, context); // method declarations
+    n.f5.accept(this, context);  // fields
+    n.f6.accept(this, context);  // method declarations
   }
 
   /**
@@ -179,6 +141,7 @@ public class ClassVisitor extends GJVoidDepthFirst<Context> {
     TypeStruct returnType = n.f1.accept(typeVisitor, context);
     String methodName = n.f2.f0.tokenImage;
     MethodSymbol method = new MethodSymbol(methodName, returnType);
+
     context.Class().AddMethod(method);
     context.SetMethod(method);
     n.f4.accept(this, context);

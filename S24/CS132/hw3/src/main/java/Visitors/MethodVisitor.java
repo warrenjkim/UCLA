@@ -1,6 +1,5 @@
 package Visitors;
 
-import java.util.LinkedList;
 import Utils.*;
 import minijava.syntaxtree.*;
 import minijava.visitor.GJVoidDepthFirst;

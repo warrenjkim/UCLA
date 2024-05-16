@@ -104,25 +104,24 @@ public class ExpressionVisitor extends GJDepthFirst<SparrowCode, Context> {
    */
   public SparrowCode visit(AndExpression n, Context context) {
     //   lhs = expr
-    //   rhs = expr
     //   if0 lhs goto falseLabel
+    //   rhs = expr
     //   if0 rhs goto falseLabel
     //   id = 1
     //   goto endLabel
     // falseLabel:
     //   id = 0
     // endLabel:
-    SparrowCode lhs = n.f0.accept(this, context);
-    SparrowCode rhs = n.f2.accept(this, context);
-
     String id = generator.NextId();
     String falseLabel = "false_and_" + generator.NextLabel();
     String endLabel = "end_and_" + generator.NextLabel();
 
+    SparrowCode lhs = n.f0.accept(this, context);
+    SparrowCode rhs = n.f2.accept(this, context);
     SparrowCode stmt = new SparrowCode();
     stmt.AddBlockStmt(lhs);
-    stmt.AddBlockStmt(rhs);
     stmt.AddIfStmt(lhs.Id(), falseLabel);
+    stmt.AddBlockStmt(rhs);
     stmt.AddIfStmt(rhs.Id(), falseLabel);
     stmt.AddAssignStmt(id, 1);
     stmt.AddGotoStmt(endLabel);
@@ -141,9 +140,11 @@ public class ExpressionVisitor extends GJDepthFirst<SparrowCode, Context> {
    */
   public SparrowCode visit(CompareExpression n, Context context) {
     String id = generator.NextId();
+
     SparrowCode lhs = n.f0.accept(this, context);
     SparrowCode rhs = n.f2.accept(this, context);
     SparrowCode stmt = new SparrowCode();
+
     stmt.AddBlockStmt(lhs);
     stmt.AddBlockStmt(rhs);
     stmt.AddCompareStmt(id, lhs.Id(), rhs.Id());
@@ -159,9 +160,11 @@ public class ExpressionVisitor extends GJDepthFirst<SparrowCode, Context> {
    */
   public SparrowCode visit(PlusExpression n, Context context) {
     String id = generator.NextId();
+
     SparrowCode lhs = n.f0.accept(this, context);
     SparrowCode rhs = n.f2.accept(this, context);
     SparrowCode stmt = new SparrowCode();
+
     stmt.AddBlockStmt(lhs);
     stmt.AddBlockStmt(rhs);
     stmt.AddPlusStmt(id, lhs.Id(), rhs.Id());
@@ -177,9 +180,11 @@ public class ExpressionVisitor extends GJDepthFirst<SparrowCode, Context> {
    */
   public SparrowCode visit(MinusExpression n, Context context) {
     String id = generator.NextId();
+
     SparrowCode lhs = n.f0.accept(this, context);
     SparrowCode rhs = n.f2.accept(this, context);
     SparrowCode stmt = new SparrowCode();
+
     stmt.AddBlockStmt(lhs);
     stmt.AddBlockStmt(rhs);
     stmt.AddMinusStmt(id, lhs.Id(), rhs.Id());
@@ -195,9 +200,11 @@ public class ExpressionVisitor extends GJDepthFirst<SparrowCode, Context> {
    */
   public SparrowCode visit(TimesExpression n, Context context) {
     String id = generator.NextId();
+
     SparrowCode lhs = n.f0.accept(this, context);
     SparrowCode rhs = n.f2.accept(this, context);
     SparrowCode stmt = new SparrowCode();
+
     stmt.AddBlockStmt(lhs);
     stmt.AddBlockStmt(rhs);
     stmt.AddMultiplyStmt(id, lhs.Id(), rhs.Id());
@@ -213,13 +220,12 @@ public class ExpressionVisitor extends GJDepthFirst<SparrowCode, Context> {
    * f3 -> "]"
    */
   public SparrowCode visit(ArrayLookup n, Context context) {
-    SparrowCode arrExpr = n.f0.accept(this, context);
-    SparrowCode offsetExpr = n.f2.accept(this, context);
-
     String id = generator.NextId();
     String arrId = generator.NextId();
-
     String byteSizeId = generator.NextId();
+
+    SparrowCode arrExpr = n.f0.accept(this, context);
+    SparrowCode offsetExpr = n.f2.accept(this, context);
     offsetExpr.MakeByteSize(byteSizeId, offsetExpr.Id());
     offsetExpr.AddOutOfBoundsCheck(arrExpr.Id());
 
@@ -239,11 +245,13 @@ public class ExpressionVisitor extends GJDepthFirst<SparrowCode, Context> {
    * f2 -> "length"
    */
   public SparrowCode visit(ArrayLength n, Context context) {
-    SparrowCode var = n.f0.accept(this, context);
     String id = generator.NextId();
+    SparrowCode var = n.f0.accept(this, context);
     SparrowCode stmt = new SparrowCode();
+    stmt.AddBlockStmt(var);
     stmt.AddLoadStmt(id, var.Id(), 0);
     stmt.SetId(id);
+
     return stmt;
   }
 
@@ -261,8 +269,14 @@ public class ExpressionVisitor extends GJDepthFirst<SparrowCode, Context> {
     SparrowCode params = n.f4.accept(this, context);
 
     ClassSymbol targetClass = context.ClassTable().get(type.Type());
-    while (targetClass.FindMethod(n.f2.f0.tokenImage) == null) {
+    while (targetClass != null && targetClass.FindMethod(n.f2.f0.tokenImage) == null) {
       targetClass = targetClass.ParentSymbol();
+    }
+
+    if (targetClass == null) {
+      SparrowCode shortCircuit = new SparrowCode();
+      shortCircuit.AddGotoStmt("null_err_label");
+      return shortCircuit;
     }
 
     String id = generator.NextId();
@@ -274,6 +288,7 @@ public class ExpressionVisitor extends GJDepthFirst<SparrowCode, Context> {
 
     SparrowCode stmt = new SparrowCode();
     stmt.AddBlockStmt(objExpr);
+    stmt.AddNullPointerCheck(objExpr.Id());
     stmt.AddLoadStmt(vTableId, objExpr.Id(), 0);
     stmt.AddNullPointerCheck(vTableId);
     stmt.AddLoadStmt(methodId, vTableId, vTable.FieldByteOffset(methodName));
@@ -282,6 +297,7 @@ public class ExpressionVisitor extends GJDepthFirst<SparrowCode, Context> {
       for (String formalParam : targetClass.FindMethod(n.f2.f0.tokenImage).FormalParameters().keySet()) {
         formalParams.offer(prefix + formalParam);
       }
+
       stmt.AddBlockStmt(params);
       stmt.AddCallStmt(id, objExpr.Id(), methodId, params.Params());
     } else {
@@ -306,15 +322,14 @@ public class ExpressionVisitor extends GJDepthFirst<SparrowCode, Context> {
     SparrowCode expr = n.f0.accept(this, context);
     SparrowCode rest = n.f1.accept(this, context);
     expr.AddParam(expr.Id());
-    if (rest != null) {
-      expr.AddBlockStmt(rest);
-      for (String param : rest.Params()) {
-        expr.AddParam(param);
-      }
-      // logln(context.Method().Name() + " " + expr.Params().toString());
-      // logln(context.Method().Name() + " " + rest.Params().toString());
+    if (rest == null) {
+      return expr;
     }
 
+    expr.AddBlockStmt(rest);
+    for (String param : rest.Params()) {
+      expr.AddParam(param);
+    }
 
     return expr;
   }
@@ -349,8 +364,9 @@ public class ExpressionVisitor extends GJDepthFirst<SparrowCode, Context> {
    * f0 -> <INTEGER_LITERAL>
    */
   public SparrowCode visit(IntegerLiteral n, Context context) {
-    int value = Integer.parseInt(n.f0.tokenImage);
     String id = generator.NextId();
+    int value = Integer.parseInt(n.f0.tokenImage);
+
     SparrowCode stmt = new SparrowCode();
     stmt.AddAssignStmt(id, value);
     stmt.SetId(id);
@@ -363,6 +379,7 @@ public class ExpressionVisitor extends GJDepthFirst<SparrowCode, Context> {
    */
   public SparrowCode visit(TrueLiteral n, Context context) {
     String id = generator.NextId();
+
     SparrowCode stmt = new SparrowCode();
     stmt.AddAssignStmt(id, 1);
     stmt.SetId(id);
@@ -375,6 +392,7 @@ public class ExpressionVisitor extends GJDepthFirst<SparrowCode, Context> {
    */
   public SparrowCode visit(FalseLiteral n, Context context) {
     String id = generator.NextId();
+
     SparrowCode stmt = new SparrowCode();
     stmt.AddAssignStmt(id, 0);
     stmt.SetId(id);
@@ -386,8 +404,8 @@ public class ExpressionVisitor extends GJDepthFirst<SparrowCode, Context> {
    * f0 -> <IDENTIFIER>
    */
   public SparrowCode visit(Identifier n, Context context) {
-    String localPrefix = context.Class().Name() + "_" + context.Method().Name() + "_";
     String id = "";
+    String localPrefix = context.Class().Name() + "_" + context.Method().Name() + "_";
 
     SparrowCode stmt = new SparrowCode();
     if (context.Method().VariableTypeStruct(n.f0.tokenImage) != null) {
@@ -395,7 +413,6 @@ public class ExpressionVisitor extends GJDepthFirst<SparrowCode, Context> {
       stmt.SetId(id);
     } else if (context.Class().FieldTypeStruct(n.f0.tokenImage) != null) {
       ClassSymbol curr = context.Class();
-      // logln("curr: " + curr.Name());
       while (curr.Field(n.f0.tokenImage) == null) {
         curr = curr.ParentSymbol();
       }
@@ -403,9 +420,13 @@ public class ExpressionVisitor extends GJDepthFirst<SparrowCode, Context> {
       String fieldPrefix = curr.Name() + "_";
       id = fieldPrefix + n.f0.tokenImage;
       SparrowObject classObj = context.Object(curr.Name());
-      // logln("obj is: " + classObj.Id());
       Integer fieldByteOffset = classObj.FieldByteOffset(id);
-      // logln("Id is: " + id);
+      if (context.This() == null) {
+        stmt.AddGotoStmt("null_err_label");
+        stmt.SetId(id);
+        return stmt;
+      }
+
       stmt.AddLoadStmt(id, context.This().Id(), fieldByteOffset);
       stmt.SetId(id);
     }
@@ -431,10 +452,12 @@ public class ExpressionVisitor extends GJDepthFirst<SparrowCode, Context> {
    * f4 -> "]"
    */
   public SparrowCode visit(ArrayAllocationExpression n, Context context) {
-    SparrowCode size = n.f3.accept(this, context);
-    SparrowCode stmt = new SparrowCode();
     String id = generator.NextId();
     String byteSizeId = generator.NextId();
+
+    SparrowCode size = n.f3.accept(this, context);
+    SparrowCode stmt = new SparrowCode();
+
     stmt.AddBlockStmt(size);
     stmt.MakeByteSize(byteSizeId, size.Id());
     stmt.AddAllocStmt(id, byteSizeId);
@@ -451,20 +474,18 @@ public class ExpressionVisitor extends GJDepthFirst<SparrowCode, Context> {
    * f3 -> ")"
    */
   public SparrowCode visit(AllocationExpression n, Context context) {
+    String id = generator.NextId();
     TypeStruct type =  n.f1.accept(typeVisitor, context);
 
     SparrowObject base = context.Object(type.Type());
     SparrowObject vTable = context.Object(type.Type() + "_vTable");
 
-    String id = generator.NextId();
     SparrowCode stmt = new SparrowCode();
 
     String classByteSizeId = "v" + base.Id() + "_size";
-    // generator.NextId();
     stmt.AddAssignStmt(classByteSizeId, base.ByteSize());
     stmt.AddAllocStmt(id, classByteSizeId);
 
-    // String vTableByteSizeId = generator.NextId();
     String vTableByteSizeId = "v" + vTable.Id() + "_size";
     stmt.AddAssignStmt(vTableByteSizeId, vTable.ByteSize());
     stmt.AddAllocStmt(vTable.Id(), vTableByteSizeId);
@@ -475,16 +496,21 @@ public class ExpressionVisitor extends GJDepthFirst<SparrowCode, Context> {
 
     LinkedHashMap<String, Integer> fields = obj.FieldByteOffsets();
     for (Map.Entry<String, Integer> field : fields.entrySet()) {
-        String fieldId = generator.NextId();
-        stmt.AddFieldAssignStmt(fieldId, field.getKey());
-        stmt.AddStoreStmt(fieldId, obj.Id(), field.getValue());
+      String fieldId = generator.NextId();
+      if (context.Object(field.getKey()) != null) {
+        String byteSizeId = generator.NextId();
+        stmt.AddAssignStmt(byteSizeId, context.Object(field.getKey()).ByteSize());
+        stmt.AddAllocStmt(field.getKey(), byteSizeId);
+      }
+      stmt.AddFieldAssignStmt(fieldId, field.getKey());
+      stmt.AddStoreStmt(fieldId, obj.Id(), field.getValue());
     }
 
     LinkedHashMap<String, Integer> methods = vTable.FieldByteOffsets();
     for (Map.Entry<String, Integer> method : methods.entrySet()) {
-        String methodId = generator.NextId();
-        stmt.AddFuncAssignStmt(methodId, method.getKey());
-        stmt.AddStoreStmt(methodId, vTable.Id(), method.getValue());
+      String methodId = generator.NextId();
+      stmt.AddFuncAssignStmt(methodId, method.getKey());
+      stmt.AddStoreStmt(methodId, vTable.Id(), method.getValue());
     }
 
     stmt.AddStoreStmt(vTable.Id(), obj.Id(), 0);
@@ -497,14 +523,14 @@ public class ExpressionVisitor extends GJDepthFirst<SparrowCode, Context> {
    * f1 -> Expression()
    */
   public SparrowCode visit(NotExpression n, Context context) {
-    SparrowCode expr = n.f1.accept(this, context);
     String id = generator.NextId();
-    String one = generator.NextId();
+    String one = "one_not_" + generator.NextId();
+    SparrowCode expr = n.f1.accept(this, context);
 
     SparrowCode stmt = new SparrowCode();
     stmt.AddBlockStmt(expr);
     stmt.AddAssignStmt(one, 1);
-    stmt.AddMinusStmt(id, expr.Id(), one);
+    stmt.AddMinusStmt(id, one, expr.Id());
 
     stmt.SetId(id);
     return stmt;

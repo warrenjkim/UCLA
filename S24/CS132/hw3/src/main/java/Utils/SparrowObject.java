@@ -6,20 +6,20 @@ import java.util.Map;
 public class SparrowObject {
   private String id;
   private int byteSize;
-  private LinkedHashMap<String, Integer> fieldByteOffsets;
   private TypeStruct type;
+  private LinkedHashMap<String, Integer> fieldByteOffsets;
 
   public SparrowObject(String id, int byteSize, TypeStruct type) {
     this.id = id;
-    this.byteSize = byteSize;
     this.type = type;
+    this.byteSize = byteSize;
     fieldByteOffsets = new LinkedHashMap<>();
   }
 
   public SparrowObject(SparrowObject other) {
     this.id = other.id;
-    this.byteSize = other.byteSize;
     this.type = other.type;
+    this.byteSize = other.byteSize;
     this.fieldByteOffsets = new LinkedHashMap<>(other.fieldByteOffsets);
   }
 

@@ -8,8 +8,6 @@ import minijava.visitor.GJDepthFirst;
 
 public class StatementVisitor extends GJDepthFirst<SparrowCode, Context> {
   private VarGenerator generator = VarGenerator.GetInstance();
-
-  private IRTypeVisitor irTypeVisitor = new IRTypeVisitor();
   private ExpressionVisitor expressionVisitor = new ExpressionVisitor();
 
   //
@@ -113,9 +111,10 @@ public class StatementVisitor extends GJDepthFirst<SparrowCode, Context> {
     SparrowCode expr = n.f2.accept(expressionVisitor, context);
     SparrowCode stmt = new SparrowCode();
 
-    // id = [expr]
+    // load id
     // expr = [expr]
     // id = expr
+    // store id (if possible)
     stmt.AddBlockStmt(id);
     stmt.AddBlockStmt(expr);
     stmt.AddAssignStmt(id.Id(), expr.Id());
@@ -134,11 +133,11 @@ public class StatementVisitor extends GJDepthFirst<SparrowCode, Context> {
    * f6 -> ";"
    */
   public SparrowCode visit(ArrayAssignmentStatement n, Context context) {
+    String arrId = generator.NextId();
+
     SparrowCode arrExpr = n.f0.accept(expressionVisitor, context);
     SparrowCode offsetExpr = n.f2.accept(expressionVisitor, context);
     SparrowCode valueExpr = n.f5.accept(expressionVisitor, context);
-
-    String arrId = generator.NextId();
 
     String byteSizeId = generator.NextId();
     offsetExpr.MakeByteSize(byteSizeId, offsetExpr.Id());
@@ -164,11 +163,12 @@ public class StatementVisitor extends GJDepthFirst<SparrowCode, Context> {
    * f6 -> Statement()
    */
   public SparrowCode visit(IfStatement n, Context context) {
+    String falseLabel = "else_" + generator.NextLabel();
+    String endLabel = "end_if_" + generator.NextLabel();
+
     SparrowCode condition = n.f2.accept(expressionVisitor, context);
     SparrowCode trueStmt = n.f4.accept(this, context);
     SparrowCode falseStmt = n.f6.accept(this, context);
-    String falseLabel = "false_if_" + generator.NextLabel();
-    String endLabel = "end_if_" + generator.NextLabel();
 
     //   if0 condition goto falseLabel
     //   trueStmt
@@ -196,10 +196,11 @@ public class StatementVisitor extends GJDepthFirst<SparrowCode, Context> {
    * f4 -> Statement()
    */
   public SparrowCode visit(WhileStatement n, Context context) {
-    SparrowCode condition = n.f2.accept(expressionVisitor, context);
-    SparrowCode trueStmt = n.f4.accept(this, context);
     String loopLabel = "loop_" + generator.NextLabel();
     String endLabel = "end_loop_" + generator.NextLabel();
+
+    SparrowCode condition = n.f2.accept(expressionVisitor, context);
+    SparrowCode trueStmt = n.f4.accept(this, context);
 
     // loopLabel:
     //   if0 expr goto endLabel
@@ -246,7 +247,6 @@ public class StatementVisitor extends GJDepthFirst<SparrowCode, Context> {
       stmt.SetId(id);
     } else if (context.Class().FieldTypeStruct(n.f0.tokenImage) != null) {
       ClassSymbol curr = context.Class();
-      // logln("(set)curr: " + curr.Name());
       while (curr.Field(n.f0.tokenImage) == null) {
         curr = curr.ParentSymbol();
       }
@@ -254,14 +254,11 @@ public class StatementVisitor extends GJDepthFirst<SparrowCode, Context> {
       String fieldPrefix = curr.Name() + "_";
       id = fieldPrefix + n.f0.tokenImage;
       SparrowObject classObj = context.Object(curr.Name());
-      // logln("(set)obj is: " + classObj.Id());
       Integer fieldByteOffset = classObj.FieldByteOffset(id);
-      // logln("(set)Id is: " + id);
       stmt.AddStoreStmt(id, context.This().Id(), fieldByteOffset);
       stmt.SetId(id);
     }
 
     return stmt;
   }
-
 }

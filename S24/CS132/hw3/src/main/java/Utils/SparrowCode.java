@@ -2,9 +2,6 @@ package Utils;
 
 import java.util.LinkedList;
 import java.util.StringJoiner;
-import java.util.LinkedHashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 public class SparrowCode {
   VarGenerator generator = VarGenerator.GetInstance();
@@ -176,6 +173,7 @@ public class SparrowCode {
     AddCompareStmt(outOfBounds, offset, lengthId);
     AddIfStmt(outOfBounds, "arr_err_label");
     AddAssignStmt(lengthId, 0);
+
     String one = generator.NextId();
     AddAssignStmt(one, 1);
     AddMinusStmt(lengthId, lengthId, one);
@@ -190,6 +188,7 @@ public class SparrowCode {
   public void AddErrorStmts() {
     AddLabelStmt("arr_err_label");
     AddErrorStmt("\"array index out of bounds\"");
+
     AddLabelStmt("null_err_label");
     AddErrorStmt("\"null pointer\"");
   }

@@ -3,7 +3,6 @@ package Visitors;
 import Utils.*;
 import minijava.syntaxtree.*;
 import minijava.visitor.GJVoidDepthFirst;
-import java.util.Map;
 import java.util.LinkedList;
 
 public class TranslatorVisitor extends GJVoidDepthFirst<Context> {
@@ -22,30 +21,6 @@ public class TranslatorVisitor extends GJVoidDepthFirst<Context> {
   public void visit(Goal n, Context context) {
     n.f0.accept(this, context);
     n.f1.accept(this, context);
-
-    // logln("\n\nTranslated Code:");
-    for (ClassSymbol currClass : context.ClassTable().values()) {
-      for (MethodSymbol method : currClass.Methods().values()) {
-        // logln(method.SparrowCode().ToString());
-        // logln();
-      }
-    }
-
-    // logln("\n\nLiteral Map:");
-    for (Map.Entry<String, Integer> literal : context.LiteralMap().entrySet()) {
-      // logln(literal.getKey() + " = " + literal.getValue());
-    }
-
-    // logln("\n\nObject Map:");
-    for (Map.Entry<String, SparrowObject> literal : context.ObjectMap().entrySet()) {
-      // logln(literal.getKey() + " = " + literal.getValue().ToString());
-      // logln();
-    }
-
-    // logln("\n\nMethod Map:");
-    for (Map.Entry<String, String> literal : context.MethodMap().entrySet()) {
-      // logln(literal.getKey() + " = " + literal.getValue());
-    }
   }
 
   /**
@@ -72,9 +47,13 @@ public class TranslatorVisitor extends GJVoidDepthFirst<Context> {
     context.SetClass(n.f1.f0.tokenImage);
     context.SetMethod(context.Class().FindMethod(n.f6.tokenImage));
     context.SetMethodCode(new SparrowCode());
+
     SparrowCode vars = n.f14.accept(statementVisitor, context);
     SparrowCode block = n.f15.accept(statementVisitor, context);
     SparrowCode body = new SparrowCode();
+
+    LinkedList<String> params = new LinkedList<>();
+    params.add(n.f11.f0.tokenImage);
     body.AddMainLabelStmt();
     body.AddBlockStmt(vars);
     body.AddBlockStmt(block);

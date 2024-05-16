@@ -26,12 +26,12 @@ public class Context {
   private LinkedList<LinkedHashMap<String, TypeStruct>> variableScopes;
 
   public Context() {
-    classTable = new LinkedHashMap<>();
-    unresolvedTable = new LinkedList<>();
-    variableScopes = new LinkedList<>();
-    literalMap = new LinkedHashMap<>();
     methodMap = new LinkedHashMap<>();
     objectMap = new LinkedHashMap<>();
+    classTable = new LinkedHashMap<>();
+    literalMap = new LinkedHashMap<>();
+    variableScopes = new LinkedList<>();
+    unresolvedTable = new LinkedList<>();
   }
 
   public void PutMethod(String key, String value) {

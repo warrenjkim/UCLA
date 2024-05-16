@@ -10,11 +10,11 @@ public class VarGenerator {
   private int labelCount;
 
   private VarGenerator() {
-        id = "v";
-        label = "l";
-        idCount = 0;
-        labelCount = 0;
-    }
+    id = "v";
+    label = "l";
+    idCount = 0;
+    labelCount = 0;
+  }
 
   public static VarGenerator GetInstance() {
     if (instance == null) {
