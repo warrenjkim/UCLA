@@ -68,12 +68,7 @@ public class StatementVisitor extends GJDepthFirst<SparrowCode, Context> {
     String id = context.Class().Name() + "_" + context.Method().Name() + "_" + name;
 
     SparrowCode stmt = new SparrowCode();
-    SparrowObject obj = context.Object(id);
-    if (obj != null) {
-      String byteSizeId = "v" + context.Class().Name() + "_Size";
-      stmt.AddAssignStmt(byteSizeId, obj.ByteSize());
-      stmt.AddAllocStmt(id, byteSizeId);
-    }
+    stmt.AddAssignStmt(id, 0);
 
     return stmt;
   }

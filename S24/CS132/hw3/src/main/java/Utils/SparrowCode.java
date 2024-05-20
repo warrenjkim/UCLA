@@ -122,8 +122,8 @@ public class SparrowCode {
     AddStmt("if0 " + condition + " goto " + jumpLabel);
   }
 
-  public void AddMainLabelStmt() {
-    AddStmt("func Main()");
+  public void AddMainLabelStmt(String className, String funcName) {
+    AddStmt("func " + className + "__" + funcName + "()");
   }
 
   public void AddFuncLabelStmt(String className, String funcName) {
@@ -169,6 +169,7 @@ public class SparrowCode {
     String offset = this.id;
     String lengthId = generator.NextId();
     String outOfBounds = generator.NextId();
+    AddNullPointerCheck(arrId);
     AddLoadStmt(lengthId, arrId, 0);
     AddCompareStmt(outOfBounds, offset, lengthId);
     AddIfStmt(outOfBounds, "arr_err_label");

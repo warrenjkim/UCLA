@@ -1,169 +1,16 @@
-func Main()
-    vMain_Size = 0
-    Main_main_x = alloc(vMain_Size)
-    vMain_Size = 12
-    Main_main_a = alloc(vMain_Size)
-    v0 = 3
-    v3 = 4
-    v2 = v0 * v3
-    v2 = v2 + v3
-    v1 = alloc(v2)
-    [v1 + 0] = v0
-    Main_main_x = v1
-    vA_size = 12
-    v4 = alloc(vA_size)
-    vA_vTable_size = 28
-    A_vTable = alloc(vA_vTable_size)
-    v5 = A_x
-    [v4 + 4] = v5
-    v6 = A_d
-    [v4 + 8] = v6
-    v7 = A_vTable
-    [v4 + 0] = v7
-    v8 = @A__run
-    [A_vTable + 0] = v8
-    v9 = @A__runThis
-    [A_vTable + 4] = v9
-    v10 = @A__why
-    [A_vTable + 8] = v10
-    v11 = @A__InitX
-    [A_vTable + 12] = v11
-    v12 = @A__GetX
-    [A_vTable + 16] = v12
-    v13 = @A__GetD
-    [A_vTable + 20] = v13
-    v14 = @A__SetX
-    [A_vTable + 24] = v14
-    [v4 + 0] = A_vTable
-    Main_main_a = v4
-    v16 = [Main_main_a + 0]
-    if0 v16 goto null_err_label
-    v16 = [v16 + 0]
-    v15 = call v16(Main_main_a Main_main_x)
-    v18 = [v15 + 0]
-    if0 v18 goto null_err_label
-    v18 = [v18 + 12]
-    v17 = call v18(v15)
-    v20 = [v17 + 0]
-    if0 v20 goto null_err_label
-    v20 = [v20 + 20]
-    v19 = call v20(v17)
-    v23 = [v19 + 0]
-    if0 v23 goto null_err_label
-    v23 = [v23 + 24]
-    v21 = 2
-    v22 = call v23(v19 v21)
-    print(v22)
-    v24 = 0
-    v28 = 4
-    v27 = v24 * v28
-    v27 = v27 + v28
-    v29 = [Main_main_x + 0]
-    v30 = v24 < v29
-    if0 v30 goto arr_err_label
-    v29 = 0
-    v31 = 1
-    v29 = v29 - v31
-    v30 = v29 < v24
-    if0 v30 goto arr_err_label
-    v26 = Main_main_x + v27
-    v25 = [v26 + 0]
-    print(v25)
-    v32 = 1
-    v36 = 4
-    v35 = v32 * v36
-    v35 = v35 + v36
-    v37 = [Main_main_x + 0]
-    v38 = v32 < v37
-    if0 v38 goto arr_err_label
-    v37 = 0
-    v39 = 1
-    v37 = v37 - v39
-    v38 = v37 < v32
-    if0 v38 goto arr_err_label
-    v34 = Main_main_x + v35
-    v33 = [v34 + 0]
-    print(v33)
-    v40 = 1
-    v44 = 4
-    v43 = v40 * v44
-    v43 = v43 + v44
-    v45 = [Main_main_x + 0]
-    v46 = v40 < v45
-    if0 v46 goto arr_err_label
-    v45 = 0
-    v47 = 1
-    v45 = v45 - v47
-    v46 = v45 < v40
-    if0 v46 goto arr_err_label
-    v42 = Main_main_x + v43
-    v41 = [v42 + 0]
-    Main_main_tmp = v41
-    v48 = 2
-    v53 = 4
-    v52 = v48 * v53
-    v52 = v52 + v53
-    v54 = [Main_main_x + 0]
-    v55 = v48 < v54
-    if0 v55 goto arr_err_label
-    v54 = 0
-    v56 = 1
-    v54 = v54 - v56
-    v55 = v54 < v48
-    if0 v55 goto arr_err_label
-    v50 = 1
-    v49 = Main_main_tmp + v50
-    v51 = Main_main_x + v52
-    [v51 + 0] = v49
-    v57 = 2
-    v61 = 4
-    v60 = v57 * v61
-    v60 = v60 + v61
-    v62 = [Main_main_x + 0]
-    v63 = v57 < v62
-    if0 v63 goto arr_err_label
-    v62 = 0
-    v64 = 1
-    v62 = v62 - v64
-    v63 = v62 < v57
-    if0 v63 goto arr_err_label
-    v59 = Main_main_x + v60
-    v58 = [v59 + 0]
-    print(v58)
-    vA_size = 12
-    v65 = alloc(vA_size)
-    vA_vTable_size = 28
-    A_vTable = alloc(vA_vTable_size)
-    v66 = A_x
-    [v65 + 4] = v66
-    v67 = A_d
-    [v65 + 8] = v67
-    v68 = A_vTable
-    [v65 + 0] = v68
-    v69 = @A__run
-    [A_vTable + 0] = v69
-    v70 = @A__runThis
-    [A_vTable + 4] = v70
-    v71 = @A__why
-    [A_vTable + 8] = v71
-    v72 = @A__InitX
-    [A_vTable + 12] = v72
-    v73 = @A__GetX
-    [A_vTable + 16] = v73
-    v74 = @A__GetD
-    [A_vTable + 20] = v74
-    v75 = @A__SetX
-    [A_vTable + 24] = v75
-    [v65 + 0] = A_vTable
-    v77 = [v65 + 0]
-    if0 v77 goto null_err_label
-    v77 = [v77 + 4]
-    v76 = call v77(v65 Main_main_x)
-    v79 = [v76 + 0]
-    if0 v79 goto null_err_label
-    v79 = [v79 + 16]
-    v78 = call v79(v76)
-    print(v78)
+func Main__main()
+    vTest_size = 4
+    v0 = alloc(vTest_size)
+    vTest_vTable_size = 4
+    Test_vTable = alloc(vTest_vTable_size)
+    v1 = @Test__Init
+    [Test_vTable + 0] = v1
+    [v0 + 0] = Test_vTable
+    if0 v0 goto null_err_label
+    v3 = [v0 + 0]
+    v3 = [v3 + 0]
+    v2 = call v3(v0)
+    print(v2)
     goto end_Main__main
   arr_err_label:
     error("array index out of bounds")
@@ -173,262 +20,79 @@ func Main()
       return v0
 
 
-func A__run(this A_run_x)
-    v80 = 0
-    v87 = 4
-    v86 = v80 * v87
-    v86 = v86 + v87
-    v88 = [A_run_x + 0]
-    v89 = v80 < v88
-    if0 v89 goto arr_err_label
-    v88 = 0
-    v90 = 1
-    v88 = v88 - v90
-    v89 = v88 < v80
-    if0 v89 goto arr_err_label
-    v82 = [this + 0]
-    if0 v82 goto null_err_label
-    v82 = [v82 + 12]
-    v81 = call v82(this)
-    v84 = [v81 + 0]
-    if0 v84 goto null_err_label
-    v84 = [v84 + 16]
-    v83 = call v84(v81)
-    v85 = A_run_x + v86
-    [v85 + 0] = v83
-    v100 = [this + 0]
-    if0 v100 goto null_err_label
-    v100 = [v100 + 8]
-    v91 = 0
-    v95 = 4
-    v94 = v91 * v95
-    v94 = v94 + v95
-    v96 = [A_run_x + 0]
-    v97 = v91 < v96
-    if0 v97 goto arr_err_label
-    v96 = 0
-    v98 = 1
-    v96 = v96 - v98
-    v97 = v96 < v91
-    if0 v97 goto arr_err_label
-    v93 = A_run_x + v94
-    v92 = [v93 + 0]
-    v99 = call v100(this A_run_x v92)
-    A_run_d = v99
-    vA_size = 12
-    v101 = alloc(vA_size)
-    vA_vTable_size = 28
-    A_vTable = alloc(vA_vTable_size)
-    v102 = A_x
-    [v101 + 4] = v102
-    v103 = A_d
-    [v101 + 8] = v103
-    v104 = A_vTable
-    [v101 + 0] = v104
-    v105 = @A__run
-    [A_vTable + 0] = v105
-    v106 = @A__runThis
-    [A_vTable + 4] = v106
-    v107 = @A__why
-    [A_vTable + 8] = v107
-    v108 = @A__InitX
-    [A_vTable + 12] = v108
-    v109 = @A__GetX
-    [A_vTable + 16] = v109
-    v110 = @A__GetD
-    [A_vTable + 20] = v110
-    v111 = @A__SetX
-    [A_vTable + 24] = v111
-    [v101 + 0] = A_vTable
-    goto end_A__run
+func Test__Init(this)
+    Test_Init_i = 0
+    Test_Init_test_array = 0
+    v6 = 20
+    v7 = 4
+    v5 = v6 * v7
+    v5 = v5 + v7
+    v4 = alloc(v5)
+    [v4 + 0] = v6
+    Test_Init_test_array = v4
+    v9 = 0
+    v12 = 4
+    v11 = v9 * v12
+    v11 = v11 + v12
+    if0 Test_Init_test_array goto null_err_label
+    v13 = [Test_Init_test_array + 0]
+    v14 = v9 < v13
+    if0 v14 goto arr_err_label
+    v13 = 0
+    v15 = 1
+    v13 = v13 - v15
+    v14 = v13 < v9
+    if0 v14 goto arr_err_label
+    v10 = 4
+    v8 = Test_Init_test_array + v11
+    [v8 + 0] = v10
+    v17 = 1
+    v20 = 4
+    v19 = v17 * v20
+    v19 = v19 + v20
+    if0 Test_Init_test_array goto null_err_label
+    v21 = [Test_Init_test_array + 0]
+    v22 = v17 < v21
+    if0 v22 goto arr_err_label
+    v21 = 0
+    v23 = 1
+    v21 = v21 - v23
+    v22 = v21 < v17
+    if0 v22 goto arr_err_label
+    v18 = 2
+    v16 = Test_Init_test_array + v19
+    [v16 + 0] = v18
+    v24 = 0
+    Test_Init_i = v24
+  loop_l0:
+    v26 = 2
+    v25 = Test_Init_i < v26
+    if0 v25 goto end_loop_l1
+    v30 = 4
+    v29 = Test_Init_i * v30
+    v29 = v29 + v30
+    if0 Test_Init_test_array goto null_err_label
+    v31 = [Test_Init_test_array + 0]
+    v32 = Test_Init_i < v31
+    if0 v32 goto arr_err_label
+    v31 = 0
+    v33 = 1
+    v31 = v31 - v33
+    v32 = v31 < Test_Init_i
+    if0 v32 goto arr_err_label
+    v28 = Test_Init_test_array + v29
+    v27 = [v28 + 0]
+    print(v27)
+    v35 = 1
+    v34 = Test_Init_i + v35
+    Test_Init_i = v34
+    goto loop_l0
+  end_loop_l1:
+    v36 = 1
+    goto end_Test__Init
   arr_err_label:
     error("array index out of bounds")
   null_err_label:
     error("null pointer")
-  end_A__run:
-      return v101
-
-
-func A__runThis(this A_runThis_x)
-    v112 = 0
-    v119 = 4
-    v118 = v112 * v119
-    v118 = v118 + v119
-    v120 = [A_runThis_x + 0]
-    v121 = v112 < v120
-    if0 v121 goto arr_err_label
-    v120 = 0
-    v122 = 1
-    v120 = v120 - v122
-    v121 = v120 < v112
-    if0 v121 goto arr_err_label
-    v114 = [this + 0]
-    if0 v114 goto null_err_label
-    v114 = [v114 + 12]
-    v113 = call v114(this)
-    v116 = [v113 + 0]
-    if0 v116 goto null_err_label
-    v116 = [v116 + 16]
-    v115 = call v116(v113)
-    v117 = A_runThis_x + v118
-    [v117 + 0] = v115
-    v132 = [this + 0]
-    if0 v132 goto null_err_label
-    v132 = [v132 + 8]
-    v123 = 0
-    v127 = 4
-    v126 = v123 * v127
-    v126 = v126 + v127
-    v128 = [A_runThis_x + 0]
-    v129 = v123 < v128
-    if0 v129 goto arr_err_label
-    v128 = 0
-    v130 = 1
-    v128 = v128 - v130
-    v129 = v128 < v123
-    if0 v129 goto arr_err_label
-    v125 = A_runThis_x + v126
-    v124 = [v125 + 0]
-    v131 = call v132(this A_runThis_x v124)
-    A_runThis_d = v131
-    goto end_A__runThis
-  arr_err_label:
-    error("array index out of bounds")
-  null_err_label:
-    error("null pointer")
-  end_A__runThis:
-      return this
-
-
-func A__why(this A_why_x A_why_v)
-    v133 = 0
-    v137 = 4
-    v136 = v133 * v137
-    v136 = v136 + v137
-    v138 = [A_why_x + 0]
-    v139 = v133 < v138
-    if0 v139 goto arr_err_label
-    v138 = 0
-    v140 = 1
-    v138 = v138 - v140
-    v139 = v138 < v133
-    if0 v139 goto arr_err_label
-    v135 = A_why_x + v136
-    v134 = [v135 + 0]
-    A_why_tmp = v134
-    v146 = 4
-    v145 = A_why_v * v146
-    v145 = v145 + v146
-    v147 = [A_why_x + 0]
-    v148 = A_why_v < v147
-    if0 v148 goto arr_err_label
-    v147 = 0
-    v149 = 1
-    v147 = v147 - v149
-    v148 = v147 < A_why_v
-    if0 v148 goto arr_err_label
-    v143 = [this + 0]
-    if0 v143 goto null_err_label
-    v143 = [v143 + 16]
-    v142 = call v143(this)
-    v141 = v142 + A_why_tmp
-    v144 = A_why_x + v145
-    [v144 + 0] = v141
-    v153 = 4
-    v152 = A_why_v * v153
-    v152 = v152 + v153
-    v154 = [A_why_x + 0]
-    v155 = A_why_v < v154
-    if0 v155 goto arr_err_label
-    v154 = 0
-    v156 = 1
-    v154 = v154 - v156
-    v155 = v154 < A_why_v
-    if0 v155 goto arr_err_label
-    v151 = A_why_x + v152
-    v150 = [v151 + 0]
-    goto end_A__why
-  arr_err_label:
-    error("array index out of bounds")
-  null_err_label:
-    error("null pointer")
-  end_A__why:
-      return v150
-
-
-func A__InitX(this)
-    A_x = [this + 4]
-    v157 = 1
-    A_x = v157
-    [this + 4] = A_x
-    goto end_A__InitX
-  arr_err_label:
-    error("array index out of bounds")
-  null_err_label:
-    error("null pointer")
-  end_A__InitX:
-      return this
-
-
-func A__GetX(this)
-    A_x = [this + 4]
-    goto end_A__GetX
-  arr_err_label:
-    error("array index out of bounds")
-  null_err_label:
-    error("null pointer")
-  end_A__GetX:
-      return A_x
-
-
-func A__GetD(this)
-    A_d = [this + 8]
-    vA_size = 12
-    v158 = alloc(vA_size)
-    vA_vTable_size = 28
-    A_vTable = alloc(vA_vTable_size)
-    v159 = A_x
-    [v158 + 4] = v159
-    v160 = A_d
-    [v158 + 8] = v160
-    v161 = A_vTable
-    [v158 + 0] = v161
-    v162 = @A__run
-    [A_vTable + 0] = v162
-    v163 = @A__runThis
-    [A_vTable + 4] = v163
-    v164 = @A__why
-    [A_vTable + 8] = v164
-    v165 = @A__InitX
-    [A_vTable + 12] = v165
-    v166 = @A__GetX
-    [A_vTable + 16] = v166
-    v167 = @A__GetD
-    [A_vTable + 20] = v167
-    v168 = @A__SetX
-    [A_vTable + 24] = v168
-    [v158 + 0] = A_vTable
-    A_d = v158
-    [this + 8] = A_d
-    A_d = [this + 8]
-    goto end_A__GetD
-  arr_err_label:
-    error("array index out of bounds")
-  null_err_label:
-    error("null pointer")
-  end_A__GetD:
-      return A_d
-
-
-func A__SetX(this A_SetX_y)
-    A_x = [this + 4]
-    A_x = A_SetX_y
-    [this + 4] = A_x
-    A_x = [this + 4]
-    goto end_A__SetX
-  arr_err_label:
-    error("array index out of bounds")
-  null_err_label:
-    error("null pointer")
-  end_A__SetX:
-      return A_x
+  end_Test__Init:
+      return v36

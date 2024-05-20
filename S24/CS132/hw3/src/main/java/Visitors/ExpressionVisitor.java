@@ -249,6 +249,7 @@ public class ExpressionVisitor extends GJDepthFirst<SparrowCode, Context> {
     SparrowCode var = n.f0.accept(this, context);
     SparrowCode stmt = new SparrowCode();
     stmt.AddBlockStmt(var);
+    stmt.AddNullPointerCheck(var.Id());
     stmt.AddLoadStmt(id, var.Id(), 0);
     stmt.SetId(id);
 
@@ -290,7 +291,6 @@ public class ExpressionVisitor extends GJDepthFirst<SparrowCode, Context> {
     stmt.AddBlockStmt(objExpr);
     stmt.AddNullPointerCheck(objExpr.Id());
     stmt.AddLoadStmt(vTableId, objExpr.Id(), 0);
-    stmt.AddNullPointerCheck(vTableId);
     stmt.AddLoadStmt(methodId, vTableId, vTable.FieldByteOffset(methodName));
     if (params != null) {
       LinkedList<String> formalParams = new LinkedList<>();
@@ -421,11 +421,6 @@ public class ExpressionVisitor extends GJDepthFirst<SparrowCode, Context> {
       id = fieldPrefix + n.f0.tokenImage;
       SparrowObject classObj = context.Object(curr.Name());
       Integer fieldByteOffset = classObj.FieldByteOffset(id);
-      if (context.This() == null) {
-        stmt.AddGotoStmt("null_err_label");
-        stmt.SetId(id);
-        return stmt;
-      }
 
       stmt.AddLoadStmt(id, context.This().Id(), fieldByteOffset);
       stmt.SetId(id);
@@ -493,18 +488,6 @@ public class ExpressionVisitor extends GJDepthFirst<SparrowCode, Context> {
     SparrowObject obj = new SparrowObject(base);
     obj.SetId(id);
     context.PutObject(id, obj);
-
-    LinkedHashMap<String, Integer> fields = obj.FieldByteOffsets();
-    for (Map.Entry<String, Integer> field : fields.entrySet()) {
-      String fieldId = generator.NextId();
-      if (context.Object(field.getKey()) != null) {
-        String byteSizeId = generator.NextId();
-        stmt.AddAssignStmt(byteSizeId, context.Object(field.getKey()).ByteSize());
-        stmt.AddAllocStmt(field.getKey(), byteSizeId);
-      }
-      stmt.AddFieldAssignStmt(fieldId, field.getKey());
-      stmt.AddStoreStmt(fieldId, obj.Id(), field.getValue());
-    }
 
     LinkedHashMap<String, Integer> methods = vTable.FieldByteOffsets();
     for (Map.Entry<String, Integer> method : methods.entrySet()) {

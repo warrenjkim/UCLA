@@ -54,7 +54,7 @@ public class TranslatorVisitor extends GJVoidDepthFirst<Context> {
 
     LinkedList<String> params = new LinkedList<>();
     params.add(n.f11.f0.tokenImage);
-    body.AddMainLabelStmt();
+    body.AddMainLabelStmt(context.Class().Name(), context.Method().Name());
     body.AddBlockStmt(vars);
     body.AddBlockStmt(block);
     body.AddGotoStmt("end_" + context.Class().Name() + "__" + context.Method().Name());
