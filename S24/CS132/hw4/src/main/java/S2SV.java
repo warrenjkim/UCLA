@@ -17,13 +17,13 @@ public class S2SV {
       root.accept(crv, null);
 
       System.out.println();
-      System.out.println("Sorted ranges:");
-      for (FunctionSymbol func : functionMap.values()) {
-        System.out.println(func.Name());
-        for (Map.Entry<String, SparrowVRange> entry : func.LiveRanges().Sorted()) {
-          System.out.println("  " + entry.getKey() + ": [" + entry.getValue().ToString() + ")");
-        }
-      }
+      // System.out.println("Sorted ranges:");
+      // for (FunctionSymbol func : functionMap.values()) {
+      //   System.out.println(func.Name());
+      //   for (Map.Entry<String, SparrowVRange> entry : func.LiveRanges().Sorted()) {
+      //     System.out.println("  " + entry.getKey() + ": [" + entry.getValue().ToString() + ")");
+      //   }
+      // }
 
       RegisterAllocator registerAllocator = new RegisterAllocator();
       for (FunctionSymbol func : functionMap.values()) {

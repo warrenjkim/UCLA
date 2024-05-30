@@ -7,11 +7,9 @@ package Visitors;
 import Utils.*;
 import IR.syntaxtree.*;
 import java.util.Enumeration;
-import java.util.HashSet;
 
 import IR.visitor.GJDepthFirst;
 import java.util.Map;
-import java.util.Set;
 import java.util.List;
 import java.util.LinkedList;
 
@@ -391,10 +389,12 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
       lhsReg = "s10";
       stmt.AddAssignStmt(lhsReg, lhsId);
     }
+
     if (rhsReg == null) {
       rhsReg = "s11";
       stmt.AddAssignStmt(rhsReg, rhsId);
     }
+
     if (resReg == null) {
       resReg = "s10";
       stmt.AddCompareStmt(resReg, lhsReg, rhsReg);
@@ -621,12 +621,11 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
 
     SparrowVCode stmt = new SparrowVCode();
     List<String> stackSaves = new LinkedList<>();
-    Set<String> usedRegs = new HashSet<>();
 
     stackSaves = setStackSaves(context);
     for (String id : stackSaves) {
       String reg = context.Register(id);
-      if (reg.charAt(0) == 'a') {
+      if (context.ArgRegisterAssignments().containsKey(id)) {
         stmt.AddAssignStmt(reg + "_stack", reg);
       } else {
         stmt.AddAssignStmt(id, reg);
@@ -636,8 +635,17 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
     SparrowVCode params = n.f5.accept(this, context);
     if (params == null) {
       stmt.AddCallStmt(resReg, funcReg, new LinkedList<>());
-      for (String reg : stackSaves) {
-        stmt.AddAssignStmt(reg, reg + "_stack");
+      for (String id : stackSaves) {
+        if (resId.equals(id)) {
+          continue;
+        }
+
+        String reg = context.Register(id);
+        if (context.ArgRegisterAssignments().containsKey(id)) {
+          stmt.AddAssignStmt(reg, reg + "_stack");
+        } else if (reg != null) {
+          stmt.AddAssignStmt(reg, id);
+        }
       }
 
       return stmt;
@@ -695,8 +703,13 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
     }
 
     stmt.AddCallStmt(resReg, funcReg, overflowParams);
+    if (resReg == "s10") {
+      stmt.AddAssignStmt(resId, resReg);
+    }
+
     for (String id : stackSaves) {
-      if (resId.equals(id)) {
+      Integer lastUse = context.LastUse(id);
+      if (resId.equals(id) || lastUse >= lineCounter.LineNumber()) {
         continue;
       }
 
@@ -736,9 +749,28 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
 
     Map<String, String> oldRegisterAssignments = context.RegisterAssignments();
     for (String regId : oldRegisterAssignments.keySet()) {
-      Integer firstUse = context.FirstUse(regId);
+      Integer firstDefAfterCall = null;
+      Integer firstUseAfterCall = null;
+      for (Integer def : context.LiveRanges().Defs(regId)) {
+        if (def > lineCounter.LineNumber()) {
+          firstDefAfterCall = def;
+          break;
+        }
+      }
+
+      for (Integer use : context.LiveRanges().Uses(regId)) {
+        if (use > lineCounter.LineNumber()) {
+          firstUseAfterCall = use;
+          break;
+        }
+      }
+
+      if (firstUseAfterCall == null) {
+        continue;
+      }
+
       Integer lastUse = context.LastUse(regId);
-      if (lastUse >= lineCounter.LineNumber() && firstUse <= lineCounter.LineNumber()) {
+      if (firstDefAfterCall == null || firstUseAfterCall <= firstDefAfterCall || lastUse >= lineCounter.LineNumber()) {
         stackSaves.add(regId);
       }
     }

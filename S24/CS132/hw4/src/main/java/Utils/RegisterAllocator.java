@@ -51,7 +51,7 @@ public class RegisterAllocator {
       expire(range);
 
       System.out.println("    registers: " + tRegisters.toString());
-      String freeRegister = nextFreeRegister(var.getValue().ExtendsFunc());
+      String freeRegister = nextFreeRegister();
       if (freeRegister == null) {
         System.out.println("  spill");
         spill(var);
@@ -113,7 +113,7 @@ public class RegisterAllocator {
     }
   }
 
-  private String nextFreeRegister(Boolean extendsFunc) {
+  private String nextFreeRegister() {
     if (!tRegisters.isEmpty()) {
       return tRegisters.pop();
     }

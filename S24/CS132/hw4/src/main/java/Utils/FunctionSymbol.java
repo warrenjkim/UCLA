@@ -87,6 +87,8 @@ public class FunctionSymbol {
     if (paramRanges != null) {
       for (Map.Entry<String, SparrowVRange> param : paramRanges.LiveRangesMap().entrySet()) {
         function += "    " + param.getKey() + ": [" + param.getValue().ToString() + ")\n";
+        function += "      Definitions: " + param.getValue().Defs().toString() + "\n";
+        function += "      Uses       : " + param.getValue().Uses().toString() + "\n";
       }
     }
 
@@ -94,6 +96,8 @@ public class FunctionSymbol {
 
     for (Map.Entry<String, SparrowVRange> var : liveRanges.LiveRangesMap().entrySet()) {
       function += "    " + var.getKey() + ": [" + var.getValue().ToString() + ")\n";
+      function += "      Definitions: " + var.getValue().Defs().toString() + "\n";
+      function += "      Uses       : " + var.getValue().Uses().toString() + "\n";
     }
 
     function += "\n  Label Ranges:\n";

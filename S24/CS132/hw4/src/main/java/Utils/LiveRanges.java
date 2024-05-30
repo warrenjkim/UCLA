@@ -45,16 +45,16 @@ public class LiveRanges {
     }
   }
 
-  public Map<String, SparrowVRange> LiveRangesMap() {
-    return liveRanges;
+  public List<Integer> Defs(String id) {
+    return liveRanges.get(id).Defs();
   }
 
-  public Boolean ExtendsFunc(String id) {
-    if (liveRanges.containsKey(id)) {
-      return liveRanges.get(id).ExtendsFunc();
-    }
+  public List<Integer> Uses(String id) {
+    return liveRanges.get(id).Uses();
+  }
 
-    return null;
+  public Map<String, SparrowVRange> LiveRangesMap() {
+    return liveRanges;
   }
 
   public List<Map.Entry<String, SparrowVRange>> Sorted() {

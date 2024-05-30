@@ -65,9 +65,10 @@ public class LiveRangesBuilder {
     for (Map.Entry<String, Integer> entry : firstUse.entrySet()) {
       Pair<Integer, Integer> range =
           new Pair<Integer, Integer>(entry.getValue(), lastUse.get(entry.getKey()));
-      Boolean extendFlag = extendsFunc.containsKey(entry.getKey());
+      List<Integer> defList = defs.get(entry.getKey());
+      List<Integer> useList = uses.get(entry.getKey());
 
-      rangeMap.put(entry.getKey(), new SparrowVRange(range, extendFlag));
+      rangeMap.put(entry.getKey(), new SparrowVRange(range, defList, useList));
     }
 
     return rangeMap;

@@ -1,16 +1,25 @@
 package Utils;
+import java.util.LinkedList;
 import java.util.List;
 
 public class SparrowVRange {
   Pair<Integer, Integer> range;
-  private boolean extendsFunc;
-  private List<Integer> definitions;
+  private List<Integer> defs;
   private List<Integer> uses;
 
 
-  public SparrowVRange(Pair<Integer, Integer> range, boolean extendsFunc) {
+  public SparrowVRange(Pair<Integer, Integer> range, List<Integer> defs, List<Integer> uses) {
     this.range = range;
-    this.extendsFunc = extendsFunc;
+    this.defs = defs;
+    this.uses = uses;
+
+    if (this.defs == null) {
+      this.defs = new LinkedList<>();
+    }
+
+    if (this.uses == null) {
+      this.uses = new LinkedList<>();
+    }
   }
 
   public Pair<Integer, Integer> Range() {
@@ -25,8 +34,12 @@ public class SparrowVRange {
     return range.second;
   }
 
-  public boolean ExtendsFunc() {
-    return extendsFunc;
+  public List<Integer> Defs() {
+    return defs;
+  }
+
+  public List<Integer> Uses() {
+    return uses;
   }
 
   public void SetFirstUse(Integer firstUse) {
@@ -38,6 +51,6 @@ public class SparrowVRange {
   }
 
   public String ToString() {
-    return range.first + ", " + range.second + ", " + extendsFunc;
+    return range.first + ", " + range.second;
   }
 }

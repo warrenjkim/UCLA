@@ -14,7 +14,6 @@ public class LiveRangesVisitor extends GJVoidDepthFirst<LiveRangesBuilder> {
   private IdVisitor idVisitor;
   private Map<String, FunctionSymbol> functionMap;
   private ParamRangesVisitor paramRangesVisitor;
-  private ExtendedLifetimeVisitor extendedLifetimeVisitor;
 
   private DefinitionVisitor defVisitor;
   private UseVisitor useVisitor;
@@ -26,6 +25,7 @@ public class LiveRangesVisitor extends GJVoidDepthFirst<LiveRangesBuilder> {
 
     this.defVisitor = new DefinitionVisitor();
     this.useVisitor = new UseVisitor();
+    this.lineCounter = new LineCounter();
   }
 
   public Map<String, FunctionSymbol> FunctionMap() {
@@ -51,7 +51,7 @@ public class LiveRangesVisitor extends GJVoidDepthFirst<LiveRangesBuilder> {
    */
   public void visit(FunctionDeclaration n, LiveRangesBuilder ranges) {
     String functionName = n.f1.accept(idVisitor);
-    lineCounter = new LineCounter();
+    lineCounter.Reset();;
     ranges = new LiveRangesBuilder();
     paramRanges = new LiveRangesBuilder();
     labelRanges = new LiveRangesBuilder();
@@ -62,8 +62,6 @@ public class LiveRangesVisitor extends GJVoidDepthFirst<LiveRangesBuilder> {
                                              ranges.LiveRanges(),
                                              labelRanges.LiveRanges());
     functionMap.put(n.f1.f0.tokenImage, func);
-    System.out.println("defs; " + ranges.defs.toString());
-    System.out.println("uses: " + ranges.uses.toString());
   }
 
   /**
@@ -75,6 +73,7 @@ public class LiveRangesVisitor extends GJVoidDepthFirst<LiveRangesBuilder> {
     n.f0.accept(this, ranges);
     lineCounter.IncrementLineNumber();
     n.f2.accept(this, ranges);
+    n.f2.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
   }
 
   /**
@@ -328,6 +327,7 @@ public class LiveRangesVisitor extends GJVoidDepthFirst<LiveRangesBuilder> {
   public void visit(Identifier n, LiveRangesBuilder ranges) {
     if (paramRanges.Contains(n.f0.tokenImage)) {
       paramRanges.PutLastUse(n.f0.tokenImage, lineCounter.LineNumber());
+      n.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(paramRanges, lineCounter.LineNumber()));
       return;
     }
 
