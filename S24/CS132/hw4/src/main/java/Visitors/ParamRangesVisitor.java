@@ -25,6 +25,7 @@ public class ParamRangesVisitor extends GJVoidDepthFirst<LiveRangesBuilder> {
       return;
     }
 
+    ranges.AddDef(n.f0.tokenImage, 0);
     ranges.PutFirstUse(n.f0.tokenImage, 0);
     ranges.PutLastUse(n.f0.tokenImage, 0);
   }

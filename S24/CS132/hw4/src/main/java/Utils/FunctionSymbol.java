@@ -82,15 +82,6 @@ public class FunctionSymbol {
     return lastUse;
   }
 
-  public Boolean ExtendsFunc(String id) {
-    Boolean extendsFunc = liveRanges.ExtendsFunc(id);
-    if (extendsFunc == null) {
-      extendsFunc = paramRanges.ExtendsFunc(id);
-    }
-
-    return extendsFunc;
-  }
-
   public String ToString() {
     String function = name + ":\n  Params:\n";
     if (paramRanges != null) {
