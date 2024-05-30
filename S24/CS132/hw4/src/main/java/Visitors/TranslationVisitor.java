@@ -7,8 +7,11 @@ package Visitors;
 import Utils.*;
 import IR.syntaxtree.*;
 import java.util.Enumeration;
+import java.util.HashSet;
+
 import IR.visitor.GJDepthFirst;
 import java.util.Map;
+import java.util.Set;
 import java.util.List;
 import java.util.LinkedList;
 
@@ -16,8 +19,7 @@ import java.util.LinkedList;
  * Provides default methods which visit each node in the tree in depth-first order. Your visitors
  * may extend this class.
  */
-public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbol> {
-  private IdVisitor idVisitor;
+public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbol> { private IdVisitor idVisitor;
   private Map<String, FunctionSymbol> functionMap;
   private LineCounter lineCounter;
 
@@ -116,16 +118,29 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
    * f5 -> Block()
    */
   public SparrowVCode visit(FunctionDeclaration n, FunctionSymbol context) {
+    lineCounter.Reset();
     String funcName = n.f1.accept(idVisitor);
     SparrowVCode func = new SparrowVCode();
     context = functionMap.get(funcName);
-    func.AddFuncLabelStmt(funcName);
-    // SparrowVCode params = n.f3.accept(this, context);
-    // if (params != null) {
-    //   func.AddFuncLabelStmt(funcName, params.Params());
-    // } else {
-    //   func.AddFuncLabelStmt(funcName);
-    // }
+    SparrowVCode params = n.f3.accept(this, context);
+    SparrowVCode body = new SparrowVCode();
+    if (params != null) {
+      int i = 0;
+      while (!params.Params().isEmpty() && i++ < 6) {
+        params.Params().pop();
+      }
+
+      func.AddFuncLabelStmt(funcName, params.Params());
+      for (String param : params.Params()) {
+        if (context.Register(param) != null) {
+          body.AddAssignStmt(context.Register(param), param);
+        }
+      }
+      func.AddBlockStmt(body);
+    } else {
+      func.AddFuncLabelStmt(funcName);
+    }
+
     SparrowVCode block = n.f5.accept(this, context);
     if (block != null) {
       func.AddBlockStmt(block);
@@ -144,8 +159,8 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
     String retId = n.f2.accept(idVisitor);
     String retReg = context.Register(retId);
     if (retReg == null) {
-      // retReg = n.f2.accept(idVisitor);
-      retReg = "s9";
+      retReg = "s10";
+      body.AddAssignStmt(retReg, retId);
     }
 
     if (body == null) {
@@ -198,10 +213,12 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
   public SparrowVCode visit(SetInteger n, FunctionSymbol context) {
     String regId = n.f0.accept(idVisitor);
     String reg = context.Register(regId);
+
     String intLit = n.f2.accept(idVisitor);
+
     SparrowVCode stmt = new SparrowVCode();
     if (reg == null) {
-      reg = "s9";
+      reg = "s10";
       stmt.AddAssignStmt(reg, intLit);
       stmt.AddAssignStmt(regId, reg);
       return stmt;
@@ -220,10 +237,12 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
   public SparrowVCode visit(SetFuncName n, FunctionSymbol context) {
     String resId = n.f0.accept(idVisitor);
     String resReg = context.Register(resId);
+
     String funcId = n.f3.accept(idVisitor);
     SparrowVCode stmt = new SparrowVCode();
+
     if (resReg == null) {
-      resReg = "s9";
+      resReg = "s10";
       stmt.AddFuncAssignStmt(resReg, funcId);
       stmt.AddAssignStmt(resId, resReg);
       return stmt;
@@ -243,22 +262,26 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
   public SparrowVCode visit(Add n, FunctionSymbol context) {
     String resId = n.f0.accept(idVisitor);
     String resReg = context.Register(resId);
+
     String lhsId = n.f2.accept(idVisitor);
     String lhsReg = context.Register(lhsId);
+
     String rhsId = n.f4.accept(idVisitor);
     String rhsReg = context.Register(rhsId);
+
     SparrowVCode stmt = new SparrowVCode();
     if (lhsReg == null) {
-      lhsReg = "s9";
+      lhsReg = "s10";
       stmt.AddAssignStmt(lhsReg, lhsId);
     }
+
     if (rhsReg == null) {
-      rhsReg = "s10";
+      rhsReg = "s11";
       stmt.AddAssignStmt(rhsReg, rhsId);
     }
+
     if (resReg == null) {
-      resReg = "s11";
-      stmt.AddAssignStmt(resReg, resId);
+      resReg = "s10";
       stmt.AddPlusStmt(resReg, lhsReg, rhsReg);
       stmt.AddAssignStmt(resId, resReg);
       return stmt;
@@ -278,22 +301,26 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
   public SparrowVCode visit(Subtract n, FunctionSymbol context) {
     String resId = n.f0.accept(idVisitor);
     String resReg = context.Register(resId);
+
     String lhsId = n.f2.accept(idVisitor);
     String lhsReg = context.Register(lhsId);
+
     String rhsId = n.f4.accept(idVisitor);
     String rhsReg = context.Register(rhsId);
+
     SparrowVCode stmt = new SparrowVCode();
     if (lhsReg == null) {
-      lhsReg = "s9";
+      lhsReg = "s10";
       stmt.AddAssignStmt(lhsReg, lhsId);
     }
+
     if (rhsReg == null) {
-      rhsReg = "s10";
+      rhsReg = "s11";
       stmt.AddAssignStmt(rhsReg, rhsId);
     }
+
     if (resReg == null) {
-      resReg = "s11";
-      stmt.AddAssignStmt(resReg, resId);
+      resReg = "s10";
       stmt.AddMinusStmt(resReg, lhsReg, rhsReg);
       stmt.AddAssignStmt(resId, resReg);
       return stmt;
@@ -313,22 +340,26 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
   public SparrowVCode visit(Multiply n, FunctionSymbol context) {
     String resId = n.f0.accept(idVisitor);
     String resReg = context.Register(resId);
+
     String lhsId = n.f2.accept(idVisitor);
     String lhsReg = context.Register(lhsId);
+
     String rhsId = n.f4.accept(idVisitor);
     String rhsReg = context.Register(rhsId);
+
     SparrowVCode stmt = new SparrowVCode();
     if (lhsReg == null) {
-      lhsReg = "s9";
+      lhsReg = "s10";
       stmt.AddAssignStmt(lhsReg, lhsId);
     }
+
     if (rhsReg == null) {
-      rhsReg = "s10";
+      rhsReg = "s11";
       stmt.AddAssignStmt(rhsReg, rhsId);
     }
+
     if (resReg == null) {
-      resReg = "s11";
-      stmt.AddAssignStmt(resReg, resId);
+      resReg = "s10";
       stmt.AddMultiplyStmt(resReg, lhsReg, rhsReg);
       stmt.AddAssignStmt(resId, resReg);
       return stmt;
@@ -348,22 +379,24 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
   public SparrowVCode visit(LessThan n, FunctionSymbol context) {
     String resId = n.f0.accept(idVisitor);
     String resReg = context.Register(resId);
+
     String lhsId = n.f2.accept(idVisitor);
     String lhsReg = context.Register(lhsId);
+
     String rhsId = n.f4.accept(idVisitor);
     String rhsReg = context.Register(rhsId);
+
     SparrowVCode stmt = new SparrowVCode();
     if (lhsReg == null) {
-      lhsReg = "s9";
+      lhsReg = "s10";
       stmt.AddAssignStmt(lhsReg, lhsId);
     }
     if (rhsReg == null) {
-      rhsReg = "s10";
+      rhsReg = "s11";
       stmt.AddAssignStmt(rhsReg, rhsId);
     }
     if (resReg == null) {
-      resReg = "s11";
-      stmt.AddAssignStmt(resReg, resId);
+      resReg = "s10";
       stmt.AddCompareStmt(resReg, lhsReg, rhsReg);
       stmt.AddAssignStmt(resId, resReg);
       return stmt;
@@ -386,17 +419,21 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
   public SparrowVCode visit(Load n, FunctionSymbol context) {
     String resId = n.f0.accept(idVisitor);
     String resReg = context.Register(resId);
+
     String heapId = n.f3.accept(idVisitor);
     String heapReg = context.Register(heapId);
+
     Integer offset = Integer.parseInt(n.f5.accept(idVisitor));
+
     SparrowVCode stmt = new SparrowVCode();
+
     if (heapReg == null) {
       heapReg = "s10";
       stmt.AddAssignStmt(heapReg, heapId);
     }
+
     if (resReg == null) {
-      resReg = "s9";
-      stmt.AddAssignStmt(resReg, resId);
+      resReg = "s11";
       stmt.AddLoadStmt(resReg, heapReg, offset);
       stmt.AddAssignStmt(resId, resReg);
       return stmt;
@@ -417,16 +454,21 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
   public SparrowVCode visit(Store n, FunctionSymbol context) {
     String heapId = n.f1.accept(idVisitor);
     String heapReg = context.Register(heapId);
+
     Integer offset = Integer.parseInt(n.f3.accept(idVisitor));
+
     String valId = n.f6.accept(idVisitor);
     String valReg = context.Register(valId);
+
     SparrowVCode stmt = new SparrowVCode();
+
     if (valReg == null) {
-      valReg = "s9";
+      valReg = "s10";
       stmt.AddAssignStmt(valReg, valId);
     }
+
     if (heapReg == null) {
-      heapReg = "s10";
+      heapReg = "s11";
       stmt.AddAssignStmt(heapReg, heapId);
     }
 
@@ -442,18 +484,22 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
   public SparrowVCode visit(Move n, FunctionSymbol context) {
     String resId = n.f0.accept(idVisitor);
     String resReg = context.Register(resId);
+
     String valId = n.f2.accept(idVisitor);
     String valReg = context.Register(valId);
+
     SparrowVCode stmt = new SparrowVCode();
+
     if (valReg == null) {
-      valReg = "s9";
+      valReg = "s10";
       stmt.AddAssignStmt(valReg, valId);
     }
+
     if (resReg == null) {
-      resReg = "s10";
-      stmt.AddAssignStmt(resReg, resId);
+      resReg = "s11";
       stmt.AddAssignStmt(resReg, valReg);
       stmt.AddAssignStmt(resId, resReg);
+      return stmt;
     }
 
     stmt.AddAssignStmt(resReg, valReg);
@@ -471,20 +517,25 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
   public SparrowVCode visit(Alloc n, FunctionSymbol context) {
     String resId = n.f0.accept(idVisitor);
     String resReg = context.Register(resId);
-    String valId = n.f4.accept(idVisitor);
-    String valReg = context.Register(valId);
+
+    String sizeId = n.f4.accept(idVisitor);
+    String sizeReg = context.Register(sizeId);
+
     SparrowVCode stmt = new SparrowVCode();
-    if (valReg == null) {
-      valReg = "s9";
-      stmt.AddAssignStmt(valReg, valId);
+
+    if (sizeReg == null) {
+      sizeReg = "s10";
+      stmt.AddAssignStmt(sizeReg, sizeId);
     }
+
     if (resReg == null) {
-      resReg = "s10";
-      stmt.AddAssignStmt(resReg, resId);
-      stmt.AddAllocStmt(resReg, valReg);
-      stmt.AddAllocStmt(resId, resReg);
+      resReg = "s11";
+      stmt.AddAllocStmt(resReg, sizeReg);
+      stmt.AddAssignStmt(resId, resReg);
+      return stmt;
     }
-    stmt.AddAllocStmt(resReg, valReg);
+
+    stmt.AddAllocStmt(resReg, sizeReg);
     return stmt;
   }
 
@@ -497,11 +548,14 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
   public SparrowVCode visit(Print n, FunctionSymbol context) {
     String regId = n.f2.accept(idVisitor);
     String reg = context.Register(regId);
+
     SparrowVCode stmt = new SparrowVCode();
+
     if (reg == null) {
-      reg = "s9";
+      reg = "s10";
       stmt.AddAssignStmt(reg, regId);
     }
+
     stmt.AddPrintStmt(reg);
     return stmt;
   }
@@ -537,9 +591,11 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
   public SparrowVCode visit(IfGoto n, FunctionSymbol context) {
     String regId = n.f1.accept(idVisitor);
     String reg = context.Register(regId);
+
     SparrowVCode stmt = new SparrowVCode();
+
     if (reg == null) {
-      reg = "s9";
+      reg = "s10";
       stmt.AddAssignStmt(reg, regId);
     }
 
@@ -557,33 +613,99 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
    * f6 -> ")"
    */
   public SparrowVCode visit(Call n, FunctionSymbol context) {
-    String resReg = context.Register(n.f0.accept(idVisitor));
-    String funcReg = context.Register(n.f3.accept(idVisitor));
+    String resId = n.f0.accept(idVisitor);
+    String resReg = context.Register(resId);
+
+    String funcId = n.f3.accept(idVisitor);
+    String funcReg = context.Register(funcId);
+
     SparrowVCode stmt = new SparrowVCode();
     List<String> stackSaves = new LinkedList<>();
-    SparrowVCode paramRegs = n.f5.accept(this, context);
-    LinkedList<String> params = new LinkedList<>();
-    if (paramRegs != null) {
-      stackSaves = setStackSaves(context);
-      for (String reg : stackSaves) {
-        stmt.AddAssignStmt(reg + "_stack", reg);
-      }
+    Set<String> usedRegs = new HashSet<>();
 
-      LinkedList<String> regParams = paramRegs.Params();
-      int i = 2;
-      while (!regParams.isEmpty()) {
-        if (i == 6) {
-          break;
-        }
-        String param = regParams.pop();
-        stmt.AddAssignStmt("a" + i++, param);
-        params.push(context.VariableInRegister(param));
+    stackSaves = setStackSaves(context);
+    for (String id : stackSaves) {
+      String reg = context.Register(id);
+      if (reg.charAt(0) == 'a') {
+        stmt.AddAssignStmt(reg + "_stack", reg);
+      } else {
+        stmt.AddAssignStmt(id, reg);
       }
     }
 
-    stmt.AddCallStmt(resReg, funcReg, params);
-    for (String reg : stackSaves) {
-      stmt.AddAssignStmt(reg, reg + "_stack");
+    SparrowVCode params = n.f5.accept(this, context);
+    if (params == null) {
+      stmt.AddCallStmt(resReg, funcReg, new LinkedList<>());
+      for (String reg : stackSaves) {
+        stmt.AddAssignStmt(reg, reg + "_stack");
+      }
+
+      return stmt;
+    }
+
+    LinkedList<String> overflowParams = new LinkedList<>();
+    int i = 2;
+    while (!params.Params().isEmpty()) {
+      String param = params.Params().pop();
+      if (i < 8) {
+        String paramReg = context.Register(param);
+        if (paramReg == null) {
+          paramReg = param;
+        }
+
+        if (paramReg.equals("a" + i)) {
+          i++;
+          continue;
+        }
+
+        if (context.ArgRegisterAssignments().containsKey(param)) {
+          stmt.AddAssignStmt("a" + i, paramReg + "_stack");
+        } else {
+          stmt.AddAssignStmt("a" + i, paramReg);
+        }
+
+        i++;
+      } else {
+        overflowParams.add(param);
+      }
+    }
+
+    for (String overflowParam : overflowParams) {
+      String paramReg = context.Register(overflowParam);
+      if (paramReg == null) {
+        paramReg = overflowParam;
+      }
+
+      if (context.ArgRegisterAssignments().containsKey(overflowParam)) {
+        stmt.AddAssignStmt("s10", paramReg + "_stack");
+        stmt.AddAssignStmt(overflowParam, "s10");
+      } else if (!overflowParam.equals(paramReg)) {
+        stmt.AddAssignStmt(overflowParam, paramReg);
+      }
+    }
+
+    if (resReg == null) {
+      resReg = "s10";
+      stmt.AddAssignStmt(resReg, resId);
+    }
+
+    if (funcReg == null) {
+      funcReg = "s11";
+      stmt.AddAssignStmt(funcReg, funcId);
+    }
+
+    stmt.AddCallStmt(resReg, funcReg, overflowParams);
+    for (String id : stackSaves) {
+      if (resId.equals(id)) {
+        continue;
+      }
+
+      String reg = context.Register(id);
+      if (context.ArgRegisterAssignments().containsKey(id)) {
+        stmt.AddAssignStmt(reg, reg + "_stack");
+      } else if (reg != null) {
+        stmt.AddAssignStmt(reg, id);
+      }
     }
 
     return stmt;
@@ -593,27 +715,35 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
    * f0 -> <IDENTIFIER>
    */
   public SparrowVCode visit(Identifier n, FunctionSymbol context) {
-    String reg = context.Register(n.f0.tokenImage);
-    if (reg == null) {
-      reg = n.f0.tokenImage;
-    }
     SparrowVCode param = new SparrowVCode();
-    param.AddParam(reg);
+    param.AddParam(n.f0.tokenImage);
 
     return param;
   }
 
-  public List<String> setStackSaves(FunctionSymbol context) {
+
+
+
+  private List<String> setStackSaves(FunctionSymbol context) {
     Map<String, String> oldArgAssignments = context.ArgRegisterAssignments();
     List<String> stackSaves = new LinkedList<>();
-    for (Map.Entry<String, String> arg : oldArgAssignments.entrySet()) {
-      Integer lastUse = context.LastUse(arg.getKey());
-      if (lastUse < lineCounter.LineNumber()) {
-        stackSaves.add(arg.getValue());
+    for (String argId : oldArgAssignments.keySet()) {
+      Integer lastUse = context.LastUse(argId);
+      if (lastUse >= lineCounter.LineNumber()) {
+        stackSaves.add(argId);
       }
     }
 
-    System.out.println("In stacksaves: " + stackSaves.toString());
+    Map<String, String> oldRegisterAssignments = context.RegisterAssignments();
+    for (String regId : oldRegisterAssignments.keySet()) {
+      Integer firstUse = context.FirstUse(regId);
+      Integer lastUse = context.LastUse(regId);
+      if (lastUse >= lineCounter.LineNumber() && firstUse <= lineCounter.LineNumber()) {
+        stackSaves.add(regId);
+      }
+    }
+
+    System.out.println("[" + context.Name() + "] In stacksaves: " + stackSaves.toString());
     return stackSaves;
   }
 }

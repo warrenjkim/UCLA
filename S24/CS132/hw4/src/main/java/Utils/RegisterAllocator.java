@@ -13,7 +13,7 @@ import java.util.Set;
 public class RegisterAllocator {
   private static final String[] aRegisterNames = {"a2", "a3", "a4", "a5", "a6", "a7"};
   private static final String[] sRegisterNames = {
-    "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8" /*, "s9", "s10", "s11" */
+    "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9"/*, "s10", "s11" */
   };
   private static final String[] tRegisterNames = {"t0", "t1", "t2", "t3", "t4", "t5"};
 
@@ -74,8 +74,6 @@ public class RegisterAllocator {
       Map.Entry<String, SparrowVRange> interval = iterator.next();
       String id = interval.getKey();
       Pair<Integer, Integer> range = interval.getValue().Range();
-
-      System.out.println("    range: [" + range.ToString() + ")");
       if (range.second > currRange.first) {
         continue;
       }
@@ -116,10 +114,6 @@ public class RegisterAllocator {
   }
 
   private String nextFreeRegister(Boolean extendsFunc) {
-    // if (extendsFunc && !sRegisters.isEmpty()) {
-    //   return sRegisters.pop();
-    // }
-
     if (!tRegisters.isEmpty()) {
       return tRegisters.pop();
     }

@@ -267,9 +267,8 @@ public class ControlFlowVisitor extends GJVoidDepthFirst<FunctionSymbol> {
     Integer gotoLine = context.LabelRanges().LastUse(currLabel);
     String id = n.f0.tokenImage;
 
-    context.LiveRanges().OverwriteFirstUse(id, labelLine);
-
     if (gotoLine != null) {
+      context.LiveRanges().OverwriteFirstUse(id, labelLine);
       context.LiveRanges().OverwriteLastUse(id, gotoLine);
     }
   }

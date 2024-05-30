@@ -1,8 +1,12 @@
 package Utils;
+import java.util.List;
 
 public class SparrowVRange {
   Pair<Integer, Integer> range;
   private boolean extendsFunc;
+  private List<Integer> definitions;
+  private List<Integer> uses;
+
 
   public SparrowVRange(Pair<Integer, Integer> range, boolean extendsFunc) {
     this.range = range;

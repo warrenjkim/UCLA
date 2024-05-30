@@ -49,6 +49,14 @@ public class LiveRanges {
     return liveRanges;
   }
 
+  public Boolean ExtendsFunc(String id) {
+    if (liveRanges.containsKey(id)) {
+      return liveRanges.get(id).ExtendsFunc();
+    }
+
+    return null;
+  }
+
   public List<Map.Entry<String, SparrowVRange>> Sorted() {
     return liveRanges.entrySet().stream()
         .sorted(Map.Entry.comparingByValue(Comparator.comparingInt(SparrowVRange::FirstUse)))

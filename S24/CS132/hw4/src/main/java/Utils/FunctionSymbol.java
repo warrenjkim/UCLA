@@ -1,8 +1,6 @@
 package Utils;
 
 import java.util.Map;
-import java.util.List;
-import java.util.LinkedHashMap;
 
 public class FunctionSymbol {
   private String name;
@@ -12,11 +10,7 @@ public class FunctionSymbol {
   private LiveRanges labelRanges;
 
   private Map<String, String> registerAssignments;
-  private Map<String, String> reverseRegisterAssignments;
-
   private Map<String, String> argRegisterAssignments;
-  private Map<String, String> reverseArgRegisterAssignments;
-  private List<String> overflowParams;
 
   public FunctionSymbol(String name, LiveRanges paramRanges, LiveRanges liveRanges, LiveRanges labelRanges) {
     this.name = name;
@@ -29,29 +23,12 @@ public class FunctionSymbol {
     this.paramRanges = paramRanges;
   }
 
-  public String VariableInRegister(String reg) {
-    String var = reverseRegisterAssignments.get(reg);
-    if (var == null) {
-      var = reverseArgRegisterAssignments.get(reg);
-    }
-
-    return var;
-  }
-
   public void SetRegisterAssignments(Map<String, String> registerAssignments) {
     this.registerAssignments = registerAssignments;
-    this.reverseRegisterAssignments = new LinkedHashMap<>();
-    for (Map.Entry<String, String> assignment : registerAssignments.entrySet()) {
-      reverseRegisterAssignments.put(assignment.getValue(), assignment.getKey());
-    }
   }
 
   public void SetArgRegisterAssignments(Map<String, String> argRegisterAssignments) {
     this.argRegisterAssignments = argRegisterAssignments;
-    this.reverseArgRegisterAssignments = new LinkedHashMap<>();
-    for (Map.Entry<String, String> assignment : argRegisterAssignments.entrySet()) {
-      reverseArgRegisterAssignments.put(assignment.getValue(), assignment.getKey());
-    }
   }
 
   public String Register(String id) {
@@ -105,8 +82,13 @@ public class FunctionSymbol {
     return lastUse;
   }
 
-  public void AddOverflowParam(String param) {
+  public Boolean ExtendsFunc(String id) {
+    Boolean extendsFunc = liveRanges.ExtendsFunc(id);
+    if (extendsFunc == null) {
+      extendsFunc = paramRanges.ExtendsFunc(id);
+    }
 
+    return extendsFunc;
   }
 
   public String ToString() {
