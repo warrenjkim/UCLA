@@ -1,0 +1,11 @@
+func Main()
+    a = 1
+    b = 10
+    c = b + a
+    d = a + c
+    e = c + d
+    f = b + d
+    c = f + e
+    f = e + c
+    b = c + f
+    return b
