@@ -51,7 +51,7 @@ public class RegisterAllocator {
 
       String freeRegister = nextFreeRegister();
       if (freeRegister == null) {
-        spill(var);
+        spill(var, func);
       } else {
         registerAssignments.put(id, freeRegister);
         active.offer(var);
@@ -77,15 +77,17 @@ public class RegisterAllocator {
     }
   }
 
-  private void spill(Map.Entry<String, SparrowVRange> curr) {
+  private void spill(Map.Entry<String, SparrowVRange> curr, FunctionSymbol func) {
     String currId = curr.getKey();
     Pair<Integer, Integer> currRange = curr.getValue().Range();
+    Integer currUses = curr.getValue().Uses().size();
 
     Map.Entry<String, SparrowVRange> spillVar = active.peekLast();
     String spillId = spillVar.getKey();
     Pair<Integer, Integer> spillRange = spillVar.getValue().Range();
+    Integer spillUses = spillVar.getValue().Uses().size();
 
-    if (spillRange.second > currRange.second) {
+    if (spillRange.second > currRange.second && spillUses < currUses) {
       registerAssignments.put(currId, registerAssignments.get(spillId));
       registerAssignments.remove(spillId);
       active.remove(spillVar);
@@ -123,14 +125,14 @@ public class RegisterAllocator {
 
   private void sortActive() {
     Collections.sort(
-        active,
-        new Comparator<Map.Entry<String, SparrowVRange>>() {
-          @Override
-          public int compare(
-              Map.Entry<String, SparrowVRange> lhs, Map.Entry<String, SparrowVRange> rhs) {
-            return lhs.getValue().LastUse().compareTo(rhs.getValue().LastUse());
-          }
-        });
+      active,
+      new Comparator<Map.Entry<String, SparrowVRange>>() {
+        @Override
+        public int compare(
+          Map.Entry<String, SparrowVRange> lhs, Map.Entry<String, SparrowVRange> rhs) {
+          return lhs.getValue().LastUse().compareTo(rhs.getValue().LastUse());
+        }
+      });
   }
 
   private void initialize() {

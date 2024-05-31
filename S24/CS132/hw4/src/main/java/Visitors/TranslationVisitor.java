@@ -666,39 +666,10 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
 
 
 
-  private Integer firstDefAfterCall(String id, List<Integer> defs) {
-      for (Integer def : defs) {
-        if (def > lineCounter.LineNumber()) {
-          return def;
-        }
-      }
-
-      return null;
-  }
-
-  private Integer firstUseAfterCall(String id, List<Integer> uses) {
-      for (Integer use : uses) {
-        if (use > lineCounter.LineNumber()) {
-          return use;
-        }
-      }
-
-      return null;
-  }
-
   private void saveRegisters(List<String> stackSaves, SparrowVCode stmt, FunctionSymbol context, String resId, String funcId) {
     for (Map.Entry<String, String> arg : context.ArgRegisterAssignments().entrySet()) {
       String argId = arg.getKey();
       String argReg = arg.getValue();
-
-      List<Integer> defs = context.Defs(argId);
-      List<Integer> uses = context.Uses(argId);
-
-      Integer defAfterCall = firstDefAfterCall(argId, defs);
-      Integer useAfterCall = firstUseAfterCall(argId, uses);
-      // if (defAfterCall != null && useAfterCall != null && defAfterCall > useAfterCall) {
-      //   continue;
-      // }
 
       Integer lastUse = context.LastUse(argId);
       if (lastUse >= lineCounter.LineNumber() && !argId.equals(resId) && !argId.equals(funcId)) {
@@ -710,15 +681,6 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
     for (Map.Entry<String, String> temp : context.RegisterAssignments().entrySet()) {
       String tempId = temp.getKey();
       String tempReg = temp.getValue();
-
-      List<Integer> defs = context.Defs(tempId);
-      List<Integer> uses = context.Uses(tempId);
-
-      Integer defAfterCall = firstDefAfterCall(tempId, defs);
-      Integer useAfterCall = firstUseAfterCall(tempId, uses);
-      // if (defAfterCall != null && useAfterCall != null && defAfterCall > useAfterCall) {
-      //   continue;
-      // }
 
       Integer firstUse = context.FirstUse(tempId);
       Integer lastUse = context.LastUse(tempId);
