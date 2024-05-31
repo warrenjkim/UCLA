@@ -11,6 +11,7 @@ import java.util.HashSet;
 
 import IR.visitor.GJDepthFirst;
 import java.util.Map;
+import java.util.LinkedHashMap;
 import java.util.Set;
 import java.util.List;
 import java.util.LinkedList;
@@ -19,7 +20,8 @@ import java.util.LinkedList;
  * Provides default methods which visit each node in the tree in depth-first order. Your visitors
  * may extend this class.
  */
-public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbol> { private IdVisitor idVisitor;
+public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbol> {
+  private IdVisitor idVisitor;
   private Map<String, FunctionSymbol> functionMap;
   private LineCounter lineCounter;
 
@@ -620,37 +622,29 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
     String funcReg = context.Register(funcId);
 
     SparrowVCode stmt = new SparrowVCode();
-    List<String> stackSaves = new LinkedList<>();
-    Set<String> usedRegs = new HashSet<>();
-
-    stackSaves = setStackSaves(context);
+    List<String> stackSaves = setStackSaves(context);
     for (String id : stackSaves) {
+      if (id.equals(resId)) {
+        continue;
+      }
+
       String reg = context.Register(id);
-      if (reg.charAt(0) == 'a') {
+      if (context.ArgRegisterAssignments().containsKey(id)) {
         stmt.AddAssignStmt(reg + "_stack", reg);
-      } else {
+      } else if (reg != null) {
         stmt.AddAssignStmt(id, reg);
       }
     }
 
     SparrowVCode params = n.f5.accept(this, context);
-    if (params == null) {
-      stmt.AddCallStmt(resReg, funcReg, new LinkedList<>());
-      for (String reg : stackSaves) {
-        stmt.AddAssignStmt(reg, reg + "_stack");
-      }
-
-      return stmt;
-    }
-
     LinkedList<String> overflowParams = new LinkedList<>();
-    int i = 2;
-    while (!params.Params().isEmpty()) {
-      String param = params.Params().pop();
-      if (i < 8) {
+    if (params != null) {
+      int i = 2;
+      while (!params.Params().isEmpty() && i < 8) {
+        String param = params.Params().pop();
         String paramReg = context.Register(param);
         if (paramReg == null) {
-          paramReg = param;
+          paramReg = "s10";
         }
 
         if (paramReg.equals("a" + i)) {
@@ -660,27 +654,32 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
 
         if (context.ArgRegisterAssignments().containsKey(param)) {
           stmt.AddAssignStmt("a" + i, paramReg + "_stack");
+        } else if (paramReg.equals("s10")) {
+          stmt.AddAssignStmt(paramReg, param);
+          stmt.AddAssignStmt("a" + i, paramReg);
         } else {
           stmt.AddAssignStmt("a" + i, paramReg);
         }
 
         i++;
-      } else {
-        overflowParams.add(param);
-      }
-    }
-
-    for (String overflowParam : overflowParams) {
-      String paramReg = context.Register(overflowParam);
-      if (paramReg == null) {
-        paramReg = overflowParam;
       }
 
-      if (context.ArgRegisterAssignments().containsKey(overflowParam)) {
-        stmt.AddAssignStmt("s10", paramReg + "_stack");
-        stmt.AddAssignStmt(overflowParam, "s10");
-      } else if (!overflowParam.equals(paramReg)) {
-        stmt.AddAssignStmt(overflowParam, paramReg);
+      for (String arg : params.Params()) {
+        overflowParams.add(arg);
+      }
+
+      for (String overflowParam : overflowParams) {
+        String paramReg = context.Register(overflowParam);
+        if (paramReg == null) {
+          paramReg = overflowParam;
+        }
+
+        if (context.ArgRegisterAssignments().containsKey(overflowParam)) {
+          stmt.AddAssignStmt("s10", paramReg + "_stack");
+          stmt.AddAssignStmt(overflowParam, "s10");
+        } else if (!overflowParam.equals(paramReg)) {
+          stmt.AddAssignStmt(overflowParam, paramReg);
+        }
       }
     }
 
@@ -695,8 +694,12 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
     }
 
     stmt.AddCallStmt(resReg, funcReg, overflowParams);
+    if (resReg.equals("s10")) {
+      stmt.AddAssignStmt(resId, resReg);
+    }
+
     for (String id : stackSaves) {
-      if (resId.equals(id)) {
+      if (id.equals(resId)) {
         continue;
       }
 
@@ -735,15 +738,126 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
     }
 
     Map<String, String> oldRegisterAssignments = context.RegisterAssignments();
-    for (String regId : oldRegisterAssignments.keySet()) {
-      Integer firstUse = context.FirstUse(regId);
-      Integer lastUse = context.LastUse(regId);
-      if (lastUse >= lineCounter.LineNumber() && firstUse <= lineCounter.LineNumber()) {
-        stackSaves.add(regId);
+    for (String tempId : oldRegisterAssignments.keySet()) {
+      Integer firstUse = context.FirstUse(tempId);
+      Integer lastUse = context.LastUse(tempId);
+      if (lastUse > lineCounter.LineNumber() && firstUse <= lineCounter.LineNumber()) {
+        stackSaves.add(tempId);
       }
     }
 
-    System.out.println("[" + context.Name() + "] In stacksaves: " + stackSaves.toString());
+    // System.out.println("[" + context.Name() + "] In stacksaves: " + stackSaves.toString());
     return stackSaves;
   }
 }
+    // Map<String, String> argSaves = new LinkedHashMap<>();
+    // for (Map.Entry<String, String> arg : context.ArgRegisterAssignments().entrySet()) {
+    //   String argId = arg.getKey();
+    //   String argReg = arg.getValue();
+
+    //   Integer lastUse = context.LastUse(argId);
+    //   if (lastUse < lineCounter.LineNumber()) {
+    //     continue;
+    //   }
+
+    //   stmt.AddAssignStmt(argReg + "_stack", argReg);
+    //   argSaves.put(argId, argReg);
+    // }
+
+    // Map<String, String> tempSaves = new LinkedHashMap<>();
+    // for (Map.Entry<String, String> temp : context.RegisterAssignments().entrySet()) {
+    //   String tempId = temp.getKey();
+    //   String tempReg = temp.getValue();
+
+    //   Integer firstUse = context.LastUse(tempId);
+    //   Integer lastUse = context.LastUse(tempId);
+    //   if (firstUse > lineCounter.LineNumber() || lastUse <= lineCounter.LineNumber()) {
+    //     continue;
+    //   }
+
+    //   stmt.AddAssignStmt(tempId, tempReg);
+    //   tempSaves.put(tempReg, tempId);
+    // }
+
+    // SparrowVCode params = n.f5.accept(this, context);
+    // LinkedList<String> overflowParams = new LinkedList<>();
+    // if (params != null) {
+    //   LinkedList<String> paramList = params.Params();
+    //   int num = 2;
+    //   while (!paramList.isEmpty() && num <= 7) {
+    //     String argReg = "a" + num;
+    //     num++;
+
+    //     String param = paramList.pop();
+    //     String paramReg = context.Register(param);
+    //     if (paramReg == null) {
+    //       paramReg = param;
+    //     }
+
+    //     if (context.ArgRegisterAssignments().containsKey(param)) {
+    //       stmt.AddAssignStmt(argReg, paramReg + "_stack");
+    //     } else {
+    //       stmt.AddAssignStmt(argReg, paramReg);
+    //     }
+    //   }
+
+    //   for (String param : paramList) {
+    //     overflowParams.add(param);
+    //   }
+    // }
+
+    // if (resReg == null) {
+    //   resReg = "s10";
+    //   stmt.AddAssignStmt(resReg, resId);
+    // }
+
+    // if (funcReg == null) {
+    //   funcReg = "s11";
+    //   stmt.AddAssignStmt(funcReg, funcId);
+    // }
+
+    // stmt.AddCallStmt(resReg, funcReg, overflowParams);
+    // if (resReg.equals("s10")) {
+    //   stmt.AddAssignStmt(resId, resReg);
+    // }
+
+    // for (Map.Entry<String, String> saved : argSaves.entrySet()) {
+    //   String argId = saved.getKey();
+    //   String argReg = saved.getValue();
+    //   if (argReg.equals(resReg)) {
+    //     continue;
+    //   }
+
+    //   if (!context.ArgRegisterAssignments().containsKey(argId)) {
+    //     continue;
+    //   }
+
+    //   Integer firstUse = context.FirstUse(argId);
+    //   Integer lastUse = context.LastUse(argId);
+    //   if (firstUse > lineCounter.LineNumber() || lastUse <= lineCounter.LineNumber()) {
+    //     continue;
+    //   }
+
+    //   stmt.AddAssignStmt(argReg, argReg + "_stack");
+    // }
+
+    // for (Map.Entry<String, String> saved : tempSaves.entrySet()) {
+    //   String tempReg = saved.getKey();
+    //   String tempId = saved.getValue();
+    //   if (tempReg.equals(resReg)) {
+    //     continue;
+    //   }
+
+    //   stmt.AddAssignStmt(tempReg, tempId);
+    // }
+
+    // return stmt;
+
+
+
+
+
+
+
+
+

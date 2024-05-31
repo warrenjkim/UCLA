@@ -46,17 +46,17 @@ public class RegisterAllocator {
     for (Map.Entry<String, SparrowVRange> var : ranges) {
       String id = var.getKey();
       Pair<Integer, Integer> range = var.getValue().Range();
-      System.out.println("\nid: " + id + ", [" + range.ToString() + ")");
+      // System.out.println("\nid: " + id + ", [" + range.ToString() + ")");
 
       expire(range);
 
-      System.out.println("    registers: " + tRegisters.toString());
+      // System.out.println("    registers: " + tRegisters.toString());
       String freeRegister = nextFreeRegister(var.getValue().ExtendsFunc());
       if (freeRegister == null) {
-        System.out.println("  spill");
+        // System.out.println("  spill");
         spill(var);
       } else {
-        System.out.println("  assign " + freeRegister);
+        // System.out.println("  assign " + freeRegister);
         registerAssignments.put(id, freeRegister);
         active.offer(var);
       }
@@ -78,7 +78,7 @@ public class RegisterAllocator {
         continue;
       }
 
-      System.out.println("      expiring: " + id);
+      // System.out.println("      expiring: " + id);
 
       iterator.remove();
       freeRegister(registerAssignments.get(id));
@@ -93,8 +93,8 @@ public class RegisterAllocator {
     Pair<Integer, Integer> spillRange = spillVar.getValue().Range();
 
     if (spillRange.second > currRange.second) {
-      System.out.print("    spilling " + spillId + " -- ");
-      System.out.println("assign " + currId + " to " + registerAssignments.get(spillId));
+      // System.out.print("    spilling " + spillId + " -- ");
+      // System.out.println("assign " + currId + " to " + registerAssignments.get(spillId));
       registerAssignments.put(currId, registerAssignments.get(spillId));
       registerAssignments.remove(spillId);
       active.remove(spillVar);
@@ -102,7 +102,7 @@ public class RegisterAllocator {
       return;
     }
 
-    System.out.println("  keep " + currId + " as " + registerAssignments.get(currId));
+    // System.out.println("  keep " + currId + " as " + registerAssignments.get(currId));
   }
 
   private void freeRegister(String reg) {

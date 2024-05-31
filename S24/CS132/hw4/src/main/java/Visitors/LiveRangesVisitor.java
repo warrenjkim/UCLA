@@ -14,13 +14,11 @@ public class LiveRangesVisitor extends GJVoidDepthFirst<LiveRangesBuilder> {
   private IdVisitor idVisitor;
   private Map<String, FunctionSymbol> functionMap;
   private ParamRangesVisitor paramRangesVisitor;
-  private ExtendedLifetimeVisitor extendedLifetimeVisitor;
 
   public LiveRangesVisitor() {
     this.idVisitor = new IdVisitor();
     this.functionMap = new LinkedHashMap<>();
     this.paramRangesVisitor = new ParamRangesVisitor();
-    this.extendedLifetimeVisitor = new ExtendedLifetimeVisitor();
   }
 
   public Map<String, FunctionSymbol> FunctionMap() {
@@ -270,7 +268,6 @@ public class LiveRangesVisitor extends GJVoidDepthFirst<LiveRangesBuilder> {
     n.f0.accept(this, ranges);
     n.f3.accept(this, ranges);
     n.f5.accept(this, ranges);
-    n.f5.accept(extendedLifetimeVisitor, ranges);
   }
 
   /**
