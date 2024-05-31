@@ -3,7 +3,6 @@ import IR.syntaxtree.*;
 import Utils.*;
 import Visitors.*;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class S2SV {
@@ -17,28 +16,6 @@ public class S2SV {
 
       ControlFlowVisitor crv = new ControlFlowVisitor(functionMap);
       root.accept(crv, null);
-
-      // System.out.println();
-      // System.out.println("Sorted ranges:");
-      // for (FunctionSymbol func : functionMap.values()) {
-      //   System.out.println(func.Name());
-      //   for (Map.Entry<String, SparrowVRange> entry : func.LiveRanges().Sorted()) {
-      //     System.out.println("  " + entry.getKey() + ": [" + entry.getValue().ToString() + ")");
-      //   }
-      // }
-
-      for (FunctionSymbol func : functionMap.values()) {
-        Map<String, SparrowVRange> loops = new LinkedHashMap<>();
-        for (Map.Entry<String, SparrowVRange> label : func.LabelRanges().LiveRangesMap().entrySet()) {
-          String labelName = label.getKey();
-          SparrowVRange range = label.getValue();
-          if (range.LastUse() != null) {
-            loops.put(labelName, range);
-          }
-        }
-
-        // func.LiveRanges().ExtendRanges(loops);
-      }
 
       RegisterAllocator registerAllocator = new RegisterAllocator();
       for (FunctionSymbol func : functionMap.values()) {

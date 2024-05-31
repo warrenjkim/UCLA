@@ -7,12 +7,9 @@ package Visitors;
 import Utils.*;
 import IR.syntaxtree.*;
 import java.util.Enumeration;
-import java.util.HashSet;
 
 import IR.visitor.GJDepthFirst;
 import java.util.Map;
-import java.util.LinkedHashMap;
-import java.util.Set;
 import java.util.List;
 import java.util.LinkedList;
 
@@ -627,11 +624,13 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
 
     SparrowVCode stmt = new SparrowVCode();
 
+    SparrowVCode params = n.f5.accept(this, context);
+    LinkedList<String> overflowParams = setOverflowParameters(params, stmt, context);
+
     List<String> stackSaves = new LinkedList<>();
     saveRegisters(stackSaves, stmt, context, resId, funcId);
+    assignFunctionArguments(params, stmt, context);
 
-    SparrowVCode params = n.f5.accept(this, context);
-    LinkedList<String> args = assignFunctionArguments(params, stmt, context);
 
     if (resReg == null) {
       resReg = "s10";
@@ -643,7 +642,7 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
       stmt.AddAssignStmt(funcReg, funcId);
     }
 
-    stmt.AddCallStmt(resReg, funcReg, args);
+    stmt.AddCallStmt(resReg, funcReg, overflowParams);
     if (resReg.equals("s10")) {
       stmt.AddAssignStmt(resId, resReg);
     }
@@ -665,6 +664,33 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
 
 
 
+  private LinkedList<String> setOverflowParameters(SparrowVCode params, SparrowVCode stmt, FunctionSymbol context) {
+    if (params == null) {
+      return new LinkedList<>();
+    }
+
+    LinkedList<String> paramList = new LinkedList<>(params.Params());
+    LinkedList<String> overflowParams = new LinkedList<>();
+    int i = 0;
+    while (!paramList.isEmpty() && i++ < 6) {
+      paramList.pop();
+    }
+
+    for (String arg : paramList) {
+      overflowParams.add(arg);
+    }
+
+    for (String overflowParam : overflowParams) {
+      String paramReg = context.Register(overflowParam);
+      if (paramReg == null) {
+        continue;
+      }
+
+      stmt.AddAssignStmt(overflowParam, paramReg);
+    }
+
+    return overflowParams;
+  }
 
   private void saveRegisters(List<String> stackSaves, SparrowVCode stmt, FunctionSymbol context, String resId, String funcId) {
     for (Map.Entry<String, String> arg : context.ArgRegisterAssignments().entrySet()) {
@@ -692,12 +718,11 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
     }
   }
 
-  private LinkedList<String> assignFunctionArguments(SparrowVCode params, SparrowVCode stmt, FunctionSymbol context) {
+  private void assignFunctionArguments(SparrowVCode params, SparrowVCode stmt, FunctionSymbol context) {
     if (params == null) {
-      return new LinkedList<>();
+      return;
     }
 
-    LinkedList<String> overflowParams = new LinkedList<>();
     int i = 2;
     while (!params.Params().isEmpty() && i < 8) {
       String param = params.Params().pop();
@@ -720,27 +745,6 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
 
       i++;
     }
-
-    for (String arg : params.Params()) {
-      overflowParams.add(arg);
-    }
-
-    for (String overflowParam : overflowParams) {
-      String paramReg = context.Register(overflowParam);
-      if (paramReg == null) {
-        continue;
-      }
-
-      if (context.ArgRegisterAssignments().containsKey(overflowParam)) {
-        String tmpParam = "s10";
-        stmt.AddAssignStmt(tmpParam, paramReg + "_stack");
-        stmt.AddAssignStmt(overflowParam, tmpParam);
-      } else {
-        stmt.AddAssignStmt(overflowParam, paramReg);
-      }
-    }
-
-    return overflowParams;
   }
 
   private void restoreRegisters(List<String> stackSaves, SparrowVCode stmt, FunctionSymbol context) {
