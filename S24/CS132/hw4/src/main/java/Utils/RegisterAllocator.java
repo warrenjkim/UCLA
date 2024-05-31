@@ -46,17 +46,13 @@ public class RegisterAllocator {
     for (Map.Entry<String, SparrowVRange> var : ranges) {
       String id = var.getKey();
       Pair<Integer, Integer> range = var.getValue().Range();
-      // System.out.println("\nid: " + id + ", [" + range.ToString() + ")");
 
       expire(range);
 
-      // System.out.println("    registers: " + tRegisters.toString());
-      String freeRegister = nextFreeRegister(var.getValue().ExtendsFunc());
+      String freeRegister = nextFreeRegister();
       if (freeRegister == null) {
-        // System.out.println("  spill");
         spill(var);
       } else {
-        // System.out.println("  assign " + freeRegister);
         registerAssignments.put(id, freeRegister);
         active.offer(var);
       }
@@ -74,35 +70,27 @@ public class RegisterAllocator {
       Map.Entry<String, SparrowVRange> interval = iterator.next();
       String id = interval.getKey();
       Pair<Integer, Integer> range = interval.getValue().Range();
-      if (range.second > currRange.first) {
-        continue;
+      if (range.second <= currRange.first) {
+        iterator.remove();
+        freeRegister(registerAssignments.get(id));
       }
-
-      // System.out.println("      expiring: " + id);
-
-      iterator.remove();
-      freeRegister(registerAssignments.get(id));
     }
   }
 
   private void spill(Map.Entry<String, SparrowVRange> curr) {
     String currId = curr.getKey();
     Pair<Integer, Integer> currRange = curr.getValue().Range();
+
     Map.Entry<String, SparrowVRange> spillVar = active.peekLast();
     String spillId = spillVar.getKey();
     Pair<Integer, Integer> spillRange = spillVar.getValue().Range();
 
     if (spillRange.second > currRange.second) {
-      // System.out.print("    spilling " + spillId + " -- ");
-      // System.out.println("assign " + currId + " to " + registerAssignments.get(spillId));
       registerAssignments.put(currId, registerAssignments.get(spillId));
       registerAssignments.remove(spillId);
       active.remove(spillVar);
       active.offer(curr);
-      return;
     }
-
-    // System.out.println("  keep " + currId + " as " + registerAssignments.get(currId));
   }
 
   private void freeRegister(String reg) {
@@ -113,7 +101,7 @@ public class RegisterAllocator {
     }
   }
 
-  private String nextFreeRegister(Boolean extendsFunc) {
+  private String nextFreeRegister() {
     if (!tRegisters.isEmpty()) {
       return tRegisters.pop();
     }

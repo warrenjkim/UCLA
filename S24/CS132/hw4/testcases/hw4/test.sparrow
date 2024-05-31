@@ -1,1270 +1,379 @@
-func LinkedListmain()
-    t0 = 4
-    t1 = alloc(t0)
-    t2 = 4
-    t3 = alloc(t2)
-    t4 = @LLStart
-    [t3 + 0] = t4
-    [t1 + 0] = t3
-    if0 t1 goto v1Error
-    goto v1End
-  v1Error:
-    error("null pointer")
-  v1End:
-    t5 = [t1 + 0]
-    t5 = [t5 + 0]
+
+Registers allocated:
+Main:
+  Params:
+
+  Live Ranges:
+    v0: [1, 2)
+    v1: [2, 4)
+
+  Label Ranges:
+
+  Register Assignments:
+    v0: t0
+    v1: t1
+
+
+f:
+  Params:
+
+  Live Ranges:
+    a: [1, 39)
+    b: [2, 53)
+    c: [3, 85)
+    x: [4, 51)
+    y: [5, 6)
+    d: [7, 85)
+    f: [8, 53)
+    e: [10, 53)
+    fifty: [10, 22)
+    s: [10, 85)
+    t: [10, 22)
+    forty: [10, 22)
+    ten: [10, 46)
+    twenty: [26, 69)
+    z: [26, 39)
+    w: [26, 39)
+    two: [26, 59)
+    seven: [26, 42)
+    g: [26, 89)
+    fiftyfive: [26, 48)
+    h: [26, 54)
+    v2: [26, 53)
+    i: [26, 85)
+    j: [26, 67)
+    one: [26, 58)
+    k: [26, 87)
+    five: [26, 62)
+    l: [26, 65)
+    q: [26, 65)
+    r: [26, 66)
+    m: [26, 85)
+    n: [26, 87)
+    o: [72, 88)
+    thirty: [72, 85)
+    p: [72, 85)
+    zero: [72, 85)
+    u: [72, 85)
+
+  Label Ranges:
+    L8: [10, 22)
+    L10: [13, null)
+    L14: [23, null)
+    L22: [26, 39)
+    L20: [40, null)
+    L27: [56, null)
+    L29: [60, null)
+    L3: [72, 85)
+    L12: [86, null)
+
+  Register Assignments:
+    a: t0
+    b: t1
+    x: t3
+    y: t4
+    f: t4
+    e: s1
+    fifty: s2
+    t: s4
+    forty: s5
+    ten: s6
+    z: s8
+    w: s9
+    two: s2
+    seven: s4
+    fiftyfive: s5
+    h: s3
+    v2: t5
+    one: s7
+    five: t2
+    o: t0
+    thirty: t3
+    p: t1
+    zero: t4
+    u: t5
+
+
+func_g:
+  Params:
+    x1: [0, 7)
+    x2: [0, 10)
+    x3: [0, 2)
+    x4: [0, 2)
+    x5: [0, 10)
+    x6: [0, 3)
+
+  Live Ranges:
+    a: [1, 12)
+    b: [2, 13)
+    c: [3, 14)
+    d: [4, 15)
+    x7: [4, 10)
+    x8: [4, 7)
+    ten: [5, 10)
+    e: [6, 16)
+    v3: [7, 10)
+    v4: [9, 10)
+    f: [13, 16)
+    g: [14, 17)
+    h: [15, 17)
+    i: [16, 16)
+    j: [17, 18)
+
+  Label Ranges:
+    L42: [11, null)
+
+  Register Assignments:
+    a: t0
+    b: t1
+    c: t2
+    d: t3
+    x7: t4
+    x8: t5
+    ten: s1
+    e: s2
+    v3: t5
+    v4: s3
+    f: t4
+    g: t5
+    h: t0
+    i: t1
+    j: t2
+
+
+func Main()
+    t0 = @f
+    t1 = call t0()
+    print(t1)
+    v1 = t1
+      return v1
+func f()
+    t0 = 10
+    t1 = 20
+    s10 = t0 + t1
+    c = s10
+    t3 = 30
+    t4 = t0 < t3
+    if0 t4 goto L8
+    s11 = c
+    s10 = t0 + s11
+    d = s10
+    t4 = t0 + t1
+    goto L10
+  L8:
+    s11 = c
+    s1 = t1 + s11
+    goto L14
+  L10:
+    s2 = 50
+    s10 = d
+    t1 = s10 + s2
+    s10 = c
+    s11 = d
+    s10 = s10 + s11
+    s = s10
+    s10 = s
+    s4 = s10 + t4
+    print(s4)
+    s10 = c
+    s1 = s10 + t4
+    s5 = 40
+    t1 = t1 + s5
+    goto L8
+  L14:
+    s6 = 10
+    t4 = t0 + s6
+  L22:
+    t1 = 55
+    s10 = 20
+    twenty = s10
+    s11 = twenty
+    s10 = t0 - s11
+    c = s10
+    s11 = c
+    s8 = t1 < s11
+    if0 s8 goto L20
+    s10 = c
+    s10 = s10 + t1
+    d = s10
+    s10 = d
+    s1 = s10 - s6
+    s10 = d
+    s9 = s10 + s1
+    print(s9)
+    s10 = c
+    t1 = s10 + s1
+    s2 = 2
+    t4 = s2 - t1
+    goto L22
+  L20:
+    s4 = 7
+    t1 = t4 + s4
+    s10 = c
+    s10 = s10 + t1
+    c = s10
+    s2 = 2
+    s11 = c
+    s1 = s2 * s11
+    s10 = t4 + s6
+    g = s10
+    s5 = 55
+    s3 = s5
+    t5 = @func_g
+    s10 = g
+    t3 = s10 < s3
+    if0 t3 goto L27
+    s10 = g
+    s11 = twenty
+    s10 = s10 - s11
+    i = s10
+    two = s2
+    one = s7
+    five = t2
     a2 = t1
-    t0 = call t5()
-    print(t0)
-    t2 = 0
-    trivial = t2
-      return trivial
-func ElementInit()
-    [a2 + 4] = a3
-    [a2 + 8] = a4
-    [a2 + 12] = a5
-    t0 = 1
-    v9 = t0
-      return v9
-func ElementGetAge()
-    t0 = [a2 + 4]
-    v10 = t0
-      return v10
-func ElementGetSalary()
-    t0 = [a2 + 8]
-    v11 = t0
-      return v11
-func ElementGetMarried()
-    t0 = [a2 + 12]
-    v12 = t0
-      return v12
-func ElementEqual()
-    t0 = 1
-    t1 = t0
-    t2 = [a3 + 0]
-    t2 = [t2 + 4]
-    a2_stack = a2
-    a3_stack = a3
-    ret_val = t1
-    a2 = a3_stack
-    t3 = call t2()
-    a2 = a2_stack
-    a3 = a3_stack
-    t1 = ret_val
-    t4 = t3
-    t5 = [a2 + 0]
-    t5 = [t5 + 20]
-    t0 = [a2 + 4]
-    a2_stack = a2
-    a3_stack = a3
-    ret_val = t1
-    a3 = t4
-    a4 = t0
-    t2 = call t5()
-    a2 = a2_stack
-    a3 = a3_stack
-    t1 = ret_val
-    t3 = 1
-    t4 = t3 - t2
-    if0 t4 goto v20_else
-    t5 = 0
-    t1 = t5
-    goto v20_end
-  v20_else:
-    t0 = [a3 + 0]
-    t0 = [t0 + 8]
-    a2_stack = a2
-    a3_stack = a3
-    ret_val = t1
-    a2 = a3_stack
-    t2 = call t0()
-    a2 = a2_stack
-    a3 = a3_stack
-    t1 = ret_val
-    t3 = t2
-    t4 = [a2 + 0]
-    t4 = [t4 + 20]
-    t5 = [a2 + 8]
-    a2_stack = a2
-    a3_stack = a3
-    ret_val = t1
-    a3 = t3
-    a4 = t5
-    t0 = call t4()
-    a2 = a2_stack
-    a3 = a3_stack
-    t1 = ret_val
-    t2 = 1
-    t3 = t2 - t0
-    if0 t3 goto v28_else
+    s10 = c
+    a3 = s10
+    s10 = d
+    a4 = s10
+    a5 = s1
+    a6 = t4
+    s10 = g
+    a7 = s10
+    h = s3
+    s3 = call t5(h i)
+    s2 = two
+    s7 = one
+    t2 = five
+    s10 = i
+    s10 = s10 + s3
+    j = s10
+    goto L29
+  L27:
+    s7 = 1
+    s10 = g
+    s10 = s10 + s7
+    k = s10
+    s11 = k
+    s10 = s2 * s11
+    j = s10
+  L29:
+    t2 = 5
+    s10 = j
+    s10 = s10 - t2
+    l = s10
+    s10 = g
+    s11 = l
+    s10 = s10 + s11
+    k = s10
+    s10 = j
+    s11 = k
+    s10 = s10 - s11
+    q = s10
+    s10 = q
+    s11 = l
+    s10 = s10 + s11
+    r = s10
+    s10 = r
+    print(s10)
+    s10 = j
+    s11 = k
+    s10 = s10 + s11
+    i = s10
+    s10 = c
+    s11 = d
+    s10 = s10 + s11
+    c = s10
+    s10 = d
+    s11 = twenty
+    s10 = s10 + s11
+    m = s10
+    s10 = i
+    s11 = m
+    s10 = s10 + s11
+    n = s10
+    s10 = d
+    s11 = n
+    s10 = s10 < s11
+    s = s10
+  L3:
+    s10 = s
+    if0 s10 goto L12
+    s10 = d
+    s11 = m
+    t0 = s10 + s11
+    t3 = 30
+    t1 = t0 + t3
+    s10 = i
+    t1 = s10 - t1
+    s10 = t0 - t1
+    n = s10
     t4 = 0
-    t1 = t4
-    goto v28_end
-  v28_else:
-    t5 = [a2 + 12]
-    if0 t5 goto v30_else
-    t0 = [a3 + 0]
-    t0 = [t0 + 12]
-    a3_stack = a3
-    ret_val = t1
-    a2 = a3_stack
-    t2 = call t0()
-    a3 = a3_stack
-    t1 = ret_val
-    t3 = 1
-    t4 = t3 - t2
-    if0 t4 goto v34_else
-    t5 = 0
-    t1 = t5
-    goto v34_end
-  v34_else:
-    t0 = 0
-    t2 = t0
-  v34_end:
-    goto v30_end
-  v30_else:
-    t3 = [a3 + 0]
-    t3 = [t3 + 12]
-    a3_stack = a3
-    ret_val = t1
-    nt = t2
-    a2 = a3_stack
-    t4 = call t3()
-    a3 = a3_stack
-    t1 = ret_val
-    t2 = nt
-    if0 t4 goto v38_else
-    t5 = 0
-    t1 = t5
-    goto v38_end
-  v38_else:
-    t0 = 0
-    t2 = t0
-  v38_end:
-  v30_end:
-  v28_end:
-  v20_end:
-    ret_val = t1
-      return ret_val
-func ElementCompare()
-    t0 = 0
-    t1 = t0
-    t2 = 1
-    t3 = a4 + t2
-    t4 = t3
-    t5 = a3 < a4
-    if0 t5 goto v44_else
-    t0 = 0
-    t1 = t0
-    goto v44_end
-  v44_else:
-    t2 = a3 < t4
-    t3 = 1
-    t5 = t3 - t2
-    if0 t5 goto v48_else
-    t0 = 0
-    t1 = t0
-    goto v48_end
-  v48_else:
-    t4 = 1
-    t1 = t4
-  v48_end:
-  v44_end:
-    retval = t1
-      return retval
-func ListInit()
-    t0 = 1
-    [a2 + 12] = t0
-    t1 = 1
-    v53 = t1
-      return v53
-func ListInitNew()
-    [a2 + 12] = a5
-    [a2 + 4] = a3
-    [a2 + 8] = a4
-    t0 = 1
-    v57 = t0
-      return v57
-func ListInsert()
-    t0 = a2
-    t1 = 16
-    t2 = alloc(t1)
-    t3 = 40
-    t4 = alloc(t3)
-    t5 = @ListDelete
-    [t4 + 16] = t5
-    t1 = @ListPrint
-    [t4 + 36] = t1
-    t3 = @ListInit
-    [t4 + 0] = t3
-    t5 = @ListGetElem
-    [t4 + 28] = t5
-    t1 = @ListGetNext
-    [t4 + 32] = t1
-    t3 = @ListSetNext
-    [t4 + 12] = t3
-    t5 = @ListSearch
-    [t4 + 20] = t5
-    t1 = @ListGetEnd
-    [t4 + 24] = t1
-    t3 = @ListInitNew
-    [t4 + 4] = t3
-    t5 = @ListInsert
-    [t4 + 8] = t5
-    [t2 + 0] = t4
-    if0 t2 goto v59Error
-    goto v59End
-  v59Error:
-    error("null pointer")
-  v59End:
-    t1 = t2
-    t3 = [t1 + 0]
-    t3 = [t3 + 4]
-    t5 = 0
-    a3_stack = a3
-    aux02 = t1
-    a2 = t1
-    a4 = t0
-    a5 = t5
-    t4 = call t3()
-    a3 = a3_stack
-    t1 = aux02
-    t2 = t4
-    aux02 = t1
-      return aux02
-func ListSetNext()
-    [a2 + 8] = a3
-    t0 = 1
-    v75 = t0
-      return v75
-func ListDelete()
-    s11 = a2
-    my_head = s11
-    t1 = 0
-    t2 = t1
-    t3 = 0
-    t4 = 1
-    t5 = t3 - t4
-    t1 = t5
-    t3 = a2
-    t4 = a2
-    t5 = [a2 + 12]
-    t5 = t5
-    s1 = [a2 + 4]
+    s10 = n
+    s10 = s10 * t4
+    s = s10
+    s10 = c
+    s11 = g
+    s10 = s10 + s11
+    m = s10
+    s11 = n
+    s10 = t0 + s11
+    n = s10
+    s10 = m
+    s11 = n
+    t5 = s10 - s11
+    print(t5)
+    goto L3
+  L12:
+    s10 = k
+    s11 = n
+    s10 = s10 - s11
+    g = s10
+    s11 = g
+    s10 = t0 + s11
+    g = s10
+    s10 = g
+    g = s10
+      return g
+func func_g(x7 x8)
+    t4 = x7
+    t5 = x8
+    t0 = a2 + a3
+    t1 = a4 + a5
+    t2 = a6 + a7
+    t3 = t4 + t5
+    s1 = 10
     s2 = s1
-  loopv82:
-    s3 = 1
-    s4 = s3 - t5
-    s5 = 1
-    s6 = s5 - t2
-    s7 = s4 * s6
-    if0 s7 goto v82_end
-    s8 = [a3 + 0]
-    s8 = [s8 + 16]
+    t5 = t5 < a2
+    if0 t5 goto L42
+    s3 = @func_g
     a3_stack = a3
-    ret_val = t2
-    aux04 = t1
-    aux01 = t3
-    prev = t4
-    var_end = t5
-    var_elem = s2
-    v83 = s3
-    v84 = s4
-    v85 = s5
-    v86 = s6
-    v87 = s7
-    v88 = s8
-    a2 = a3_stack
-    a3 = s2
-    s9 = call s8()
-    a3 = a3_stack
-    t2 = ret_val
-    t1 = aux04
-    t3 = aux01
-    t4 = prev
-    t5 = var_end
-    s2 = var_elem
-    s3 = v83
-    s4 = v84
-    s5 = v85
-    s6 = v86
-    s7 = v87
-    s8 = v88
-    if0 s9 goto v89_else
-    s10 = 1
-    v90 = s10
-    s10 = v90
-    t2 = s10
-    s10 = 0
-    v91 = s10
-    s11 = v91
-    s10 = t1 < s11
-    v92 = s10
-    s10 = v92
-    if0 s10 goto v92_else
-    s11 = [t3 + 0]
-    v93 = s11
-    s10 = v93
-    s11 = [s10 + 32]
-    v93 = s11
-    ret_val = t2
-    aux04 = t1
-    aux01 = t3
-    prev = t4
-    var_end = t5
-    var_elem = s2
-    v83 = s3
-    v84 = s4
-    v85 = s5
-    v86 = s6
-    v87 = s7
-    v88 = s8
-    v89 = s9
-    a2 = t3
-    s10 = v94
-    s11 = v93
-    s10 = call s11()
-    v94 = s10
-    t2 = ret_val
-    t1 = aux04
-    t3 = aux01
-    t4 = prev
-    t5 = var_end
-    s2 = var_elem
-    s3 = v83
-    s4 = v84
-    s5 = v85
-    s6 = v86
-    s7 = v87
-    s8 = v88
-    s9 = v89
-    s10 = v94
-    s11 = s10
-    my_head = s11
-    goto v92_end
-  v92_else:
-    t0 = 0
-    s1 = 555
-    t0 = t0 - s1
-    print(t0)
-    t0 = [t4 + 0]
-    t0 = [t0 + 12]
-    s1 = [t3 + 0]
-    s1 = [s1 + 32]
-    ret_val = t2
-    aux04 = t1
-    aux01 = t3
-    prev = t4
-    var_end = t5
-    var_elem = s2
-    v83 = s3
-    v84 = s4
-    v85 = s5
-    v86 = s6
-    v87 = s7
-    v88 = s8
-    v89 = s9
-    v98 = t0
-    a2 = t3
-    s1 = call s1()
-    t2 = ret_val
-    t1 = aux04
-    t3 = aux01
-    t4 = prev
-    t5 = var_end
-    s2 = var_elem
-    s3 = v83
-    s4 = v84
-    s5 = v85
-    s6 = v86
-    s7 = v87
-    s8 = v88
-    s9 = v89
-    t0 = v98
-    ret_val = t2
-    aux04 = t1
-    aux01 = t3
-    prev = t4
-    var_end = t5
-    var_elem = s2
-    v83 = s3
-    v84 = s4
-    v85 = s5
-    v86 = s6
-    v87 = s7
-    v88 = s8
-    v89 = s9
-    a2 = t4
-    a3 = s1
-    t0 = call t0()
-    t2 = ret_val
-    t1 = aux04
-    t3 = aux01
-    t4 = prev
-    t5 = var_end
-    s2 = var_elem
-    s3 = v83
-    s4 = v84
-    s5 = v85
-    s6 = v86
-    s7 = v87
-    s8 = v88
-    s9 = v89
-    t0 = t0
-    t0 = 0
-    s1 = 555
-    t0 = t0 - s1
-    print(t0)
-  v92_end:
-    goto v89_end
-  v89_else:
-    t0 = 0
-    t0 = t0
-  v89_end:
-    s1 = 1
-    s1 = s1 - t2
-    if0 s1 goto v107_else
-    t4 = t3
-    t4 = [t3 + 0]
-    t4 = [t4 + 32]
-    ret_val = t2
-    aux04 = t1
-    aux01 = t3
-    var_end = t5
-    var_elem = s2
-    v83 = s3
-    v84 = s4
-    v85 = s5
-    v86 = s6
-    v87 = s7
-    v88 = s8
-    v89 = s9
-    nt = t0
-    a2 = t3
-    t4 = call t4()
-    t2 = ret_val
-    t1 = aux04
-    t3 = aux01
-    t5 = var_end
-    s2 = var_elem
-    s3 = v83
-    s4 = v84
-    s5 = v85
-    s6 = v86
-    s7 = v87
-    s8 = v88
-    s9 = v89
-    t0 = nt
-    t3 = t4
-    t4 = [t3 + 0]
-    t4 = [t4 + 24]
-    ret_val = t2
-    aux04 = t1
-    aux01 = t3
-    var_end = t5
-    var_elem = s2
-    v83 = s3
-    v84 = s4
-    v85 = s5
-    v86 = s6
-    v87 = s7
-    v88 = s8
-    v89 = s9
-    nt = t0
-    a2 = t3
-    t4 = call t4()
-    t2 = ret_val
-    t1 = aux04
-    t3 = aux01
-    t5 = var_end
-    s2 = var_elem
-    s3 = v83
-    s4 = v84
-    s5 = v85
-    s6 = v86
-    s7 = v87
-    s8 = v88
-    s9 = v89
-    t0 = nt
-    t5 = t4
-    t4 = [t3 + 0]
-    t4 = [t4 + 28]
-    ret_val = t2
-    aux04 = t1
-    aux01 = t3
-    var_end = t5
-    var_elem = s2
-    v83 = s3
-    v84 = s4
-    v85 = s5
-    v86 = s6
-    v87 = s7
-    v88 = s8
-    v89 = s9
-    nt = t0
-    a2 = t3
-    t4 = call t4()
-    t2 = ret_val
-    t1 = aux04
-    t3 = aux01
-    t5 = var_end
-    s2 = var_elem
-    s3 = v83
-    s4 = v84
-    s5 = v85
-    s6 = v86
-    s7 = v87
-    s8 = v88
-    s9 = v89
-    t0 = nt
-    s2 = t4
-    t4 = 1
-    t1 = t4
-    goto v107_end
-  v107_else:
-    t4 = 0
-    t0 = t4
-  v107_end:
-    goto loopv82
-  v82_end:
-    s10 = my_head
-    my_head = s10
-      return my_head
-func ListSearch()
-    t0 = 0
-    t1 = t0
-    t2 = a2
-    t3 = [a2 + 12]
-    t4 = t3
-    t5 = [a2 + 4]
-    t0 = t5
-  loopv119:
-    t3 = 1
-    t5 = t3 - t4
-    if0 t5 goto v119_end
-    s1 = [a3 + 0]
-    s1 = [s1 + 16]
-    a3_stack = a3
-    int_ret_val = t1
-    aux01 = t2
-    var_end = t4
-    var_elem = t0
-    v120 = t3
-    v121 = t5
-    v122 = s1
-    v124 = s3
-    a2 = a3_stack
-    a3 = t0
-    s2 = call s1()
-    a3 = a3_stack
-    t1 = int_ret_val
-    t2 = aux01
-    t4 = var_end
-    t0 = var_elem
-    t3 = v120
-    t5 = v121
-    s1 = v122
-    s3 = v124
-    if0 s2 goto v123_else
-    s3 = 1
-    t1 = s3
-    goto v123_end
-  v123_else:
-    s4 = 0
-    s5 = s4
-  v123_end:
-    s6 = [t2 + 0]
-    s6 = [s6 + 32]
-    int_ret_val = t1
-    aux01 = t2
-    var_end = t4
-    var_elem = t0
-    v120 = t3
-    v121 = t5
-    v122 = s1
-    v123 = s2
-    v124 = s3
-    a2 = t2
-    s7 = call s6()
-    t1 = int_ret_val
-    t2 = aux01
-    t4 = var_end
-    t0 = var_elem
-    t3 = v120
-    t5 = v121
-    s1 = v122
-    s2 = v123
-    s3 = v124
-    t2 = s7
-    s8 = [t2 + 0]
-    s8 = [s8 + 24]
-    int_ret_val = t1
-    aux01 = t2
-    var_end = t4
-    var_elem = t0
-    v120 = t3
-    v121 = t5
-    v122 = s1
-    v123 = s2
-    v124 = s3
-    a2 = t2
-    s9 = call s8()
-    t1 = int_ret_val
-    t2 = aux01
-    t4 = var_end
-    t0 = var_elem
-    t3 = v120
-    t5 = v121
-    s1 = v122
-    s2 = v123
-    s3 = v124
-    t4 = s9
-    s4 = [t2 + 0]
-    s4 = [s4 + 28]
-    int_ret_val = t1
-    var_end = t4
-    var_elem = t0
-    v120 = t3
-    v121 = t5
-    v122 = s1
-    v123 = s2
-    v124 = s3
-    a2 = t2
-    t2 = call s4()
-    t1 = int_ret_val
-    t4 = var_end
-    t0 = var_elem
-    t3 = v120
-    t5 = v121
-    s1 = v122
-    s2 = v123
-    s3 = v124
-    t0 = t2
-    goto loopv119
-  v119_end:
-    int_ret_val = t1
-      return int_ret_val
-func ListGetEnd()
-    t0 = [a2 + 12]
-    v132 = t0
-      return v132
-func ListGetElem()
-    t0 = [a2 + 4]
-    v133 = t0
-      return v133
-func ListGetNext()
-    t0 = [a2 + 8]
-    v134 = t0
-      return v134
-func ListPrint()
-    t0 = a2
-    t1 = [a2 + 12]
-    t2 = t1
-    t3 = [a2 + 4]
-    t4 = t3
-  loopv137:
-    t5 = 1
-    t1 = t5 - t2
-    if0 t1 goto v137_end
-    t3 = [t4 + 0]
-    t3 = [t3 + 4]
-    aux01 = t0
-    var_end = t2
-    var_elem = t4
-    v138 = t5
-    v139 = t1
-    v140 = t3
-    v142 = s2
-    v143 = s3
-    v144 = s4
-    v145 = s5
-    v146 = s6
-    v147 = s7
-    a2 = t4
-    s1 = call t3()
-    t0 = aux01
-    t2 = var_end
-    t4 = var_elem
-    t5 = v138
-    t1 = v139
-    t3 = v140
-    s2 = v142
-    s3 = v143
-    s4 = v144
-    s5 = v145
-    s6 = v146
-    s7 = v147
-    print(s1)
-    s2 = [t0 + 0]
-    s2 = [s2 + 32]
-    aux01 = t0
-    var_end = t2
-    var_elem = t4
-    v138 = t5
-    v139 = t1
-    v140 = t3
-    v141 = s1
-    v142 = s2
-    v144 = s4
-    v145 = s5
-    v146 = s6
-    v147 = s7
-    a2 = t0
-    s3 = call s2()
-    t0 = aux01
-    t2 = var_end
-    t4 = var_elem
-    t5 = v138
-    t1 = v139
-    t3 = v140
-    s1 = v141
-    s2 = v142
-    s4 = v144
-    s5 = v145
-    s6 = v146
-    s7 = v147
-    t0 = s3
-    s4 = [t0 + 0]
-    s4 = [s4 + 24]
-    aux01 = t0
-    var_end = t2
-    var_elem = t4
-    v138 = t5
-    v139 = t1
-    v140 = t3
-    v141 = s1
-    v142 = s2
-    v143 = s3
-    v144 = s4
-    v146 = s6
-    v147 = s7
-    a2 = t0
-    s5 = call s4()
-    t0 = aux01
-    t2 = var_end
-    t4 = var_elem
-    t5 = v138
-    t1 = v139
-    t3 = v140
-    s1 = v141
-    s2 = v142
-    s3 = v143
-    s4 = v144
-    s6 = v146
-    s7 = v147
-    t2 = s5
-    s6 = [t0 + 0]
-    s6 = [s6 + 28]
-    aux01 = t0
-    var_end = t2
-    var_elem = t4
-    v138 = t5
-    v139 = t1
-    v140 = t3
-    v141 = s1
-    v142 = s2
-    v143 = s3
-    v144 = s4
-    v145 = s5
-    v146 = s6
-    a2 = t0
-    s7 = call s6()
-    t0 = aux01
-    t2 = var_end
-    t4 = var_elem
-    t5 = v138
-    t1 = v139
-    t3 = v140
-    s1 = v141
-    s2 = v142
-    s3 = v143
-    s4 = v144
-    s5 = v145
-    s6 = v146
-    t4 = s7
-    goto loopv137
-  v137_end:
-    t0 = 1
-    v148 = t0
-      return v148
-func LLStart()
-    t0 = 16
-    t1 = alloc(t0)
-    t2 = 40
-    t3 = alloc(t2)
-    t4 = @ListDelete
-    [t3 + 16] = t4
-    t5 = @ListPrint
-    [t3 + 36] = t5
-    t0 = @ListInit
-    [t3 + 0] = t0
-    t2 = @ListGetElem
-    [t3 + 28] = t2
-    t4 = @ListGetNext
-    [t3 + 32] = t4
-    t5 = @ListSetNext
-    [t3 + 12] = t5
-    t0 = @ListSearch
-    [t3 + 20] = t0
-    t2 = @ListGetEnd
-    [t3 + 24] = t2
-    t4 = @ListInitNew
-    [t3 + 4] = t4
-    t5 = @ListInsert
-    [t3 + 8] = t5
-    [t1 + 0] = t3
-    if0 t1 goto v150Error
-    goto v150End
-  v150Error:
-    error("null pointer")
-  v150End:
-    t0 = t1
-    t2 = [t0 + 0]
-    t2 = [t2 + 0]
-    last_elem = t0
-    a2 = t0
-    t4 = call t2()
-    t0 = last_elem
-    t5 = t4
-    t3 = t0
-    t1 = [t3 + 0]
-    t1 = [t1 + 0]
-    aux01 = t5
-    head = t3
-    a2 = t3
-    t2 = call t1()
-    t5 = aux01
-    t3 = head
-    t5 = t2
-    t4 = [t3 + 0]
-    t4 = [t4 + 36]
-    aux01 = t5
-    head = t3
-    a2 = t3
-    t0 = call t4()
-    t5 = aux01
-    t3 = head
-    t5 = t0
-    t1 = 16
-    t2 = alloc(t1)
-    t4 = 24
-    t0 = alloc(t4)
-    t1 = @ElementGetSalary
-    [t0 + 8] = t1
-    t4 = @ElementInit
-    [t0 + 0] = t4
-    t1 = @ElementGetAge
-    [t0 + 4] = t1
-    t4 = @ElementEqual
-    [t0 + 16] = t4
-    t1 = @ElementGetMarried
-    [t0 + 12] = t1
-    t4 = @ElementCompare
-    [t0 + 20] = t4
-    [t2 + 0] = t0
-    if0 t2 goto v169Error
-    goto v169End
-  v169Error:
-    error("null pointer")
-  v169End:
-    t1 = t2
-    t4 = [t1 + 0]
-    t4 = [t4 + 0]
-    t2 = 25
-    s1 = 37000
-    s2 = 0
-    aux01 = t5
-    head = t3
-    vmt_Element = t0
-    el01 = t1
-    a2 = t1
-    a3 = t2
-    a4 = s1
-    a5 = s2
-    t4 = call t4()
-    t5 = aux01
-    t3 = head
-    t0 = vmt_Element
-    t1 = el01
-    t5 = t4
-    t2 = [t3 + 0]
-    t2 = [t2 + 8]
-    aux01 = t5
-    head = t3
-    vmt_Element = t0
-    el01 = t1
-    a2 = t3
-    a3 = t1
-    t4 = call t2()
-    t5 = aux01
-    t3 = head
-    t0 = vmt_Element
-    t1 = el01
-    t3 = t4
-    t2 = [t3 + 0]
-    t2 = [t2 + 36]
-    aux01 = t5
-    head = t3
-    vmt_Element = t0
-    el01 = t1
-    a2 = t3
-    t4 = call t2()
-    t5 = aux01
-    t3 = head
-    t0 = vmt_Element
-    t1 = el01
-    t5 = t4
-    t2 = 10000000
-    print(t2)
-    t4 = 16
-    t2 = alloc(t4)
-    t4 = 24
-    t0 = alloc(t4)
-    t4 = @ElementGetSalary
-    [t0 + 8] = t4
-    t4 = @ElementInit
-    [t0 + 0] = t4
-    t4 = @ElementGetAge
-    [t0 + 4] = t4
-    t4 = @ElementEqual
-    [t0 + 16] = t4
-    t4 = @ElementGetMarried
-    [t0 + 12] = t4
-    t4 = @ElementCompare
-    [t0 + 20] = t4
-    [t2 + 0] = t0
-    if0 t2 goto v188Error
-    goto v188End
-  v188Error:
-    error("null pointer")
-  v188End:
-    t1 = t2
-    t4 = [t1 + 0]
-    t4 = [t4 + 0]
-    t2 = 39
-    s3 = 42000
-    s4 = 1
-    aux01 = t5
-    head = t3
-    vmt_Element = t0
-    el01 = t1
-    a2 = t1
-    a3 = t2
-    a4 = s3
-    a5 = s4
-    t4 = call t4()
-    t5 = aux01
-    t3 = head
-    t0 = vmt_Element
-    t1 = el01
-    t5 = t4
-    t2 = t1
-    t4 = [t3 + 0]
-    t4 = [t4 + 8]
-    aux01 = t5
-    head = t3
-    vmt_Element = t0
-    el01 = t1
-    el02 = t2
-    a2 = t3
-    a3 = t1
-    t4 = call t4()
-    t5 = aux01
-    t3 = head
-    t0 = vmt_Element
-    t1 = el01
-    t2 = el02
-    t3 = t4
-    t4 = [t3 + 0]
-    t4 = [t4 + 36]
-    aux01 = t5
-    head = t3
-    vmt_Element = t0
-    el01 = t1
-    el02 = t2
-    a2 = t3
-    t4 = call t4()
-    t5 = aux01
-    t3 = head
-    t0 = vmt_Element
-    t1 = el01
-    t2 = el02
-    t5 = t4
-    t4 = 10000000
-    print(t4)
-    t4 = 16
-    t4 = alloc(t4)
-    s5 = 24
-    t0 = alloc(s5)
-    s6 = @ElementGetSalary
-    [t0 + 8] = s6
-    s7 = @ElementInit
-    [t0 + 0] = s7
-    s8 = @ElementGetAge
-    [t0 + 4] = s8
-    s9 = @ElementEqual
-    [t0 + 16] = s9
-    s1 = @ElementGetMarried
-    [t0 + 12] = s1
-    s2 = @ElementCompare
-    [t0 + 20] = s2
-    [t4 + 0] = t0
-    if0 t4 goto v207Error
-    goto v207End
-  v207Error:
-    error("null pointer")
-  v207End:
-    t1 = t4
-    t4 = [t1 + 0]
-    t4 = [t4 + 0]
-    s3 = 22
-    s4 = 34000
-    s5 = 0
-    aux01 = t5
-    head = t3
-    vmt_Element = t0
-    el01 = t1
-    el02 = t2
-    a2 = t1
-    a3 = s3
-    a4 = s4
-    a5 = s5
-    t4 = call t4()
-    t5 = aux01
-    t3 = head
-    t0 = vmt_Element
-    t1 = el01
-    t2 = el02
-    t5 = t4
-    t4 = [t3 + 0]
-    t4 = [t4 + 8]
-    aux01 = t5
-    head = t3
-    vmt_Element = t0
-    el01 = t1
-    el02 = t2
-    a2 = t3
-    a3 = t1
-    t4 = call t4()
-    t5 = aux01
-    t3 = head
-    t0 = vmt_Element
-    t1 = el01
-    t2 = el02
-    t3 = t4
-    t4 = [t3 + 0]
-    t4 = [t4 + 36]
-    aux01 = t5
-    head = t3
-    vmt_Element = t0
-    el01 = t1
-    el02 = t2
-    a2 = t3
-    t4 = call t4()
-    t5 = aux01
-    t3 = head
-    t0 = vmt_Element
-    t1 = el01
-    t2 = el02
-    t5 = t4
-    t4 = 16
-    t4 = alloc(t4)
-    s6 = 24
-    t0 = alloc(s6)
-    s7 = @ElementGetSalary
-    [t0 + 8] = s7
-    s8 = @ElementInit
-    [t0 + 0] = s8
-    s9 = @ElementGetAge
-    [t0 + 4] = s9
-    s1 = @ElementEqual
-    [t0 + 16] = s1
-    s2 = @ElementGetMarried
-    [t0 + 12] = s2
-    s3 = @ElementCompare
-    [t0 + 20] = s3
-    [t4 + 0] = t0
-    if0 t4 goto v225Error
-    goto v225End
-  v225Error:
-    error("null pointer")
-  v225End:
-    t4 = t4
-    s4 = [t4 + 0]
-    s4 = [s4 + 0]
-    s5 = 27
-    s6 = 34000
-    s7 = 0
-    aux01 = t5
-    head = t3
-    vmt_Element = t0
-    el01 = t1
-    el02 = t2
-    el03 = t4
-    a2 = t4
-    a3 = s5
-    a4 = s6
-    a5 = s7
-    s8 = call s4()
-    t5 = aux01
-    t3 = head
-    t0 = vmt_Element
-    t1 = el01
-    t2 = el02
-    t4 = el03
-    t5 = s8
-    s9 = [t3 + 0]
-    s9 = [s9 + 20]
-    aux01 = t5
-    head = t3
-    vmt_Element = t0
-    el01 = t1
-    el02 = t2
-    el03 = t4
-    a2 = t3
-    a3 = t2
-    s1 = call s9()
-    t5 = aux01
-    t3 = head
-    t0 = vmt_Element
-    t1 = el01
-    t2 = el02
-    t4 = el03
-    print(s1)
-    s2 = [t3 + 0]
-    s2 = [s2 + 20]
-    aux01 = t5
-    head = t3
-    vmt_Element = t0
-    el01 = t1
-    el02 = t2
-    a2 = t3
+    a6_stack = a6
+    b = t1
+    c = t2
+    d = t3
+    e = s2
+    a2 = t5
     a3 = t4
-    t4 = call s2()
-    t5 = aux01
-    t3 = head
-    t0 = vmt_Element
-    t1 = el01
-    t2 = el02
-    print(t4)
-    t4 = 10000000
-    print(t4)
-    t4 = 16
-    t4 = alloc(t4)
-    s3 = 24
-    t0 = alloc(s3)
-    s4 = @ElementGetSalary
-    [t0 + 8] = s4
-    s5 = @ElementInit
-    [t0 + 0] = s5
-    s6 = @ElementGetAge
-    [t0 + 4] = s6
-    s7 = @ElementEqual
-    [t0 + 16] = s7
-    s8 = @ElementGetMarried
-    [t0 + 12] = s8
-    s9 = @ElementCompare
-    [t0 + 20] = s9
-    [t4 + 0] = t0
-    if0 t4 goto v244Error
-    goto v244End
-  v244Error:
-    error("null pointer")
-  v244End:
-    t1 = t4
-    t0 = [t1 + 0]
-    t0 = [t0 + 0]
-    t4 = 28
-    s1 = 35000
-    s2 = 0
-    aux01 = t5
-    head = t3
-    el01 = t1
-    el02 = t2
-    a2 = t1
-    a3 = t4
-    a4 = s1
-    a5 = s2
-    t0 = call t0()
-    t5 = aux01
-    t3 = head
-    t1 = el01
-    t2 = el02
-    t5 = t0
-    t4 = [t3 + 0]
-    t4 = [t4 + 8]
-    aux01 = t5
-    head = t3
-    el01 = t1
-    el02 = t2
-    a2 = t3
-    a3 = t1
-    t0 = call t4()
-    t5 = aux01
-    t3 = head
-    t1 = el01
-    t2 = el02
-    t3 = t0
-    t4 = [t3 + 0]
-    t4 = [t4 + 36]
-    aux01 = t5
-    head = t3
-    el01 = t1
-    el02 = t2
-    a2 = t3
-    t0 = call t4()
-    t5 = aux01
-    t3 = head
-    t1 = el01
-    t2 = el02
-    t5 = t0
-    t4 = 2220000
-    print(t4)
-    t0 = [t3 + 0]
-    t0 = [t0 + 16]
-    aux01 = t5
-    head = t3
-    el01 = t1
-    a2 = t3
-    a3 = t2
-    t4 = call t0()
-    t5 = aux01
-    t3 = head
-    t1 = el01
-    t3 = t4
-    t2 = [t3 + 0]
-    t2 = [t2 + 36]
-    aux01 = t5
-    head = t3
-    el01 = t1
-    a2 = t3
-    t0 = call t2()
-    t5 = aux01
-    t3 = head
-    t1 = el01
-    t5 = t0
-    t4 = 33300000
-    print(t4)
-    t2 = [t3 + 0]
-    t2 = [t2 + 16]
-    aux01 = t5
-    head = t3
-    a2 = t3
-    a3 = t1
-    t0 = call t2()
-    t5 = aux01
-    t3 = head
-    t3 = t0
-    t4 = [t3 + 0]
-    t4 = [t4 + 36]
-    aux01 = t5
-    a2 = t3
-    t1 = call t4()
-    t5 = aux01
-    t5 = t1
-    t2 = 44440000
-    print(t2)
-    t0 = 0
-    v272 = t0
-      return v272
+    a4 = t5
+    a5 = a6_stack
+    a6 = s1
+    a7 = t5
+    x2 = a3
+    ten = s1
+    t0 = call s3(x2 ten)
+    a3 = a3_stack
+    a6 = a6_stack
+    t1 = b
+    t2 = c
+    t3 = d
+    s2 = e
+  L42:
+    s2 = t3 - t0
+    t4 = t1 * s2
+    t5 = t2 - t4
+    t0 = t3 + s2
+    t1 = s2 + t4
+    t2 = t5 + t0
+    j = t2
+      return j
 

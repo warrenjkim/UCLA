@@ -504,6 +504,10 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
       return stmt;
     }
 
+    if (valReg.equals(resReg)) {
+      return stmt;
+    }
+
     stmt.AddAssignStmt(resReg, valReg);
     return stmt;
   }
@@ -622,66 +626,12 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
     String funcReg = context.Register(funcId);
 
     SparrowVCode stmt = new SparrowVCode();
-    List<String> stackSaves = setStackSaves(context);
-    for (String id : stackSaves) {
-      if (id.equals(resId)) {
-        continue;
-      }
 
-      String reg = context.Register(id);
-      if (context.ArgRegisterAssignments().containsKey(id)) {
-        stmt.AddAssignStmt(reg + "_stack", reg);
-      } else if (reg != null) {
-        stmt.AddAssignStmt(id, reg);
-      }
-    }
+    List<String> stackSaves = new LinkedList<>();
+    saveRegisters(stackSaves, stmt, context, resId, funcId);
 
     SparrowVCode params = n.f5.accept(this, context);
-    LinkedList<String> overflowParams = new LinkedList<>();
-    if (params != null) {
-      int i = 2;
-      while (!params.Params().isEmpty() && i < 8) {
-        String param = params.Params().pop();
-        String paramReg = context.Register(param);
-        if (paramReg == null) {
-          paramReg = "s10";
-        }
-
-        if (paramReg.equals("a" + i)) {
-          i++;
-          continue;
-        }
-
-        if (context.ArgRegisterAssignments().containsKey(param)) {
-          stmt.AddAssignStmt("a" + i, paramReg + "_stack");
-        } else if (paramReg.equals("s10")) {
-          stmt.AddAssignStmt(paramReg, param);
-          stmt.AddAssignStmt("a" + i, paramReg);
-        } else {
-          stmt.AddAssignStmt("a" + i, paramReg);
-        }
-
-        i++;
-      }
-
-      for (String arg : params.Params()) {
-        overflowParams.add(arg);
-      }
-
-      for (String overflowParam : overflowParams) {
-        String paramReg = context.Register(overflowParam);
-        if (paramReg == null) {
-          paramReg = overflowParam;
-        }
-
-        if (context.ArgRegisterAssignments().containsKey(overflowParam)) {
-          stmt.AddAssignStmt("s10", paramReg + "_stack");
-          stmt.AddAssignStmt(overflowParam, "s10");
-        } else if (!overflowParam.equals(paramReg)) {
-          stmt.AddAssignStmt(overflowParam, paramReg);
-        }
-      }
-    }
+    LinkedList<String> args = assignFunctionArguments(params, stmt, context);
 
     if (resReg == null) {
       resReg = "s10";
@@ -693,23 +643,12 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
       stmt.AddAssignStmt(funcReg, funcId);
     }
 
-    stmt.AddCallStmt(resReg, funcReg, overflowParams);
+    stmt.AddCallStmt(resReg, funcReg, args);
     if (resReg.equals("s10")) {
       stmt.AddAssignStmt(resId, resReg);
     }
 
-    for (String id : stackSaves) {
-      if (id.equals(resId)) {
-        continue;
-      }
-
-      String reg = context.Register(id);
-      if (context.ArgRegisterAssignments().containsKey(id)) {
-        stmt.AddAssignStmt(reg, reg + "_stack");
-      } else if (reg != null) {
-        stmt.AddAssignStmt(reg, id);
-      }
-    }
+    restoreRegisters(stackSaves, stmt, context);
 
     return stmt;
   }
@@ -727,137 +666,86 @@ public class TranslationVisitor extends GJDepthFirst<SparrowVCode, FunctionSymbo
 
 
 
-  private List<String> setStackSaves(FunctionSymbol context) {
-    Map<String, String> oldArgAssignments = context.ArgRegisterAssignments();
-    List<String> stackSaves = new LinkedList<>();
-    for (String argId : oldArgAssignments.keySet()) {
+
+
+
+
+  private void saveRegisters(List<String> stackSaves, SparrowVCode stmt, FunctionSymbol context, String resId, String funcId) {
+    for (Map.Entry<String, String> arg : context.ArgRegisterAssignments().entrySet()) {
+      String argId = arg.getKey();
+      String argReg = arg.getValue();
+
       Integer lastUse = context.LastUse(argId);
-      if (lastUse >= lineCounter.LineNumber()) {
+      if (lastUse >= lineCounter.LineNumber() && !argId.equals(resId) && !argId.equals(funcId)) {
         stackSaves.add(argId);
+        stmt.AddAssignStmt(argReg + "_stack", argReg);
       }
     }
 
-    Map<String, String> oldRegisterAssignments = context.RegisterAssignments();
-    for (String tempId : oldRegisterAssignments.keySet()) {
+    for (Map.Entry<String, String> temp : context.RegisterAssignments().entrySet()) {
+      String tempId = temp.getKey();
+      String tempReg = temp.getValue();
+
       Integer firstUse = context.FirstUse(tempId);
       Integer lastUse = context.LastUse(tempId);
-      if (lastUse > lineCounter.LineNumber() && firstUse <= lineCounter.LineNumber()) {
+      if (firstUse <= lineCounter.LineNumber() && lastUse > lineCounter.LineNumber() && !tempId.equals(resId) && !tempId.equals(funcId)) {
         stackSaves.add(tempId);
+        stmt.AddAssignStmt(tempId, tempReg);
+      }
+    }
+  }
+
+  private LinkedList<String> assignFunctionArguments(SparrowVCode params, SparrowVCode stmt, FunctionSymbol context) {
+    if (params == null) {
+      return new LinkedList<>();
+    }
+
+    LinkedList<String> overflowParams = new LinkedList<>();
+    int i = 2;
+    while (!params.Params().isEmpty() && i < 8) {
+      String param = params.Params().pop();
+      String paramReg = context.Register(param);
+      if (paramReg == null) {
+        paramReg = "s10";
+      }
+
+      if (paramReg.equals("a" + i)) {
+        i++;
+        continue;
+      } else if (context.ArgRegisterAssignments().containsKey(param)) {
+        stmt.AddAssignStmt("a" + i, paramReg + "_stack");
+      } else if (paramReg.equals("s10")) {
+        stmt.AddAssignStmt(paramReg, param);
+        stmt.AddAssignStmt("a" + i, paramReg);
+      } else {
+        stmt.AddAssignStmt("a" + i, paramReg);
+      }
+
+      i++;
+    }
+
+    for (String arg : params.Params()) {
+      overflowParams.add(arg);
+    }
+
+    for (String overflowParam : overflowParams) {
+      String paramReg = context.Register(overflowParam);
+      if (paramReg != null) {
+        stmt.AddAssignStmt(overflowParam, paramReg);
       }
     }
 
-    // System.out.println("[" + context.Name() + "] In stacksaves: " + stackSaves.toString());
-    return stackSaves;
+    return overflowParams;
+  }
+
+  private void restoreRegisters(List<String> stackSaves, SparrowVCode stmt, FunctionSymbol context) {
+    for (String id : stackSaves) {
+      String reg = context.Register(id);
+      if (context.ArgRegisterAssignments().containsKey(id)) {
+        stmt.AddAssignStmt(reg, reg + "_stack");
+      } else {
+        stmt.AddAssignStmt(reg, id);
+      }
+    }
   }
 }
-    // Map<String, String> argSaves = new LinkedHashMap<>();
-    // for (Map.Entry<String, String> arg : context.ArgRegisterAssignments().entrySet()) {
-    //   String argId = arg.getKey();
-    //   String argReg = arg.getValue();
-
-    //   Integer lastUse = context.LastUse(argId);
-    //   if (lastUse < lineCounter.LineNumber()) {
-    //     continue;
-    //   }
-
-    //   stmt.AddAssignStmt(argReg + "_stack", argReg);
-    //   argSaves.put(argId, argReg);
-    // }
-
-    // Map<String, String> tempSaves = new LinkedHashMap<>();
-    // for (Map.Entry<String, String> temp : context.RegisterAssignments().entrySet()) {
-    //   String tempId = temp.getKey();
-    //   String tempReg = temp.getValue();
-
-    //   Integer firstUse = context.LastUse(tempId);
-    //   Integer lastUse = context.LastUse(tempId);
-    //   if (firstUse > lineCounter.LineNumber() || lastUse <= lineCounter.LineNumber()) {
-    //     continue;
-    //   }
-
-    //   stmt.AddAssignStmt(tempId, tempReg);
-    //   tempSaves.put(tempReg, tempId);
-    // }
-
-    // SparrowVCode params = n.f5.accept(this, context);
-    // LinkedList<String> overflowParams = new LinkedList<>();
-    // if (params != null) {
-    //   LinkedList<String> paramList = params.Params();
-    //   int num = 2;
-    //   while (!paramList.isEmpty() && num <= 7) {
-    //     String argReg = "a" + num;
-    //     num++;
-
-    //     String param = paramList.pop();
-    //     String paramReg = context.Register(param);
-    //     if (paramReg == null) {
-    //       paramReg = param;
-    //     }
-
-    //     if (context.ArgRegisterAssignments().containsKey(param)) {
-    //       stmt.AddAssignStmt(argReg, paramReg + "_stack");
-    //     } else {
-    //       stmt.AddAssignStmt(argReg, paramReg);
-    //     }
-    //   }
-
-    //   for (String param : paramList) {
-    //     overflowParams.add(param);
-    //   }
-    // }
-
-    // if (resReg == null) {
-    //   resReg = "s10";
-    //   stmt.AddAssignStmt(resReg, resId);
-    // }
-
-    // if (funcReg == null) {
-    //   funcReg = "s11";
-    //   stmt.AddAssignStmt(funcReg, funcId);
-    // }
-
-    // stmt.AddCallStmt(resReg, funcReg, overflowParams);
-    // if (resReg.equals("s10")) {
-    //   stmt.AddAssignStmt(resId, resReg);
-    // }
-
-    // for (Map.Entry<String, String> saved : argSaves.entrySet()) {
-    //   String argId = saved.getKey();
-    //   String argReg = saved.getValue();
-    //   if (argReg.equals(resReg)) {
-    //     continue;
-    //   }
-
-    //   if (!context.ArgRegisterAssignments().containsKey(argId)) {
-    //     continue;
-    //   }
-
-    //   Integer firstUse = context.FirstUse(argId);
-    //   Integer lastUse = context.LastUse(argId);
-    //   if (firstUse > lineCounter.LineNumber() || lastUse <= lineCounter.LineNumber()) {
-    //     continue;
-    //   }
-
-    //   stmt.AddAssignStmt(argReg, argReg + "_stack");
-    // }
-
-    // for (Map.Entry<String, String> saved : tempSaves.entrySet()) {
-    //   String tempReg = saved.getKey();
-    //   String tempId = saved.getValue();
-    //   if (tempReg.equals(resReg)) {
-    //     continue;
-    //   }
-
-    //   stmt.AddAssignStmt(tempReg, tempId);
-    // }
-
-    // return stmt;
-
-
-
-
-
-
-
-
-

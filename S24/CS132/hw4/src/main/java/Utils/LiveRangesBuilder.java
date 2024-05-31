@@ -6,12 +6,10 @@ import java.util.Map;
 public class LiveRangesBuilder {
   private Map<String, Integer> firstUse;
   private Map<String, Integer> lastUse;
-  private Map<String, Boolean> extendsFunc;
 
   public LiveRangesBuilder() {
     this.firstUse = new LinkedHashMap<>();
     this.lastUse = new LinkedHashMap<>();
-    this.extendsFunc = new LinkedHashMap<>();
   }
 
   public void PutFirstUse(String id, Integer line) {
@@ -20,10 +18,6 @@ public class LiveRangesBuilder {
 
   public void PutLastUse(String id, Integer line) {
     lastUse.put(id, line);
-  }
-
-  public void ExtendsFunc(String id) {
-    extendsFunc.put(id, true);
   }
 
   public LiveRanges LiveRanges() {
@@ -43,9 +37,8 @@ public class LiveRangesBuilder {
     for (Map.Entry<String, Integer> entry : firstUse.entrySet()) {
       Pair<Integer, Integer> range =
           new Pair<Integer, Integer>(entry.getValue(), lastUse.get(entry.getKey()));
-      Boolean extendFlag = extendsFunc.containsKey(entry.getKey());
 
-      rangeMap.put(entry.getKey(), new SparrowVRange(range, extendFlag));
+      rangeMap.put(entry.getKey(), new SparrowVRange(range));
     }
 
     return rangeMap;

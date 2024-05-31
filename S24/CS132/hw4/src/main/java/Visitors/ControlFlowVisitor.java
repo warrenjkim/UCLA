@@ -87,7 +87,9 @@ public class ControlFlowVisitor extends GJVoidDepthFirst<FunctionSymbol> {
     */
   public void visit(LabelWithColon n, FunctionSymbol context) {
     String label = n.f0.accept(idVisitor);
-    currLabel = label;
+    if (context.LabelRanges().LastUse(label) != null) {
+      currLabel = label;
+    }
   }
 
   /**
@@ -226,8 +228,8 @@ public class ControlFlowVisitor extends GJVoidDepthFirst<FunctionSymbol> {
     * f0 -> "goto"
     * f1 -> Label()
     */
-  public void visit(Goto n, LiveRangesBuilder ranges) {
-    currLabel = null;
+  public void visit(Goto n, FunctionSymbol context) {
+
   }
 
   /**

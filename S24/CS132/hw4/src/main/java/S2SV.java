@@ -30,12 +30,12 @@ public class S2SV {
         registerAllocator.AllocateRegisters(func);
       }
 
-      // System.out.println();
-      // System.out.println("Registers allocated:");
-      // for (FunctionSymbol func : functionMap.values()) {
-      //   System.out.println(func.ToString());
-      //   System.out.println();
-      // }
+      System.out.println();
+      System.out.println("Registers allocated:");
+      for (FunctionSymbol func : functionMap.values()) {
+        System.out.println(func.ToString());
+        System.out.println();
+      }
 
       TranslationVisitor tv = new TranslationVisitor(functionMap);
       SparrowVCode code = root.accept(tv, null);

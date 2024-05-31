@@ -240,7 +240,7 @@ public class LiveRangesVisitor extends GJVoidDepthFirst<LiveRangesBuilder> {
   public void visit(Goto n, LiveRangesBuilder ranges) {
     String label = n.f1.accept(idVisitor);
 
-    if (labelRanges.LiveRanges().FirstUse(label) != null) {
+    if (labelRanges.Contains(label)) {
       labelRanges.PutLastUse(label, lineCounter.LineNumber());
     }
   }
@@ -253,6 +253,11 @@ public class LiveRangesVisitor extends GJVoidDepthFirst<LiveRangesBuilder> {
    */
   public void visit(IfGoto n, LiveRangesBuilder ranges) {
     n.f1.accept(this, ranges);
+
+    String label = n.f3.accept(idVisitor);
+    if (labelRanges.Contains(label)) {
+      labelRanges.PutLastUse(label, lineCounter.LineNumber());
+    }
   }
 
   /**

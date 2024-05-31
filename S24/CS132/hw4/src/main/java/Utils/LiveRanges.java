@@ -17,6 +17,10 @@ public class LiveRanges {
     this.liveRanges = liveRanges;
   }
 
+  public boolean Contains(String id) {
+    return liveRanges.containsKey(id);
+  }
+
   public Integer FirstUse(String id) {
     if (liveRanges.get(id) == null) {
       return null;
@@ -47,14 +51,6 @@ public class LiveRanges {
 
   public Map<String, SparrowVRange> LiveRangesMap() {
     return liveRanges;
-  }
-
-  public Boolean ExtendsFunc(String id) {
-    if (liveRanges.containsKey(id)) {
-      return liveRanges.get(id).ExtendsFunc();
-    }
-
-    return null;
   }
 
   public List<Map.Entry<String, SparrowVRange>> Sorted() {

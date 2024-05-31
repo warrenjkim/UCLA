@@ -1,16 +1,11 @@
 package Utils;
-import java.util.List;
 
 public class SparrowVRange {
   Pair<Integer, Integer> range;
-  private boolean extendsFunc;
-  private List<Integer> definitions;
-  private List<Integer> uses;
 
 
-  public SparrowVRange(Pair<Integer, Integer> range, boolean extendsFunc) {
+  public SparrowVRange(Pair<Integer, Integer> range) {
     this.range = range;
-    this.extendsFunc = extendsFunc;
   }
 
   public Pair<Integer, Integer> Range() {
@@ -25,10 +20,6 @@ public class SparrowVRange {
     return range.second;
   }
 
-  public boolean ExtendsFunc() {
-    return extendsFunc;
-  }
-
   public void SetFirstUse(Integer firstUse) {
     range.first = firstUse;
   }
@@ -38,6 +29,9 @@ public class SparrowVRange {
   }
 
   public String ToString() {
-    return range.first + ", " + range.second + ", " + extendsFunc;
+    return range.first + ", " + range.second;
+  }
+  public String toString() {
+    return range.first + ", " + range.second;
   }
 }
