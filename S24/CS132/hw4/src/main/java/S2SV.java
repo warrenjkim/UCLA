@@ -2,6 +2,8 @@ import IR.*;
 import IR.syntaxtree.*;
 import Utils.*;
 import Visitors.*;
+
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class S2SV {
@@ -25,17 +27,30 @@ public class S2SV {
       //   }
       // }
 
+      for (FunctionSymbol func : functionMap.values()) {
+        Map<String, SparrowVRange> loops = new LinkedHashMap<>();
+        for (Map.Entry<String, SparrowVRange> label : func.LabelRanges().LiveRangesMap().entrySet()) {
+          String labelName = label.getKey();
+          SparrowVRange range = label.getValue();
+          if (range.LastUse() != null) {
+            loops.put(labelName, range);
+          }
+        }
+
+        // func.LiveRanges().ExtendRanges(loops);
+      }
+
       RegisterAllocator registerAllocator = new RegisterAllocator();
       for (FunctionSymbol func : functionMap.values()) {
         registerAllocator.AllocateRegisters(func);
       }
 
-      System.out.println();
-      System.out.println("Registers allocated:");
-      for (FunctionSymbol func : functionMap.values()) {
-        System.out.println(func.ToString());
-        System.out.println();
-      }
+      // System.out.println();
+      // System.out.println("Registers allocated:");
+      // for (FunctionSymbol func : functionMap.values()) {
+      //   System.out.println(func.ToString());
+      //   System.out.println();
+      // }
 
       TranslationVisitor tv = new TranslationVisitor(functionMap);
       SparrowVCode code = root.accept(tv, null);

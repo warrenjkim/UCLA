@@ -1,15 +1,28 @@
 package Utils;
 
+import java.util.List;
+
 public class SparrowVRange {
   Pair<Integer, Integer> range;
+  List<Integer> defs;
+  List<Integer> uses;
 
-
-  public SparrowVRange(Pair<Integer, Integer> range) {
+  public SparrowVRange(Pair<Integer, Integer> range, List<Integer> defs, List<Integer> uses) {
     this.range = range;
+    this.defs = defs;
+    this.uses = uses;
   }
 
   public Pair<Integer, Integer> Range() {
     return range;
+  }
+
+  public List<Integer> Defs() {
+    return defs;
+  }
+
+  public List<Integer> Uses() {
+    return uses;
   }
 
   public Integer FirstUse() {
@@ -32,6 +45,6 @@ public class SparrowVRange {
     return range.first + ", " + range.second;
   }
   public String toString() {
-    return range.first + ", " + range.second;
+    return "(" + range.first + ", " + range.second + ")";
   }
 }

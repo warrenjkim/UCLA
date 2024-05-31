@@ -15,10 +15,15 @@ public class LiveRangesVisitor extends GJVoidDepthFirst<LiveRangesBuilder> {
   private Map<String, FunctionSymbol> functionMap;
   private ParamRangesVisitor paramRangesVisitor;
 
+  private DefVisitor defVisitor;
+  private UseVisitor useVisitor;
+
   public LiveRangesVisitor() {
     this.idVisitor = new IdVisitor();
     this.functionMap = new LinkedHashMap<>();
     this.paramRangesVisitor = new ParamRangesVisitor();
+    this.defVisitor = new DefVisitor();
+    this.useVisitor = new UseVisitor();
   }
 
   public Map<String, FunctionSymbol> FunctionMap() {
@@ -66,6 +71,7 @@ public class LiveRangesVisitor extends GJVoidDepthFirst<LiveRangesBuilder> {
     n.f0.accept(this, ranges);
     lineCounter.IncrementLineNumber();
     n.f2.accept(this, ranges);
+    n.f2.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
   }
 
   /**
@@ -106,6 +112,7 @@ public class LiveRangesVisitor extends GJVoidDepthFirst<LiveRangesBuilder> {
    */
   public void visit(SetInteger n, LiveRangesBuilder ranges) {
     n.f0.accept(this, ranges);
+    n.f0.accept(defVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
   }
 
   /**
@@ -116,6 +123,7 @@ public class LiveRangesVisitor extends GJVoidDepthFirst<LiveRangesBuilder> {
    */
   public void visit(SetFuncName n, LiveRangesBuilder ranges) {
     n.f0.accept(this, ranges);
+    n.f0.accept(defVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
   }
 
   /**
@@ -127,8 +135,13 @@ public class LiveRangesVisitor extends GJVoidDepthFirst<LiveRangesBuilder> {
    */
   public void visit(Add n, LiveRangesBuilder ranges) {
     n.f0.accept(this, ranges);
+    n.f0.accept(defVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
+
     n.f2.accept(this, ranges);
+    n.f2.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
+
     n.f4.accept(this, ranges);
+    n.f4.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
   }
 
   /**
@@ -140,8 +153,13 @@ public class LiveRangesVisitor extends GJVoidDepthFirst<LiveRangesBuilder> {
    */
   public void visit(Subtract n, LiveRangesBuilder ranges) {
     n.f0.accept(this, ranges);
+    n.f0.accept(defVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
+
     n.f2.accept(this, ranges);
+    n.f2.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
+
     n.f4.accept(this, ranges);
+    n.f4.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
   }
 
   /**
@@ -153,8 +171,13 @@ public class LiveRangesVisitor extends GJVoidDepthFirst<LiveRangesBuilder> {
    */
   public void visit(Multiply n, LiveRangesBuilder ranges) {
     n.f0.accept(this, ranges);
+    n.f0.accept(defVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
+
     n.f2.accept(this, ranges);
+    n.f2.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
+
     n.f4.accept(this, ranges);
+    n.f4.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
   }
 
   /**
@@ -166,8 +189,13 @@ public class LiveRangesVisitor extends GJVoidDepthFirst<LiveRangesBuilder> {
    */
   public void visit(LessThan n, LiveRangesBuilder ranges) {
     n.f0.accept(this, ranges);
+    n.f0.accept(defVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
+
     n.f2.accept(this, ranges);
+    n.f2.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
+
     n.f4.accept(this, ranges);
+    n.f4.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
   }
 
   /**
@@ -181,7 +209,11 @@ public class LiveRangesVisitor extends GJVoidDepthFirst<LiveRangesBuilder> {
    */
   public void visit(Load n, LiveRangesBuilder ranges) {
     n.f0.accept(this, ranges);
+    n.f0.accept(defVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
+
     n.f3.accept(this, ranges);
+    n.f3.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
+
     n.f5.accept(this, ranges);
   }
 
@@ -196,8 +228,12 @@ public class LiveRangesVisitor extends GJVoidDepthFirst<LiveRangesBuilder> {
    */
   public void visit(Store n, LiveRangesBuilder ranges) {
     n.f1.accept(this, ranges);
+    n.f1.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
+
     n.f3.accept(this, ranges);
+
     n.f6.accept(this, ranges);
+    n.f6.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
   }
 
   /**
@@ -207,7 +243,10 @@ public class LiveRangesVisitor extends GJVoidDepthFirst<LiveRangesBuilder> {
    */
   public void visit(Move n, LiveRangesBuilder ranges) {
     n.f0.accept(this, ranges);
+    n.f0.accept(defVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
+
     n.f2.accept(this, ranges);
+    n.f2.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
   }
 
   /**
@@ -220,7 +259,10 @@ public class LiveRangesVisitor extends GJVoidDepthFirst<LiveRangesBuilder> {
    */
   public void visit(Alloc n, LiveRangesBuilder ranges) {
     n.f0.accept(this, ranges);
+    n.f0.accept(defVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
+
     n.f4.accept(this, ranges);
+    n.f4.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
   }
 
   /**
@@ -231,6 +273,7 @@ public class LiveRangesVisitor extends GJVoidDepthFirst<LiveRangesBuilder> {
    */
   public void visit(Print n, LiveRangesBuilder ranges) {
     n.f2.accept(this, ranges);
+    n.f2.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
   }
 
   /**
@@ -253,6 +296,7 @@ public class LiveRangesVisitor extends GJVoidDepthFirst<LiveRangesBuilder> {
    */
   public void visit(IfGoto n, LiveRangesBuilder ranges) {
     n.f1.accept(this, ranges);
+    n.f1.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
 
     String label = n.f3.accept(idVisitor);
     if (labelRanges.Contains(label)) {
@@ -271,8 +315,13 @@ public class LiveRangesVisitor extends GJVoidDepthFirst<LiveRangesBuilder> {
    */
   public void visit(Call n, LiveRangesBuilder ranges) {
     n.f0.accept(this, ranges);
+    n.f0.accept(defVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
+
     n.f3.accept(this, ranges);
+    n.f3.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
+
     n.f5.accept(this, ranges);
+    n.f5.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
   }
 
   /**

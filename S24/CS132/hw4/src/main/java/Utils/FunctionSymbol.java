@@ -1,6 +1,7 @@
 package Utils;
 
 import java.util.Map;
+import java.util.List;
 
 public class FunctionSymbol {
   private String name;
@@ -80,6 +81,25 @@ public class FunctionSymbol {
     }
 
     return lastUse;
+  }
+
+  public List<Integer> Defs(String id) {
+    List<Integer> defs = liveRanges.Defs(id);
+    if (defs == null) {
+      defs = paramRanges.Defs(id);
+    }
+
+    return defs;
+  }
+
+  public List<Integer> Uses(String id) {
+    List<Integer> uses = liveRanges.Uses(id);
+    if (uses == null) {
+      uses = paramRanges.Uses(id);
+    }
+
+
+    return uses;
   }
 
   public String ToString() {
