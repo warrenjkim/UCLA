@@ -51,7 +51,7 @@ public class RegisterAllocator {
 
       String freeRegister = nextFreeRegister();
       if (freeRegister == null) {
-        spill(var, func);
+        spill(var);
       } else {
         registerAssignments.put(id, freeRegister);
         active.offer(var);
@@ -77,17 +77,15 @@ public class RegisterAllocator {
     }
   }
 
-  private void spill(Map.Entry<String, SparrowVRange> curr, FunctionSymbol func) {
+  private void spill(Map.Entry<String, SparrowVRange> curr) {
     String currId = curr.getKey();
     Pair<Integer, Integer> currRange = curr.getValue().Range();
-    Integer currUses = curr.getValue().Uses().size();
 
     Map.Entry<String, SparrowVRange> spillVar = active.peekLast();
     String spillId = spillVar.getKey();
     Pair<Integer, Integer> spillRange = spillVar.getValue().Range();
-    Integer spillUses = spillVar.getValue().Uses().size();
 
-    if (spillRange.second > currRange.second && spillUses < currUses) {
+    if (spillRange.second > currRange.second) {
       registerAssignments.put(currId, registerAssignments.get(spillId));
       registerAssignments.remove(spillId);
       active.remove(spillVar);

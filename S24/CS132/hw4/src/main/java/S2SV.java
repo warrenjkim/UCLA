@@ -14,6 +14,11 @@ public class S2SV {
       root.accept(lrv, new LiveRangesBuilder());
       Map<String, FunctionSymbol> functionMap = lrv.FunctionMap();
 
+      // System.out.println("BEFORE");
+      // for (FunctionSymbol func : functionMap.values()) {
+      //   System.out.println(func.ToString());
+      // }
+
       ControlFlowVisitor crv = new ControlFlowVisitor(functionMap);
       root.accept(crv, null);
 
@@ -23,15 +28,13 @@ public class S2SV {
       }
 
       // System.out.println();
-      // System.out.println("Registers allocated:");
+      // System.out.println("AFTER");
       // for (FunctionSymbol func : functionMap.values()) {
       //   System.out.println(func.ToString());
-      //   System.out.println();
       // }
 
       TranslationVisitor tv = new TranslationVisitor(functionMap);
       SparrowVCode code = root.accept(tv, null);
-      // System.out.println("Code:");
       System.out.println(code.ToString());
 
     } catch (Exception e) {

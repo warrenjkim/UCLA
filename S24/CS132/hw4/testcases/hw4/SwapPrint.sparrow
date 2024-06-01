@@ -1,0 +1,71 @@
+func SwapPrint__main()
+    vA_size = 4
+    v0 = alloc(vA_size)
+    vA_vTable_size = 4
+    A_vTable = alloc(vA_vTable_size)
+    v1 = @A__foo
+    [A_vTable + 0] = v1
+    [v0 + 0] = A_vTable
+    if0 v0 goto null_err_label
+    v4 = [v0 + 0]
+    v4 = [v4 + 0]
+    v2 = 5
+    v3 = call v4(v0 v2)
+    print(v3)
+    goto end_SwapPrint__main
+  arr_err_label:
+    error("array index out of bounds")
+  null_err_label:
+    error("null pointer")
+  end_SwapPrint__main:
+      return v0
+
+
+func A__foo(this A_foo_x)
+    A_foo_a = 1
+    A_foo_b = 10
+    A_foo_c = 100
+    A_foo_d = 1000
+    A_foo_e = 10000
+    A_foo_f = 100000
+    A_foo_g = 1000000
+    A_foo_h = 10000000
+    A_foo_i = 100000000
+    A_foo_j = 1000000000
+    A_foo_k = 2
+    A_foo_l = 20
+    A_foo_m = 200
+    A_foo_n = 2000
+    A_foo_o = 20000
+    print(A_foo_a)
+    A_foo_p = A_foo_a
+    v21 = 2000000
+    A_foo_p = A_foo_a + v21
+    print(A_foo_p)
+    v22 = 1
+    if0 v22 goto else_l0
+    print(A_foo_a)
+    goto end_if_l1
+  else_l0:
+  end_if_l1:
+    print(A_foo_b)
+    print(A_foo_c)
+    print(A_foo_d)
+    print(A_foo_e)
+    print(A_foo_f)
+    print(A_foo_g)
+    print(A_foo_h)
+    print(A_foo_i)
+    print(A_foo_j)
+    print(A_foo_k)
+    print(A_foo_l)
+    print(A_foo_m)
+    print(A_foo_n)
+    print(A_foo_o)
+    goto end_A__foo
+  arr_err_label:
+    error("array index out of bounds")
+  null_err_label:
+    error("null pointer")
+  end_A__foo:
+      return A_foo_x
