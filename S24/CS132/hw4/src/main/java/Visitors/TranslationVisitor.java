@@ -2,11 +2,11 @@ package Visitors;
 
 import IR.token.Identifier;
 import Utils.*;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import sparrow.*;
 import sparrow.visitor.ArgRetVisitor;
-import java.util.List;
-import java.util.LinkedList;
 
 public class TranslationVisitor implements ArgRetVisitor<FunctionSymbol, SparrowVCode> {
   private Map<String, FunctionSymbol> functionMap;
@@ -15,7 +15,6 @@ public class TranslationVisitor implements ArgRetVisitor<FunctionSymbol, Sparrow
   public TranslationVisitor(Map<String, FunctionSymbol> functionMap) {
     this.functionMap = functionMap;
   }
-
 
   public Map<String, FunctionSymbol> FunctionMap() {
     return functionMap;
@@ -420,7 +419,8 @@ public class TranslationVisitor implements ArgRetVisitor<FunctionSymbol, Sparrow
     return stmt;
   }
 
-  private LinkedList<String> setOverflowParams(SparrowVCode stmt, LinkedList<String> params, FunctionSymbol context) {
+  private LinkedList<String> setOverflowParams(
+      SparrowVCode stmt, LinkedList<String> params, FunctionSymbol context) {
     LinkedList<String> paramList = new LinkedList<>(params);
     LinkedList<String> overflowParams = new LinkedList<>();
     int aCount = 0;
@@ -444,7 +444,12 @@ public class TranslationVisitor implements ArgRetVisitor<FunctionSymbol, Sparrow
     return overflowParams;
   }
 
-  private void saveRegisters(SparrowVCode stmt, List<String> stackSaves, FunctionSymbol context, String resId, String funcId) {
+  private void saveRegisters(
+      SparrowVCode stmt,
+      List<String> stackSaves,
+      FunctionSymbol context,
+      String resId,
+      String funcId) {
     for (Map.Entry<String, String> arg : context.ArgRegAssignments().entrySet()) {
       String argId = arg.getKey();
       String argReg = arg.getValue();
@@ -462,14 +467,18 @@ public class TranslationVisitor implements ArgRetVisitor<FunctionSymbol, Sparrow
 
       Integer firstUse = context.VarRanges().get(tempId).FirstUse();
       Integer lastUse = context.VarRanges().get(tempId).LastUse();
-      if (firstUse < lineCounter.LineNumber() && lastUse > lineCounter.LineNumber() && !tempId.equals(resId) && !tempId.equals(funcId)) {
+      if (firstUse < lineCounter.LineNumber()
+          && lastUse > lineCounter.LineNumber()
+          && !tempId.equals(resId)
+          && !tempId.equals(funcId)) {
         stackSaves.add(tempId);
         stmt.AddAssignStmt(tempId, tempReg);
       }
     }
   }
 
-  private void assignFunctionArguments(SparrowVCode stmt, LinkedList<String> params, FunctionSymbol context) {
+  private void assignFunctionArguments(
+      SparrowVCode stmt, LinkedList<String> params, FunctionSymbol context) {
     int aCount = 2;
     while (!params.isEmpty() && aCount < 8) {
       String param = params.pop();
@@ -494,7 +503,8 @@ public class TranslationVisitor implements ArgRetVisitor<FunctionSymbol, Sparrow
     }
   }
 
-  private void restoreRegisters(SparrowVCode stmt, LinkedList<String> stackSaves, FunctionSymbol context) {
+  private void restoreRegisters(
+      SparrowVCode stmt, LinkedList<String> stackSaves, FunctionSymbol context) {
     for (String id : stackSaves) {
       String reg = context.Register(id);
       if (context.ArgRegAssignments().containsKey(id)) {
