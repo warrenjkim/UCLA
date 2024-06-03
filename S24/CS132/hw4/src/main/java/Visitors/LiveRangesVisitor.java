@@ -1,353 +1,187 @@
 package Visitors;
 
-import IR.syntaxtree.*;
-import IR.visitor.GJVoidDepthFirst;
+import IR.token.FunctionName;
+import IR.token.Identifier;
+import IR.token.Label;
 import Utils.*;
 import java.util.Map;
+import sparrow.*;
+import sparrow.visitor.DepthFirst;
 import java.util.LinkedHashMap;
 
-public class LiveRangesVisitor extends GJVoidDepthFirst<LiveRangesBuilder> {
+public class LiveRangesVisitor extends DepthFirst {
+  private SparrowVRangeBuilder<Identifier> varRanges;
+  private SparrowVRangeBuilder<Label> labelRanges;
+
   private LineCounter lineCounter;
-  private LiveRangesBuilder labelRanges;
-  private LiveRangesBuilder paramRanges;
-
-  private IdVisitor idVisitor;
-  private Map<String, FunctionSymbol> functionMap;
-  private ParamRangesVisitor paramRangesVisitor;
-
-  private DefVisitor defVisitor;
-  private UseVisitor useVisitor;
-
-  public LiveRangesVisitor() {
-    this.idVisitor = new IdVisitor();
-    this.functionMap = new LinkedHashMap<>();
-    this.paramRangesVisitor = new ParamRangesVisitor();
-    this.defVisitor = new DefVisitor();
-    this.useVisitor = new UseVisitor();
-  }
+  private Map<String, FunctionSymbol> functionMap = new LinkedHashMap<>();
 
   public Map<String, FunctionSymbol> FunctionMap() {
-    return this.functionMap;
+    return functionMap;
   }
 
-  /**
-   * f0 -> ( FunctionDeclaration() )*
-   * f1 -> <EOF>
-   */
-  public void visit(Program n, LiveRangesBuilder ranges) {
-    n.f0.accept(this, ranges);
-    n.f1.accept(this, ranges);
+  /*   List<FunctionDecl> funDecls; */
+  public void visit(Program n) {
+    for (FunctionDecl fd : n.funDecls) {
+      fd.accept(this);
+    }
   }
 
-  /**
-   * f0 -> "func"
-   * f1 -> FunctionName()
-   * f2 -> "("
-   * f3 -> ( Identifier() )*
-   * f4 -> ")"
-   * f5 -> Block()
-   */
-  public void visit(FunctionDeclaration n, LiveRangesBuilder ranges) {
-    String functionName = n.f1.accept(idVisitor);
+  /*   Program parent;
+   *   FunctionName functionName;
+   *   List<Identifier> formalParameters;
+   *   Block block; */
+  public void visit(FunctionDecl n) {
     lineCounter = new LineCounter();
-    ranges = new LiveRangesBuilder();
-    paramRanges = new LiveRangesBuilder();
-    labelRanges = new LiveRangesBuilder();
-    n.f3.accept(paramRangesVisitor, paramRanges);
-    n.f5.accept(this, ranges);
-    FunctionSymbol func = new FunctionSymbol(functionName,
-                                             paramRanges.LiveRanges(),
-                                             ranges.LiveRanges(),
-                                             labelRanges.LiveRanges());
-    functionMap.put(n.f1.f0.tokenImage, func);
+    varRanges = new SparrowVRangeBuilder<Identifier>();
+    labelRanges = new SparrowVRangeBuilder<Label>();
+
+    for (Identifier formalParam : n.formalParameters) {
+      if (varRanges.Size() == 6) {
+        break;
+      }
+
+      varRanges.AddDef(formalParam, 0);
+      varRanges.AddUse(formalParam, 0);
+    }
+
+    n.block.accept(this);
+    functionMap.put(
+        n.functionName.toString(),
+        new FunctionSymbol(
+            n.functionName, varRanges.BuildRangeMap(), labelRanges.BuildMergedRangeMap()));
   }
 
-  /**
-   * f0 -> ( Instruction() )*
-   * f1 -> "return"
-   * f2 -> Identifier()
-   */
-  public void visit(Block n, LiveRangesBuilder ranges) {
-    n.f0.accept(this, ranges);
+  /*   FunctionDecl parent;
+   *   List<Instruction> instructions;
+   *   Identifier return_id; */
+  public void visit(Block n) {
+    for (Instruction ins : n.instructions) {
+      lineCounter.IncrementLineNumber();
+      ins.accept(this);
+    }
+
     lineCounter.IncrementLineNumber();
-    n.f2.accept(this, ranges);
-    n.f2.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
+    varRanges.AddUse(n.return_id, lineCounter.LineNumber());
   }
 
-  /**
-   * f0 -> LabelWithColon()
-   *     | SetInteger()
-   *     | SetFuncName()
-   *     | Add()
-   *     | Subtract()
-   *     | Multiply()
-   *     | LessThan()
-   *     | Load()
-   *     | Store()
-   *     | Move()
-   *     | Alloc()
-   *     | Print()
-   *     | ErrorMessage()
-   *     | Goto()
-   *     | IfGoto()
-   *     | Call()
-   */
-  public void visit(Instruction n, LiveRangesBuilder ranges) {
-    lineCounter.IncrementLineNumber();
-    n.f0.accept(this, ranges);
+  /*   Label label; */
+  public void visit(LabelInstr n) {
+    labelRanges.AddDef(n.label, lineCounter.LineNumber());
   }
 
-  /**
-    * f0 -> Label()
-    * f1 -> ":"
-    */
-  public void visit(LabelWithColon n, LiveRangesBuilder ranges) {
-    labelRanges.PutFirstUse(n.f0.accept(idVisitor), lineCounter.LineNumber());
+  /*   Identifier lhs;
+   *   int rhs; */
+  public void visit(Move_Id_Integer n) {
+    varRanges.AddDef(n.lhs, lineCounter.LineNumber());
   }
 
-  /**
-   * f0 -> Identifier()
-   * f1 -> "="
-   * f2 -> IntegerLiteral()
-   */
-  public void visit(SetInteger n, LiveRangesBuilder ranges) {
-    n.f0.accept(this, ranges);
-    n.f0.accept(defVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
+  /*   Identifier lhs;
+   *   FunctionName rhs; */
+  public void visit(Move_Id_FuncName n) {
+    varRanges.AddDef(n.lhs, lineCounter.LineNumber());
   }
 
-  /**
-   * f0 -> Identifier()
-   * f1 -> "="
-   * f2 -> "@"
-   * f3 -> FunctionName()
-   */
-  public void visit(SetFuncName n, LiveRangesBuilder ranges) {
-    n.f0.accept(this, ranges);
-    n.f0.accept(defVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
+  /*   Identifier lhs;
+   *   Identifier arg1;
+   *   Identifier arg2; */
+  public void visit(Add n) {
+    varRanges.AddDef(n.lhs, lineCounter.LineNumber());
+    varRanges.AddUse(n.arg1, lineCounter.LineNumber());
+    varRanges.AddUse(n.arg2, lineCounter.LineNumber());
   }
 
-  /**
-   * f0 -> Identifier()
-   * f1 -> "="
-   * f2 -> Identifier()
-   * f3 -> "+"
-   * f4 -> Identifier()
-   */
-  public void visit(Add n, LiveRangesBuilder ranges) {
-    n.f0.accept(this, ranges);
-    n.f0.accept(defVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
-
-    n.f2.accept(this, ranges);
-    n.f2.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
-
-    n.f4.accept(this, ranges);
-    n.f4.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
+  /*   Identifier lhs;
+   *   Identifier arg1;
+   *   Identifier arg2; */
+  public void visit(Subtract n) {
+    varRanges.AddDef(n.lhs, lineCounter.LineNumber());
+    varRanges.AddUse(n.arg1, lineCounter.LineNumber());
+    varRanges.AddUse(n.arg2, lineCounter.LineNumber());
   }
 
-  /**
-   * f0 -> Identifier()
-   * f1 -> "="
-   * f2 -> Identifier()
-   * f3 -> "-"
-   * f4 -> Identifier()
-   */
-  public void visit(Subtract n, LiveRangesBuilder ranges) {
-    n.f0.accept(this, ranges);
-    n.f0.accept(defVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
-
-    n.f2.accept(this, ranges);
-    n.f2.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
-
-    n.f4.accept(this, ranges);
-    n.f4.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
+  /*   Identifier lhs;
+   *   Identifier arg1;
+   *   Identifier arg2; */
+  public void visit(Multiply n) {
+    varRanges.AddDef(n.lhs, lineCounter.LineNumber());
+    varRanges.AddUse(n.arg1, lineCounter.LineNumber());
+    varRanges.AddUse(n.arg2, lineCounter.LineNumber());
   }
 
-  /**
-   * f0 -> Identifier()
-   * f1 -> "="
-   * f2 -> Identifier()
-   * f3 -> "*"
-   * f4 -> Identifier()
-   */
-  public void visit(Multiply n, LiveRangesBuilder ranges) {
-    n.f0.accept(this, ranges);
-    n.f0.accept(defVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
-
-    n.f2.accept(this, ranges);
-    n.f2.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
-
-    n.f4.accept(this, ranges);
-    n.f4.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
+  /*   Identifier lhs;
+   *   Identifier arg1;
+   *   Identifier arg2; */
+  public void visit(LessThan n) {
+    varRanges.AddDef(n.lhs, lineCounter.LineNumber());
+    varRanges.AddUse(n.arg1, lineCounter.LineNumber());
+    varRanges.AddUse(n.arg2, lineCounter.LineNumber());
   }
 
-  /**
-   * f0 -> Identifier()
-   * f1 -> "="
-   * f2 -> Identifier()
-   * f3 -> "<"
-   * f4 -> Identifier()
-   */
-  public void visit(LessThan n, LiveRangesBuilder ranges) {
-    n.f0.accept(this, ranges);
-    n.f0.accept(defVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
-
-    n.f2.accept(this, ranges);
-    n.f2.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
-
-    n.f4.accept(this, ranges);
-    n.f4.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
+  /*   Identifier lhs;
+   *   Identifier base;
+   *   int offset; */
+  public void visit(Load n) {
+    varRanges.AddDef(n.lhs, lineCounter.LineNumber());
+    varRanges.AddUse(n.base, lineCounter.LineNumber());
   }
 
-  /**
-   * f0 -> Identifier()
-   * f1 -> "="
-   * f2 -> "["
-   * f3 -> Identifier()
-   * f4 -> "+"
-   * f5 -> IntegerLiteral()
-   * f6 -> "]"
-   */
-  public void visit(Load n, LiveRangesBuilder ranges) {
-    n.f0.accept(this, ranges);
-    n.f0.accept(defVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
-
-    n.f3.accept(this, ranges);
-    n.f3.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
-
-    n.f5.accept(this, ranges);
+  /*   Identifier base;
+   *   int offset;
+   *   Identifier rhs; */
+  public void visit(Store n) {
+    varRanges.AddUse(n.base, lineCounter.LineNumber());
+    varRanges.AddUse(n.rhs, lineCounter.LineNumber());
   }
 
-  /**
-   * f0 -> "["
-   * f1 -> Identifier()
-   * f2 -> "+"
-   * f3 -> IntegerLiteral()
-   * f4 -> "]"
-   * f5 -> "="
-   * f6 -> Identifier()
-   */
-  public void visit(Store n, LiveRangesBuilder ranges) {
-    n.f1.accept(this, ranges);
-    n.f1.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
-
-    n.f3.accept(this, ranges);
-
-    n.f6.accept(this, ranges);
-    n.f6.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
+  /*   Identifier lhs;
+   *   Identifier rhs; */
+  public void visit(Move_Id_Id n) {
+    varRanges.AddDef(n.lhs, lineCounter.LineNumber());
+    varRanges.AddUse(n.rhs, lineCounter.LineNumber());
   }
 
-  /**
-   * f0 -> Identifier()
-   * f1 -> "="
-   * f2 -> Identifier()
-   */
-  public void visit(Move n, LiveRangesBuilder ranges) {
-    n.f0.accept(this, ranges);
-    n.f0.accept(defVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
-
-    n.f2.accept(this, ranges);
-    n.f2.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
+  /*   Identifier lhs;
+   *   Identifier size; */
+  public void visit(Alloc n) {
+    varRanges.AddDef(n.lhs, lineCounter.LineNumber());
+    varRanges.AddUse(n.size, lineCounter.LineNumber());
   }
 
-  /**
-   * f0 -> Identifier()
-   * f1 -> "="
-   * f2 -> "alloc"
-   * f3 -> "("
-   * f4 -> Identifier()
-   * f5 -> ")"
-   */
-  public void visit(Alloc n, LiveRangesBuilder ranges) {
-    n.f0.accept(this, ranges);
-    n.f0.accept(defVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
-
-    n.f4.accept(this, ranges);
-    n.f4.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
+  /*   Identifier content; */
+  public void visit(Print n) {
+    varRanges.AddUse(n.content, lineCounter.LineNumber());
   }
 
-  /**
-   * f0 -> "print"
-   * f1 -> "("
-   * f2 -> Identifier()
-   * f3 -> ")"
-   */
-  public void visit(Print n, LiveRangesBuilder ranges) {
-    n.f2.accept(this, ranges);
-    n.f2.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
+  /*   String msg; */
+  public void visit(ErrorMessage n) {
+    // nothing
   }
 
-  /**
-    * f0 -> "goto"
-    * f1 -> Label()
-    */
-  public void visit(Goto n, LiveRangesBuilder ranges) {
-    String label = n.f1.accept(idVisitor);
-
-    if (labelRanges.Contains(label)) {
-      labelRanges.PutLastUse(label, lineCounter.LineNumber());
+  /*   Label label; */
+  public void visit(Goto n) {
+    if (labelRanges.Contains(n.label)) {
+      labelRanges.AddUse(n.label, lineCounter.LineNumber());
     }
   }
 
-  /**
-   * f0 -> "if0"
-   * f1 -> Identifier()
-   * f2 -> "goto"
-   * f3 -> Label()
-   */
-  public void visit(IfGoto n, LiveRangesBuilder ranges) {
-    n.f1.accept(this, ranges);
-    n.f1.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
-
-    String label = n.f3.accept(idVisitor);
-    if (labelRanges.Contains(label)) {
-      labelRanges.PutLastUse(label, lineCounter.LineNumber());
+  /*   Identifier condition;
+   *   Label label; */
+  public void visit(IfGoto n) {
+    varRanges.AddUse(n.condition, lineCounter.LineNumber());
+    if (labelRanges.Contains(n.label)) {
+      labelRanges.AddUse(n.label, lineCounter.LineNumber());
     }
   }
 
-  /**
-   * f0 -> Identifier()
-   * f1 -> "="
-   * f2 -> "call"
-   * f3 -> Identifier()
-   * f4 -> "("
-   * f5 -> ( Identifier() )*
-   * f6 -> ")"
-   */
-  public void visit(Call n, LiveRangesBuilder ranges) {
-    n.f0.accept(this, ranges);
-    n.f0.accept(defVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
-
-    n.f3.accept(this, ranges);
-    n.f3.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
-
-    n.f5.accept(this, ranges);
-    n.f5.accept(useVisitor, new Pair<LiveRangesBuilder, Integer>(ranges, lineCounter.LineNumber()));
-  }
-
-  /**
-   * f0 -> <IDENTIFIER>
-   */
-  public void visit(Identifier n, LiveRangesBuilder ranges) {
-    if (paramRanges.Contains(n.f0.tokenImage)) {
-      paramRanges.PutLastUse(n.f0.tokenImage, lineCounter.LineNumber());
-      return;
+  /*   Identifier lhs;
+   *   Identifier callee;
+   *   List<Identifier> args; */
+  public void visit(Call n) {
+    varRanges.AddDef(n.lhs, lineCounter.LineNumber());
+    varRanges.AddUse(n.callee, lineCounter.LineNumber());
+    for (Identifier arg : n.args) {
+      varRanges.AddUse(arg, lineCounter.LineNumber());
     }
-
-    ranges.PutFirstUse(n.f0.tokenImage, lineCounter.LineNumber());
-    ranges.PutLastUse(n.f0.tokenImage, lineCounter.LineNumber());
-  }
-
-  @Override
-  public void visit(If n, LiveRangesBuilder ranges) {
-    n.f0.accept(this, ranges);
-    n.f1.accept(this, ranges);
-    n.f2.accept(this, ranges);
-    n.f3.accept(this, ranges);
-  }
-
-  @Override
-  public void visit(LabeledInstruction n, LiveRangesBuilder ranges) {
-    n.f0.accept(this, ranges);
-    n.f1.accept(this, ranges);
   }
 }

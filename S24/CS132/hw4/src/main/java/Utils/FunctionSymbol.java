@@ -1,133 +1,118 @@
 package Utils;
 
+import IR.token.Identifier;
+import IR.token.FunctionName;
+import IR.token.Label;
 import java.util.Map;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.lang.StringBuilder;
 
 public class FunctionSymbol {
-  private String name;
+  private FunctionName name;
 
-  private LiveRanges paramRanges;
-  private LiveRanges liveRanges;
-  private LiveRanges labelRanges;
+  private Map<String, SparrowVRange> varRanges;
+  private Map<String, SparrowVRange> labelRanges;
 
-  private Map<String, String> registerAssignments;
-  private Map<String, String> argRegisterAssignments;
+  private Map<String, String> tempRegAssignments;
+  private Map<String, String> argRegAssignments;
 
-  public FunctionSymbol(String name, LiveRanges paramRanges, LiveRanges liveRanges, LiveRanges labelRanges) {
+  public FunctionSymbol(FunctionName name) {
     this.name = name;
-    this.liveRanges = liveRanges;
+    this.varRanges = new LinkedHashMap<>();
+    this.labelRanges = new LinkedHashMap<>();
+  }
+
+  public FunctionSymbol(
+      FunctionName name,
+      Map<String, SparrowVRange> varRanges,
+      Map<String, SparrowVRange> labelRanges) {
+    this.name = name;
+    this.varRanges = varRanges;
     this.labelRanges = labelRanges;
-    this.paramRanges = paramRanges;
   }
 
-  public void SetParamRanges(LiveRanges paramRanges) {
-    this.paramRanges = paramRanges;
-  }
-
-  public void SetRegisterAssignments(Map<String, String> registerAssignments) {
-    this.registerAssignments = registerAssignments;
-  }
-
-  public void SetArgRegisterAssignments(Map<String, String> argRegisterAssignments) {
-    this.argRegisterAssignments = argRegisterAssignments;
+  public FunctionName Name() {
+    return name;
   }
 
   public String Register(String id) {
-    String reg = registerAssignments.get(id);
+    String reg = tempRegAssignments.get(id);
     if (reg == null) {
-      reg = argRegisterAssignments.get(id);
+      reg = argRegAssignments.get(id);
     }
 
     return reg;
   }
 
-  public Map<String, String> ArgRegisterAssignments() {
-    return argRegisterAssignments;
+  public String Register(Identifier id) {
+    String reg = tempRegAssignments.get(id.toString());
+    if (reg == null) {
+      reg = argRegAssignments.get(id.toString());
+    }
+
+    return reg;
   }
 
-  public Map<String, String> RegisterAssignments() {
-    return registerAssignments;
+  public void SetTempRegAssignments(Map<String, String> tempRegAssignments) {
+    this.tempRegAssignments = tempRegAssignments;
   }
 
-  public String Name() {
-    return name;
+  public void SetArgRegAssignments(Map<String, String> argRegAssignments) {
+    this.argRegAssignments = argRegAssignments;
   }
 
-  public LiveRanges ParamRanges() {
-    return paramRanges;
+  public Map<String, String> TempRegAssignments() {
+    return tempRegAssignments;
   }
 
-  public LiveRanges LiveRanges() {
-    return liveRanges;
+  public Map<String, String> ArgRegAssignments() {
+    return argRegAssignments;
   }
 
-  public LiveRanges LabelRanges() {
+  public SparrowVRange Range(Identifier id) {
+    return varRanges.get(id.toString());
+  }
+
+  public SparrowVRange Range(Label id) {
+    return labelRanges.get(id.toString());
+  }
+
+  public Map<String, SparrowVRange> LabelRanges() {
     return labelRanges;
   }
 
-  public Integer FirstUse(String id) {
-    Integer firstUse = liveRanges.FirstUse(id);
-    if (firstUse == null) {
-      firstUse = paramRanges.FirstUse(id);
-    }
-
-    return firstUse;
+  public Map<String, SparrowVRange> VarRanges() {
+    return varRanges;
   }
 
-  public Integer LastUse(String id) {
-    Integer lastUse = liveRanges.LastUse(id);
-    if (lastUse == null) {
-      lastUse = paramRanges.LastUse(id);
-    }
-
-    return lastUse;
-  }
-
-  public List<Integer> Defs(String id) {
-    List<Integer> defs = liveRanges.Defs(id);
-    if (defs == null) {
-      defs = paramRanges.Defs(id);
-    }
-
-    return defs;
-  }
-
-  public List<Integer> Uses(String id) {
-    List<Integer> uses = liveRanges.Uses(id);
-    if (uses == null) {
-      uses = paramRanges.Uses(id);
-    }
-
-
-    return uses;
+  public void SetRegisterAssignments(Map<String, String> argRegAssignments, Map<String, String> tempRegAssignments) {
+    this.argRegAssignments = argRegAssignments;
+    this.tempRegAssignments = tempRegAssignments;
   }
 
   public String ToString() {
-    String function = name + ":\n  Params:\n";
-    if (paramRanges != null) {
-      for (Map.Entry<String, SparrowVRange> param : paramRanges.LiveRangesMap().entrySet()) {
-        function += "    " + param.getKey() + ": [" + param.getValue().ToString() + ")\n";
-      }
-    }
+    StringBuilder builder = new StringBuilder();
+    builder.append("func " + name);
+    builder.append("\nParameters:\n");
+    varRanges.forEach(
+    (id, range) -> {
+        if (range.FirstUse() == 0) {
+          builder.append("  " + id + ": " + range.toString() + "\n");
+        }
+      });
 
-    function += "\n  Live Ranges:\n";
+    builder.append("\nVariables:\n");
+    varRanges.forEach(
+        (id, range) -> {
+          builder.append("  " + id + ": " + range.toString() + "\n");
+        });
 
-    for (Map.Entry<String, SparrowVRange> var : liveRanges.LiveRangesMap().entrySet()) {
-      function += "    " + var.getKey() + ": [" + var.getValue().ToString() + ")\n";
-    }
+    builder.append("\nLabels:\n");
+    labelRanges.forEach(
+        (id, range) -> {
+          builder.append("  " + id + ": " + range.toString() + "\n");
+        });
 
-    function += "\n  Label Ranges:\n";
-    for (Map.Entry<String, SparrowVRange> var : labelRanges.LiveRangesMap().entrySet()) {
-      function += "    " + var.getKey() + ": [" + var.getValue().ToString() + ")\n";
-    }
-
-    if (registerAssignments != null) {
-      function += "\n  Register Assignments:\n";
-      for (Map.Entry<String, String> var : registerAssignments.entrySet()) {
-        function += "    " + var.getKey() + ": " + var.getValue() + "\n";
-      }
-    }
-
-    return function;
+    return builder.toString();
   }
 }

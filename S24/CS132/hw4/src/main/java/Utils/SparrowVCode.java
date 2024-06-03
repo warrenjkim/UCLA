@@ -2,6 +2,7 @@ package Utils;
 
 import java.util.LinkedList;
 import java.util.StringJoiner;
+import IR.token.*;
 
 public class SparrowVCode {
   private String id;
@@ -57,106 +58,97 @@ public class SparrowVCode {
     }
   }
 
-  public void AddReturnStmt(String expr) {
-    AddStmt("return " + expr);
+  public void AddReturnStmt(Identifier id) {
+    AddStmt("return " + id);
   }
 
-  public void AddLabelStmt(String label) {
-    AddStmt(label + ":");
+  public void AddLabelStmt(Label label) {
+    AddStmt(label.toString() + ":");
   }
 
-  public void AddAssignStmt(String id, int value) {
-    AddStmt(id + " = " + value);
+  public void AddAssignStmt(String reg, int value) {
+    AddStmt(reg + " = " + value);
   }
 
-  public void AddFieldAssignStmt(String id, String expr) {
-    AddStmt(id + " = " + expr);
+  public void AddAssignStmt(String reg, FunctionName functionName) {
+    AddStmt(reg + " = @" + functionName.toString());
   }
 
-  public void AddAssignStmt(String id, String expr) {
-    AddStmt(id + " = " + expr);
+  public void AddAssignStmt(Identifier lhs, Identifier rhs) {
+    AddStmt(lhs.toString() + " = " + rhs.toString());
   }
 
-  public void AddFuncAssignStmt(String id, String funcName) {
-    AddStmt(id + " = @" + funcName);
+  public void AddAssignStmt(Identifier lhs, String reg) {
+    AddStmt(lhs.toString() + " = " + reg);
   }
 
-  public void AddPlusStmt(String id, String lhs, String rhs) {
-    AddStmt(id + " = " + lhs + " + " + rhs);
+  public void AddAssignStmt(String reg, Identifier rhs) {
+    AddStmt(reg + " = " + rhs.toString());
   }
 
-  public void AddMinusStmt(String id, String lhs, String rhs) {
-    AddStmt(id + " = " + lhs + " - " + rhs);
+  public void AddAssignStmt(String lhsReg, String rhsReg) {
+    AddStmt(lhsReg + " = " + rhsReg);
   }
 
-  public void AddMultiplyStmt(String id, String lhs, String rhs) {
-    AddStmt(id + " = " + lhs + " * " + rhs);
+  public void AddPlusStmt(String resReg, String lhsReg, String rhsReg) {
+    AddStmt(resReg + " = " + lhsReg + " + " + rhsReg);
   }
 
-  public void AddCompareStmt(String id, String lhs, String rhs) {
-    AddStmt(id + " = " + lhs + " < " + rhs);
+  public void AddMinusStmt(String resReg, String lhsReg, String rhsReg) {
+    AddStmt(resReg + " = " + lhsReg + " - " + rhsReg);
+  }
+  public void AddMultiplyStmt(String resReg, String lhsReg, String rhsReg) {
+    AddStmt(resReg + " = " + lhsReg + " * " + rhsReg);
   }
 
-  public void AddLoadStmt(String id, String arr, int byteOffset) {
-    AddStmt(id + " = [" + arr + " + " + byteOffset + "]");
+  public void AddCompareStmt(String resReg, String lhsReg, String rhsReg) {
+    AddStmt(resReg + " = " + lhsReg + " < " + rhsReg);
   }
 
-  public void AddStoreStmt(String arr, int byteOffset, String id) {
-    AddStmt("[" + arr + " + " + byteOffset + "] = " + id);
+  public void AddLoadStmt(String resReg, String heapReg, int offset) {
+    AddStmt(resReg + " = [" + heapReg + " + " + offset + "]");
   }
 
-  public void AddAllocStmt(String id, String byteSize) {
-    AddStmt(id + " = alloc(" + byteSize + ")");
+  public void AddStoreStmt(String heapReg, int offset, String valReg) {
+    AddStmt("[" + heapReg + " + " + offset + "] = " + valReg);
   }
 
-  public void AddPrintStmt(String expr) {
-    AddStmt("print(" + expr + ")");
+  public void AddAllocStmt(String resReg, String sizeReg) {
+    AddStmt(resReg + " = alloc(" + sizeReg + ")");
+  }
+
+  public void AddPrintStmt(String reg) {
+    AddStmt("print(" + reg + ")");
   }
 
   public void AddErrorStmt(String msg) {
     AddStmt("error(" + msg + ")");
   }
 
-  public void AddGotoStmt(String jumpLabel) {
-    AddStmt("goto " + jumpLabel);
+  public void AddGotoStmt(Label jumpLabel) {
+    AddStmt("goto " + jumpLabel.toString());
   }
 
-  public void AddIfStmt(String condition, String jumpLabel) {
-    AddStmt("if0 " + condition + " goto " + jumpLabel);
+  public void AddIfStmt(String conditionReg, Label jumpLabel) {
+    AddStmt("if0 " + conditionReg + " goto " + jumpLabel.toString());
   }
 
-  public void AddMainLabelStmt(String className, String funcName) {
-    AddStmt("func " + className + "__" + funcName + "()");
-  }
-
-  public void AddFuncLabelStmt(String funcName) {
-    AddStmt("func " + funcName + "()");
-  }
-
-  public void AddFuncLabelStmt(String funcName, LinkedList<String> params) {
+  public void AddFuncLabelStmt(FunctionName funcName, LinkedList<String> params) {
     StringJoiner args = new StringJoiner(" ");
     for (String param : params) {
       args.add(param);
     }
 
-    AddStmt("func " + funcName + "(" + args.toString() + ")");
+    AddStmt("func " + funcName.toString() + "(" + args.toString() + ")");
   }
 
-  public void AddCallStmt(String id, String label, LinkedList<String> params) {
+  public void AddCallStmt(String resReg, String funcReg, LinkedList<String> params) {
     StringJoiner args = new StringJoiner(" ");
     for (String param : params) {
       args.add(param);
     }
 
-    AddStmt(id + " = " + "call " + label + "(" + args.toString() + ")");
-  }
-
-  public void AddErrorStmts() {
-    AddLabelStmt("arr_err_label");
-    AddErrorStmt("\"array index out of bounds\"");
-
-    AddLabelStmt("null_err_label");
-    AddErrorStmt("\"null pointer\"");
+    AddStmt(resReg + " = " + "call " + funcReg + "(" + args.toString() + ")");
   }
 
   public String ToString() {

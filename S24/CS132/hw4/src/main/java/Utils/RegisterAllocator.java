@@ -8,59 +8,84 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 public class RegisterAllocator {
   private static final String[] aRegisterNames = {"a2", "a3", "a4", "a5", "a6", "a7"};
   private static final String[] sRegisterNames = {
-    "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9"/*, "s10", "s11" */
+    "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9", "s10", "s11"
   };
-  private static final String[] tRegisterNames = {"t0", "t1", "t2", "t3", "t4", "t5"};
+  private static final String[] tRegisterNames = {
+    /*"t0", "t1",*/
+    "t2", "t3", "t4", "t5"
+  };
 
   private ArrayDeque<String> aRegisters;
   private ArrayDeque<String> sRegisters;
   private ArrayDeque<String> tRegisters;
 
-  Map<String, String> registerAssignments;
-  Map<String, String> argRegisterAssignments;
+  Map<String, String> argRegAssignments;
+  Map<String, String> tempRegAssignments;
   LinkedList<Map.Entry<String, SparrowVRange>> active;
 
   public RegisterAllocator() {
     initialize();
   }
 
-  public void assignArgRegisters(FunctionSymbol func) {
-    Set<String> params = func.ParamRanges().LiveRangesMap().keySet();
-    for (String param : params) {
-      argRegisterAssignments.put(param, nextArgRegister());
-    }
-
-    func.SetArgRegisterAssignments(argRegisterAssignments);
-  }
-
   public void AllocateRegisters(FunctionSymbol func) {
     initialize();
-    assignArgRegisters(func);
+    setArgRegAssignments(func.VarRanges());
+    setTempRegAssignments(func.VarRanges());
+    func.SetRegisterAssignments(argRegAssignments, tempRegAssignments);
+  }
 
-    List<Map.Entry<String, SparrowVRange>> ranges = func.LiveRanges().Sorted();
-    for (Map.Entry<String, SparrowVRange> var : ranges) {
+  public void setArgRegAssignments(Map<String, SparrowVRange> vars) {
+    List<String> params = getParams(vars);
+    for (String param : params) {
+      argRegAssignments.put(param, nextArgRegister());
+    }
+  }
+
+  public List<String> getParams(Map<String, SparrowVRange> vars) {
+    List<String> params = new LinkedList<>();
+    for (Map.Entry<String, SparrowVRange> var : vars.entrySet()) {
+      if (var.getValue().FirstUse() == 0) {
+        params.add(var.getKey());
+      }
+    }
+
+    return params;
+  }
+
+  public String nextArgRegister() {
+    if (!aRegisters.isEmpty()) {
+      return aRegisters.pop();
+    }
+
+    return null;
+  }
+
+  public void setTempRegAssignments(Map<String, SparrowVRange> vars) {
+    List<Map.Entry<String, SparrowVRange>> sortedVars = sorted(vars);
+    for (Map.Entry<String, SparrowVRange> var : sortedVars) {
+      if (var.getValue().FirstUse() == 0
+          || var.getValue().Uses().size() == 0) {
+        continue;
+      }
+
       String id = var.getKey();
-      Pair<Integer, Integer> range = var.getValue().Range();
-
-      expire(range);
-
+      SparrowVRange range = var.getValue();
+      expire(range.Range());
       String freeRegister = nextFreeRegister();
       if (freeRegister == null) {
         spill(var);
       } else {
-        registerAssignments.put(id, freeRegister);
+        tempRegAssignments.put(id, freeRegister);
         active.offer(var);
       }
 
       sortActive();
     }
-
-    func.SetRegisterAssignments(registerAssignments);
   }
 
   private void expire(Pair<Integer, Integer> currRange) {
@@ -72,7 +97,7 @@ public class RegisterAllocator {
       Pair<Integer, Integer> range = interval.getValue().Range();
       if (range.second <= currRange.first) {
         iterator.remove();
-        freeRegister(registerAssignments.get(id));
+        freeRegister(tempRegAssignments.get(id));
       }
     }
   }
@@ -80,14 +105,16 @@ public class RegisterAllocator {
   private void spill(Map.Entry<String, SparrowVRange> curr) {
     String currId = curr.getKey();
     Pair<Integer, Integer> currRange = curr.getValue().Range();
+    Integer currUses = curr.getValue().Uses().size();
 
     Map.Entry<String, SparrowVRange> spillVar = active.peekLast();
     String spillId = spillVar.getKey();
     Pair<Integer, Integer> spillRange = spillVar.getValue().Range();
+    Integer spillUses = spillVar.getValue().Uses().size();
 
-    if (spillRange.second > currRange.second) {
-      registerAssignments.put(currId, registerAssignments.get(spillId));
-      registerAssignments.remove(spillId);
+    if (spillRange.second > currRange.second && spillUses <= currUses) {
+      tempRegAssignments.put(currId, tempRegAssignments.get(spillId));
+      tempRegAssignments.remove(spillId);
       active.remove(spillVar);
       active.offer(curr);
     }
@@ -113,24 +140,22 @@ public class RegisterAllocator {
     return null;
   }
 
-  private String nextArgRegister() {
-    if (!aRegisters.isEmpty()) {
-      return aRegisters.pop();
-    }
-
-    return null;
+  private List<Map.Entry<String, SparrowVRange>> sorted(Map<String, SparrowVRange> vars) {
+    return vars.entrySet().stream()
+        .sorted(Map.Entry.comparingByValue(Comparator.comparingInt(SparrowVRange::FirstUse)))
+        .collect(Collectors.toList());
   }
 
   private void sortActive() {
     Collections.sort(
-      active,
-      new Comparator<Map.Entry<String, SparrowVRange>>() {
-        @Override
-        public int compare(
-          Map.Entry<String, SparrowVRange> lhs, Map.Entry<String, SparrowVRange> rhs) {
-          return lhs.getValue().LastUse().compareTo(rhs.getValue().LastUse());
-        }
-      });
+        active,
+        new Comparator<Map.Entry<String, SparrowVRange>>() {
+          @Override
+          public int compare(
+              Map.Entry<String, SparrowVRange> lhs, Map.Entry<String, SparrowVRange> rhs) {
+            return lhs.getValue().LastUse().compareTo(rhs.getValue().LastUse());
+          }
+        });
   }
 
   private void initialize() {
@@ -139,17 +164,17 @@ public class RegisterAllocator {
     tRegisters = new ArrayDeque<>();
 
     active = new LinkedList<>();
-    registerAssignments = new LinkedHashMap<>();
-    argRegisterAssignments = new LinkedHashMap<>();
+    tempRegAssignments = new LinkedHashMap<>();
+    argRegAssignments = new LinkedHashMap<>();
 
-    for (String registerName : aRegisterNames) {
-      aRegisters.offer(registerName);
+    for (String tempRegName : aRegisterNames) {
+      aRegisters.offer(tempRegName);
     }
-    for (String registerName : sRegisterNames) {
-      sRegisters.offer(registerName);
+    for (String tempRegName : sRegisterNames) {
+      sRegisters.offer(tempRegName);
     }
-    for (String registerName : tRegisterNames) {
-      tRegisters.offer(registerName);
+    for (String tempRegName : tRegisterNames) {
+      tRegisters.offer(tempRegName);
     }
   }
 }
