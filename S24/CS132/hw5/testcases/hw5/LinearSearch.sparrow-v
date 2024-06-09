@@ -1,0 +1,280 @@
+func main()
+t2 = 12
+t3 = alloc(t2)
+if0 t3 goto null_err
+t2 = 16
+t2 = alloc(t2)
+if0 t2 goto null_err
+t4 = @LSPrint
+[t2 + 0] = t4
+t4 = @LSInit
+[t2 + 4] = t4
+t4 = @LSStart
+[t2 + 8] = t4
+t4 = @LSSearch
+[t2 + 12] = t4
+[t3 + 0] = t2
+if0 t3 goto null_err
+t4 = [t3 + 0]
+t4 = [t4 + 8]
+t2 = 10
+t0 = t4
+a3 = t2
+a2 = t3
+t0 = call t0()
+t2 = t0
+print(t2)
+goto main_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+main_end:
+t2 = 0
+id9 = t2
+      return id9
+
+func LSStart()
+if0 a2 goto null_err
+t2 = [a2 + 0]
+t2 = [t2 + 4]
+stacka2 = a2
+t0 = t2
+t0 = call t0()
+a2 = stacka2
+t2 = t0
+t0 = t2
+if0 a2 goto null_err
+t2 = [a2 + 0]
+t2 = [t2 + 0]
+stacka2 = a2
+t0 = t2
+t0 = call t0()
+a2 = stacka2
+t2 = t0
+t0 = t2
+t2 = 9999
+print(t2)
+if0 a2 goto null_err
+t2 = [a2 + 0]
+t2 = [t2 + 12]
+t3 = 8
+stacka2 = a2
+t0 = t2
+a3 = t3
+t0 = call t0()
+a2 = stacka2
+t3 = t0
+print(t3)
+if0 a2 goto null_err
+t3 = [a2 + 0]
+t3 = [t3 + 12]
+t2 = 12
+stacka2 = a2
+t0 = t3
+a3 = t2
+t0 = call t0()
+a2 = stacka2
+t2 = t0
+print(t2)
+if0 a2 goto null_err
+t2 = [a2 + 0]
+t2 = [t2 + 12]
+t3 = 17
+stacka2 = a2
+t0 = t2
+a3 = t3
+t0 = call t0()
+a2 = stacka2
+t3 = t0
+print(t3)
+if0 a2 goto null_err
+t3 = [a2 + 0]
+t3 = [t3 + 12]
+t2 = 50
+t0 = t3
+a3 = t2
+t0 = call t0()
+t2 = t0
+print(t2)
+t2 = 55
+goto LSStart_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+LSStart_end:
+id30 = t2
+      return id30
+
+func LSPrint()
+t2 = 1
+t2 = t2
+loopid33:
+t3 = [a2 + 8]
+t3 = t2 < t3
+if0 t3 goto endid33
+t3 = [a2 + 4]
+if0 t3 goto null_err
+t4 = [t3 + 0]
+t5 = 1
+a3 = 0
+a3 = a3 - t5
+a3 = a3 < t2
+if0 a3 goto array_err
+a3 = t2 < t4
+if0 a3 goto array_err
+t4 = 4
+t5 = t2 + t5
+t5 = t5 * t4
+t5 = t3 + t5
+t5 = [t5 + 0]
+print(t5)
+t5 = 1
+t5 = t2 + t5
+t2 = t5
+goto loopid33
+endid33:
+t5 = 0
+goto LSPrint_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+LSPrint_end:
+id47 = t5
+      return id47
+
+func LSSearch()
+t2 = 1
+t2 = t2
+t3 = 0
+t0 = t3
+t3 = 0
+t3 = t3
+loopid58:
+t4 = [a2 + 8]
+t4 = t2 < t4
+if0 t4 goto endid58
+t4 = [a2 + 4]
+if0 t4 goto null_err
+t5 = [t4 + 0]
+a4 = 1
+a5 = 0
+a5 = a5 - a4
+a5 = a5 < t2
+if0 a5 goto array_err
+a5 = t2 < t5
+if0 a5 goto array_err
+t5 = 4
+a4 = t2 + a4
+a4 = a4 * t5
+t5 = t4 + a4
+t5 = [t5 + 0]
+t5 = t5
+t4 = 1
+t4 = a3 + t4
+t4 = t4
+a4 = t5 < a3
+if0 a4 goto elseid72
+a4 = 0
+t0 = a4
+goto endid72
+elseid72:
+t4 = t5 < t4
+t5 = 1
+t5 = t5 - t4
+if0 t5 goto elseid74
+t5 = 0
+t0 = t5
+goto endid74
+elseid74:
+t5 = 1
+t0 = t5
+t5 = 1
+t3 = t5
+t5 = [a2 + 8]
+t2 = t5
+endid74:
+endid72:
+t5 = 1
+t5 = t2 + t5
+t2 = t5
+goto loopid58
+endid58:
+goto LSSearch_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+LSSearch_end:
+id51 = t3
+      return id51
+
+func LSInit()
+t0 = [a2 + 8]
+[a2 + 8] = a3
+t0 = [a2 + 4]
+t2 = 0
+t3 = a3 < t2
+t2 = 1
+t3 = t2 - t3
+if0 t3 goto array_err
+t3 = a3 + t2
+t2 = 4
+t3 = t2 * t3
+t3 = alloc(t3)
+if0 t3 goto null_err
+[t3 + 0] = a3
+[a2 + 4] = t3
+t3 = 1
+t3 = t3
+t2 = [a2 + 8]
+t4 = 1
+t4 = t2 + t4
+t4 = t4
+loopid98:
+t2 = [a2 + 8]
+t2 = t3 < t2
+if0 t2 goto endid98
+t2 = 2
+t2 = t2 * t3
+t2 = t2
+t5 = 3
+t5 = t4 - t5
+t5 = t5
+a3 = [a2 + 4]
+t5 = t2 + t5
+if0 a3 goto null_err
+t2 = [a3 + 0]
+a4 = 1
+a5 = 0
+a5 = a5 - a4
+a5 = a5 < t3
+if0 a5 goto array_err
+a5 = t3 < t2
+if0 a5 goto array_err
+t2 = 4
+a4 = t3 + a4
+a4 = a4 * t2
+t2 = a3 + a4
+[t2 + 0] = t5
+t2 = 1
+t2 = t3 + t2
+t3 = t2
+t2 = 1
+t2 = t4 - t2
+t4 = t2
+goto loopid98
+endid98:
+t2 = 0
+goto LSInit_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+LSInit_end:
+id118 = t2
+      return id118
+
+

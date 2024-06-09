@@ -1,0 +1,1280 @@
+func main()
+t2 = 4
+t3 = alloc(t2)
+if0 t3 goto null_err
+t2 = 4
+t2 = alloc(t2)
+if0 t2 goto null_err
+t4 = @LLStart
+[t2 + 0] = t4
+[t3 + 0] = t2
+if0 t3 goto null_err
+t4 = [t3 + 0]
+t4 = [t4 + 0]
+t0 = t4
+a2 = t3
+t0 = call t0()
+t4 = t0
+print(t4)
+goto main_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+main_end:
+t4 = 0
+id5 = t4
+      return id5
+
+func ElementInit()
+t0 = [a2 + 12]
+[a2 + 12] = a3
+t0 = [a2 + 4]
+[a2 + 4] = a4
+t0 = [a2 + 8]
+[a2 + 8] = a5
+t2 = 1
+goto ElementInit_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+ElementInit_end:
+id12 = t2
+      return id12
+
+func ElementGetAge()
+t2 = [a2 + 12]
+goto ElementGetAge_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+ElementGetAge_end:
+id13 = t2
+      return id13
+
+func ElementGetSalary()
+t2 = [a2 + 4]
+goto ElementGetSalary_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+ElementGetSalary_end:
+id14 = t2
+      return id14
+
+func ElementGetMarried()
+t2 = [a2 + 8]
+goto ElementGetMarried_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+ElementGetMarried_end:
+id15 = t2
+      return id15
+
+func ElementEqual()
+t2 = 1
+t2 = t2
+if0 a3 goto null_err
+t3 = [a3 + 0]
+t3 = [t3 + 8]
+stacka2 = a2
+stacka3 = a3
+stackt2 = t2
+t0 = t3
+a2 = a3
+t0 = call t0()
+a2 = stacka2
+a3 = stacka3
+t2 = stackt2
+t3 = t0
+t3 = t3
+if0 a2 goto null_err
+t4 = [a2 + 0]
+t4 = [t4 + 20]
+t5 = [a2 + 12]
+stacka2 = a2
+stacka3 = a3
+stackt2 = t2
+t0 = t4
+a4 = t5
+a3 = t3
+t0 = call t0()
+a2 = stacka2
+a3 = stacka3
+t2 = stackt2
+t5 = t0
+t4 = 1
+t4 = t4 - t5
+if0 t4 goto elseid24
+t4 = 0
+t2 = t4
+goto endid24
+elseid24:
+if0 a3 goto null_err
+t4 = [a3 + 0]
+t4 = [t4 + 0]
+stacka2 = a2
+stacka3 = a3
+stackt2 = t2
+t0 = t4
+a2 = a3
+t0 = call t0()
+a2 = stacka2
+a3 = stacka3
+t2 = stackt2
+t4 = t0
+t4 = t4
+if0 a2 goto null_err
+t5 = [a2 + 0]
+t5 = [t5 + 20]
+t3 = [a2 + 4]
+stacka2 = a2
+stacka3 = a3
+stackt2 = t2
+t0 = t5
+a4 = t3
+a3 = t4
+t0 = call t0()
+a2 = stacka2
+a3 = stacka3
+t2 = stackt2
+t3 = t0
+t5 = 1
+t5 = t5 - t3
+if0 t5 goto elseid32
+t5 = 0
+t2 = t5
+goto endid32
+elseid32:
+t5 = [a2 + 8]
+if0 t5 goto elseid38
+if0 a3 goto null_err
+t5 = [a3 + 0]
+t5 = [t5 + 16]
+stacka3 = a3
+stackt2 = t2
+t0 = t5
+a2 = a3
+t0 = call t0()
+a3 = stacka3
+t2 = stackt2
+t5 = t0
+t3 = 1
+t3 = t3 - t5
+if0 t3 goto elseid39
+t3 = 0
+t2 = t3
+goto endid39
+elseid39:
+t3 = 0
+t0 = t3
+endid39:
+goto endid38
+elseid38:
+if0 a3 goto null_err
+t3 = [a3 + 0]
+t3 = [t3 + 16]
+stackt2 = t2
+t0 = t3
+a2 = a3
+t0 = call t0()
+t2 = stackt2
+t3 = t0
+if0 t3 goto elseid46
+t3 = 0
+t2 = t3
+goto endid46
+elseid46:
+t3 = 0
+t0 = t3
+endid46:
+endid38:
+endid32:
+endid24:
+goto ElementEqual_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+ElementEqual_end:
+id17 = t2
+      return id17
+
+func ElementCompare()
+t2 = 0
+t2 = t2
+t3 = 1
+t3 = a4 + t3
+t3 = t3
+t4 = a3 < a4
+if0 t4 goto elseid56
+t4 = 0
+t2 = t4
+goto endid56
+elseid56:
+t4 = a3 < t3
+t3 = 1
+t3 = t3 - t4
+if0 t3 goto elseid58
+t3 = 0
+t2 = t3
+goto endid58
+elseid58:
+t3 = 1
+t2 = t3
+endid58:
+endid56:
+goto ElementCompare_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+ElementCompare_end:
+id51 = t2
+      return id51
+
+func ListInit()
+t0 = [a2 + 12]
+t2 = 1
+[a2 + 12] = t2
+t2 = 1
+goto ListInit_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+ListInit_end:
+id65 = t2
+      return id65
+
+func ListInitNew()
+t0 = [a2 + 12]
+[a2 + 12] = a5
+t0 = [a2 + 4]
+[a2 + 4] = a3
+t0 = [a2 + 8]
+[a2 + 8] = a4
+t2 = 1
+goto ListInitNew_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+ListInitNew_end:
+id72 = t2
+      return id72
+
+func ListInsert()
+t2 = a2
+t3 = 16
+t4 = alloc(t3)
+if0 t4 goto null_err
+t3 = 40
+t3 = alloc(t3)
+if0 t3 goto null_err
+t5 = @ListDelete
+[t3 + 0] = t5
+t5 = @ListPrint
+[t3 + 4] = t5
+t5 = @ListInit
+[t3 + 8] = t5
+t5 = @ListGetElem
+[t3 + 12] = t5
+t5 = @ListGetNext
+[t3 + 16] = t5
+t5 = @ListSetNext
+[t3 + 20] = t5
+t5 = @ListSearch
+[t3 + 24] = t5
+t5 = @ListGetEnd
+[t3 + 28] = t5
+t5 = @ListInitNew
+[t3 + 32] = t5
+t5 = @ListInsert
+[t3 + 36] = t5
+[t4 + 0] = t3
+t5 = t4
+if0 t5 goto null_err
+t3 = [t5 + 0]
+t3 = [t3 + 32]
+t4 = 0
+stackt5 = t5
+t0 = t3
+a5 = t4
+a4 = t2
+a2 = t5
+t0 = call t0()
+t5 = stackt5
+t4 = t0
+t0 = t4
+goto ListInsert_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+ListInsert_end:
+id76 = t5
+      return id76
+
+func ListSetNext()
+t0 = [a2 + 8]
+[a2 + 8] = a3
+t2 = 1
+goto ListSetNext_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+ListSetNext_end:
+id94 = t2
+      return id94
+
+func ListDelete()
+t2 = a2
+t3 = 0
+t3 = t3
+t4 = 0
+t5 = 1
+t5 = t4 - t5
+t5 = t5
+t4 = a2
+a4 = a2
+a5 = [a2 + 12]
+a5 = a5
+a2 = [a2 + 4]
+a2 = a2
+loopid111:
+a6 = 0
+a7 = 1
+a7 = a7 - a5
+if0 a7 goto endid113
+a7 = 1
+a7 = a7 - t3
+a6 = a7
+endid113:
+if0 a6 goto endid111
+if0 a3 goto null_err
+a7 = [a3 + 0]
+a7 = [a7 + 12]
+stacka3 = a3
+stacka4 = a4
+stacka5 = a5
+stacka2 = a2
+stackt2 = t2
+stackt3 = t3
+stackt5 = t5
+stackt4 = t4
+t0 = a7
+t1 = a3
+a3 = a2
+a2 = t1
+t0 = call t0()
+a3 = stacka3
+a4 = stacka4
+a5 = stacka5
+a2 = stacka2
+t2 = stackt2
+t3 = stackt3
+t5 = stackt5
+t4 = stackt4
+a7 = t0
+if0 a7 goto elseid118
+a7 = 1
+t3 = a7
+a7 = 0
+a7 = t5 < a7
+if0 a7 goto elseid120
+if0 t4 goto null_err
+a7 = [t4 + 0]
+a7 = [a7 + 16]
+stacka3 = a3
+stacka4 = a4
+stacka5 = a5
+stacka2 = a2
+stackt2 = t2
+stackt3 = t3
+stackt5 = t5
+stackt4 = t4
+t0 = a7
+a2 = t4
+t0 = call t0()
+a3 = stacka3
+a4 = stacka4
+a5 = stacka5
+a2 = stacka2
+t2 = stackt2
+t3 = stackt3
+t5 = stackt5
+t4 = stackt4
+a7 = t0
+t2 = a7
+goto endid120
+elseid120:
+a7 = 0
+a6 = 555
+a6 = a7 - a6
+print(a6)
+if0 a4 goto null_err
+a6 = [a4 + 0]
+a6 = [a6 + 20]
+if0 t4 goto null_err
+a7 = [t4 + 0]
+a7 = [a7 + 16]
+stacka3 = a3
+stacka4 = a4
+stacka5 = a5
+stacka2 = a2
+stacka6 = a6
+stackt2 = t2
+stackt3 = t3
+stackt5 = t5
+stackt4 = t4
+t0 = a7
+a2 = t4
+t0 = call t0()
+a3 = stacka3
+a4 = stacka4
+a5 = stacka5
+a2 = stacka2
+a6 = stacka6
+t2 = stackt2
+t3 = stackt3
+t5 = stackt5
+t4 = stackt4
+a7 = t0
+stacka3 = a3
+stacka4 = a4
+stacka5 = a5
+stacka2 = a2
+stackt2 = t2
+stackt3 = t3
+stackt5 = t5
+stackt4 = t4
+t0 = a6
+a3 = a7
+a2 = a4
+t0 = call t0()
+a3 = stacka3
+a4 = stacka4
+a5 = stacka5
+a2 = stacka2
+t2 = stackt2
+t3 = stackt3
+t5 = stackt5
+t4 = stackt4
+a7 = t0
+t0 = a7
+a7 = 0
+a6 = 555
+a6 = a7 - a6
+print(a6)
+endid120:
+goto endid118
+elseid118:
+a6 = 0
+t0 = a6
+endid118:
+a6 = 1
+a6 = a6 - t3
+if0 a6 goto elseid135
+a4 = t4
+if0 t4 goto null_err
+a6 = [t4 + 0]
+a6 = [a6 + 16]
+stacka3 = a3
+stacka4 = a4
+stacka5 = a5
+stacka2 = a2
+stackt2 = t2
+stackt3 = t3
+stackt5 = t5
+stackt4 = t4
+t0 = a6
+a2 = t4
+t0 = call t0()
+a3 = stacka3
+a4 = stacka4
+a5 = stacka5
+a2 = stacka2
+t2 = stackt2
+t3 = stackt3
+t5 = stackt5
+t4 = stackt4
+a6 = t0
+t4 = a6
+if0 t4 goto null_err
+a6 = [t4 + 0]
+a6 = [a6 + 28]
+stacka3 = a3
+stacka4 = a4
+stacka5 = a5
+stacka2 = a2
+stackt2 = t2
+stackt3 = t3
+stackt5 = t5
+stackt4 = t4
+t0 = a6
+a2 = t4
+t0 = call t0()
+a3 = stacka3
+a4 = stacka4
+a5 = stacka5
+a2 = stacka2
+t2 = stackt2
+t3 = stackt3
+t5 = stackt5
+t4 = stackt4
+a6 = t0
+a5 = a6
+if0 t4 goto null_err
+a6 = [t4 + 0]
+a6 = [a6 + 12]
+stacka3 = a3
+stacka4 = a4
+stacka5 = a5
+stacka2 = a2
+stackt2 = t2
+stackt3 = t3
+stackt5 = t5
+stackt4 = t4
+t0 = a6
+a2 = t4
+t0 = call t0()
+a3 = stacka3
+a4 = stacka4
+a5 = stacka5
+a2 = stacka2
+t2 = stackt2
+t3 = stackt3
+t5 = stackt5
+t4 = stackt4
+a6 = t0
+a2 = a6
+a6 = 1
+t5 = a6
+goto endid135
+elseid135:
+a6 = 0
+t0 = a6
+endid135:
+goto loopid111
+endid111:
+goto ListDelete_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+ListDelete_end:
+id96 = t2
+      return id96
+
+func ListSearch()
+t2 = 0
+t2 = t2
+t3 = a2
+t4 = [a2 + 12]
+t4 = t4
+t5 = [a2 + 4]
+t5 = t5
+loopid154:
+a2 = 1
+a2 = a2 - t4
+if0 a2 goto endid154
+if0 a3 goto null_err
+a2 = [a3 + 0]
+a2 = [a2 + 12]
+stacka3 = a3
+stackt2 = t2
+stackt3 = t3
+stackt4 = t4
+stackt5 = t5
+t0 = a2
+a2 = a3
+a3 = t5
+t0 = call t0()
+a3 = stacka3
+t2 = stackt2
+t3 = stackt3
+t4 = stackt4
+t5 = stackt5
+a2 = t0
+if0 a2 goto elseid158
+a2 = 1
+t2 = a2
+goto endid158
+elseid158:
+a2 = 0
+t0 = a2
+endid158:
+if0 t3 goto null_err
+a2 = [t3 + 0]
+a2 = [a2 + 16]
+stacka3 = a3
+stackt2 = t2
+stackt3 = t3
+stackt4 = t4
+stackt5 = t5
+t0 = a2
+a2 = t3
+t0 = call t0()
+a3 = stacka3
+t2 = stackt2
+t3 = stackt3
+t4 = stackt4
+t5 = stackt5
+a2 = t0
+t3 = a2
+if0 t3 goto null_err
+a2 = [t3 + 0]
+a2 = [a2 + 28]
+stacka3 = a3
+stackt2 = t2
+stackt3 = t3
+stackt4 = t4
+stackt5 = t5
+t0 = a2
+a2 = t3
+t0 = call t0()
+a3 = stacka3
+t2 = stackt2
+t3 = stackt3
+t4 = stackt4
+t5 = stackt5
+a2 = t0
+t4 = a2
+if0 t3 goto null_err
+a2 = [t3 + 0]
+a2 = [a2 + 12]
+stacka3 = a3
+stackt2 = t2
+stackt3 = t3
+stackt4 = t4
+stackt5 = t5
+t0 = a2
+a2 = t3
+t0 = call t0()
+a3 = stacka3
+t2 = stackt2
+t3 = stackt3
+t4 = stackt4
+t5 = stackt5
+a2 = t0
+t5 = a2
+goto loopid154
+endid154:
+goto ListSearch_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+ListSearch_end:
+id146 = t2
+      return id146
+
+func ListGetEnd()
+t2 = [a2 + 12]
+goto ListGetEnd_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+ListGetEnd_end:
+id167 = t2
+      return id167
+
+func ListGetElem()
+t2 = [a2 + 4]
+goto ListGetElem_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+ListGetElem_end:
+id168 = t2
+      return id168
+
+func ListGetNext()
+t2 = [a2 + 8]
+goto ListGetNext_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+ListGetNext_end:
+id169 = t2
+      return id169
+
+func ListPrint()
+t2 = a2
+t3 = [a2 + 12]
+t3 = t3
+t4 = [a2 + 4]
+t4 = t4
+loopid175:
+t5 = 1
+t5 = t5 - t3
+if0 t5 goto endid175
+if0 t4 goto null_err
+t5 = [t4 + 0]
+t5 = [t5 + 8]
+stackt2 = t2
+stackt3 = t3
+stackt4 = t4
+t0 = t5
+a2 = t4
+t0 = call t0()
+t2 = stackt2
+t3 = stackt3
+t4 = stackt4
+t5 = t0
+print(t5)
+if0 t2 goto null_err
+t5 = [t2 + 0]
+t5 = [t5 + 16]
+stackt2 = t2
+stackt3 = t3
+stackt4 = t4
+t0 = t5
+a2 = t2
+t0 = call t0()
+t2 = stackt2
+t3 = stackt3
+t4 = stackt4
+t5 = t0
+t2 = t5
+if0 t2 goto null_err
+t5 = [t2 + 0]
+t5 = [t5 + 28]
+stackt2 = t2
+stackt3 = t3
+stackt4 = t4
+t0 = t5
+a2 = t2
+t0 = call t0()
+t2 = stackt2
+t3 = stackt3
+t4 = stackt4
+t5 = t0
+t3 = t5
+if0 t2 goto null_err
+t5 = [t2 + 0]
+t5 = [t5 + 12]
+stackt2 = t2
+stackt3 = t3
+stackt4 = t4
+t0 = t5
+a2 = t2
+t0 = call t0()
+t2 = stackt2
+t3 = stackt3
+t4 = stackt4
+t5 = t0
+t4 = t5
+goto loopid175
+endid175:
+t5 = 1
+goto ListPrint_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+ListPrint_end:
+id186 = t5
+      return id186
+
+func LLStart()
+t2 = 16
+t3 = alloc(t2)
+if0 t3 goto null_err
+t2 = 40
+t2 = alloc(t2)
+if0 t2 goto null_err
+t4 = @ListDelete
+[t2 + 0] = t4
+t4 = @ListPrint
+[t2 + 4] = t4
+t4 = @ListInit
+[t2 + 8] = t4
+t4 = @ListGetElem
+[t2 + 12] = t4
+t4 = @ListGetNext
+[t2 + 16] = t4
+t4 = @ListSetNext
+[t2 + 20] = t4
+t4 = @ListSearch
+[t2 + 24] = t4
+t4 = @ListGetEnd
+[t2 + 28] = t4
+t4 = @ListInitNew
+[t2 + 32] = t4
+t4 = @ListInsert
+[t2 + 36] = t4
+[t3 + 0] = t2
+t4 = t3
+if0 t4 goto null_err
+t2 = [t4 + 0]
+t2 = [t2 + 8]
+stackt4 = t4
+t0 = t2
+a2 = t4
+t0 = call t0()
+t4 = stackt4
+t2 = t0
+t0 = t2
+t4 = t4
+if0 t4 goto null_err
+t2 = [t4 + 0]
+t2 = [t2 + 8]
+stackt4 = t4
+t0 = t2
+a2 = t4
+t0 = call t0()
+t4 = stackt4
+t2 = t0
+t0 = t2
+if0 t4 goto null_err
+t2 = [t4 + 0]
+t2 = [t2 + 4]
+stackt4 = t4
+t0 = t2
+a2 = t4
+t0 = call t0()
+t4 = stackt4
+t2 = t0
+t0 = t2
+t2 = 16
+t3 = alloc(t2)
+if0 t3 goto null_err
+t2 = 24
+t2 = alloc(t2)
+if0 t2 goto null_err
+t5 = @ElementGetSalary
+[t2 + 0] = t5
+t5 = @ElementInit
+[t2 + 4] = t5
+t5 = @ElementGetAge
+[t2 + 8] = t5
+t5 = @ElementEqual
+[t2 + 12] = t5
+t5 = @ElementGetMarried
+[t2 + 16] = t5
+t5 = @ElementCompare
+[t2 + 20] = t5
+[t3 + 0] = t2
+t5 = t3
+if0 t5 goto null_err
+t3 = [t5 + 0]
+t3 = [t3 + 4]
+a2 = 25
+a3 = 37000
+a4 = 0
+stackt5 = t5
+stackt4 = t4
+stackt2 = t2
+t0 = t3
+a5 = a4
+a4 = a3
+a3 = a2
+a2 = t5
+t0 = call t0()
+t5 = stackt5
+t4 = stackt4
+t2 = stackt2
+t3 = t0
+t0 = t3
+if0 t4 goto null_err
+t3 = [t4 + 0]
+t3 = [t3 + 36]
+stackt5 = t5
+stackt4 = t4
+stackt2 = t2
+t0 = t3
+a3 = t5
+a2 = t4
+t0 = call t0()
+t5 = stackt5
+t4 = stackt4
+t2 = stackt2
+t3 = t0
+t4 = t3
+if0 t4 goto null_err
+t3 = [t4 + 0]
+t3 = [t3 + 4]
+stackt5 = t5
+stackt4 = t4
+stackt2 = t2
+t0 = t3
+a2 = t4
+t0 = call t0()
+t5 = stackt5
+t4 = stackt4
+t2 = stackt2
+t3 = t0
+t0 = t3
+t3 = 10000000
+print(t3)
+t3 = 16
+a4 = alloc(t3)
+if0 a4 goto null_err
+t3 = 24
+t2 = alloc(t3)
+if0 t2 goto null_err
+t3 = @ElementGetSalary
+[t2 + 0] = t3
+t3 = @ElementInit
+[t2 + 4] = t3
+t3 = @ElementGetAge
+[t2 + 8] = t3
+t3 = @ElementEqual
+[t2 + 12] = t3
+t3 = @ElementGetMarried
+[t2 + 16] = t3
+t3 = @ElementCompare
+[t2 + 20] = t3
+[a4 + 0] = t2
+t5 = a4
+if0 t5 goto null_err
+t3 = [t5 + 0]
+t3 = [t3 + 4]
+a4 = 39
+a3 = 42000
+a2 = 1
+stackt5 = t5
+stackt4 = t4
+stackt2 = t2
+t0 = t3
+t1 = a4
+a4 = a3
+a3 = t1
+a5 = a2
+a2 = t5
+t0 = call t0()
+t5 = stackt5
+t4 = stackt4
+t2 = stackt2
+t3 = t0
+t0 = t3
+t3 = t5
+if0 t4 goto null_err
+a2 = [t4 + 0]
+a2 = [a2 + 36]
+stackt3 = t3
+stackt5 = t5
+stackt4 = t4
+stackt2 = t2
+t0 = a2
+a3 = t5
+a2 = t4
+t0 = call t0()
+t3 = stackt3
+t5 = stackt5
+t4 = stackt4
+t2 = stackt2
+a2 = t0
+t4 = a2
+if0 t4 goto null_err
+a2 = [t4 + 0]
+a2 = [a2 + 4]
+stackt3 = t3
+stackt5 = t5
+stackt4 = t4
+stackt2 = t2
+t0 = a2
+a2 = t4
+t0 = call t0()
+t3 = stackt3
+t5 = stackt5
+t4 = stackt4
+t2 = stackt2
+a2 = t0
+t0 = a2
+a2 = 10000000
+print(a2)
+a2 = 16
+a3 = alloc(a2)
+if0 a3 goto null_err
+a2 = 24
+t2 = alloc(a2)
+if0 t2 goto null_err
+a2 = @ElementGetSalary
+[t2 + 0] = a2
+a2 = @ElementInit
+[t2 + 4] = a2
+a2 = @ElementGetAge
+[t2 + 8] = a2
+a2 = @ElementEqual
+[t2 + 12] = a2
+a2 = @ElementGetMarried
+[t2 + 16] = a2
+a2 = @ElementCompare
+[t2 + 20] = a2
+[a3 + 0] = t2
+t5 = a3
+if0 t5 goto null_err
+a2 = [t5 + 0]
+a2 = [a2 + 4]
+a3 = 22
+a4 = 34000
+a5 = 0
+stackt3 = t3
+stackt5 = t5
+stackt4 = t4
+stackt2 = t2
+t0 = a2
+a2 = t5
+t0 = call t0()
+t3 = stackt3
+t5 = stackt5
+t4 = stackt4
+t2 = stackt2
+a5 = t0
+t0 = a5
+if0 t4 goto null_err
+a5 = [t4 + 0]
+a5 = [a5 + 36]
+stackt3 = t3
+stackt5 = t5
+stackt4 = t4
+stackt2 = t2
+t0 = a5
+a3 = t5
+a2 = t4
+t0 = call t0()
+t3 = stackt3
+t5 = stackt5
+t4 = stackt4
+t2 = stackt2
+a5 = t0
+t4 = a5
+if0 t4 goto null_err
+a5 = [t4 + 0]
+a5 = [a5 + 4]
+stackt3 = t3
+stackt5 = t5
+stackt4 = t4
+stackt2 = t2
+t0 = a5
+a2 = t4
+t0 = call t0()
+t3 = stackt3
+t5 = stackt5
+t4 = stackt4
+t2 = stackt2
+a5 = t0
+t0 = a5
+a5 = 16
+a4 = alloc(a5)
+if0 a4 goto null_err
+a5 = 24
+t2 = alloc(a5)
+if0 t2 goto null_err
+a5 = @ElementGetSalary
+[t2 + 0] = a5
+a5 = @ElementInit
+[t2 + 4] = a5
+a5 = @ElementGetAge
+[t2 + 8] = a5
+a5 = @ElementEqual
+[t2 + 12] = a5
+a5 = @ElementGetMarried
+[t2 + 16] = a5
+a5 = @ElementCompare
+[t2 + 20] = a5
+[a4 + 0] = t2
+a5 = a4
+if0 a5 goto null_err
+a4 = [a5 + 0]
+a4 = [a4 + 4]
+a3 = 27
+a2 = 34000
+a6 = 0
+stacka5 = a5
+stackt3 = t3
+stackt5 = t5
+stackt4 = t4
+stackt2 = t2
+t0 = a4
+a4 = a2
+a2 = a5
+a5 = a6
+t0 = call t0()
+a5 = stacka5
+t3 = stackt3
+t5 = stackt5
+t4 = stackt4
+t2 = stackt2
+a6 = t0
+t0 = a6
+if0 t4 goto null_err
+a6 = [t4 + 0]
+a6 = [a6 + 24]
+stacka5 = a5
+stackt3 = t3
+stackt5 = t5
+stackt4 = t4
+stackt2 = t2
+t0 = a6
+a3 = t3
+a2 = t4
+t0 = call t0()
+a5 = stacka5
+t3 = stackt3
+t5 = stackt5
+t4 = stackt4
+t2 = stackt2
+a6 = t0
+print(a6)
+if0 t4 goto null_err
+a6 = [t4 + 0]
+a6 = [a6 + 24]
+stackt3 = t3
+stackt5 = t5
+stackt4 = t4
+stackt2 = t2
+t0 = a6
+a3 = a5
+a2 = t4
+t0 = call t0()
+t3 = stackt3
+t5 = stackt5
+t4 = stackt4
+t2 = stackt2
+a6 = t0
+print(a6)
+a6 = 10000000
+print(a6)
+a6 = 16
+a5 = alloc(a6)
+if0 a5 goto null_err
+a6 = 24
+t2 = alloc(a6)
+if0 t2 goto null_err
+a6 = @ElementGetSalary
+[t2 + 0] = a6
+a6 = @ElementInit
+[t2 + 4] = a6
+a6 = @ElementGetAge
+[t2 + 8] = a6
+a6 = @ElementEqual
+[t2 + 12] = a6
+a6 = @ElementGetMarried
+[t2 + 16] = a6
+a6 = @ElementCompare
+[t2 + 20] = a6
+[a5 + 0] = t2
+t5 = a5
+if0 t5 goto null_err
+t2 = [t5 + 0]
+t2 = [t2 + 4]
+a6 = 28
+a5 = 35000
+a2 = 0
+stackt3 = t3
+stackt5 = t5
+stackt4 = t4
+t0 = t2
+a4 = a5
+a5 = a2
+a3 = a6
+a2 = t5
+t0 = call t0()
+t3 = stackt3
+t5 = stackt5
+t4 = stackt4
+t2 = t0
+t0 = t2
+if0 t4 goto null_err
+t2 = [t4 + 0]
+t2 = [t2 + 36]
+stackt3 = t3
+stackt5 = t5
+stackt4 = t4
+t0 = t2
+a3 = t5
+a2 = t4
+t0 = call t0()
+t3 = stackt3
+t5 = stackt5
+t4 = stackt4
+t2 = t0
+t4 = t2
+if0 t4 goto null_err
+t2 = [t4 + 0]
+t2 = [t2 + 4]
+stackt3 = t3
+stackt5 = t5
+stackt4 = t4
+t0 = t2
+a2 = t4
+t0 = call t0()
+t3 = stackt3
+t5 = stackt5
+t4 = stackt4
+t2 = t0
+t0 = t2
+t2 = 2220000
+print(t2)
+if0 t4 goto null_err
+t2 = [t4 + 0]
+t2 = [t2 + 0]
+stackt5 = t5
+stackt4 = t4
+t0 = t2
+a3 = t3
+a2 = t4
+t0 = call t0()
+t5 = stackt5
+t4 = stackt4
+t2 = t0
+t4 = t2
+if0 t4 goto null_err
+t2 = [t4 + 0]
+t2 = [t2 + 4]
+stackt5 = t5
+stackt4 = t4
+t0 = t2
+a2 = t4
+t0 = call t0()
+t5 = stackt5
+t4 = stackt4
+t2 = t0
+t0 = t2
+t2 = 33300000
+print(t2)
+if0 t4 goto null_err
+t2 = [t4 + 0]
+t2 = [t2 + 0]
+stackt4 = t4
+t0 = t2
+a3 = t5
+a2 = t4
+t0 = call t0()
+t4 = stackt4
+t2 = t0
+t4 = t2
+if0 t4 goto null_err
+t2 = [t4 + 0]
+t2 = [t2 + 4]
+t0 = t2
+a2 = t4
+t0 = call t0()
+t2 = t0
+t0 = t2
+t2 = 44440000
+print(t2)
+t2 = 0
+goto LLStart_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+LLStart_end:
+id310 = t2
+      return id310
+
+

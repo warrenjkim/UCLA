@@ -1,0 +1,98 @@
+func main()
+t2 = 0
+t2 = t2
+t3 = 6
+t4 = 0
+t5 = t3 < t4
+t4 = 1
+t5 = t4 - t5
+if0 t5 goto array_err
+t5 = t3 + t4
+t4 = 4
+t5 = t4 * t5
+t5 = alloc(t5)
+if0 t5 goto null_err
+[t5 + 0] = t3
+t5 = t5
+if0 t5 goto null_err
+t3 = [t5 + 0]
+t3 = t3
+loopid10:
+t4 = t2 < t3
+if0 t4 goto endid10
+if0 t5 goto null_err
+t4 = [t5 + 0]
+a2 = 1
+a3 = 0
+a3 = a3 - a2
+a3 = a3 < t2
+if0 a3 goto array_err
+a3 = t2 < t4
+if0 a3 goto array_err
+t4 = 4
+a2 = t2 + a2
+a2 = a2 * t4
+t4 = t5 + a2
+[t4 + 0] = t2
+t4 = 1
+t4 = t2 + t4
+t2 = t4
+goto loopid10
+endid10:
+t4 = 1
+t4 = t3 - t4
+t2 = t4
+t4 = 0
+a2 = 1
+t4 = t4 - a2
+t3 = t4
+loopid26:
+t4 = t3 < t2
+if0 t4 goto endid26
+if0 t5 goto null_err
+t4 = [t5 + 0]
+a2 = 1
+a3 = 0
+a3 = a3 - a2
+a3 = a3 < t2
+if0 a3 goto array_err
+a3 = t2 < t4
+if0 a3 goto array_err
+t4 = 4
+a2 = t2 + a2
+a2 = a2 * t4
+t4 = t5 + a2
+t4 = [t4 + 0]
+print(t4)
+t4 = 1
+t4 = t2 - t4
+t2 = t4
+goto loopid26
+endid26:
+t4 = 10
+if0 t5 goto null_err
+t3 = [t5 + 0]
+t2 = 1
+a2 = 0
+a2 = a2 - t2
+a2 = a2 < t4
+if0 a2 goto array_err
+a2 = t4 < t3
+if0 a2 goto array_err
+t3 = 4
+t2 = t4 + t2
+t2 = t2 * t3
+t2 = t5 + t2
+t2 = [t2 + 0]
+print(t2)
+goto main_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+main_end:
+t2 = 0
+id47 = t2
+      return id47
+
+

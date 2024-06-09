@@ -1,0 +1,626 @@
+func main()
+t2 = 12
+t3 = alloc(t2)
+if0 t3 goto null_err
+t2 = 16
+t2 = alloc(t2)
+if0 t2 goto null_err
+t4 = @QSPrint
+[t2 + 0] = t4
+t4 = @QSInit
+[t2 + 4] = t4
+t4 = @QSStart
+[t2 + 8] = t4
+t4 = @QSSort
+[t2 + 12] = t4
+[t3 + 0] = t2
+if0 t3 goto null_err
+t4 = [t3 + 0]
+t4 = [t4 + 8]
+t2 = 10
+t0 = t4
+a3 = t2
+a2 = t3
+t0 = call t0()
+t2 = t0
+print(t2)
+goto main_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+main_end:
+t2 = 0
+id9 = t2
+      return id9
+
+func QSStart()
+if0 a2 goto null_err
+t2 = [a2 + 0]
+t2 = [t2 + 4]
+stacka2 = a2
+t0 = t2
+t0 = call t0()
+a2 = stacka2
+t2 = t0
+t2 = t2
+if0 a2 goto null_err
+t3 = [a2 + 0]
+t3 = [t3 + 0]
+stacka2 = a2
+stackt2 = t2
+t0 = t3
+t0 = call t0()
+a2 = stacka2
+t2 = stackt2
+t3 = t0
+t2 = t3
+t3 = 9999
+print(t3)
+t3 = [a2 + 8]
+t4 = 1
+t4 = t3 - t4
+t2 = t4
+if0 a2 goto null_err
+t4 = [a2 + 0]
+t4 = [t4 + 12]
+t3 = 0
+stacka2 = a2
+t0 = t4
+a4 = t2
+a3 = t3
+t0 = call t0()
+a2 = stacka2
+t3 = t0
+t2 = t3
+if0 a2 goto null_err
+t3 = [a2 + 0]
+t3 = [t3 + 0]
+t0 = t3
+t0 = call t0()
+t3 = t0
+t2 = t3
+t3 = 0
+goto QSStart_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+QSStart_end:
+id25 = t3
+      return id25
+
+func QSSort()
+stacks3 = s3
+stacks4 = s4
+stacks1 = s1
+stacks2 = s2
+t2 = 0
+t2 = t2
+t3 = a3 < a4
+if0 t3 goto elseid37
+t3 = [a2 + 4]
+if0 t3 goto null_err
+t4 = [t3 + 0]
+t5 = 1
+a5 = 0
+a5 = a5 - t5
+a5 = a5 < a4
+if0 a5 goto array_err
+a5 = a4 < t4
+if0 a5 goto array_err
+t4 = 4
+t5 = a4 + t5
+t5 = t5 * t4
+t5 = t3 + t5
+t5 = [t5 + 0]
+t5 = t5
+t4 = 1
+t4 = a3 - t4
+t4 = t4
+t3 = a4
+a5 = 1
+a5 = a5
+loopid50:
+if0 a5 goto endid50
+a6 = 1
+a6 = a6
+loopid52:
+if0 a6 goto endid52
+s1 = 1
+s1 = t4 + s1
+t4 = s1
+s1 = [a2 + 4]
+if0 s1 goto null_err
+s2 = [s1 + 0]
+s3 = 1
+s4 = 0
+s4 = s4 - s3
+s4 = s4 < t4
+if0 s4 goto array_err
+s4 = t4 < s2
+if0 s4 goto array_err
+s4 = 4
+s3 = t4 + s3
+s3 = s3 * s4
+s3 = s1 + s3
+s3 = [s3 + 0]
+a7 = s3
+s3 = a7 < t5
+s4 = 1
+s4 = s4 - s3
+if0 s4 goto elseid64
+s4 = 0
+a6 = s4
+goto endid64
+elseid64:
+s4 = 1
+a6 = s4
+endid64:
+goto loopid52
+endid52:
+s4 = 1
+a6 = s4
+loopid70:
+if0 a6 goto endid70
+s4 = 1
+s4 = t3 - s4
+t3 = s4
+s4 = [a2 + 4]
+if0 s4 goto null_err
+s3 = [s4 + 0]
+s1 = 1
+s2 = 0
+s2 = s2 - s1
+s2 = s2 < t3
+if0 s2 goto array_err
+s2 = t3 < s3
+if0 s2 goto array_err
+s2 = 4
+s1 = t3 + s1
+s1 = s1 * s2
+s1 = s4 + s1
+s1 = [s1 + 0]
+a7 = s1
+s1 = t5 < a7
+s2 = 1
+s2 = s2 - s1
+if0 s2 goto elseid82
+s2 = 0
+a6 = s2
+goto endid82
+elseid82:
+s2 = 1
+a6 = s2
+endid82:
+goto loopid70
+endid70:
+a7 = [a2 + 4]
+if0 a7 goto null_err
+a6 = [a7 + 0]
+s2 = 1
+s1 = 0
+s1 = s1 - s2
+s1 = s1 < t4
+if0 s1 goto array_err
+s1 = t4 < a6
+if0 s1 goto array_err
+a6 = 4
+s2 = t4 + s2
+s2 = s2 * a6
+a6 = a7 + s2
+a6 = [a6 + 0]
+t2 = a6
+a6 = [a2 + 4]
+a7 = [a2 + 4]
+if0 a7 goto null_err
+s2 = [a7 + 0]
+s1 = 1
+s4 = 0
+s4 = s4 - s1
+s4 = s4 < t3
+if0 s4 goto array_err
+s4 = t3 < s2
+if0 s4 goto array_err
+s4 = 4
+s1 = t3 + s1
+s1 = s1 * s4
+a7 = a7 + s1
+a7 = [a7 + 0]
+if0 a6 goto null_err
+s1 = [a6 + 0]
+s4 = 1
+s2 = 0
+s2 = s2 - s4
+s2 = s2 < t4
+if0 s2 goto array_err
+s2 = t4 < s1
+if0 s2 goto array_err
+s2 = 4
+s4 = t4 + s4
+s4 = s4 * s2
+a6 = a6 + s4
+[a6 + 0] = a7
+a6 = [a2 + 4]
+if0 a6 goto null_err
+a7 = [a6 + 0]
+s4 = 1
+s2 = 0
+s2 = s2 - s4
+s2 = s2 < t3
+if0 s2 goto array_err
+s2 = t3 < a7
+if0 s2 goto array_err
+a7 = 4
+s4 = t3 + s4
+s4 = s4 * a7
+a7 = a6 + s4
+[a7 + 0] = t2
+a7 = 1
+a7 = t4 + a7
+a7 = t3 < a7
+if0 a7 goto elseid121
+a7 = 0
+a5 = a7
+goto endid121
+elseid121:
+a7 = 1
+a5 = a7
+endid121:
+goto loopid50
+endid50:
+t5 = [a2 + 4]
+a7 = [a2 + 4]
+if0 a7 goto null_err
+a5 = [a7 + 0]
+a6 = 1
+s4 = 0
+s4 = s4 - a6
+s4 = s4 < t4
+if0 s4 goto array_err
+s4 = t4 < a5
+if0 s4 goto array_err
+a5 = 4
+a6 = t4 + a6
+a6 = a6 * a5
+a6 = a7 + a6
+a6 = [a6 + 0]
+if0 t5 goto null_err
+a5 = [t5 + 0]
+a7 = 1
+s4 = 0
+s4 = s4 - a7
+s4 = s4 < t3
+if0 s4 goto array_err
+s4 = t3 < a5
+if0 s4 goto array_err
+a5 = 4
+t3 = t3 + a7
+t3 = t3 * a5
+t3 = t5 + t3
+[t3 + 0] = a6
+t3 = [a2 + 4]
+t5 = [a2 + 4]
+if0 t5 goto null_err
+a6 = [t5 + 0]
+a5 = 1
+a7 = 0
+a7 = a7 - a5
+a7 = a7 < a4
+if0 a7 goto array_err
+a7 = a4 < a6
+if0 a7 goto array_err
+a7 = 4
+a5 = a4 + a5
+a5 = a5 * a7
+t5 = t5 + a5
+t5 = [t5 + 0]
+if0 t3 goto null_err
+a5 = [t3 + 0]
+a7 = 1
+a6 = 0
+a6 = a6 - a7
+a6 = a6 < t4
+if0 a6 goto array_err
+a6 = t4 < a5
+if0 a6 goto array_err
+a6 = 4
+a7 = t4 + a7
+a7 = a7 * a6
+t3 = t3 + a7
+[t3 + 0] = t5
+t3 = [a2 + 4]
+if0 t3 goto null_err
+t5 = [t3 + 0]
+a7 = 1
+a6 = 0
+a6 = a6 - a7
+a6 = a6 < a4
+if0 a6 goto array_err
+a6 = a4 < t5
+if0 a6 goto array_err
+t5 = 4
+a7 = a4 + a7
+a7 = a7 * t5
+t5 = t3 + a7
+[t5 + 0] = t2
+if0 a2 goto null_err
+t5 = [a2 + 0]
+t5 = [t5 + 12]
+t2 = 1
+t2 = t4 - t2
+stacka4 = a4
+stacka2 = a2
+stackt4 = t4
+t0 = t5
+a4 = t2
+t0 = call t0()
+a4 = stacka4
+a2 = stacka2
+t4 = stackt4
+t2 = t0
+t2 = t2
+if0 a2 goto null_err
+t2 = [a2 + 0]
+t2 = [t2 + 12]
+t5 = 1
+t5 = t4 + t5
+t0 = t2
+a3 = t5
+t0 = call t0()
+t5 = t0
+t2 = t5
+goto endid37
+elseid37:
+t5 = 0
+t2 = t5
+endid37:
+t5 = 0
+goto QSSort_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+QSSort_end:
+id177 = t5
+s3 = stacks3
+s4 = stacks4
+s1 = stacks1
+s2 = stacks2
+      return id177
+
+func QSPrint()
+t2 = 0
+t2 = t2
+loopid180:
+t3 = [a2 + 8]
+t3 = t2 < t3
+if0 t3 goto endid180
+t3 = [a2 + 4]
+if0 t3 goto null_err
+t4 = [t3 + 0]
+t5 = 1
+a3 = 0
+a3 = a3 - t5
+a3 = a3 < t2
+if0 a3 goto array_err
+a3 = t2 < t4
+if0 a3 goto array_err
+t4 = 4
+t5 = t2 + t5
+t5 = t5 * t4
+t5 = t3 + t5
+t5 = [t5 + 0]
+print(t5)
+t5 = 1
+t5 = t2 + t5
+t2 = t5
+goto loopid180
+endid180:
+t5 = 0
+goto QSPrint_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+QSPrint_end:
+id194 = t5
+      return id194
+
+func QSInit()
+t0 = [a2 + 8]
+[a2 + 8] = a3
+t0 = [a2 + 4]
+t2 = 0
+t3 = a3 < t2
+t2 = 1
+t3 = t2 - t3
+if0 t3 goto array_err
+t3 = a3 + t2
+t2 = 4
+t3 = t2 * t3
+t3 = alloc(t3)
+if0 t3 goto null_err
+[t3 + 0] = a3
+[a2 + 4] = t3
+t3 = [a2 + 4]
+t2 = 0
+t4 = 20
+if0 t3 goto null_err
+t5 = [t3 + 0]
+a3 = 1
+a4 = 0
+a4 = a4 - a3
+a4 = a4 < t2
+if0 a4 goto array_err
+a4 = t2 < t5
+if0 a4 goto array_err
+t5 = 4
+t2 = t2 + a3
+t2 = t2 * t5
+t2 = t3 + t2
+[t2 + 0] = t4
+t2 = [a2 + 4]
+t4 = 1
+t5 = 7
+if0 t2 goto null_err
+t3 = [t2 + 0]
+a3 = 1
+a4 = 0
+a4 = a4 - a3
+a4 = a4 < t4
+if0 a4 goto array_err
+a4 = t4 < t3
+if0 a4 goto array_err
+t3 = 4
+t4 = t4 + a3
+t4 = t4 * t3
+t4 = t2 + t4
+[t4 + 0] = t5
+t4 = [a2 + 4]
+t5 = 2
+t3 = 12
+if0 t4 goto null_err
+t2 = [t4 + 0]
+a3 = 1
+a4 = 0
+a4 = a4 - a3
+a4 = a4 < t5
+if0 a4 goto array_err
+a4 = t5 < t2
+if0 a4 goto array_err
+t2 = 4
+t5 = t5 + a3
+t5 = t5 * t2
+t5 = t4 + t5
+[t5 + 0] = t3
+t5 = [a2 + 4]
+t3 = 3
+t2 = 18
+if0 t5 goto null_err
+t4 = [t5 + 0]
+a3 = 1
+a4 = 0
+a4 = a4 - a3
+a4 = a4 < t3
+if0 a4 goto array_err
+a4 = t3 < t4
+if0 a4 goto array_err
+t4 = 4
+t3 = t3 + a3
+t3 = t3 * t4
+t3 = t5 + t3
+[t3 + 0] = t2
+t3 = [a2 + 4]
+t2 = 4
+t4 = 2
+if0 t3 goto null_err
+t5 = [t3 + 0]
+a3 = 1
+a4 = 0
+a4 = a4 - a3
+a4 = a4 < t2
+if0 a4 goto array_err
+a4 = t2 < t5
+if0 a4 goto array_err
+t5 = 4
+t2 = t2 + a3
+t2 = t2 * t5
+t2 = t3 + t2
+[t2 + 0] = t4
+t2 = [a2 + 4]
+t4 = 5
+t5 = 11
+if0 t2 goto null_err
+t3 = [t2 + 0]
+a3 = 1
+a4 = 0
+a4 = a4 - a3
+a4 = a4 < t4
+if0 a4 goto array_err
+a4 = t4 < t3
+if0 a4 goto array_err
+t3 = 4
+t4 = t4 + a3
+t4 = t4 * t3
+t4 = t2 + t4
+[t4 + 0] = t5
+t4 = [a2 + 4]
+t5 = 6
+t3 = 6
+if0 t4 goto null_err
+t2 = [t4 + 0]
+a3 = 1
+a4 = 0
+a4 = a4 - a3
+a4 = a4 < t5
+if0 a4 goto array_err
+a4 = t5 < t2
+if0 a4 goto array_err
+t2 = 4
+t5 = t5 + a3
+t5 = t5 * t2
+t5 = t4 + t5
+[t5 + 0] = t3
+t5 = [a2 + 4]
+t3 = 7
+t2 = 9
+if0 t5 goto null_err
+t4 = [t5 + 0]
+a3 = 1
+a4 = 0
+a4 = a4 - a3
+a4 = a4 < t3
+if0 a4 goto array_err
+a4 = t3 < t4
+if0 a4 goto array_err
+t4 = 4
+t3 = t3 + a3
+t3 = t3 * t4
+t3 = t5 + t3
+[t3 + 0] = t2
+t3 = [a2 + 4]
+t2 = 8
+t4 = 19
+if0 t3 goto null_err
+t5 = [t3 + 0]
+a3 = 1
+a4 = 0
+a4 = a4 - a3
+a4 = a4 < t2
+if0 a4 goto array_err
+a4 = t2 < t5
+if0 a4 goto array_err
+t5 = 4
+t2 = t2 + a3
+t2 = t2 * t5
+t2 = t3 + t2
+[t2 + 0] = t4
+t2 = [a2 + 4]
+t4 = 9
+t5 = 5
+if0 t2 goto null_err
+t3 = [t2 + 0]
+a2 = 1
+a3 = 0
+a3 = a3 - a2
+a3 = a3 < t4
+if0 a3 goto array_err
+a3 = t4 < t3
+if0 a3 goto array_err
+t3 = 4
+t4 = t4 + a2
+t4 = t4 * t3
+t4 = t2 + t4
+[t4 + 0] = t5
+t4 = 0
+goto QSInit_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+QSInit_end:
+id302 = t4
+      return id302
+
+

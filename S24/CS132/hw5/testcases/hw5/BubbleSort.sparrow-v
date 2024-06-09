@@ -1,0 +1,465 @@
+func main()
+t2 = 12
+t3 = alloc(t2)
+if0 t3 goto null_err
+t2 = 16
+t2 = alloc(t2)
+if0 t2 goto null_err
+t4 = @BBSPrint
+[t2 + 0] = t4
+t4 = @BBSInit
+[t2 + 4] = t4
+t4 = @BBSStart
+[t2 + 8] = t4
+t4 = @BBSSort
+[t2 + 12] = t4
+[t3 + 0] = t2
+if0 t3 goto null_err
+t4 = [t3 + 0]
+t4 = [t4 + 8]
+t2 = 10
+t0 = t4
+a3 = t2
+a2 = t3
+t0 = call t0()
+t2 = t0
+print(t2)
+goto main_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+main_end:
+t2 = 0
+id9 = t2
+      return id9
+
+func BBSStart()
+if0 a2 goto null_err
+t2 = [a2 + 0]
+t2 = [t2 + 4]
+stacka2 = a2
+t0 = t2
+t0 = call t0()
+a2 = stacka2
+t2 = t0
+t0 = t2
+if0 a2 goto null_err
+t2 = [a2 + 0]
+t2 = [t2 + 0]
+stacka2 = a2
+t0 = t2
+t0 = call t0()
+a2 = stacka2
+t2 = t0
+t0 = t2
+t2 = 99999
+print(t2)
+if0 a2 goto null_err
+t2 = [a2 + 0]
+t2 = [t2 + 12]
+stacka2 = a2
+t0 = t2
+t0 = call t0()
+a2 = stacka2
+t2 = t0
+t0 = t2
+if0 a2 goto null_err
+t2 = [a2 + 0]
+t2 = [t2 + 0]
+t0 = t2
+t0 = call t0()
+t2 = t0
+t0 = t2
+t2 = 0
+goto BBSStart_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+BBSStart_end:
+id21 = t2
+      return id21
+
+func BBSSort()
+stacks1 = s1
+t2 = [a2 + 8]
+t3 = 1
+t3 = t2 - t3
+t3 = t3
+t2 = 0
+t4 = 1
+t4 = t2 - t4
+t4 = t4
+loopid37:
+t2 = t4 < t3
+if0 t2 goto endid37
+t2 = 1
+t2 = t2
+loopid40:
+t5 = 1
+t5 = t3 + t5
+t5 = t2 < t5
+if0 t5 goto endid40
+t5 = 1
+t5 = t2 - t5
+t5 = t5
+a3 = [a2 + 4]
+if0 a3 goto null_err
+a4 = [a3 + 0]
+a5 = 1
+a6 = 0
+a6 = a6 - a5
+a6 = a6 < t5
+if0 a6 goto array_err
+a6 = t5 < a4
+if0 a6 goto array_err
+a6 = 4
+t5 = t5 + a5
+t5 = t5 * a6
+t5 = a3 + t5
+t5 = [t5 + 0]
+t5 = t5
+a6 = [a2 + 4]
+if0 a6 goto null_err
+a3 = [a6 + 0]
+a5 = 1
+a4 = 0
+a4 = a4 - a5
+a4 = a4 < t2
+if0 a4 goto array_err
+a4 = t2 < a3
+if0 a4 goto array_err
+a4 = 4
+a5 = t2 + a5
+a5 = a5 * a4
+a5 = a6 + a5
+a5 = [a5 + 0]
+a5 = a5
+t5 = a5 < t5
+if0 t5 goto elseid64
+t5 = 1
+t5 = t2 - t5
+t5 = t5
+a5 = [a2 + 4]
+if0 a5 goto null_err
+a4 = [a5 + 0]
+a6 = 1
+a3 = 0
+a3 = a3 - a6
+a3 = a3 < t5
+if0 a3 goto array_err
+a3 = t5 < a4
+if0 a3 goto array_err
+a3 = 4
+a6 = t5 + a6
+a6 = a6 * a3
+a6 = a5 + a6
+a6 = [a6 + 0]
+a6 = a6
+a3 = [a2 + 4]
+a5 = [a2 + 4]
+if0 a5 goto null_err
+a4 = [a5 + 0]
+a7 = 1
+s1 = 0
+s1 = s1 - a7
+s1 = s1 < t2
+if0 s1 goto array_err
+s1 = t2 < a4
+if0 s1 goto array_err
+a4 = 4
+a7 = t2 + a7
+a7 = a7 * a4
+a7 = a5 + a7
+a7 = [a7 + 0]
+if0 a3 goto null_err
+a4 = [a3 + 0]
+a5 = 1
+s1 = 0
+s1 = s1 - a5
+s1 = s1 < t5
+if0 s1 goto array_err
+s1 = t5 < a4
+if0 s1 goto array_err
+a4 = 4
+t5 = t5 + a5
+t5 = t5 * a4
+t5 = a3 + t5
+[t5 + 0] = a7
+t5 = [a2 + 4]
+if0 t5 goto null_err
+a7 = [t5 + 0]
+a4 = 1
+a3 = 0
+a3 = a3 - a4
+a3 = a3 < t2
+if0 a3 goto array_err
+a3 = t2 < a7
+if0 a3 goto array_err
+a3 = 4
+a4 = t2 + a4
+a4 = a4 * a3
+t5 = t5 + a4
+[t5 + 0] = a6
+goto endid64
+elseid64:
+t5 = 0
+t0 = t5
+endid64:
+t5 = 1
+t5 = t2 + t5
+t2 = t5
+goto loopid40
+endid40:
+t5 = 1
+t5 = t3 - t5
+t3 = t5
+goto loopid37
+endid37:
+t5 = 0
+goto BBSSort_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+BBSSort_end:
+id106 = t5
+s1 = stacks1
+      return id106
+
+func BBSPrint()
+t2 = 0
+t2 = t2
+loopid109:
+t3 = [a2 + 8]
+t3 = t2 < t3
+if0 t3 goto endid109
+t3 = [a2 + 4]
+if0 t3 goto null_err
+t4 = [t3 + 0]
+t5 = 1
+a3 = 0
+a3 = a3 - t5
+a3 = a3 < t2
+if0 a3 goto array_err
+a3 = t2 < t4
+if0 a3 goto array_err
+t4 = 4
+t5 = t2 + t5
+t5 = t5 * t4
+t5 = t3 + t5
+t5 = [t5 + 0]
+print(t5)
+t5 = 1
+t5 = t2 + t5
+t2 = t5
+goto loopid109
+endid109:
+t5 = 0
+goto BBSPrint_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+BBSPrint_end:
+id123 = t5
+      return id123
+
+func BBSInit()
+t0 = [a2 + 8]
+[a2 + 8] = a3
+t0 = [a2 + 4]
+t2 = 0
+t3 = a3 < t2
+t2 = 1
+t3 = t2 - t3
+if0 t3 goto array_err
+t3 = a3 + t2
+t2 = 4
+t3 = t2 * t3
+t3 = alloc(t3)
+if0 t3 goto null_err
+[t3 + 0] = a3
+[a2 + 4] = t3
+t3 = [a2 + 4]
+t2 = 0
+t4 = 20
+if0 t3 goto null_err
+t5 = [t3 + 0]
+a3 = 1
+a4 = 0
+a4 = a4 - a3
+a4 = a4 < t2
+if0 a4 goto array_err
+a4 = t2 < t5
+if0 a4 goto array_err
+t5 = 4
+t2 = t2 + a3
+t2 = t2 * t5
+t2 = t3 + t2
+[t2 + 0] = t4
+t2 = [a2 + 4]
+t4 = 1
+t5 = 7
+if0 t2 goto null_err
+t3 = [t2 + 0]
+a3 = 1
+a4 = 0
+a4 = a4 - a3
+a4 = a4 < t4
+if0 a4 goto array_err
+a4 = t4 < t3
+if0 a4 goto array_err
+t3 = 4
+t4 = t4 + a3
+t4 = t4 * t3
+t4 = t2 + t4
+[t4 + 0] = t5
+t4 = [a2 + 4]
+t5 = 2
+t3 = 12
+if0 t4 goto null_err
+t2 = [t4 + 0]
+a3 = 1
+a4 = 0
+a4 = a4 - a3
+a4 = a4 < t5
+if0 a4 goto array_err
+a4 = t5 < t2
+if0 a4 goto array_err
+t2 = 4
+t5 = t5 + a3
+t5 = t5 * t2
+t5 = t4 + t5
+[t5 + 0] = t3
+t5 = [a2 + 4]
+t3 = 3
+t2 = 18
+if0 t5 goto null_err
+t4 = [t5 + 0]
+a3 = 1
+a4 = 0
+a4 = a4 - a3
+a4 = a4 < t3
+if0 a4 goto array_err
+a4 = t3 < t4
+if0 a4 goto array_err
+t4 = 4
+t3 = t3 + a3
+t3 = t3 * t4
+t3 = t5 + t3
+[t3 + 0] = t2
+t3 = [a2 + 4]
+t2 = 4
+t4 = 2
+if0 t3 goto null_err
+t5 = [t3 + 0]
+a3 = 1
+a4 = 0
+a4 = a4 - a3
+a4 = a4 < t2
+if0 a4 goto array_err
+a4 = t2 < t5
+if0 a4 goto array_err
+t5 = 4
+t2 = t2 + a3
+t2 = t2 * t5
+t2 = t3 + t2
+[t2 + 0] = t4
+t2 = [a2 + 4]
+t4 = 5
+t5 = 11
+if0 t2 goto null_err
+t3 = [t2 + 0]
+a3 = 1
+a4 = 0
+a4 = a4 - a3
+a4 = a4 < t4
+if0 a4 goto array_err
+a4 = t4 < t3
+if0 a4 goto array_err
+t3 = 4
+t4 = t4 + a3
+t4 = t4 * t3
+t4 = t2 + t4
+[t4 + 0] = t5
+t4 = [a2 + 4]
+t5 = 6
+t3 = 6
+if0 t4 goto null_err
+t2 = [t4 + 0]
+a3 = 1
+a4 = 0
+a4 = a4 - a3
+a4 = a4 < t5
+if0 a4 goto array_err
+a4 = t5 < t2
+if0 a4 goto array_err
+t2 = 4
+t5 = t5 + a3
+t5 = t5 * t2
+t5 = t4 + t5
+[t5 + 0] = t3
+t5 = [a2 + 4]
+t3 = 7
+t2 = 9
+if0 t5 goto null_err
+t4 = [t5 + 0]
+a3 = 1
+a4 = 0
+a4 = a4 - a3
+a4 = a4 < t3
+if0 a4 goto array_err
+a4 = t3 < t4
+if0 a4 goto array_err
+t4 = 4
+t3 = t3 + a3
+t3 = t3 * t4
+t3 = t5 + t3
+[t3 + 0] = t2
+t3 = [a2 + 4]
+t2 = 8
+t4 = 19
+if0 t3 goto null_err
+t5 = [t3 + 0]
+a3 = 1
+a4 = 0
+a4 = a4 - a3
+a4 = a4 < t2
+if0 a4 goto array_err
+a4 = t2 < t5
+if0 a4 goto array_err
+t5 = 4
+t2 = t2 + a3
+t2 = t2 * t5
+t2 = t3 + t2
+[t2 + 0] = t4
+t2 = [a2 + 4]
+t4 = 9
+t5 = 5
+if0 t2 goto null_err
+t3 = [t2 + 0]
+a2 = 1
+a3 = 0
+a3 = a3 - a2
+a3 = a3 < t4
+if0 a3 goto array_err
+a3 = t4 < t3
+if0 a3 goto array_err
+t3 = 4
+t4 = t4 + a2
+t4 = t4 * t3
+t4 = t2 + t4
+[t4 + 0] = t5
+t4 = 0
+goto BBSInit_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+BBSInit_end:
+id231 = t4
+      return id231
+
+

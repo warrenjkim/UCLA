@@ -1,0 +1,1881 @@
+func main()
+t2 = 4
+t3 = alloc(t2)
+if0 t3 goto null_err
+t2 = 4
+t2 = alloc(t2)
+if0 t2 goto null_err
+t4 = @TVStart
+[t2 + 0] = t4
+[t3 + 0] = t2
+if0 t3 goto null_err
+t4 = [t3 + 0]
+t4 = [t4 + 0]
+t0 = t4
+a2 = t3
+t0 = call t0()
+t4 = t0
+print(t4)
+goto main_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+main_end:
+t4 = 0
+id5 = t4
+      return id5
+
+func TVStart()
+t2 = 28
+t3 = alloc(t2)
+if0 t3 goto null_err
+t2 = 84
+t2 = alloc(t2)
+if0 t2 goto null_err
+t4 = @TreeDelete
+[t2 + 0] = t4
+t4 = @TreeSetHas_Left
+[t2 + 4] = t4
+t4 = @TreeRemoveLeft
+[t2 + 8] = t4
+t4 = @TreeGetKey
+[t2 + 12] = t4
+t4 = @TreeSetRight
+[t2 + 16] = t4
+t4 = @TreeGetLeft
+[t2 + 20] = t4
+t4 = @TreeGetRight
+[t2 + 24] = t4
+t4 = @TreeRemove
+[t2 + 28] = t4
+t4 = @TreeSetLeft
+[t2 + 32] = t4
+t4 = @TreeInsert
+[t2 + 36] = t4
+t4 = @Treeaccept
+[t2 + 40] = t4
+t4 = @TreePrint
+[t2 + 44] = t4
+t4 = @TreeInit
+[t2 + 48] = t4
+t4 = @TreeGetHas_Right
+[t2 + 52] = t4
+t4 = @TreeGetHas_Left
+[t2 + 56] = t4
+t4 = @TreeRemoveRight
+[t2 + 60] = t4
+t4 = @TreeSearch
+[t2 + 64] = t4
+t4 = @TreeSetKey
+[t2 + 68] = t4
+t4 = @TreeCompare
+[t2 + 72] = t4
+t4 = @TreeSetHas_Right
+[t2 + 76] = t4
+t4 = @TreeRecPrint
+[t2 + 80] = t4
+[t3 + 0] = t2
+t4 = t3
+if0 t4 goto null_err
+t2 = [t4 + 0]
+t2 = [t2 + 48]
+t3 = 16
+stackt4 = t4
+t0 = t2
+a3 = t3
+a2 = t4
+t0 = call t0()
+t4 = stackt4
+t3 = t0
+t0 = t3
+if0 t4 goto null_err
+t3 = [t4 + 0]
+t3 = [t3 + 44]
+stackt4 = t4
+t0 = t3
+a2 = t4
+t0 = call t0()
+t4 = stackt4
+t3 = t0
+t0 = t3
+t3 = 100000000
+print(t3)
+if0 t4 goto null_err
+t3 = [t4 + 0]
+t3 = [t3 + 36]
+t2 = 8
+stackt4 = t4
+t0 = t3
+a3 = t2
+a2 = t4
+t0 = call t0()
+t4 = stackt4
+t2 = t0
+t0 = t2
+if0 t4 goto null_err
+t2 = [t4 + 0]
+t2 = [t2 + 36]
+t3 = 24
+stackt4 = t4
+t0 = t2
+a3 = t3
+a2 = t4
+t0 = call t0()
+t4 = stackt4
+t3 = t0
+t0 = t3
+if0 t4 goto null_err
+t3 = [t4 + 0]
+t3 = [t3 + 36]
+t2 = 4
+stackt4 = t4
+t0 = t3
+a3 = t2
+a2 = t4
+t0 = call t0()
+t4 = stackt4
+t2 = t0
+t0 = t2
+if0 t4 goto null_err
+t2 = [t4 + 0]
+t2 = [t2 + 36]
+t3 = 12
+stackt4 = t4
+t0 = t2
+a3 = t3
+a2 = t4
+t0 = call t0()
+t4 = stackt4
+t3 = t0
+t0 = t3
+if0 t4 goto null_err
+t3 = [t4 + 0]
+t3 = [t3 + 36]
+t2 = 20
+stackt4 = t4
+t0 = t3
+a3 = t2
+a2 = t4
+t0 = call t0()
+t4 = stackt4
+t2 = t0
+t0 = t2
+if0 t4 goto null_err
+t2 = [t4 + 0]
+t2 = [t2 + 36]
+t3 = 28
+stackt4 = t4
+t0 = t2
+a3 = t3
+a2 = t4
+t0 = call t0()
+t4 = stackt4
+t3 = t0
+t0 = t3
+if0 t4 goto null_err
+t3 = [t4 + 0]
+t3 = [t3 + 36]
+t2 = 14
+stackt4 = t4
+t0 = t3
+a3 = t2
+a2 = t4
+t0 = call t0()
+t4 = stackt4
+t2 = t0
+t0 = t2
+if0 t4 goto null_err
+t2 = [t4 + 0]
+t2 = [t2 + 44]
+stackt4 = t4
+t0 = t2
+a2 = t4
+t0 = call t0()
+t4 = stackt4
+t2 = t0
+t0 = t2
+t2 = 100000000
+print(t2)
+t2 = 12
+t3 = alloc(t2)
+if0 t3 goto null_err
+t2 = 4
+t2 = alloc(t2)
+if0 t2 goto null_err
+t5 = @MyVisitorvisit
+[t2 + 0] = t5
+[t3 + 0] = t2
+t5 = t3
+t2 = 50000000
+print(t2)
+if0 t4 goto null_err
+t2 = [t4 + 0]
+t2 = [t2 + 40]
+stackt4 = t4
+t0 = t2
+a3 = t5
+a2 = t4
+t0 = call t0()
+t4 = stackt4
+t2 = t0
+t2 = t2
+t2 = 100000000
+print(t2)
+if0 t4 goto null_err
+t2 = [t4 + 0]
+t2 = [t2 + 64]
+t5 = 24
+stackt4 = t4
+t0 = t2
+a3 = t5
+a2 = t4
+t0 = call t0()
+t4 = stackt4
+t5 = t0
+print(t5)
+if0 t4 goto null_err
+t5 = [t4 + 0]
+t5 = [t5 + 64]
+t2 = 12
+stackt4 = t4
+t0 = t5
+a3 = t2
+a2 = t4
+t0 = call t0()
+t4 = stackt4
+t2 = t0
+print(t2)
+if0 t4 goto null_err
+t2 = [t4 + 0]
+t2 = [t2 + 64]
+t5 = 16
+stackt4 = t4
+t0 = t2
+a3 = t5
+a2 = t4
+t0 = call t0()
+t4 = stackt4
+t5 = t0
+print(t5)
+if0 t4 goto null_err
+t5 = [t4 + 0]
+t5 = [t5 + 64]
+t2 = 50
+stackt4 = t4
+t0 = t5
+a3 = t2
+a2 = t4
+t0 = call t0()
+t4 = stackt4
+t2 = t0
+print(t2)
+if0 t4 goto null_err
+t2 = [t4 + 0]
+t2 = [t2 + 64]
+t5 = 12
+stackt4 = t4
+t0 = t2
+a3 = t5
+a2 = t4
+t0 = call t0()
+t4 = stackt4
+t5 = t0
+print(t5)
+if0 t4 goto null_err
+t5 = [t4 + 0]
+t5 = [t5 + 0]
+t2 = 12
+stackt4 = t4
+t0 = t5
+a3 = t2
+a2 = t4
+t0 = call t0()
+t4 = stackt4
+t2 = t0
+t0 = t2
+if0 t4 goto null_err
+t2 = [t4 + 0]
+t2 = [t2 + 44]
+stackt4 = t4
+t0 = t2
+a2 = t4
+t0 = call t0()
+t4 = stackt4
+t2 = t0
+t0 = t2
+if0 t4 goto null_err
+t2 = [t4 + 0]
+t2 = [t2 + 64]
+t5 = 12
+t0 = t2
+a3 = t5
+a2 = t4
+t0 = call t0()
+t5 = t0
+print(t5)
+t5 = 0
+goto TVStart_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+TVStart_end:
+id93 = t5
+      return id93
+
+func TreeInit()
+t0 = [a2 + 24]
+[a2 + 24] = a3
+t0 = [a2 + 20]
+t2 = 0
+[a2 + 20] = t2
+t0 = [a2 + 8]
+t2 = 0
+[a2 + 8] = t2
+t2 = 1
+goto TreeInit_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+TreeInit_end:
+id100 = t2
+      return id100
+
+func TreeSetRight()
+t0 = [a2 + 16]
+[a2 + 16] = a3
+t2 = 1
+goto TreeSetRight_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+TreeSetRight_end:
+id103 = t2
+      return id103
+
+func TreeSetLeft()
+t0 = [a2 + 4]
+[a2 + 4] = a3
+t2 = 1
+goto TreeSetLeft_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+TreeSetLeft_end:
+id106 = t2
+      return id106
+
+func TreeGetRight()
+t2 = [a2 + 16]
+goto TreeGetRight_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+TreeGetRight_end:
+id107 = t2
+      return id107
+
+func TreeGetLeft()
+t2 = [a2 + 4]
+goto TreeGetLeft_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+TreeGetLeft_end:
+id108 = t2
+      return id108
+
+func TreeGetKey()
+t2 = [a2 + 24]
+goto TreeGetKey_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+TreeGetKey_end:
+id109 = t2
+      return id109
+
+func TreeSetKey()
+t0 = [a2 + 24]
+[a2 + 24] = a3
+t2 = 1
+goto TreeSetKey_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+TreeSetKey_end:
+id112 = t2
+      return id112
+
+func TreeGetHas_Right()
+t2 = [a2 + 8]
+goto TreeGetHas_Right_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+TreeGetHas_Right_end:
+id113 = t2
+      return id113
+
+func TreeGetHas_Left()
+t2 = [a2 + 20]
+goto TreeGetHas_Left_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+TreeGetHas_Left_end:
+id114 = t2
+      return id114
+
+func TreeSetHas_Left()
+t0 = [a2 + 20]
+[a2 + 20] = a3
+t2 = 1
+goto TreeSetHas_Left_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+TreeSetHas_Left_end:
+id117 = t2
+      return id117
+
+func TreeSetHas_Right()
+t0 = [a2 + 8]
+[a2 + 8] = a3
+t2 = 1
+goto TreeSetHas_Right_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+TreeSetHas_Right_end:
+id120 = t2
+      return id120
+
+func TreeCompare()
+t2 = 0
+t2 = t2
+t3 = 1
+t3 = a4 + t3
+t3 = t3
+t4 = a3 < a4
+if0 t4 goto elseid128
+t4 = 0
+t2 = t4
+goto endid128
+elseid128:
+t4 = a3 < t3
+t3 = 1
+t3 = t3 - t4
+if0 t3 goto elseid130
+t3 = 0
+t2 = t3
+goto endid130
+elseid130:
+t3 = 1
+t2 = t3
+endid130:
+endid128:
+goto TreeCompare_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+TreeCompare_end:
+id123 = t2
+      return id123
+
+func TreeInsert()
+t2 = 28
+t3 = alloc(t2)
+if0 t3 goto null_err
+t2 = 84
+t2 = alloc(t2)
+if0 t2 goto null_err
+t4 = @TreeDelete
+[t2 + 0] = t4
+t4 = @TreeSetHas_Left
+[t2 + 4] = t4
+t4 = @TreeRemoveLeft
+[t2 + 8] = t4
+t4 = @TreeGetKey
+[t2 + 12] = t4
+t4 = @TreeSetRight
+[t2 + 16] = t4
+t4 = @TreeGetLeft
+[t2 + 20] = t4
+t4 = @TreeGetRight
+[t2 + 24] = t4
+t4 = @TreeRemove
+[t2 + 28] = t4
+t4 = @TreeSetLeft
+[t2 + 32] = t4
+t4 = @TreeInsert
+[t2 + 36] = t4
+t4 = @Treeaccept
+[t2 + 40] = t4
+t4 = @TreePrint
+[t2 + 44] = t4
+t4 = @TreeInit
+[t2 + 48] = t4
+t4 = @TreeGetHas_Right
+[t2 + 52] = t4
+t4 = @TreeGetHas_Left
+[t2 + 56] = t4
+t4 = @TreeRemoveRight
+[t2 + 60] = t4
+t4 = @TreeSearch
+[t2 + 64] = t4
+t4 = @TreeSetKey
+[t2 + 68] = t4
+t4 = @TreeCompare
+[t2 + 72] = t4
+t4 = @TreeSetHas_Right
+[t2 + 76] = t4
+t4 = @TreeRecPrint
+[t2 + 80] = t4
+[t3 + 0] = t2
+t4 = t3
+if0 t4 goto null_err
+t2 = [t4 + 0]
+t2 = [t2 + 48]
+stacka2 = a2
+stacka3 = a3
+stackt4 = t4
+t0 = t2
+a2 = t4
+t0 = call t0()
+a2 = stacka2
+a3 = stacka3
+t4 = stackt4
+t2 = t0
+t0 = t2
+t2 = a2
+t3 = 1
+t3 = t3
+loopid167:
+if0 t3 goto endid167
+if0 t2 goto null_err
+t5 = [t2 + 0]
+t5 = [t5 + 12]
+stacka3 = a3
+stackt4 = t4
+stackt2 = t2
+stackt3 = t3
+t0 = t5
+a2 = t2
+t0 = call t0()
+a3 = stacka3
+t4 = stackt4
+t2 = stackt2
+t3 = stackt3
+t5 = t0
+t5 = t5
+t5 = a3 < t5
+if0 t5 goto elseid170
+if0 t2 goto null_err
+t5 = [t2 + 0]
+t5 = [t5 + 56]
+stacka3 = a3
+stackt4 = t4
+stackt2 = t2
+stackt3 = t3
+t0 = t5
+a2 = t2
+t0 = call t0()
+a3 = stacka3
+t4 = stackt4
+t2 = stackt2
+t3 = stackt3
+t5 = t0
+if0 t5 goto elseid172
+if0 t2 goto null_err
+t5 = [t2 + 0]
+t5 = [t5 + 20]
+stacka3 = a3
+stackt4 = t4
+stackt2 = t2
+stackt3 = t3
+t0 = t5
+a2 = t2
+t0 = call t0()
+a3 = stacka3
+t4 = stackt4
+t2 = stackt2
+t3 = stackt3
+t5 = t0
+t2 = t5
+goto endid172
+elseid172:
+t5 = 0
+t3 = t5
+if0 t2 goto null_err
+t5 = [t2 + 0]
+t5 = [t5 + 4]
+a2 = 1
+stacka3 = a3
+stackt4 = t4
+stackt2 = t2
+stackt3 = t3
+t0 = t5
+a3 = a2
+a2 = t2
+t0 = call t0()
+a3 = stacka3
+t4 = stackt4
+t2 = stackt2
+t3 = stackt3
+t5 = t0
+t0 = t5
+if0 t2 goto null_err
+t5 = [t2 + 0]
+t5 = [t5 + 32]
+stacka3 = a3
+stackt4 = t4
+stackt2 = t2
+stackt3 = t3
+t0 = t5
+a3 = t4
+a2 = t2
+t0 = call t0()
+a3 = stacka3
+t4 = stackt4
+t2 = stackt2
+t3 = stackt3
+t5 = t0
+t0 = t5
+endid172:
+goto endid170
+elseid170:
+if0 t2 goto null_err
+t5 = [t2 + 0]
+t5 = [t5 + 52]
+stacka3 = a3
+stackt4 = t4
+stackt2 = t2
+stackt3 = t3
+t0 = t5
+a2 = t2
+t0 = call t0()
+a3 = stacka3
+t4 = stackt4
+t2 = stackt2
+t3 = stackt3
+t5 = t0
+if0 t5 goto elseid182
+if0 t2 goto null_err
+t5 = [t2 + 0]
+t5 = [t5 + 24]
+stacka3 = a3
+stackt4 = t4
+stackt2 = t2
+stackt3 = t3
+t0 = t5
+a2 = t2
+t0 = call t0()
+a3 = stacka3
+t4 = stackt4
+t2 = stackt2
+t3 = stackt3
+t5 = t0
+t2 = t5
+goto endid182
+elseid182:
+t5 = 0
+t3 = t5
+if0 t2 goto null_err
+t5 = [t2 + 0]
+t5 = [t5 + 76]
+a2 = 1
+stacka3 = a3
+stackt4 = t4
+stackt2 = t2
+stackt3 = t3
+t0 = t5
+a3 = a2
+a2 = t2
+t0 = call t0()
+a3 = stacka3
+t4 = stackt4
+t2 = stackt2
+t3 = stackt3
+t5 = t0
+t0 = t5
+if0 t2 goto null_err
+t5 = [t2 + 0]
+t5 = [t5 + 16]
+stacka3 = a3
+stackt4 = t4
+stackt2 = t2
+stackt3 = t3
+t0 = t5
+a3 = t4
+a2 = t2
+t0 = call t0()
+a3 = stacka3
+t4 = stackt4
+t2 = stackt2
+t3 = stackt3
+t5 = t0
+t0 = t5
+endid182:
+endid170:
+goto loopid167
+endid167:
+t5 = 1
+goto TreeInsert_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+TreeInsert_end:
+id191 = t5
+      return id191
+
+func TreeDelete()
+t2 = a2
+t3 = a2
+t4 = 1
+t4 = t4
+t5 = 0
+t5 = t5
+a4 = 1
+a4 = a4
+loopid203:
+if0 t4 goto endid203
+if0 t2 goto null_err
+a5 = [t2 + 0]
+a5 = [a5 + 12]
+stacka2 = a2
+stacka3 = a3
+stacka4 = a4
+stackt2 = t2
+stackt3 = t3
+stackt4 = t4
+stackt5 = t5
+t0 = a5
+a2 = t2
+t0 = call t0()
+a2 = stacka2
+a3 = stacka3
+a4 = stacka4
+t2 = stackt2
+t3 = stackt3
+t4 = stackt4
+t5 = stackt5
+a5 = t0
+a5 = a5
+a6 = a3 < a5
+if0 a6 goto elseid206
+if0 t2 goto null_err
+a6 = [t2 + 0]
+a6 = [a6 + 56]
+stacka2 = a2
+stacka3 = a3
+stacka4 = a4
+stacka5 = a5
+stackt2 = t2
+stackt3 = t3
+stackt4 = t4
+stackt5 = t5
+t0 = a6
+a2 = t2
+t0 = call t0()
+a2 = stacka2
+a3 = stacka3
+a4 = stacka4
+a5 = stacka5
+t2 = stackt2
+t3 = stackt3
+t4 = stackt4
+t5 = stackt5
+a6 = t0
+if0 a6 goto elseid208
+t3 = t2
+if0 t2 goto null_err
+a6 = [t2 + 0]
+a6 = [a6 + 20]
+stacka2 = a2
+stacka3 = a3
+stacka4 = a4
+stacka5 = a5
+stackt2 = t2
+stackt3 = t3
+stackt4 = t4
+stackt5 = t5
+t0 = a6
+a2 = t2
+t0 = call t0()
+a2 = stacka2
+a3 = stacka3
+a4 = stacka4
+a5 = stacka5
+t2 = stackt2
+t3 = stackt3
+t4 = stackt4
+t5 = stackt5
+a6 = t0
+t2 = a6
+goto endid208
+elseid208:
+a6 = 0
+t4 = a6
+endid208:
+goto endid206
+elseid206:
+a6 = a5 < a3
+if0 a6 goto elseid212
+if0 t2 goto null_err
+a6 = [t2 + 0]
+a6 = [a6 + 52]
+stacka2 = a2
+stacka3 = a3
+stacka4 = a4
+stackt2 = t2
+stackt3 = t3
+stackt4 = t4
+stackt5 = t5
+t0 = a6
+a2 = t2
+t0 = call t0()
+a2 = stacka2
+a3 = stacka3
+a4 = stacka4
+t2 = stackt2
+t3 = stackt3
+t4 = stackt4
+t5 = stackt5
+a6 = t0
+if0 a6 goto elseid214
+t3 = t2
+if0 t2 goto null_err
+a6 = [t2 + 0]
+a6 = [a6 + 24]
+stacka2 = a2
+stacka3 = a3
+stacka4 = a4
+stackt2 = t2
+stackt3 = t3
+stackt4 = t4
+stackt5 = t5
+t0 = a6
+a2 = t2
+t0 = call t0()
+a2 = stacka2
+a3 = stacka3
+a4 = stacka4
+t2 = stackt2
+t3 = stackt3
+t4 = stackt4
+t5 = stackt5
+a6 = t0
+t2 = a6
+goto endid214
+elseid214:
+a6 = 0
+t4 = a6
+endid214:
+goto endid212
+elseid212:
+if0 a4 goto elseid198
+a6 = 0
+if0 t2 goto null_err
+a5 = [t2 + 0]
+a5 = [a5 + 52]
+stacka6 = a6
+stacka2 = a2
+stacka3 = a3
+stacka4 = a4
+stackt2 = t2
+stackt3 = t3
+stackt4 = t4
+stackt5 = t5
+t0 = a5
+a2 = t2
+t0 = call t0()
+a6 = stacka6
+a2 = stacka2
+a3 = stacka3
+a4 = stacka4
+t2 = stackt2
+t3 = stackt3
+t4 = stackt4
+t5 = stackt5
+a5 = t0
+a7 = 1
+a7 = a7 - a5
+if0 a7 goto endid219
+if0 t2 goto null_err
+a7 = [t2 + 0]
+a7 = [a7 + 56]
+stacka6 = a6
+stacka2 = a2
+stacka3 = a3
+stacka4 = a4
+stackt2 = t2
+stackt3 = t3
+stackt4 = t4
+stackt5 = t5
+t0 = a7
+a2 = t2
+t0 = call t0()
+a6 = stacka6
+a2 = stacka2
+a3 = stacka3
+a4 = stacka4
+t2 = stackt2
+t3 = stackt3
+t4 = stackt4
+t5 = stackt5
+a7 = t0
+a5 = 1
+a5 = a5 - a7
+a6 = a5
+endid219:
+if0 a6 goto elseid218
+a5 = 1
+t0 = a5
+goto endid218
+elseid218:
+if0 a2 goto null_err
+a5 = [a2 + 0]
+a5 = [a5 + 28]
+stacka2 = a2
+stacka3 = a3
+stacka4 = a4
+stackt2 = t2
+stackt3 = t3
+stackt4 = t4
+stackt5 = t5
+t0 = a5
+a4 = t2
+a3 = t3
+t0 = call t0()
+a2 = stacka2
+a3 = stacka3
+a4 = stacka4
+t2 = stackt2
+t3 = stackt3
+t4 = stackt4
+t5 = stackt5
+a5 = t0
+t0 = a5
+endid218:
+goto endid198
+elseid198:
+if0 a2 goto null_err
+a5 = [a2 + 0]
+a5 = [a5 + 28]
+stacka2 = a2
+stacka3 = a3
+stacka4 = a4
+stackt2 = t2
+stackt3 = t3
+stackt4 = t4
+stackt5 = t5
+t0 = a5
+a4 = t2
+a3 = t3
+t0 = call t0()
+a2 = stacka2
+a3 = stacka3
+a4 = stacka4
+t2 = stackt2
+t3 = stackt3
+t4 = stackt4
+t5 = stackt5
+a5 = t0
+t0 = a5
+endid198:
+a5 = 1
+t5 = a5
+a5 = 0
+t4 = a5
+endid212:
+endid206:
+a5 = 0
+a4 = a5
+goto loopid203
+endid203:
+goto TreeDelete_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+TreeDelete_end:
+id196 = t5
+      return id196
+
+func TreeRemove()
+if0 a4 goto null_err
+t2 = [a4 + 0]
+t2 = [t2 + 56]
+stacka4 = a4
+stacka2 = a2
+stacka3 = a3
+t0 = t2
+a2 = a4
+t0 = call t0()
+a4 = stacka4
+a2 = stacka2
+a3 = stacka3
+t2 = t0
+if0 t2 goto elseid241
+if0 a2 goto null_err
+t2 = [a2 + 0]
+t2 = [t2 + 8]
+stacka4 = a4
+stacka2 = a2
+stacka3 = a3
+t0 = t2
+t0 = call t0()
+a4 = stacka4
+a2 = stacka2
+a3 = stacka3
+t2 = t0
+t0 = t2
+goto endid241
+elseid241:
+if0 a4 goto null_err
+t2 = [a4 + 0]
+t2 = [t2 + 52]
+stacka4 = a4
+stacka2 = a2
+stacka3 = a3
+t0 = t2
+a2 = a4
+t0 = call t0()
+a4 = stacka4
+a2 = stacka2
+a3 = stacka3
+t2 = t0
+if0 t2 goto elseid245
+if0 a2 goto null_err
+t2 = [a2 + 0]
+t2 = [t2 + 60]
+stacka4 = a4
+stacka2 = a2
+stacka3 = a3
+t0 = t2
+t0 = call t0()
+a4 = stacka4
+a2 = stacka2
+a3 = stacka3
+t2 = t0
+t0 = t2
+goto endid245
+elseid245:
+if0 a4 goto null_err
+t2 = [a4 + 0]
+t2 = [t2 + 12]
+stacka2 = a2
+stacka3 = a3
+t0 = t2
+a2 = a4
+t0 = call t0()
+a2 = stacka2
+a3 = stacka3
+t2 = t0
+t2 = t2
+if0 a3 goto null_err
+t3 = [a3 + 0]
+t3 = [t3 + 20]
+stacka2 = a2
+stacka3 = a3
+stackt2 = t2
+t0 = t3
+a2 = a3
+t0 = call t0()
+a2 = stacka2
+a3 = stacka3
+t2 = stackt2
+t3 = t0
+if0 t3 goto null_err
+t4 = [t3 + 0]
+t4 = [t4 + 12]
+stacka2 = a2
+stacka3 = a3
+stackt2 = t2
+t0 = t4
+a2 = t3
+t0 = call t0()
+a2 = stacka2
+a3 = stacka3
+t2 = stackt2
+t4 = t0
+t4 = t4
+if0 a2 goto null_err
+t3 = [a2 + 0]
+t3 = [t3 + 72]
+stacka2 = a2
+stacka3 = a3
+t0 = t3
+a4 = t4
+a3 = t2
+t0 = call t0()
+a2 = stacka2
+a3 = stacka3
+t3 = t0
+if0 t3 goto elseid255
+if0 a3 goto null_err
+t3 = [a3 + 0]
+t3 = [t3 + 32]
+t4 = [a2 + 12]
+stacka2 = a2
+stacka3 = a3
+t0 = t3
+a2 = a3
+a3 = t4
+t0 = call t0()
+a2 = stacka2
+a3 = stacka3
+t4 = t0
+t0 = t4
+if0 a3 goto null_err
+t4 = [a3 + 0]
+t4 = [t4 + 4]
+t3 = 0
+stacka2 = a2
+stacka3 = a3
+t0 = t4
+a2 = a3
+a3 = t3
+t0 = call t0()
+a2 = stacka2
+a3 = stacka3
+t3 = t0
+t0 = t3
+goto endid255
+elseid255:
+if0 a3 goto null_err
+t3 = [a3 + 0]
+t3 = [t3 + 16]
+t4 = [a2 + 12]
+stacka3 = a3
+t0 = t3
+a2 = a3
+a3 = t4
+t0 = call t0()
+a3 = stacka3
+t4 = t0
+t0 = t4
+if0 a3 goto null_err
+t4 = [a3 + 0]
+t4 = [t4 + 76]
+t3 = 0
+t0 = t4
+a2 = a3
+a3 = t3
+t0 = call t0()
+t3 = t0
+t0 = t3
+endid255:
+endid245:
+endid241:
+t3 = 1
+goto TreeRemove_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+TreeRemove_end:
+id268 = t3
+      return id268
+
+func TreeRemoveRight()
+loopid272:
+if0 a4 goto null_err
+t2 = [a4 + 0]
+t2 = [t2 + 52]
+stacka4 = a4
+stacka2 = a2
+stacka3 = a3
+t0 = t2
+a2 = a4
+t0 = call t0()
+a4 = stacka4
+a2 = stacka2
+a3 = stacka3
+t2 = t0
+if0 t2 goto endid272
+if0 a4 goto null_err
+t2 = [a4 + 0]
+t2 = [t2 + 68]
+if0 a4 goto null_err
+t3 = [a4 + 0]
+t3 = [t3 + 24]
+stacka4 = a4
+stacka2 = a2
+stacka3 = a3
+stackt2 = t2
+t0 = t3
+a2 = a4
+t0 = call t0()
+a4 = stacka4
+a2 = stacka2
+a3 = stacka3
+t2 = stackt2
+t3 = t0
+if0 t3 goto null_err
+t4 = [t3 + 0]
+t4 = [t4 + 12]
+stacka4 = a4
+stacka2 = a2
+stacka3 = a3
+stackt2 = t2
+t0 = t4
+a2 = t3
+t0 = call t0()
+a4 = stacka4
+a2 = stacka2
+a3 = stacka3
+t2 = stackt2
+t4 = t0
+stacka4 = a4
+stacka2 = a2
+stacka3 = a3
+t0 = t2
+a2 = a4
+a3 = t4
+t0 = call t0()
+a4 = stacka4
+a2 = stacka2
+a3 = stacka3
+t4 = t0
+t0 = t4
+a3 = a4
+if0 a4 goto null_err
+t4 = [a4 + 0]
+t4 = [t4 + 24]
+stacka2 = a2
+stacka3 = a3
+t0 = t4
+a2 = a4
+t0 = call t0()
+a2 = stacka2
+a3 = stacka3
+t4 = t0
+a4 = t4
+goto loopid272
+endid272:
+if0 a3 goto null_err
+t4 = [a3 + 0]
+t4 = [t4 + 16]
+t2 = [a2 + 12]
+stacka3 = a3
+t0 = t4
+a2 = a3
+a3 = t2
+t0 = call t0()
+a3 = stacka3
+t2 = t0
+t0 = t2
+if0 a3 goto null_err
+t2 = [a3 + 0]
+t2 = [t2 + 76]
+t4 = 0
+t0 = t2
+a2 = a3
+a3 = t4
+t0 = call t0()
+t4 = t0
+t0 = t4
+t4 = 1
+goto TreeRemoveRight_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+TreeRemoveRight_end:
+id289 = t4
+      return id289
+
+func TreeRemoveLeft()
+loopid293:
+if0 a4 goto null_err
+t2 = [a4 + 0]
+t2 = [t2 + 56]
+stacka4 = a4
+stacka2 = a2
+stacka3 = a3
+t0 = t2
+a2 = a4
+t0 = call t0()
+a4 = stacka4
+a2 = stacka2
+a3 = stacka3
+t2 = t0
+if0 t2 goto endid293
+if0 a4 goto null_err
+t2 = [a4 + 0]
+t2 = [t2 + 68]
+if0 a4 goto null_err
+t3 = [a4 + 0]
+t3 = [t3 + 20]
+stacka4 = a4
+stacka2 = a2
+stacka3 = a3
+stackt2 = t2
+t0 = t3
+a2 = a4
+t0 = call t0()
+a4 = stacka4
+a2 = stacka2
+a3 = stacka3
+t2 = stackt2
+t3 = t0
+if0 t3 goto null_err
+t4 = [t3 + 0]
+t4 = [t4 + 12]
+stacka4 = a4
+stacka2 = a2
+stacka3 = a3
+stackt2 = t2
+t0 = t4
+a2 = t3
+t0 = call t0()
+a4 = stacka4
+a2 = stacka2
+a3 = stacka3
+t2 = stackt2
+t4 = t0
+stacka4 = a4
+stacka2 = a2
+stacka3 = a3
+t0 = t2
+a2 = a4
+a3 = t4
+t0 = call t0()
+a4 = stacka4
+a2 = stacka2
+a3 = stacka3
+t4 = t0
+t0 = t4
+a3 = a4
+if0 a4 goto null_err
+t4 = [a4 + 0]
+t4 = [t4 + 20]
+stacka2 = a2
+stacka3 = a3
+t0 = t4
+a2 = a4
+t0 = call t0()
+a2 = stacka2
+a3 = stacka3
+t4 = t0
+a4 = t4
+goto loopid293
+endid293:
+if0 a3 goto null_err
+t4 = [a3 + 0]
+t4 = [t4 + 32]
+t2 = [a2 + 12]
+stacka3 = a3
+t0 = t4
+a2 = a3
+a3 = t2
+t0 = call t0()
+a3 = stacka3
+t2 = t0
+t0 = t2
+if0 a3 goto null_err
+t2 = [a3 + 0]
+t2 = [t2 + 4]
+t4 = 0
+t0 = t2
+a2 = a3
+a3 = t4
+t0 = call t0()
+t4 = t0
+t0 = t4
+t4 = 1
+goto TreeRemoveLeft_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+TreeRemoveLeft_end:
+id310 = t4
+      return id310
+
+func TreeSearch()
+t2 = a2
+t3 = 1
+t3 = t3
+t4 = 0
+t4 = t4
+loopid318:
+if0 t3 goto endid318
+if0 t2 goto null_err
+t5 = [t2 + 0]
+t5 = [t5 + 12]
+stacka3 = a3
+stackt2 = t2
+stackt3 = t3
+stackt4 = t4
+t0 = t5
+a2 = t2
+t0 = call t0()
+a3 = stacka3
+t2 = stackt2
+t3 = stackt3
+t4 = stackt4
+t5 = t0
+t5 = t5
+a2 = a3 < t5
+if0 a2 goto elseid321
+if0 t2 goto null_err
+a2 = [t2 + 0]
+a2 = [a2 + 56]
+stacka3 = a3
+stackt2 = t2
+stackt3 = t3
+stackt4 = t4
+stackt5 = t5
+t0 = a2
+a2 = t2
+t0 = call t0()
+a3 = stacka3
+t2 = stackt2
+t3 = stackt3
+t4 = stackt4
+t5 = stackt5
+a2 = t0
+if0 a2 goto elseid323
+if0 t2 goto null_err
+a2 = [t2 + 0]
+a2 = [a2 + 20]
+stacka3 = a3
+stackt2 = t2
+stackt3 = t3
+stackt4 = t4
+stackt5 = t5
+t0 = a2
+a2 = t2
+t0 = call t0()
+a3 = stacka3
+t2 = stackt2
+t3 = stackt3
+t4 = stackt4
+t5 = stackt5
+a2 = t0
+t2 = a2
+goto endid323
+elseid323:
+a2 = 0
+t3 = a2
+endid323:
+goto endid321
+elseid321:
+t5 = t5 < a3
+if0 t5 goto elseid327
+if0 t2 goto null_err
+t5 = [t2 + 0]
+t5 = [t5 + 52]
+stacka3 = a3
+stackt2 = t2
+stackt3 = t3
+stackt4 = t4
+t0 = t5
+a2 = t2
+t0 = call t0()
+a3 = stacka3
+t2 = stackt2
+t3 = stackt3
+t4 = stackt4
+t5 = t0
+if0 t5 goto elseid329
+if0 t2 goto null_err
+t5 = [t2 + 0]
+t5 = [t5 + 24]
+stacka3 = a3
+stackt2 = t2
+stackt3 = t3
+stackt4 = t4
+t0 = t5
+a2 = t2
+t0 = call t0()
+a3 = stacka3
+t2 = stackt2
+t3 = stackt3
+t4 = stackt4
+t5 = t0
+t2 = t5
+goto endid329
+elseid329:
+t5 = 0
+t3 = t5
+endid329:
+goto endid327
+elseid327:
+t5 = 1
+t4 = t5
+t5 = 0
+t3 = t5
+endid327:
+endid321:
+goto loopid318
+endid318:
+goto TreeSearch_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+TreeSearch_end:
+id313 = t4
+      return id313
+
+func TreePrint()
+t2 = a2
+if0 a2 goto null_err
+t3 = [a2 + 0]
+t3 = [t3 + 80]
+t0 = t3
+a3 = t2
+t0 = call t0()
+t3 = t0
+t0 = t3
+t3 = 1
+goto TreePrint_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+TreePrint_end:
+id339 = t3
+      return id339
+
+func TreeRecPrint()
+if0 a3 goto null_err
+t2 = [a3 + 0]
+t2 = [t2 + 56]
+stacka3 = a3
+stacka2 = a2
+t0 = t2
+a2 = a3
+t0 = call t0()
+a3 = stacka3
+a2 = stacka2
+t2 = t0
+if0 t2 goto elseid343
+if0 a2 goto null_err
+t2 = [a2 + 0]
+t2 = [t2 + 80]
+if0 a3 goto null_err
+t3 = [a3 + 0]
+t3 = [t3 + 20]
+stacka3 = a3
+stacka2 = a2
+stackt2 = t2
+t0 = t3
+a2 = a3
+t0 = call t0()
+a3 = stacka3
+a2 = stacka2
+t2 = stackt2
+t3 = t0
+stacka3 = a3
+stacka2 = a2
+t0 = t2
+a3 = t3
+t0 = call t0()
+a3 = stacka3
+a2 = stacka2
+t3 = t0
+t0 = t3
+goto endid343
+elseid343:
+t3 = 1
+t0 = t3
+endid343:
+if0 a3 goto null_err
+t3 = [a3 + 0]
+t3 = [t3 + 12]
+stacka3 = a3
+stacka2 = a2
+t0 = t3
+a2 = a3
+t0 = call t0()
+a3 = stacka3
+a2 = stacka2
+t3 = t0
+print(t3)
+if0 a3 goto null_err
+t3 = [a3 + 0]
+t3 = [t3 + 52]
+stacka3 = a3
+stacka2 = a2
+t0 = t3
+a2 = a3
+t0 = call t0()
+a3 = stacka3
+a2 = stacka2
+t3 = t0
+if0 t3 goto elseid352
+if0 a2 goto null_err
+t3 = [a2 + 0]
+t3 = [t3 + 80]
+if0 a3 goto null_err
+t2 = [a3 + 0]
+t2 = [t2 + 24]
+stacka2 = a2
+stackt3 = t3
+t0 = t2
+a2 = a3
+t0 = call t0()
+a2 = stacka2
+t3 = stackt3
+t2 = t0
+t0 = t3
+a3 = t2
+t0 = call t0()
+t2 = t0
+t0 = t2
+goto endid352
+elseid352:
+t2 = 1
+t0 = t2
+endid352:
+t2 = 1
+goto TreeRecPrint_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+TreeRecPrint_end:
+id358 = t2
+      return id358
+
+func Treeaccept()
+t2 = 333
+print(t2)
+if0 a3 goto null_err
+t2 = [a3 + 0]
+t2 = [t2 + 0]
+t0 = t2
+t1 = a3
+a3 = a2
+a2 = t1
+t0 = call t0()
+t2 = t0
+t0 = t2
+t2 = 0
+goto Treeaccept_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+Treeaccept_end:
+id364 = t2
+      return id364
+
+func Visitorvisit()
+if0 a3 goto null_err
+t2 = [a3 + 0]
+t2 = [t2 + 52]
+stacka3 = a3
+stacka2 = a2
+t0 = t2
+a2 = a3
+t0 = call t0()
+a3 = stacka3
+a2 = stacka2
+t2 = t0
+if0 t2 goto elseid368
+t0 = [a2 + 4]
+if0 a3 goto null_err
+t2 = [a3 + 0]
+t2 = [t2 + 24]
+stacka3 = a3
+stacka2 = a2
+t0 = t2
+a2 = a3
+t0 = call t0()
+a3 = stacka3
+a2 = stacka2
+t2 = t0
+[a2 + 4] = t2
+t2 = [a2 + 4]
+if0 t2 goto null_err
+t3 = [t2 + 0]
+t3 = [t3 + 40]
+stacka3 = a3
+stacka2 = a2
+t0 = t3
+a3 = a2
+a2 = t2
+t0 = call t0()
+a3 = stacka3
+a2 = stacka2
+t3 = t0
+t0 = t3
+goto endid368
+elseid368:
+t3 = 0
+t0 = t3
+endid368:
+if0 a3 goto null_err
+t3 = [a3 + 0]
+t3 = [t3 + 56]
+stacka3 = a3
+stacka2 = a2
+t0 = t3
+a2 = a3
+t0 = call t0()
+a3 = stacka3
+a2 = stacka2
+t3 = t0
+if0 t3 goto elseid377
+t0 = [a2 + 8]
+if0 a3 goto null_err
+t3 = [a3 + 0]
+t3 = [t3 + 20]
+stacka2 = a2
+t0 = t3
+a2 = a3
+t0 = call t0()
+a2 = stacka2
+t3 = t0
+[a2 + 8] = t3
+t3 = [a2 + 8]
+if0 t3 goto null_err
+t2 = [t3 + 0]
+t2 = [t2 + 40]
+t0 = t2
+a3 = a2
+a2 = t3
+t0 = call t0()
+t2 = t0
+t0 = t2
+goto endid377
+elseid377:
+t2 = 0
+t0 = t2
+endid377:
+t2 = 0
+goto Visitorvisit_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+Visitorvisit_end:
+id385 = t2
+      return id385
+
+func MyVisitorvisit()
+if0 a3 goto null_err
+t2 = [a3 + 0]
+t2 = [t2 + 52]
+stacka3 = a3
+stacka2 = a2
+t0 = t2
+a2 = a3
+t0 = call t0()
+a3 = stacka3
+a2 = stacka2
+t2 = t0
+if0 t2 goto elseid389
+t0 = [a2 + 4]
+if0 a3 goto null_err
+t2 = [a3 + 0]
+t2 = [t2 + 24]
+stacka3 = a3
+stacka2 = a2
+t0 = t2
+a2 = a3
+t0 = call t0()
+a3 = stacka3
+a2 = stacka2
+t2 = t0
+[a2 + 4] = t2
+t2 = [a2 + 4]
+if0 t2 goto null_err
+t3 = [t2 + 0]
+t3 = [t3 + 40]
+stacka3 = a3
+stacka2 = a2
+t0 = t3
+a3 = a2
+a2 = t2
+t0 = call t0()
+a3 = stacka3
+a2 = stacka2
+t3 = t0
+t0 = t3
+goto endid389
+elseid389:
+t3 = 0
+t0 = t3
+endid389:
+if0 a3 goto null_err
+t3 = [a3 + 0]
+t3 = [t3 + 12]
+stacka3 = a3
+stacka2 = a2
+t0 = t3
+a2 = a3
+t0 = call t0()
+a3 = stacka3
+a2 = stacka2
+t3 = t0
+print(t3)
+if0 a3 goto null_err
+t3 = [a3 + 0]
+t3 = [t3 + 56]
+stacka3 = a3
+stacka2 = a2
+t0 = t3
+a2 = a3
+t0 = call t0()
+a3 = stacka3
+a2 = stacka2
+t3 = t0
+if0 t3 goto elseid400
+t0 = [a2 + 8]
+if0 a3 goto null_err
+t3 = [a3 + 0]
+t3 = [t3 + 20]
+stacka2 = a2
+t0 = t3
+a2 = a3
+t0 = call t0()
+a2 = stacka2
+t3 = t0
+[a2 + 8] = t3
+t3 = [a2 + 8]
+if0 t3 goto null_err
+t2 = [t3 + 0]
+t2 = [t2 + 40]
+t0 = t2
+a3 = a2
+a2 = t3
+t0 = call t0()
+t2 = t0
+t0 = t2
+goto endid400
+elseid400:
+t2 = 0
+t0 = t2
+endid400:
+t2 = 0
+goto MyVisitorvisit_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+MyVisitorvisit_end:
+id408 = t2
+      return id408
+
+

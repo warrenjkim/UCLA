@@ -1,0 +1,165 @@
+func Main()
+stacks3 = s3
+stacks4 = s4
+stacks5 = s5
+stacks11 = s11
+stacks6 = s6
+stacks10 = s10
+stacks7 = s7
+stacks8 = s8
+stacks9 = s9
+stacks1 = s1
+stacks2 = s2
+t0 = 0
+v0 = t0
+t3 = 1
+t4 = 2
+t5 = 3
+a2 = 4
+a3 = 5
+a4 = 6
+a5 = 7
+a6 = 8
+a7 = 9
+s1 = 10
+s2 = 11
+s3 = 12
+s4 = 13
+s5 = 14
+s6 = 15
+s7 = 16
+s8 = 17
+s9 = 18
+s10 = 19
+t0 = 4
+v0 = t0
+t0 = v0
+s11 = alloc(t0)
+t0 = v0
+t2 = alloc(t0)
+t0 = @f
+v0 = t0
+t1 = v0
+[t2 + 0] = t1
+v0 = t2
+t1 = v0
+[s11 + 0] = t1
+if0 s11 goto null1
+t2 = [s11 + 0]
+t2 = [t2 + 0]
+stacka2 = a2
+stacka3 = a3
+stacka4 = a4
+stacka5 = a5
+stacka6 = a6
+stacka7 = a7
+stackt3 = t3
+stackt4 = t4
+t0 = t2
+v6 = a4
+v7 = a5
+a7 = a3
+a6 = a2
+a5 = t5
+a4 = t4
+a3 = t3
+a2 = s11
+t0 = call t0(v6 v7)
+a2 = stacka2
+a3 = stacka3
+a4 = stacka4
+a5 = stacka5
+a6 = stacka6
+a7 = stacka7
+t3 = stackt3
+t4 = stackt4
+t2 = t0
+print(t2)
+s10 = s10 + s9
+s8 = s8 + s7
+s6 = s6 + s5
+s4 = s4 + s3
+s2 = s2 + s1
+a7 = a7 + a6
+a5 = a5 + a4
+a3 = a3 + a2
+t5 = t4 + t3
+goto main_end
+null1:
+error("null pointer")
+main_end:
+s3 = stacks3
+s4 = stacks4
+s5 = stacks5
+s11 = stacks11
+s6 = stacks6
+s10 = stacks10
+s7 = stacks7
+s8 = stacks8
+s9 = stacks9
+s1 = stacks1
+s2 = stacks2
+      return v0
+
+func f(n6 n7)
+t2 = 4
+t3 = alloc(t2)
+t4 = alloc(t2)
+t2 = @g
+[t4 + 0] = t2
+t2 = t4
+[t3 + 0] = t2
+if0 t3 goto null1
+t4 = [t3 + 0]
+t4 = [t4 + 0]
+stacka3 = a3
+stacka4 = a4
+stacka5 = a5
+stacka6 = a6
+stacka7 = a7
+t0 = t4
+n2 = a4
+n1 = a3
+t1 = a7
+a7 = a5
+a5 = t1
+a4 = n6
+a3 = n7
+a2 = t3
+t0 = call t0(n2 n1)
+a3 = stacka3
+a4 = stacka4
+a5 = stacka5
+a6 = stacka6
+a7 = stacka7
+t0 = t0
+print(a3)
+print(a4)
+print(a5)
+print(a6)
+print(a7)
+t0 = n6
+print(t0)
+t0 = n7
+print(t0)
+goto f_end
+null1:
+error("null pointer")
+f_end:
+n1 = a3
+      return n1
+
+func g(n6 n7)
+print(a3)
+print(a4)
+print(a5)
+print(a6)
+print(a7)
+t0 = n6
+print(t0)
+t0 = n7
+print(t0)
+n1 = a3
+      return n1
+
+

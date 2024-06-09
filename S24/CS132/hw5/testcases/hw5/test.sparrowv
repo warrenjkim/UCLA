@@ -1,0 +1,809 @@
+func QuickSortmain()
+    t2 = 12
+    t3 = alloc(t2)
+    t4 = 16
+    t5 = alloc(t4)
+    t2 = @QSPrint
+    [t5 + 8] = t2
+    t4 = @QSInit
+    [t5 + 12] = t4
+    t2 = @QSStart
+    [t5 + 0] = t2
+    t4 = @QSSort
+    [t5 + 4] = t4
+    [t3 + 0] = t5
+    if0 t3 goto v1Error
+    goto v1End
+  v1Error:
+    error("null pointer")
+  v1End:
+    t2 = [t3 + 0]
+    t2 = [t2 + 0]
+    t4 = 10
+    a2 = t3
+    a3 = t4
+    t5 = call t2()
+    print(t5)
+    t3 = 0
+    trivial = t3
+      return trivial
+func QSStart()
+    t2 = [a2 + 0]
+    t2 = [t2 + 12]
+    a2_stack = a2
+    a3_stack = a3
+    t3 = call t2()
+    a2 = a2_stack
+    a3 = a3_stack
+    t4 = t3
+    t5 = [a2 + 0]
+    t5 = [t5 + 8]
+    a2_stack = a2
+    aux01 = t4
+    t2 = call t5()
+    a2 = a2_stack
+    t4 = aux01
+    t4 = t2
+    t3 = 9999
+    print(t3)
+    t5 = [a2 + 8]
+    t2 = 1
+    t3 = t5 - t2
+    t4 = t3
+    t5 = [a2 + 0]
+    t5 = [t5 + 4]
+    t2 = 0
+    a2_stack = a2
+    aux01 = t4
+    a3 = t2
+    a4 = t4
+    t3 = call t5()
+    a2 = a2_stack
+    t4 = aux01
+    t4 = t3
+    t5 = [a2 + 0]
+    t5 = [t5 + 8]
+    a2_stack = a2
+    aux01 = t4
+    t2 = call t5()
+    a2 = a2_stack
+    t4 = aux01
+    t4 = t2
+    t3 = 0
+    v23 = t3
+      return v23
+func QSSort()
+    t2 = 0
+    t3 = t2
+    t4 = a3 < a4
+    if0 t4 goto v25_else
+    t5 = [a2 + 4]
+    t2 = 4
+    t4 = 5
+    t4 = t2 - t4
+    t4 = t4 < a4
+    s1 = [t5 + 0]
+    s2 = a4 < s1
+    t4 = t4 * s2
+    if0 t4 goto v30Error
+    goto v30End
+  v30Error:
+    error("array index out of bounds")
+  v30End:
+    t4 = t2 * a4
+    t4 = t4 + t2
+    t2 = t5 + t4
+    t2 = [t2 + 0]
+    t5 = t2
+    t4 = 1
+    t2 = a3 - t4
+    t4 = t2
+    t2 = a4
+    s3 = 1
+    s4 = s3
+  loopv39:
+    if0 s4 goto v39_end
+    s6 = 1
+    s7 = s6
+  loopv41:
+    if0 s7 goto v41_end
+    s8 = 1
+    s9 = t4 + s8
+    t4 = s9
+    s10 = [a2 + 4]
+    s11 = 4
+    s1 = 5
+    s2 = s11 - s1
+    s3 = s2 < t4
+    s5 = [s10 + 0]
+    t0 = t4 < s5
+    v50 = t0
+    t1 = v50
+    t0 = s3 * t1
+    v51 = t0
+    t0 = v51
+    if0 t0 goto v48Error
+    goto v48End
+  v48Error:
+    error("array index out of bounds")
+  v48End:
+    t0 = s11 * t4
+    v52 = t0
+    t0 = v52
+    t0 = t0 + s11
+    v52 = t0
+    t1 = v52
+    t0 = s10 + t1
+    v53 = t0
+    t0 = v53
+    t0 = [t0 + 0]
+    v53 = t0
+    t0 = v53
+    t0 = t0
+    aux03 = t0
+    t0 = aux03
+    t0 = t0 < t5
+    v54 = t0
+    t0 = 1
+    v55 = t0
+    t0 = v55
+    t1 = v54
+    t0 = t0 - t1
+    v56 = t0
+    t0 = v56
+    if0 t0 goto v56_else
+    t0 = 0
+    v57 = t0
+    t0 = v57
+    s7 = t0
+    goto v56_end
+  v56_else:
+    t0 = 1
+    v58 = t0
+    t0 = v58
+    s7 = t0
+  v56_end:
+    goto loopv41
+  v41_end:
+    t0 = 1
+    v59 = t0
+    t0 = v59
+    s7 = t0
+  loopv60:
+    if0 s7 goto v60_end
+    t0 = 1
+    v61 = t0
+    t1 = v61
+    t0 = t2 - t1
+    v62 = t0
+    t0 = v62
+    t2 = t0
+    t0 = [a2 + 4]
+    v63 = t0
+    t0 = 4
+    v64 = t0
+    t0 = 5
+    v65 = t0
+    t0 = v64
+    t1 = v65
+    t0 = t0 - t1
+    v66 = t0
+    t0 = v66
+    t0 = t0 < t2
+    v67 = t0
+    t0 = v63
+    t0 = [t0 + 0]
+    v68 = t0
+    t1 = v68
+    t0 = t2 < t1
+    v69 = t0
+    t0 = v67
+    t1 = v69
+    t0 = t0 * t1
+    v70 = t0
+    t0 = v70
+    if0 t0 goto v67Error
+    goto v67End
+  v67Error:
+    error("array index out of bounds")
+  v67End:
+    t0 = v64
+    t0 = t0 * t2
+    v71 = t0
+    t0 = v71
+    t1 = v64
+    t0 = t0 + t1
+    v71 = t0
+    t0 = v63
+    t1 = v71
+    t0 = t0 + t1
+    v72 = t0
+    t0 = v72
+    t0 = [t0 + 0]
+    v72 = t0
+    t0 = v72
+    t0 = t0
+    aux03 = t0
+    t1 = aux03
+    t0 = t5 < t1
+    v73 = t0
+    t0 = 1
+    v74 = t0
+    t0 = v74
+    t1 = v73
+    t0 = t0 - t1
+    v75 = t0
+    t0 = v75
+    if0 t0 goto v75_else
+    t0 = 0
+    v76 = t0
+    t0 = v76
+    s7 = t0
+    goto v75_end
+  v75_else:
+    t0 = 1
+    v77 = t0
+    t0 = v77
+    s7 = t0
+  v75_end:
+    goto loopv60
+  v60_end:
+    t0 = [a2 + 4]
+    v78 = t0
+    t0 = 4
+    v79 = t0
+    t0 = 5
+    v80 = t0
+    t0 = v79
+    t1 = v80
+    t0 = t0 - t1
+    v81 = t0
+    t0 = v81
+    t0 = t0 < t4
+    v82 = t0
+    t0 = v78
+    t0 = [t0 + 0]
+    v83 = t0
+    t1 = v83
+    t0 = t4 < t1
+    v84 = t0
+    t0 = v82
+    t1 = v84
+    t0 = t0 * t1
+    v85 = t0
+    t0 = v85
+    if0 t0 goto v82Error
+    goto v82End
+  v82Error:
+    error("array index out of bounds")
+  v82End:
+    t0 = v79
+    t0 = t0 * t4
+    v86 = t0
+    t0 = v86
+    t1 = v79
+    t0 = t0 + t1
+    v86 = t0
+    t0 = v78
+    t1 = v86
+    t0 = t0 + t1
+    v87 = t0
+    t0 = v87
+    t0 = [t0 + 0]
+    v87 = t0
+    t0 = v87
+    t3 = t0
+    t0 = [a2 + 4]
+    v88 = t0
+    t0 = 4
+    v89 = t0
+    t0 = 5
+    v90 = t0
+    t0 = v89
+    t1 = v90
+    t0 = t0 - t1
+    v91 = t0
+    t0 = v91
+    t0 = t0 < t2
+    v92 = t0
+    t0 = v88
+    t0 = [t0 + 0]
+    v93 = t0
+    t1 = v93
+    t0 = t2 < t1
+    v94 = t0
+    t0 = v92
+    t1 = v94
+    t0 = t0 * t1
+    v95 = t0
+    t0 = v95
+    if0 t0 goto v92Error
+    goto v92End
+  v92Error:
+    error("array index out of bounds")
+  v92End:
+    t0 = v89
+    t0 = t0 * t2
+    v96 = t0
+    t0 = v96
+    t1 = v89
+    t0 = t0 + t1
+    v96 = t0
+    t0 = v88
+    t1 = v96
+    t0 = t0 + t1
+    v97 = t0
+    t0 = v97
+    t0 = [t0 + 0]
+    v97 = t0
+    t0 = [a2 + 4]
+    v98 = t0
+    t0 = 4
+    v99 = t0
+    t0 = 5
+    v100 = t0
+    t0 = v99
+    t1 = v100
+    t0 = t0 - t1
+    v101 = t0
+    t0 = v101
+    t0 = t0 < t4
+    v102 = t0
+    t0 = v98
+    t0 = [t0 + 0]
+    v103 = t0
+    t1 = v103
+    t0 = t4 < t1
+    v104 = t0
+    t0 = v102
+    t1 = v104
+    t0 = t0 * t1
+    v105 = t0
+    t0 = v105
+    if0 t0 goto v102Error
+    goto v102End
+  v102Error:
+    error("array index out of bounds")
+  v102End:
+    t0 = v99
+    t0 = t0 * t4
+    v106 = t0
+    t0 = v106
+    t1 = v99
+    t0 = t0 + t1
+    v106 = t0
+    t0 = v98
+    t1 = v106
+    t0 = t0 + t1
+    v107 = t0
+    t0 = v107
+    t1 = v97
+    [t0 + 0] = t1
+    t0 = [a2 + 4]
+    v108 = t0
+    t0 = 4
+    v109 = t0
+    t0 = 5
+    v110 = t0
+    t0 = v109
+    t1 = v110
+    t0 = t0 - t1
+    v111 = t0
+    t0 = v111
+    t0 = t0 < t2
+    v112 = t0
+    t0 = v108
+    t0 = [t0 + 0]
+    v113 = t0
+    t1 = v113
+    t0 = t2 < t1
+    v114 = t0
+    t0 = v112
+    t1 = v114
+    t0 = t0 * t1
+    v115 = t0
+    t0 = v115
+    if0 t0 goto v112Error
+    goto v112End
+  v112Error:
+    error("array index out of bounds")
+  v112End:
+    t0 = v109
+    t0 = t0 * t2
+    v116 = t0
+    t0 = v116
+    t1 = v109
+    t0 = t0 + t1
+    v116 = t0
+    t0 = v108
+    t1 = v116
+    t0 = t0 + t1
+    v117 = t0
+    t0 = v117
+    [t0 + 0] = t3
+    t0 = 1
+    v118 = t0
+    t1 = v118
+    t0 = t4 + t1
+    v119 = t0
+    t1 = v119
+    t0 = t2 < t1
+    v120 = t0
+    t0 = v120
+    if0 t0 goto v120_else
+    t0 = 0
+    v121 = t0
+    t0 = v121
+    s4 = t0
+    goto v120_end
+  v120_else:
+    t0 = 1
+    v122 = t0
+    t0 = v122
+    s4 = t0
+  v120_end:
+    goto loopv39
+  v39_end:
+    t5 = [a2 + 4]
+    s4 = 4
+    s6 = 5
+    s7 = s4 - s6
+    s8 = s7 < t4
+    s9 = [t5 + 0]
+    s10 = t4 < s9
+    s11 = s8 * s10
+    if0 s11 goto v127Error
+    goto v127End
+  v127Error:
+    error("array index out of bounds")
+  v127End:
+    s1 = s4 * t4
+    s1 = s1 + s4
+    t5 = t5 + s1
+    t5 = [t5 + 0]
+    s2 = [a2 + 4]
+    s3 = 4
+    s5 = 5
+    s6 = s3 - s5
+    s7 = s6 < t2
+    s9 = [s2 + 0]
+    s8 = t2 < s9
+    s10 = s7 * s8
+    if0 s10 goto v137Error
+    goto v137End
+  v137Error:
+    error("array index out of bounds")
+  v137End:
+    t2 = s3 * t2
+    t2 = t2 + s3
+    t2 = s2 + t2
+    [t2 + 0] = t5
+    t5 = [a2 + 4]
+    t2 = 4
+    s11 = 5
+    s4 = t2 - s11
+    s1 = s4 < a4
+    s5 = [t5 + 0]
+    s6 = a4 < s5
+    s9 = s1 * s6
+    if0 s9 goto v147Error
+    goto v147End
+  v147Error:
+    error("array index out of bounds")
+  v147End:
+    s7 = t2 * a4
+    s7 = s7 + t2
+    t2 = t5 + s7
+    t2 = [t2 + 0]
+    t5 = [a2 + 4]
+    s8 = 4
+    s10 = 5
+    s3 = s8 - s10
+    s2 = s3 < t4
+    s11 = [t5 + 0]
+    s4 = t4 < s11
+    s5 = s2 * s4
+    if0 s5 goto v157Error
+    goto v157End
+  v157Error:
+    error("array index out of bounds")
+  v157End:
+    s1 = s8 * t4
+    s1 = s1 + s8
+    t5 = t5 + s1
+    [t5 + 0] = t2
+    t2 = [a2 + 4]
+    t5 = 4
+    s6 = 5
+    s9 = t5 - s6
+    s7 = s9 < a4
+    s10 = [t2 + 0]
+    s3 = a4 < s10
+    s11 = s7 * s3
+    if0 s11 goto v167Error
+    goto v167End
+  v167Error:
+    error("array index out of bounds")
+  v167End:
+    s2 = t5 * a4
+    s2 = s2 + t5
+    t5 = t2 + s2
+    [t5 + 0] = t3
+    t2 = [a2 + 0]
+    t2 = [t2 + 4]
+    t3 = 1
+    t5 = t4 - t3
+    a2_stack = a2
+    a3_stack = a3
+    a4_stack = a4
+    i = t4
+    a4 = t5
+    t3 = call t2()
+    a2 = a2_stack
+    a3 = a3_stack
+    a4 = a4_stack
+    t4 = i
+    t0 = t3
+    nt = t0
+    t2 = [a2 + 0]
+    t2 = [t2 + 4]
+    t5 = 1
+    t3 = t4 + t5
+    a2_stack = a2
+    a4_stack = a4
+    a3 = t3
+    t4 = call t2()
+    a2 = a2_stack
+    a4 = a4_stack
+    t0 = t4
+    nt = t0
+    goto v25_end
+  v25_else:
+    t5 = 0
+    t0 = t5
+    nt = t0
+  v25_end:
+    t2 = 0
+    v182 = t2
+      return v182
+func QSPrint()
+    t2 = 0
+    t3 = t2
+  loopv184:
+    t4 = [a2 + 8]
+    t5 = t3 < t4
+    if0 t5 goto v184_end
+    t2 = [a2 + 4]
+    s1 = 4
+    s2 = 5
+    s3 = s1 - s2
+    s4 = s3 < t3
+    s5 = [t2 + 0]
+    s6 = t3 < s5
+    s7 = s4 * s6
+    if0 s7 goto v191Error
+    goto v191End
+  v191Error:
+    error("array index out of bounds")
+  v191End:
+    s8 = s1 * t3
+    s8 = s8 + s1
+    s9 = t2 + s8
+    s9 = [s9 + 0]
+    print(s9)
+    s10 = 1
+    s11 = t3 + s10
+    t3 = s11
+    goto loopv184
+  v184_end:
+    t3 = 0
+    v199 = t3
+      return v199
+func QSInit()
+    [a2 + 8] = a3
+    t2 = 1
+    t3 = 4
+    t4 = a3 + t2
+    t4 = t4 * t3
+    t5 = alloc(t4)
+    if0 t5 goto v205Error
+    goto v205End
+  v205Error:
+    error("null pointer")
+  v205End:
+    [t5 + 0] = a3
+    [a2 + 4] = t5
+    t2 = 20
+    t3 = 0
+    t4 = [a2 + 4]
+    t5 = 4
+    s1 = 5
+    s2 = t5 - s1
+    s3 = s2 < t3
+    s4 = [t4 + 0]
+    s5 = t3 < s4
+    s6 = s3 * s5
+    if0 s6 goto v212Error
+    goto v212End
+  v212Error:
+    error("array index out of bounds")
+  v212End:
+    t3 = t5 * t3
+    t3 = t3 + t5
+    t5 = t4 + t3
+    [t5 + 0] = t2
+    t4 = 7
+    t3 = 1
+    t2 = [a2 + 4]
+    t5 = 4
+    s7 = 5
+    s8 = t5 - s7
+    s9 = s8 < t3
+    s10 = [t2 + 0]
+    s11 = t3 < s10
+    s1 = s9 * s11
+    if0 s1 goto v224Error
+    goto v224End
+  v224Error:
+    error("array index out of bounds")
+  v224End:
+    t3 = t5 * t3
+    t3 = t3 + t5
+    t5 = t2 + t3
+    [t5 + 0] = t4
+    t2 = 12
+    t3 = 2
+    t4 = [a2 + 4]
+    t5 = 4
+    s2 = 5
+    s4 = t5 - s2
+    s3 = s4 < t3
+    s5 = [t4 + 0]
+    s6 = t3 < s5
+    s7 = s3 * s6
+    if0 s7 goto v236Error
+    goto v236End
+  v236Error:
+    error("array index out of bounds")
+  v236End:
+    t3 = t5 * t3
+    t3 = t3 + t5
+    t5 = t4 + t3
+    [t5 + 0] = t2
+    t4 = 18
+    t3 = 3
+    t2 = [a2 + 4]
+    t5 = 4
+    s8 = 5
+    s10 = t5 - s8
+    s9 = s10 < t3
+    s11 = [t2 + 0]
+    s1 = t3 < s11
+    s2 = s9 * s1
+    if0 s2 goto v248Error
+    goto v248End
+  v248Error:
+    error("array index out of bounds")
+  v248End:
+    t3 = t5 * t3
+    t3 = t3 + t5
+    t5 = t2 + t3
+    [t5 + 0] = t4
+    t2 = 2
+    t3 = 4
+    t4 = [a2 + 4]
+    t5 = 4
+    s4 = 5
+    s5 = t5 - s4
+    s3 = s5 < t3
+    s6 = [t4 + 0]
+    s7 = t3 < s6
+    s8 = s3 * s7
+    if0 s8 goto v260Error
+    goto v260End
+  v260Error:
+    error("array index out of bounds")
+  v260End:
+    t3 = t5 * t3
+    t3 = t3 + t5
+    t5 = t4 + t3
+    [t5 + 0] = t2
+    t4 = 11
+    t3 = 5
+    t2 = [a2 + 4]
+    t5 = 4
+    s10 = 5
+    s11 = t5 - s10
+    s9 = s11 < t3
+    s1 = [t2 + 0]
+    s2 = t3 < s1
+    s4 = s9 * s2
+    if0 s4 goto v272Error
+    goto v272End
+  v272Error:
+    error("array index out of bounds")
+  v272End:
+    t3 = t5 * t3
+    t3 = t3 + t5
+    t5 = t2 + t3
+    [t5 + 0] = t4
+    t2 = 6
+    t3 = 6
+    t4 = [a2 + 4]
+    t5 = 4
+    s5 = 5
+    s6 = t5 - s5
+    s3 = s6 < t3
+    s7 = [t4 + 0]
+    s8 = t3 < s7
+    s10 = s3 * s8
+    if0 s10 goto v284Error
+    goto v284End
+  v284Error:
+    error("array index out of bounds")
+  v284End:
+    t3 = t5 * t3
+    t3 = t3 + t5
+    t5 = t4 + t3
+    [t5 + 0] = t2
+    t4 = 9
+    t3 = 7
+    t2 = [a2 + 4]
+    t5 = 4
+    s11 = 5
+    s1 = t5 - s11
+    s9 = s1 < t3
+    s2 = [t2 + 0]
+    s4 = t3 < s2
+    s5 = s9 * s4
+    if0 s5 goto v296Error
+    goto v296End
+  v296Error:
+    error("array index out of bounds")
+  v296End:
+    t3 = t5 * t3
+    t3 = t3 + t5
+    t5 = t2 + t3
+    [t5 + 0] = t4
+    t2 = 19
+    t3 = 8
+    t4 = [a2 + 4]
+    t5 = 4
+    s6 = 5
+    s7 = t5 - s6
+    s3 = s7 < t3
+    s8 = [t4 + 0]
+    s10 = t3 < s8
+    s11 = s3 * s10
+    if0 s11 goto v308Error
+    goto v308End
+  v308Error:
+    error("array index out of bounds")
+  v308End:
+    t3 = t5 * t3
+    t3 = t3 + t5
+    t5 = t4 + t3
+    [t5 + 0] = t2
+    t4 = 5
+    t3 = 9
+    t2 = [a2 + 4]
+    t5 = 4
+    s1 = 5
+    s2 = t5 - s1
+    s9 = s2 < t3
+    s4 = [t2 + 0]
+    s5 = t3 < s4
+    s6 = s9 * s5
+    if0 s6 goto v320Error
+    goto v320End
+  v320Error:
+    error("array index out of bounds")
+  v320End:
+    t3 = t5 * t3
+    t3 = t3 + t5
+    t5 = t2 + t3
+    [t5 + 0] = t4
+    t2 = 0
+    v326 = t2
+      return v326
+

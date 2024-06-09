@@ -1,0 +1,14 @@
+func main()
+t2 = 12
+print(t2)
+goto main_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+main_end:
+t2 = 0
+id1 = t2
+      return id1
+
+

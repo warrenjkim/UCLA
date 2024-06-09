@@ -1,0 +1,83 @@
+func main()
+t2 = 4
+t3 = alloc(t2)
+if0 t3 goto null_err
+t2 = 4
+t2 = alloc(t2)
+if0 t2 goto null_err
+t4 = @Arun
+[t2 + 0] = t4
+[t3 + 0] = t2
+if0 t3 goto null_err
+t4 = [t3 + 0]
+t4 = [t4 + 0]
+t0 = t4
+a2 = t3
+t0 = call t0()
+t4 = t0
+print(t4)
+goto main_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+main_end:
+t4 = 0
+id5 = t4
+      return id5
+
+func Arun()
+t2 = 20
+t3 = 0
+t4 = t2 < t3
+t3 = 1
+t4 = t3 - t4
+if0 t4 goto array_err
+t4 = t2 + t3
+t3 = 4
+t4 = t3 * t4
+t4 = alloc(t4)
+if0 t4 goto null_err
+[t4 + 0] = t2
+t4 = t4
+t2 = 10
+if0 t4 goto null_err
+t3 = [t4 + 0]
+t5 = 1
+a2 = 0
+a2 = a2 - t5
+a2 = a2 < t2
+if0 a2 goto array_err
+a2 = t2 < t3
+if0 a2 goto array_err
+t3 = 4
+t5 = t2 + t5
+t5 = t5 * t3
+t5 = t4 + t5
+t5 = [t5 + 0]
+print(t5)
+t5 = 40
+if0 t4 goto null_err
+t3 = [t4 + 0]
+t2 = 1
+a2 = 0
+a2 = a2 - t2
+a2 = a2 < t5
+if0 a2 goto array_err
+a2 = t5 < t3
+if0 a2 goto array_err
+t3 = 4
+t2 = t5 + t2
+t2 = t2 * t3
+t2 = t4 + t2
+t2 = [t2 + 0]
+goto Arun_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+Arun_end:
+id21 = t2
+      return id21
+
+

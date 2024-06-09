@@ -1,0 +1,16 @@
+func main()
+t2 = 12
+t3 = 21
+t3 = t2 + t3
+print(t3)
+goto main_end
+null_err:
+error("null pointer")
+array_err:
+error("array index out of bounds")
+main_end:
+t3 = 0
+id3 = t3
+      return id3
+
+
