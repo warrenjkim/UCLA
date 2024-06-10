@@ -1,0 +1,586 @@
+func QuickSort__main()
+    vQS_size = 12
+    v0 = alloc(vQS_size)
+    vQS_vTable_size = 16
+    QS_vTable = alloc(vQS_vTable_size)
+    v1 = @QS__Start
+    [QS_vTable + 0] = v1
+    v2 = @QS__Sort
+    [QS_vTable + 4] = v2
+    v3 = @QS__Print
+    [QS_vTable + 8] = v3
+    v4 = @QS__Init
+    [QS_vTable + 12] = v4
+    [v0 + 0] = QS_vTable
+    if0 v0 goto null_err_label
+    v7 = [v0 + 0]
+    v7 = [v7 + 0]
+    v5 = 10
+    v6 = call v7(v0 v5)
+    print(v6)
+    goto end_QuickSort__main
+  arr_err_label:
+    error("array index out of bounds")
+  null_err_label:
+    error("null pointer")
+  end_QuickSort__main:
+      return v0
+
+
+func QS__Start(this QS_Start_sz)
+    QS_Start_aux01 = 0
+    if0 this goto null_err_label
+    v9 = [this + 0]
+    v9 = [v9 + 12]
+    v8 = call v9(this QS_Start_sz)
+    QS_Start_aux01 = v8
+    if0 this goto null_err_label
+    v11 = [this + 0]
+    v11 = [v11 + 8]
+    v10 = call v11(this)
+    QS_Start_aux01 = v10
+    v12 = 9999
+    print(v12)
+    QS_size = [this + 8]
+    v14 = 1
+    v13 = QS_size - v14
+    QS_Start_aux01 = v13
+    if0 this goto null_err_label
+    v17 = [this + 0]
+    v17 = [v17 + 4]
+    v15 = 0
+    v16 = call v17(this v15 QS_Start_aux01)
+    QS_Start_aux01 = v16
+    if0 this goto null_err_label
+    v19 = [this + 0]
+    v19 = [v19 + 8]
+    v18 = call v19(this)
+    QS_Start_aux01 = v18
+    v20 = 0
+    goto end_QS__Start
+  arr_err_label:
+    error("array index out of bounds")
+  null_err_label:
+    error("null pointer")
+  end_QS__Start:
+      return v20
+
+
+func QS__Sort(this QS_Sort_left QS_Sort_right)
+    QS_Sort_v = 0
+    QS_Sort_i = 0
+    QS_Sort_j = 0
+    QS_Sort_nt = 0
+    QS_Sort_t = 0
+    QS_Sort_cont01 = 0
+    QS_Sort_cont02 = 0
+    QS_Sort_aux03 = 0
+    v21 = 0
+    QS_Sort_t = v21
+    v22 = QS_Sort_left < QS_Sort_right
+    if0 v22 goto else_l0
+    QS_number = [this + 4]
+    v26 = 4
+    v25 = QS_Sort_right * v26
+    v25 = v25 + v26
+    if0 QS_number goto null_err_label
+    v27 = [QS_number + 0]
+    v28 = QS_Sort_right < v27
+    if0 v28 goto arr_err_label
+    v27 = 0
+    v29 = 1
+    v27 = v27 - v29
+    v28 = v27 < QS_Sort_right
+    if0 v28 goto arr_err_label
+    v24 = QS_number + v25
+    v23 = [v24 + 0]
+    QS_Sort_v = v23
+    v31 = 1
+    v30 = QS_Sort_left - v31
+    QS_Sort_i = v30
+    QS_Sort_j = QS_Sort_right
+    v32 = 1
+    QS_Sort_cont01 = v32
+  loop_l2:
+    if0 QS_Sort_cont01 goto end_loop_l3
+    v33 = 1
+    QS_Sort_cont02 = v33
+  loop_l4:
+    if0 QS_Sort_cont02 goto end_loop_l5
+    v35 = 1
+    v34 = QS_Sort_i + v35
+    QS_Sort_i = v34
+    QS_number = [this + 4]
+    v39 = 4
+    v38 = QS_Sort_i * v39
+    v38 = v38 + v39
+    if0 QS_number goto null_err_label
+    v40 = [QS_number + 0]
+    v41 = QS_Sort_i < v40
+    if0 v41 goto arr_err_label
+    v40 = 0
+    v42 = 1
+    v40 = v40 - v42
+    v41 = v40 < QS_Sort_i
+    if0 v41 goto arr_err_label
+    v37 = QS_number + v38
+    v36 = [v37 + 0]
+    QS_Sort_aux03 = v36
+    v45 = QS_Sort_aux03 < QS_Sort_v
+    one_not_v44 = 1
+    v43 = one_not_v44 - v45
+    if0 v43 goto else_l6
+    v46 = 0
+    QS_Sort_cont02 = v46
+    goto end_if_l7
+  else_l6:
+    v47 = 1
+    QS_Sort_cont02 = v47
+  end_if_l7:
+    goto loop_l4
+  end_loop_l5:
+    v48 = 1
+    QS_Sort_cont02 = v48
+  loop_l8:
+    if0 QS_Sort_cont02 goto end_loop_l9
+    v50 = 1
+    v49 = QS_Sort_j - v50
+    QS_Sort_j = v49
+    QS_number = [this + 4]
+    v54 = 4
+    v53 = QS_Sort_j * v54
+    v53 = v53 + v54
+    if0 QS_number goto null_err_label
+    v55 = [QS_number + 0]
+    v56 = QS_Sort_j < v55
+    if0 v56 goto arr_err_label
+    v55 = 0
+    v57 = 1
+    v55 = v55 - v57
+    v56 = v55 < QS_Sort_j
+    if0 v56 goto arr_err_label
+    v52 = QS_number + v53
+    v51 = [v52 + 0]
+    QS_Sort_aux03 = v51
+    v60 = QS_Sort_v < QS_Sort_aux03
+    one_not_v59 = 1
+    v58 = one_not_v59 - v60
+    if0 v58 goto else_l10
+    v61 = 0
+    QS_Sort_cont02 = v61
+    goto end_if_l11
+  else_l10:
+    v62 = 1
+    QS_Sort_cont02 = v62
+  end_if_l11:
+    goto loop_l8
+  end_loop_l9:
+    QS_number = [this + 4]
+    v66 = 4
+    v65 = QS_Sort_i * v66
+    v65 = v65 + v66
+    if0 QS_number goto null_err_label
+    v67 = [QS_number + 0]
+    v68 = QS_Sort_i < v67
+    if0 v68 goto arr_err_label
+    v67 = 0
+    v69 = 1
+    v67 = v67 - v69
+    v68 = v67 < QS_Sort_i
+    if0 v68 goto arr_err_label
+    v64 = QS_number + v65
+    v63 = [v64 + 0]
+    QS_Sort_t = v63
+    QS_number = [this + 4]
+    v79 = 4
+    v78 = QS_Sort_i * v79
+    v78 = v78 + v79
+    if0 QS_number goto null_err_label
+    v80 = [QS_number + 0]
+    v81 = QS_Sort_i < v80
+    if0 v81 goto arr_err_label
+    v80 = 0
+    v82 = 1
+    v80 = v80 - v82
+    v81 = v80 < QS_Sort_i
+    if0 v81 goto arr_err_label
+    QS_number = [this + 4]
+    v74 = 4
+    v73 = QS_Sort_j * v74
+    v73 = v73 + v74
+    if0 QS_number goto null_err_label
+    v75 = [QS_number + 0]
+    v76 = QS_Sort_j < v75
+    if0 v76 goto arr_err_label
+    v75 = 0
+    v77 = 1
+    v75 = v75 - v77
+    v76 = v75 < QS_Sort_j
+    if0 v76 goto arr_err_label
+    v72 = QS_number + v73
+    v71 = [v72 + 0]
+    v70 = QS_number + v78
+    [v70 + 0] = v71
+    QS_number = [this + 4]
+    v85 = 4
+    v84 = QS_Sort_j * v85
+    v84 = v84 + v85
+    if0 QS_number goto null_err_label
+    v86 = [QS_number + 0]
+    v87 = QS_Sort_j < v86
+    if0 v87 goto arr_err_label
+    v86 = 0
+    v88 = 1
+    v86 = v86 - v88
+    v87 = v86 < QS_Sort_j
+    if0 v87 goto arr_err_label
+    v83 = QS_number + v84
+    [v83 + 0] = QS_Sort_t
+    v91 = 1
+    v90 = QS_Sort_i + v91
+    v89 = QS_Sort_j < v90
+    if0 v89 goto else_l12
+    v92 = 0
+    QS_Sort_cont01 = v92
+    goto end_if_l13
+  else_l12:
+    v93 = 1
+    QS_Sort_cont01 = v93
+  end_if_l13:
+    goto loop_l2
+  end_loop_l3:
+    QS_number = [this + 4]
+    v103 = 4
+    v102 = QS_Sort_j * v103
+    v102 = v102 + v103
+    if0 QS_number goto null_err_label
+    v104 = [QS_number + 0]
+    v105 = QS_Sort_j < v104
+    if0 v105 goto arr_err_label
+    v104 = 0
+    v106 = 1
+    v104 = v104 - v106
+    v105 = v104 < QS_Sort_j
+    if0 v105 goto arr_err_label
+    QS_number = [this + 4]
+    v98 = 4
+    v97 = QS_Sort_i * v98
+    v97 = v97 + v98
+    if0 QS_number goto null_err_label
+    v99 = [QS_number + 0]
+    v100 = QS_Sort_i < v99
+    if0 v100 goto arr_err_label
+    v99 = 0
+    v101 = 1
+    v99 = v99 - v101
+    v100 = v99 < QS_Sort_i
+    if0 v100 goto arr_err_label
+    v96 = QS_number + v97
+    v95 = [v96 + 0]
+    v94 = QS_number + v102
+    [v94 + 0] = v95
+    QS_number = [this + 4]
+    v116 = 4
+    v115 = QS_Sort_i * v116
+    v115 = v115 + v116
+    if0 QS_number goto null_err_label
+    v117 = [QS_number + 0]
+    v118 = QS_Sort_i < v117
+    if0 v118 goto arr_err_label
+    v117 = 0
+    v119 = 1
+    v117 = v117 - v119
+    v118 = v117 < QS_Sort_i
+    if0 v118 goto arr_err_label
+    QS_number = [this + 4]
+    v111 = 4
+    v110 = QS_Sort_right * v111
+    v110 = v110 + v111
+    if0 QS_number goto null_err_label
+    v112 = [QS_number + 0]
+    v113 = QS_Sort_right < v112
+    if0 v113 goto arr_err_label
+    v112 = 0
+    v114 = 1
+    v112 = v112 - v114
+    v113 = v112 < QS_Sort_right
+    if0 v113 goto arr_err_label
+    v109 = QS_number + v110
+    v108 = [v109 + 0]
+    v107 = QS_number + v115
+    [v107 + 0] = v108
+    QS_number = [this + 4]
+    v122 = 4
+    v121 = QS_Sort_right * v122
+    v121 = v121 + v122
+    if0 QS_number goto null_err_label
+    v123 = [QS_number + 0]
+    v124 = QS_Sort_right < v123
+    if0 v124 goto arr_err_label
+    v123 = 0
+    v125 = 1
+    v123 = v123 - v125
+    v124 = v123 < QS_Sort_right
+    if0 v124 goto arr_err_label
+    v120 = QS_number + v121
+    [v120 + 0] = QS_Sort_t
+    if0 this goto null_err_label
+    v129 = [this + 0]
+    v129 = [v129 + 4]
+    v127 = 1
+    v126 = QS_Sort_i - v127
+    v128 = call v129(this QS_Sort_left v126)
+    QS_Sort_nt = v128
+    if0 this goto null_err_label
+    v133 = [this + 0]
+    v133 = [v133 + 4]
+    v131 = 1
+    v130 = QS_Sort_i + v131
+    v132 = call v133(this v130 QS_Sort_right)
+    QS_Sort_nt = v132
+    goto end_if_l1
+  else_l0:
+    v134 = 0
+    QS_Sort_nt = v134
+  end_if_l1:
+    v135 = 0
+    goto end_QS__Sort
+  arr_err_label:
+    error("array index out of bounds")
+  null_err_label:
+    error("null pointer")
+  end_QS__Sort:
+      return v135
+
+
+func QS__Print(this)
+    QS_Print_j = 0
+    v136 = 0
+    QS_Print_j = v136
+  loop_l14:
+    QS_size = [this + 8]
+    v137 = QS_Print_j < QS_size
+    if0 v137 goto end_loop_l15
+    QS_number = [this + 4]
+    v141 = 4
+    v140 = QS_Print_j * v141
+    v140 = v140 + v141
+    if0 QS_number goto null_err_label
+    v142 = [QS_number + 0]
+    v143 = QS_Print_j < v142
+    if0 v143 goto arr_err_label
+    v142 = 0
+    v144 = 1
+    v142 = v142 - v144
+    v143 = v142 < QS_Print_j
+    if0 v143 goto arr_err_label
+    v139 = QS_number + v140
+    v138 = [v139 + 0]
+    print(v138)
+    v146 = 1
+    v145 = QS_Print_j + v146
+    QS_Print_j = v145
+    goto loop_l14
+  end_loop_l15:
+    v147 = 0
+    goto end_QS__Print
+  arr_err_label:
+    error("array index out of bounds")
+  null_err_label:
+    error("null pointer")
+  end_QS__Print:
+      return v147
+
+
+func QS__Init(this QS_Init_sz)
+    QS_size = [this + 8]
+    QS_size = QS_Init_sz
+    [this + 8] = QS_size
+    QS_number = [this + 4]
+    v150 = 4
+    v149 = QS_Init_sz * v150
+    v149 = v149 + v150
+    v148 = alloc(v149)
+    [v148 + 0] = QS_Init_sz
+    QS_number = v148
+    [this + 4] = QS_number
+    QS_number = [this + 4]
+    v152 = 0
+    v155 = 4
+    v154 = v152 * v155
+    v154 = v154 + v155
+    if0 QS_number goto null_err_label
+    v156 = [QS_number + 0]
+    v157 = v152 < v156
+    if0 v157 goto arr_err_label
+    v156 = 0
+    v158 = 1
+    v156 = v156 - v158
+    v157 = v156 < v152
+    if0 v157 goto arr_err_label
+    v153 = 20
+    v151 = QS_number + v154
+    [v151 + 0] = v153
+    QS_number = [this + 4]
+    v160 = 1
+    v163 = 4
+    v162 = v160 * v163
+    v162 = v162 + v163
+    if0 QS_number goto null_err_label
+    v164 = [QS_number + 0]
+    v165 = v160 < v164
+    if0 v165 goto arr_err_label
+    v164 = 0
+    v166 = 1
+    v164 = v164 - v166
+    v165 = v164 < v160
+    if0 v165 goto arr_err_label
+    v161 = 7
+    v159 = QS_number + v162
+    [v159 + 0] = v161
+    QS_number = [this + 4]
+    v168 = 2
+    v171 = 4
+    v170 = v168 * v171
+    v170 = v170 + v171
+    if0 QS_number goto null_err_label
+    v172 = [QS_number + 0]
+    v173 = v168 < v172
+    if0 v173 goto arr_err_label
+    v172 = 0
+    v174 = 1
+    v172 = v172 - v174
+    v173 = v172 < v168
+    if0 v173 goto arr_err_label
+    v169 = 12
+    v167 = QS_number + v170
+    [v167 + 0] = v169
+    QS_number = [this + 4]
+    v176 = 3
+    v179 = 4
+    v178 = v176 * v179
+    v178 = v178 + v179
+    if0 QS_number goto null_err_label
+    v180 = [QS_number + 0]
+    v181 = v176 < v180
+    if0 v181 goto arr_err_label
+    v180 = 0
+    v182 = 1
+    v180 = v180 - v182
+    v181 = v180 < v176
+    if0 v181 goto arr_err_label
+    v177 = 18
+    v175 = QS_number + v178
+    [v175 + 0] = v177
+    QS_number = [this + 4]
+    v184 = 4
+    v187 = 4
+    v186 = v184 * v187
+    v186 = v186 + v187
+    if0 QS_number goto null_err_label
+    v188 = [QS_number + 0]
+    v189 = v184 < v188
+    if0 v189 goto arr_err_label
+    v188 = 0
+    v190 = 1
+    v188 = v188 - v190
+    v189 = v188 < v184
+    if0 v189 goto arr_err_label
+    v185 = 2
+    v183 = QS_number + v186
+    [v183 + 0] = v185
+    QS_number = [this + 4]
+    v192 = 5
+    v195 = 4
+    v194 = v192 * v195
+    v194 = v194 + v195
+    if0 QS_number goto null_err_label
+    v196 = [QS_number + 0]
+    v197 = v192 < v196
+    if0 v197 goto arr_err_label
+    v196 = 0
+    v198 = 1
+    v196 = v196 - v198
+    v197 = v196 < v192
+    if0 v197 goto arr_err_label
+    v193 = 11
+    v191 = QS_number + v194
+    [v191 + 0] = v193
+    QS_number = [this + 4]
+    v200 = 6
+    v203 = 4
+    v202 = v200 * v203
+    v202 = v202 + v203
+    if0 QS_number goto null_err_label
+    v204 = [QS_number + 0]
+    v205 = v200 < v204
+    if0 v205 goto arr_err_label
+    v204 = 0
+    v206 = 1
+    v204 = v204 - v206
+    v205 = v204 < v200
+    if0 v205 goto arr_err_label
+    v201 = 6
+    v199 = QS_number + v202
+    [v199 + 0] = v201
+    QS_number = [this + 4]
+    v208 = 7
+    v211 = 4
+    v210 = v208 * v211
+    v210 = v210 + v211
+    if0 QS_number goto null_err_label
+    v212 = [QS_number + 0]
+    v213 = v208 < v212
+    if0 v213 goto arr_err_label
+    v212 = 0
+    v214 = 1
+    v212 = v212 - v214
+    v213 = v212 < v208
+    if0 v213 goto arr_err_label
+    v209 = 9
+    v207 = QS_number + v210
+    [v207 + 0] = v209
+    QS_number = [this + 4]
+    v216 = 8
+    v219 = 4
+    v218 = v216 * v219
+    v218 = v218 + v219
+    if0 QS_number goto null_err_label
+    v220 = [QS_number + 0]
+    v221 = v216 < v220
+    if0 v221 goto arr_err_label
+    v220 = 0
+    v222 = 1
+    v220 = v220 - v222
+    v221 = v220 < v216
+    if0 v221 goto arr_err_label
+    v217 = 19
+    v215 = QS_number + v218
+    [v215 + 0] = v217
+    QS_number = [this + 4]
+    v224 = 9
+    v227 = 4
+    v226 = v224 * v227
+    v226 = v226 + v227
+    if0 QS_number goto null_err_label
+    v228 = [QS_number + 0]
+    v229 = v224 < v228
+    if0 v229 goto arr_err_label
+    v228 = 0
+    v230 = 1
+    v228 = v228 - v230
+    v229 = v228 < v224
+    if0 v229 goto arr_err_label
+    v225 = 5
+    v223 = QS_number + v226
+    [v223 + 0] = v225
+    v231 = 0
+    goto end_QS__Init
+  arr_err_label:
+    error("array index out of bounds")
+  null_err_label:
+    error("null pointer")
+  end_QS__Init:
+      return v231
+
+

@@ -1,0 +1,119 @@
+func Main__main()
+    Main_main_x = 0
+    vA_size = 4
+    v0 = alloc(vA_size)
+    vA_vTable_size = 4
+    A_vTable = alloc(vA_vTable_size)
+    v1 = @A__foo
+    [A_vTable + 0] = v1
+    [v0 + 0] = A_vTable
+    Main_main_x = v0
+    if0 Main_main_x goto null_err_label
+    v3 = [Main_main_x + 0]
+    v3 = [v3 + 0]
+    v2 = call v3(Main_main_x)
+    if0 v2 goto null_err_label
+    v5 = [v2 + 0]
+    v5 = [v5 + 0]
+    v4 = call v5(v2)
+    if0 v4 goto null_err_label
+    v7 = [v4 + 0]
+    v7 = [v7 + 0]
+    v6 = call v7(v4)
+    if0 v6 goto null_err_label
+    v9 = [v6 + 0]
+    v9 = [v9 + 0]
+    v8 = call v9(v6)
+    if0 v8 goto null_err_label
+    v11 = [v8 + 0]
+    v11 = [v11 + 0]
+    v10 = call v11(v8)
+    print(v10)
+    goto end_Main__main
+  arr_err_label:
+    error("array index out of bounds")
+  null_err_label:
+    error("null pointer")
+  end_Main__main:
+      return v0
+
+
+func A__foo(this)
+    vB_size = 4
+    v12 = alloc(vB_size)
+    vB_vTable_size = 4
+    B_vTable = alloc(vB_vTable_size)
+    v13 = @B__bar
+    [B_vTable + 0] = v13
+    [v12 + 0] = B_vTable
+    goto end_A__foo
+  arr_err_label:
+    error("array index out of bounds")
+  null_err_label:
+    error("null pointer")
+  end_A__foo:
+      return v12
+
+
+func B__bar(this)
+    vC_size = 4
+    v14 = alloc(vC_size)
+    vC_vTable_size = 4
+    C_vTable = alloc(vC_vTable_size)
+    v15 = @C__baz
+    [C_vTable + 0] = v15
+    [v14 + 0] = C_vTable
+    goto end_B__bar
+  arr_err_label:
+    error("array index out of bounds")
+  null_err_label:
+    error("null pointer")
+  end_B__bar:
+      return v14
+
+
+func C__baz(this)
+    vD_size = 4
+    v16 = alloc(vD_size)
+    vD_vTable_size = 4
+    D_vTable = alloc(vD_vTable_size)
+    v17 = @D__fuck
+    [D_vTable + 0] = v17
+    [v16 + 0] = D_vTable
+    goto end_C__baz
+  arr_err_label:
+    error("array index out of bounds")
+  null_err_label:
+    error("null pointer")
+  end_C__baz:
+      return v16
+
+
+func D__fuck(this)
+    vE_size = 4
+    v18 = alloc(vE_size)
+    vE_vTable_size = 4
+    E_vTable = alloc(vE_vTable_size)
+    v19 = @E__fuck
+    [E_vTable + 0] = v19
+    [v18 + 0] = E_vTable
+    goto end_D__fuck
+  arr_err_label:
+    error("array index out of bounds")
+  null_err_label:
+    error("null pointer")
+  end_D__fuck:
+      return v18
+
+
+func E__fuck(this)
+    v20 = 42
+    goto end_E__fuck
+  arr_err_label:
+    error("array index out of bounds")
+  null_err_label:
+    error("null pointer")
+  end_E__fuck:
+      return v20
+
+
